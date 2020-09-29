@@ -86,8 +86,6 @@ properties(GetAccess = protected, Constant)
     DampingResistor = 1;
 end
 
-
-
 %%
 % =================================================
 % Methods
@@ -137,16 +135,23 @@ methods(Access = protected)
             
             % ### Forward Euler 
             % s -> Ts/(z-1)
-            % => x[k+1] - x[k] = Ts * f(x[k],u[k])
+            % which leads to
+            % x[k+1]-x[k] = Ts * f(x[k],u[k])
+            % y[k+1] = g(x[k],u[k]);
           	case 1
                 f_xu = obj.StateSpaceEqu(obj, obj.x, u, 1);
-                obj.x = f_xu * obj.Ts + obj.x;
+                obj.x = obj.Ts * f_xu  + obj.x;
                 
-            % ### Trapezoidal
+            % ### Hybrid Trapezoidal
             % s -> Ts/2*(z+1)/(z-1)
-            % => x[k+1] - x[k] = Ts/2 * (f(x[k+1],u(k+1)) + f(x[k],u[k]))
-            % => (x[k+1] - x[k])/Ts =
-            % f((x[k+1]+x[k])/2,(u[k+1]+u[k])/2) = f(x[k],u[k]) + Ak*(x[k+1]-x[k])/2 + Bk*(u[k+1]-u[k])/2
+            % which leads to
+            % (x[k+1] - x[k])/Ts 
+            % = (f(x[k+1],u(k+1)) + f(x[k],u[k]))/2
+            % or
+            % = f((x[k+1]+x[k])/2, (u[k+1]+u[k])/2) 
+            % -> f(x[k],u[k]) + Ak*(x[k+1]-x[k])/2 + Bk*(u[k+1]-u[k])/2
+            % and
+            % y[k+1] - y[k] = Ts*Ck*Wk*(Bk*(u[k+1]-u[k])/2 + fk)
             case 2
                 
                 % Update x[k]
@@ -184,10 +189,21 @@ methods(Access = protected)
             % New state space system
             % dx'/dt = f(x'+Ts/2*dx'/dt,u)
             % y      = g(x'+Ts/2*dx'/dt,u)
+            % => 
+            % Approximation of the new state space system
+            % dx'/dt = f(x',u) + Ts/2*A*dx'/dt
+            % y      = g(x',u) + Ts/2*C*dx'/dt
+            % =>
+            % dx'/dt = W*f(x',u)
+            % y      = g(x',u) + Ts/2*C*W*f(x',u)
+            % =>
+            % (x'[k+1]-x'[k])/Ts = Wk*(f(x'[k],u[k]))
+            % y'[k+1] = g(x'[k+1],u[k+1]) + Ts/2*C*W*f(x'[k+1],u[k+1]) 
             case 3
+                % Update x[k]
+                obj.xk = obj.x;
                 
                 % Linearization
-                obj.xk = obj.x;
                 if obj.LinearizationTimes == 2
                     obj.Linearization(obj,obj.xk,obj.uk);
                     obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
@@ -210,46 +226,70 @@ methods(Access = protected)
         
     % Calculate output y
 	function y = outputImpl(obj,u)
+     	y_Euler = obj.StateSpaceEqu(obj,obj.x,u,2);
+    	ly = length(y_Euler);
         switch obj.DiscretizationMethod
+            % ### Forward Euler
           	case 1
-                y = obj.StateSpaceEqu(obj, obj.x, u, 2);
+                y = y_Euler;
+                
+            % ### Hybrid Trapezoidal
             case 2
-                if obj.DampingResistor == 1
+                if obj.DampingResistor == 0
+                	y_Trapez = y_Euler ...
+                        + obj.Ts/2*obj.C*obj.Wk*obj.B*(u - obj.uk) ...
+                        + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.xk,obj.uk,1);
+                else
                     Ck1 = obj.C;
                     Ck2 = obj.C;
                     Ck1(1:2,1:2) = zeros(2,2);
-                    Ck2 = Ck2-Ck1;
+                    Ck2 = Ck2 - Ck1;
                     Bk1 = obj.B;
                     Bk2 = obj.B;
                     Bk1(1:2,1:2) = zeros(2,2);
                     Bk2 = Bk2 - Bk1;
-                    y = obj.StateSpaceEqu(obj, obj.x, u, 2) ...
+                    y_Trapez = y_Euler ...
                         + obj.Ts/2*(Ck1*obj.Wk*Bk1*(u - obj.uk) - Ck2*obj.Wk*Bk2*obj.uk) ...
                         + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1);
-                else
-                    y = obj.StateSpaceEqu(obj, obj.x, u, 2) ...
-                        + obj.Ts/2*obj.C*obj.Wk*obj.B*(u - obj.uk) ...
-                        + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1);
                 end
+                y = [y_Trapez(1:(ly-1));
+                     y_Euler(ly)];
+                
+            % ### Virtual damping
             case 3
-                xold_k1_VD = obj.x + obj.Ts/2*obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);
-                
-                % Split the states
-                lx = length(obj.x);
-                xold_linear = xold_k1_VD(1:(lx-1));
-                xold_others = obj.x(lx);
-                
-                xold = [xold_linear;
-                      	xold_others];
-                
-                y = obj.StateSpaceEqu(obj, xold, u, 2);
+                if obj.DampingResistor == 0
+                    % No linearization of g(x,u)
+                    % xold_VD = obj.x + obj.Ts/2*obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1); 
+                    % xold_VD = obj.x + obj.Ts/2*(obj.x - obj.xk);                          
+                    % y_VD = g(xold_VD,u);
+                    
+                    % Linearization of g(x,u)
+                    dx = obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);   	% Has algebraic loop
+                    % dx = obj.Wk*(obj.A*obj.x + obj.B*u);
+                    % dx = obj.x - obj.xk;                            	% No algebraic loop
+                    y_VD = y_Euler + obj.Ts/2*obj.C*dx;
+                else
+                    % Move Ts/2*Ck*Wk*Bk*u[k+1] to the outside of the
+                    % system as a damping resistor in the following
+                    % equation:
+                    % y_VD = y_Euler + obj.Ts/2*obj.C*obj.Wk * (obj.A*obj.x + obj.B*u);
+                    Ck1 = obj.C;
+                    Ck1(1:2,1:2) = zeros(2,2);
+                    Bk1 = obj.B;
+                    Bk1(1:2,1:2) = zeros(2,2);
+                    y_VD = y_Euler ...
+                           + obj.Ts/2*(obj.C*obj.Wk*obj.A*obj.x + Ck1*obj.Wk*Bk1*u);
+                end
+                y = [y_VD(1:(ly-1));
+                     y_Euler(ly)];
             otherwise
+                error(['Error: discretization method.'])
         end
     end
     
   	% Set direct or nondirect feedthrough status of input
-    function flag = isInputDirectFeedthroughImpl(~)
-       flag = false;
+    function flag = isInputDirectFeedthroughImpl(obj)
+       flag = ~(obj.DampingResistor);
     end
     
     % Initialize / reset discrete-state properties

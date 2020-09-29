@@ -40,7 +40,8 @@ ListSimulation = xlsread('netlist.xlsx',4);
 Fs = ListSimulation(1);
 DisMethod = ListSimulation(2);
 LinearTimes = ListSimulation(3);
-FundamentalFreq = ListSimulation(4);
+DampingResistor = ListSimulation(4);
+FundamentalFreq = ListSimulation(length(ListSimulation));
 W0 = FundamentalFreq*2*pi;
 
 % ### Re-arrange the netlist and check error
