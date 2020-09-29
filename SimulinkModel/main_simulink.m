@@ -10,12 +10,12 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function main_simulink(Name_Model,W0,ListLine,N_Bus,N_Branch,N_Device,DeviceType)
+function main_simulink(Name_Model,W0,ListLine,N_Bus,N_Branch,N_Device,DeviceType,DeviceDiscreDamping)
 
 %% Common variables
 NewSimulinkModel('ModelName',Name_Model);
-Name_Lib = 'Simplex';
-Name_LibFile = 'simplex_lib';
+Name_Lib = 'Simplex Power Systems';
+Name_LibFile = 'Simplex_PowerSystems';
 % load_system(Name_LibFile);
 
 %% Organize data
@@ -89,6 +89,7 @@ for i = 1:N_Device
     set_param(gcb,'PowerFlow',['PowerFlow{' num2str(i) '}']);
     set_param(gcb,'x0',['x_e{' num2str(i) '}']);
     set_param(gcb,'OtherInputs',['OtherInputs{' num2str(i) '}']);
+    set_param(gcb,'DiscreDamping',['DeviceDiscreDamping{' num2str(i) '}']);
     
     % The position of device is set by referring to the position of correpsonding bus
     Position_Device{i} = Position_Bus{i} + Shift_Device;
@@ -105,7 +106,7 @@ for i = 1:N_Device
         'autorouting','smart');
 end
 
-%% Add device scope, ground, etc
+%% Add device's scope, ground, etc
 % Paramter
 Size_DeviceGND = [20,20];
 Shift_DeviceGND = [20,20];

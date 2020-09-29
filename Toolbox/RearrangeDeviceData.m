@@ -1,6 +1,6 @@
 % This function re-arranges the device data
 
-% Author(s): Yitong Li
+% Author(s): Yitong Li, Yunjie Gu
 
 %% Notes
 %

@@ -15,12 +15,15 @@
 % - Second output is "w"
 % - Final state is "theta"
 % - The final state "theta" SHOULD NOT appear in other state equations
-%
+% - The D matrix for system should be 0.
+% 
 % Available device type:
 % 00:   Synchronous generator (SG)
 % 10:   PLL-controlled voltage source inverter (VSI)
 % 20:   Droop-controlled voltage source inverter (VSI)
 % 90:   Single-phase inductor, for test
+
+%% References
 
 
 %% Class
@@ -73,6 +76,14 @@ properties(GetAccess = protected, Constant)
 	% Discretization methods: 
     % 1-Forward Euler, 2-Trapezoidal, 3-Virtual Damping
     DiscretizationMethod = 2;
+    
+    % Linearization times:
+    % 1-Initial step, 2-Every step
+    LinearizationTimes = 1;
+    
+    % Damping outside:
+    % 0-no damping resistor,1-with damping resistor
+    DampingResistor = 1;
 end
 
 
@@ -99,14 +110,18 @@ methods(Access = protected)
     % Perform one-time calculations, such as computing constants
     function setupImpl(obj)
         obj.SetString(obj);
+        
+        % Initialize x_e, u_e
         obj.Equilibrium(obj);
+        
+        % Initialize A, B, C, D
         obj.Linearization(obj,obj.x_e,obj.u_e);
         
-        % Initialize uk and xk for the first step
+        % Initialize u[k] and x[k]
         obj.uk = obj.u_e;
         obj.xk = obj.x_e;
         
-        % For Trapezoidal method
+        % Initialize W[k]
         obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
     end
 
@@ -132,36 +147,51 @@ methods(Access = protected)
             % => x[k+1] - x[k] = Ts/2 * (f(x[k+1],u(k+1)) + f(x[k],u[k]))
             % => (x[k+1] - x[k])/Ts =
             % f((x[k+1]+x[k])/2,(u[k+1]+u[k])/2) = f(x[k],u[k]) + Ak*(x[k+1]-x[k])/2 + Bk*(u[k+1]-u[k])/2
-            case 2    
-  
-                % Linear Trapezoidal
+            case 2
+                
+                % Update x[k]
                 obj.xk = obj.x;
-                % obj.Linearization(obj,obj.xk,obj.uk);
-                obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
-                x_kp1_LinearTrapez = obj.Wk * (obj.Ts*(obj.StateSpaceEqu(obj,obj.xk,obj.uk,1) + obj.B*(u - obj.uk)/2) ) + obj.x;
-                % uk and uk1 can not be used randomly.
+                
+                % Linear Trapezoidal
+                if obj.LinearizationTimes == 2
+                    obj.Linearization(obj,obj.xk,obj.uk);
+                    obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
+                end
+                x_k1_Trapez = obj.Wk * (obj.Ts*(obj.StateSpaceEqu(obj,obj.xk,obj.uk,1) + obj.B*(u - obj.uk)/2) ) + obj.x;
                 
                 % Forward Euler
-                x_k1_Euler = obj.StateSpaceEqu(obj, obj.x, u, 1)*obj.Ts + obj.x;
+                x_k1_Euler = obj.StateSpaceEqu(obj, obj.xk, obj.uk, 1)*obj.Ts + obj.xk;
                 
                 % Split the states
-                lx = length(obj.x);
-            	x_k1_linear = x_kp1_LinearTrapez(1:(lx-1));
-              	x_k1_others = x_k1_Euler((lx):end);
+                lx = length(obj.xk);
+            	x_k1_linear = x_k1_Trapez(1:(lx-1));
+              	x_k1_others = x_k1_Euler(lx:end);   % Theta
          
-                % Update x[k] and u[k-1]
+                % Update x[k+1] and u[k]
                 obj.x = [x_k1_linear;
                          x_k1_others];
                 obj.uk = u;
                 
-            % ###  Virtual damping: Euler -> Trapezoidal
+            % ###  Virtual damping: 
+            % Euler -> Trapezoidal
             % s -> s/(1+s*Ts/2)
+            % which makes the new state x' replace the old state x with
+            % x = x' + Ts/2*dx'/dt
+            % Old state space system
+            % dx/dt = f(x,u)
+            % y     = g(x,u)
+            % =>
+            % New state space system
+            % dx'/dt = f(x'+Ts/2*dx'/dt,u)
+            % y      = g(x'+Ts/2*dx'/dt,u)
             case 3
                 
                 % Linearization
                 obj.xk = obj.x;
-                obj.Linearization(obj,obj.xk,obj.uk);
-                obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
+                if obj.LinearizationTimes == 2
+                    obj.Linearization(obj,obj.xk,obj.uk);
+                    obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
+                end
                 x_k1_VD  = obj.Wk * obj.Ts * obj.StateSpaceEqu(obj,obj.xk,obj.uk,1) + obj.xk;
 
                 % Forward Euler
@@ -170,7 +200,7 @@ methods(Access = protected)
                 % Split the states
                 lx = length(obj.x);
                 x_k1_linear = x_k1_VD(1:(lx-1));
-                x_k1_others = x_k1_Euler(lx);
+                x_k1_others = x_k1_Euler(lx:end);   % Theta
                 
                 obj.x = [x_k1_linear;
                          x_k1_others];
@@ -180,35 +210,48 @@ methods(Access = protected)
         
     % Calculate output y
 	function y = outputImpl(obj,u)
-%         switch obj.DiscretizationMethod
-%             case 2
-                % obj.Linearization(obj,obj.x,obj.uk);
-                % obj.C = zeros(size(obj.C));
-                y = obj.StateSpaceEqu(obj, obj.x, u, 2) ...
-                    + obj.Ts/2*obj.C*obj.Wk*obj.B*(u - obj.uk) ...
-                    + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1);
-%             case 4
-%                 xold_k1_VD = obj.x + obj.Ts/2*obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);
-%                 
-%                 % Split the states
-%                 lx = length(obj.x);
-%                 xold_linear = xold_k1_VD(1:(lx-1));
-%                 xold_others = obj.x(lx);
-%                 
-%                 xold = [xold_linear;
-%                       	xold_others];
-%                 
-%                 y = obj.StateSpaceEqu(obj, xold, u, 2);
-%             otherwise
-%                 y = obj.StateSpaceEqu(obj, obj.x, u, 2);
-%         end
+        switch obj.DiscretizationMethod
+          	case 1
+                y = obj.StateSpaceEqu(obj, obj.x, u, 2);
+            case 2
+                if obj.DampingResistor == 1
+                    Ck1 = obj.C;
+                    Ck2 = obj.C;
+                    Ck1(1:2,1:2) = zeros(2,2);
+                    Ck2 = Ck2-Ck1;
+                    Bk1 = obj.B;
+                    Bk2 = obj.B;
+                    Bk1(1:2,1:2) = zeros(2,2);
+                    Bk2 = Bk2 - Bk1;
+                    y = obj.StateSpaceEqu(obj, obj.x, u, 2) ...
+                        + obj.Ts/2*(Ck1*obj.Wk*Bk1*(u - obj.uk) - Ck2*obj.Wk*Bk2*obj.uk) ...
+                        + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1);
+                else
+                    y = obj.StateSpaceEqu(obj, obj.x, u, 2) ...
+                        + obj.Ts/2*obj.C*obj.Wk*obj.B*(u - obj.uk) ...
+                        + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1);
+                end
+            case 3
+                xold_k1_VD = obj.x + obj.Ts/2*obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);
+                
+                % Split the states
+                lx = length(obj.x);
+                xold_linear = xold_k1_VD(1:(lx-1));
+                xold_others = obj.x(lx);
+                
+                xold = [xold_linear;
+                      	xold_others];
+                
+                y = obj.StateSpaceEqu(obj, xold, u, 2);
+            otherwise
+        end
     end
     
   	% Set direct or nondirect feedthrough status of input
-%     function flag = isInputDirectFeedthroughImpl(~)
-%        flag = false;
-%     end
-
+    function flag = isInputDirectFeedthroughImpl(~)
+       flag = false;
+    end
+    
     % Initialize / reset discrete-state properties
     function resetImpl(obj)
         % Notes: x should be a column vector

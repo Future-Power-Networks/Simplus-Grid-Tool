@@ -16,7 +16,8 @@
 
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui] = DeviceModel_Create(varargin) 
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDamping] ...
+        = DeviceModel_Create(varargin) 
 
 %% load arguments and common symbols
 for n = 1:length(varargin)
@@ -28,6 +29,8 @@ for n = 1:length(varargin)
         Type = varargin{n+1};
     elseif(strcmpi(varargin{n},'Freq'))
         w0 = 2*pi*varargin{n+1};
+    elseif(strcmpi(varargin{n},'Ts'))
+        Ts = varargin{n+1};
     end
 end
 
@@ -134,6 +137,16 @@ Gm = ModelSS;
 % Output
 DevicePara = Device.Para; 
 DeviceEqui = {x_e,u_e,y_e,xi};
+
+% Output the discretization damping resistance for simulation use
+Ak = ModelSS.A;
+Ck = ModelSS.C;
+Bk = ModelSS.B;
+Wk = (eye(length(Ak)) - Ts/2*Ak);
+MatrixY = Ts/2*Ck*Wk*Bk;
+MatrixY = MatrixY(1:2,1:2);
+MatrixR = inv(MatrixY);
+DeviceDiscreDamping = MatrixR(1,1);
 
 %% Impedance transformation: local swing frame dq -> local steady frame d'q'
 % Effect of the frame perturbation on arbitrary signal udq:

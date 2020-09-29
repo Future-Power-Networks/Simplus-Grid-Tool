@@ -25,37 +25,43 @@ fprintf('### Start.\n')
 
 %%
 % ==================================================
-% Common paramters
-% ==================================================
-fprintf('Get common parameters.\n')
-% Sampling for simulation
-Fs = 50e3;          % (Hz) samping frequency
-Ts = 1/Fs;          % (s) Samping period
-
-% Angular frequency
-W0 = 2*pi*50;     	% (rad/s)
-
-Vbase = 1;
-Sbase = 1;
-Ibase = Sbase/Vbase;
-Wbase = W0;
-
-%%
-% ==================================================
 % Load customized data
 % ==================================================
 fprintf('Load customized data.\n')
 
 % ### Load the data
-ListBus = xlsread('netlist.xlsx',1);     % Other possible function: readmatrix, csvread ...
+% Other possible function: readmatrix, csvread ...
+ListBus = xlsread('netlist.xlsx',1);     
 ListLine = xlsread('netlist.xlsx',2);
 ListDevice = xlsread('netlist.xlsx',3);
+ListSimulation = xlsread('netlist.xlsx',4);
+
+% ### Re-arrange the simulation data
+Fs = ListSimulation(1);
+DisMethod = ListSimulation(2);
+LinearTimes = ListSimulation(3);
+FundamentalFreq = ListSimulation(4);
+W0 = FundamentalFreq*2*pi;
 
 % ### Re-arrange the netlist and check error
 [ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice);
 
 % ### Re-arrange the device data
 [DeviceType,Para] = RearrangeDeviceData(ListDevice,W0);
+
+%%
+% ==================================================
+% Common paramters
+% ==================================================
+fprintf('Get common parameters.\n')
+% Sampling for simulation
+Ts = 1/Fs;          % (s) Samping period
+
+% Base values
+Vbase = 1;
+Sbase = 1;
+Ibase = Sbase/Vbase;
+Wbase = W0;
 
 %%
 % ==================================================
@@ -76,8 +82,8 @@ ZbusObj = obj_SwitchInOut(YbusObj,lsw);
 % ### Get the models of bus devices
 fprintf('Get the descriptor-state-space model of bus devices.\n')
 for i = 1:N_Device
-    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i}] = ...
-        DeviceModel_Create('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i});
+    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i}] = ...
+        DeviceModel_Create('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i},'Ts',Ts);
     x_e{i} = DeviceEqui{i}{1};
     u_e{i} = DeviceEqui{i}{2};
     OtherInputs{i} = u_e{i}(3:end,:);
@@ -93,27 +99,28 @@ fprintf('Check if the whole system is proper:\n')
 if isproper(GsysDSS)
     fprintf('Proper.\n');
     fprintf('Calculate the minimum realization of the system model for later use.\n')
-    G_SS = minreal(GsysDSS);    
+    GminSS = minreal(GsysDSS);    
     % This function only changes the element sequence of state vectors, but
     % does not change the element sequence of input and output vectors.
     InverseOn = 0;
 elseif isproper(1/GsysDSS)
     fprintf('Warrning: improper.\n');
     fprintf('Calculate the minimum realization of the inverse of the system model for later use.\n')
-    G_SS = minreal(1/GsysDSS);
+    GminSS = minreal(1/GsysDSS);
     InverseOn = 1;
 else
     error(['Error: both the system and the its inverse are improper.'])
 end
-if ~isempty(G_SS.E)
+if ~isempty(GminSS.E)
     error(['Error: minimum realization is in descriptor state space form.']);
 end
 
 % ### Output the System
 fprintf('### Output the system\n')
-fprintf('System obj name: GsysObj\n')
+fprintf('System object name: GsysObj\n')
+fprintf('System name: GsysDSS')
+fprintf('Minimum realization system name: GminSS\n')
 [StateString,InputStr,OutputStr] = GsysObj.ReadString(GsysObj)
-fprintf('Minimum realization system name: G_SS\n')
 
 %%
 % ==================================================
@@ -129,7 +136,7 @@ Name_Model = 'mymodel_v1';
 close_system(Name_Model,0);
 
 % Create the simulink model
-main_simulink(Name_Model,W0,ListLine,N_Bus,N_Branch,N_Device,DeviceType);
+main_simulink(Name_Model,W0,ListLine,N_Bus,N_Branch,N_Device,DeviceType,DeviceDiscreDamping);
 fprintf('Get the simulink model successfully.\n')
 fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
 
@@ -165,9 +172,9 @@ if 1
           1 -1j];  
     for k = 1:N_Bus
         if InverseOn == 0
-            Gr_ss{k} = G_SS(iport([2*k-1,2*k]),vport([2*k-1,2*k]));
+            Gr_ss{k} = GminSS(iport([2*k-1,2*k]),vport([2*k-1,2*k]));
         else          
-            Gr_ss{k} = G_SS(vport([2*k-1,2*k]),iport([2*k-1,2*k]));
+            Gr_ss{k} = GminSS(vport([2*k-1,2*k]),iport([2*k-1,2*k]));
         end
         Gr_sym{k} = ss2sym(Gr_ss{k});
         Gr_c{k} = Tj*Gr_sym{k}*Tj^(-1);
