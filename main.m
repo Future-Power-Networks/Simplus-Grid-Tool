@@ -38,10 +38,7 @@ ListSimulation = xlsread('netlist.xlsx',4);
 
 % ### Re-arrange the simulation data
 Fs = ListSimulation(1);
-DiscreMethod = ListSimulation(2);
-LinearizationTimes = ListSimulation(3);
-DiscreDampingFlag = ListSimulation(4);
-DirectFeedthrough = ListSimulation(5);
+Ts = 1/Fs;  % (s) sampling period
 FundamentalFreq = ListSimulation(length(ListSimulation));
 W0 = FundamentalFreq*2*pi;
 
@@ -56,9 +53,6 @@ W0 = FundamentalFreq*2*pi;
 % Common paramters
 % ==================================================
 fprintf('Get common parameters.\n')
-% Sampling for simulation
-Ts = 1/Fs;          % (s) Samping period
-
 % Base values
 Vbase = 1;
 Sbase = 1;
@@ -138,9 +132,7 @@ Name_Model = 'mymodel_v1';
 close_system(Name_Model,0);
 
 % Create the simulink model
-main_simulink(Name_Model,W0,...
-              ListLine,N_Bus,N_Branch,N_Device,DeviceType,...
-              DiscreMethod,DiscreDampingFlag,LinearizationTimes,DirectFeedthrough);
+main_simulink(Name_Model,ListLine,N_Bus,N_Branch,N_Device,DeviceType,ListSimulation);
 fprintf('Get the simulink model successfully.\n')
 fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
 

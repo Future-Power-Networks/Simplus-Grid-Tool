@@ -7,8 +7,6 @@ function [UpdateBus,UpdateLine,UpdateDevice,N_Bus,N_Branch,N_Device] = Rearrange
 
 %% Re-arrange netlist bus
 % Bus data for power flow analysis
-% | bus | type | Vsp | theta | PGi | QGi | PLi | QLi | Qmin | Qmax |
-% Type of bus: 1-slack, 2-PV, 3-PQ, 4
 [N_Bus,ColumnMax_Bus] = size(NetlistBus);
 if (ColumnMax_Bus>10); error(['Error: bus data overflow.']); end
 list_bus_type = NetlistBus(:,2);
@@ -24,12 +22,6 @@ NetlistBus = sortrows(NetlistBus,1);
 UpdateBus = NetlistBus;
 
 %% Re-arrange netlist line
-% Line date for power flow analysis and for network equations
-% | from bus | to bus | R | wL | wC | G |
-%                       --CCC--
-% branch :  --RRR--LLL--       ----
-%                       --GGG--
-
 % Organize data
 [N_Branch,ColumnMax_Line] = size(NetlistLine); 
 
@@ -80,13 +72,6 @@ UpdateLine = NetlistLine;
 
 %% Re-arrange netlist device
 % Data for devices connected to buses
-% | bus | type | parameters
-% Synchronous generator
-% type 00: | J | D | L | R |
-% PLL-controlled VSI
-% type 10: | Vdc | Cdc | L | R | bw_vdc | bw_pll | bw_idq |
-% Droop-controlled VSI
-% type 20: | |
 [N_Device,ColumnMax_Device] = size(NetlistDevice);
 if (ColumnMax_Device>9); error(['Error: device data overflow.']); end
 if (N_Device ~= N_Bus); error(['Error: number of buses is different from number of devices.']); end

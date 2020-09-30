@@ -16,12 +16,6 @@
 % - Final state is "theta"
 % - The final state "theta" SHOULD NOT appear in other state equations
 % - The D matrix for system should be 0.
-% 
-% Available device type:
-% 00:   Synchronous generator (SG)
-% 10:   PLL-controlled voltage source inverter (VSI)
-% 20:   Droop-controlled voltage source inverter (VSI)
-% 90:   Single-phase inductor, for test
 
 %% References
 

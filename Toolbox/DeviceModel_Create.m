@@ -34,6 +34,7 @@ for n = 1:length(varargin)
     end
 end
 
+% Set default values
 try
     w0;
 catch
@@ -43,7 +44,7 @@ end
 try
     Type;
 catch
-    Type = 0;       %0-9 generator %10-19 converter
+    Type = 0;
 end
 
 try 
@@ -58,6 +59,7 @@ end
 
 %% Create an object
 switch floor(Type/10)
+    
     % ### Synchronous generator
     case 0      % Type 0-9
         Device = Class_SynchronousMachine;
@@ -66,8 +68,9 @@ switch floor(Type/10)
                         Para.L;
                         Para.R;
                         Para.w0];       % (5)
-    % ### PLL-controlled VSI
-    case 1  % Type 10-19
+                    
+    % ### Grid-Following VSI
+    case 1      % Type 10-19
         Device = Class_GridFollowingVSI;
         Device.Para = [Para.C_dc;
                        Para.V_dc;
@@ -83,7 +86,8 @@ switch floor(Type/10)
                        Para.R;
                        Para.w0;
                        Para.Gi_cd]; 	% (14)
-    % ### Droop-controlled VSI
+                   
+    % ### Grid-Forming VSI
     case 2  % Type 20-29
         Device = Class_GridFormingVSI;
         Device.Para = [Para.Lf;
@@ -109,6 +113,11 @@ switch floor(Type/10)
                        Para.Fi;
                        Para.Rov;
                        Para.Xov];       % (23)
+                   
+    % ### Load
+    case 9 % Type 90-99
+        Device = Class_Load;
+        Device.Para = [];
     otherwise
         error(['Error: device type']);
 end

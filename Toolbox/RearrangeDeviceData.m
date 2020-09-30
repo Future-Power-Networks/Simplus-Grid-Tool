@@ -25,21 +25,17 @@ function [CellDeviceType,CellPara] = RearrangeDeviceData(NetlistDevice,W0)
 % Synchronous generator
 % ======================================
 Para00.J  = 3.5*2/W0^2;
-%Para00.D  = 1/W0^2;
-Para00.D  = 1/W0^2;               % ???????
+Para00.D  = 1/W0^2;
 Para00.L  = 0.03/W0;
-% Para00.L  = 0.2/W0;                % ???????
 Para00.R  = 0.01;
 Para00.w0 = W0;
 
 % ======================================
-% PLL-controlled grid-following VSI
+% Grid-following VSI (PLL-controlled)
 % ======================================
 % Bandwidth
 w_vdc     = 20*2*pi; 	% (rad/s) bandwidth, vdc
-% w_vdc     = 10*2*pi;                        % ???????
 w_pll     = 20*2*pi;  	% (rad/s) bandwidth, pll
-% w_pll     = 10*2*pi;                        % ???????
 w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
 w_tau_pll = 200*2*pi;   
 
@@ -51,7 +47,6 @@ Para10.ki_v_dc	= Para10.kp_v_dc*w_vdc/4;
 
 % AC Filter
 Para10.L        = 0.03/W0;
-% Para10.L        = 0.03/W0;                   % ???????
 Para10.R        = 0.01;
 
 % PLL
@@ -67,7 +62,7 @@ Para10.w0       = W0;
 Para10.Gi_cd    = 0;
 
 % ======================================
-% Droop-controlled grid-forming VSI
+% Grid-forming VSI (Droop-Controlled)
 % ======================================
 % Bandwidth
 w_ildq  = 500*2*pi;     % (Hz)
@@ -104,6 +99,13 @@ Para20.Fi = 0;
 Para20.Rov = 0;
 Para20.Xov = 0;
 
+% ======================================
+% Load
+% ======================================
+Para90.R = 1/0.8;
+Para90.L = 1/0.2;
+Para90.P = 0.8;
+Para90.Q = 0.2;
 
 %% Re-arrange device data
 % Get the size of netlist

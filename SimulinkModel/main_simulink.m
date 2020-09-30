@@ -10,9 +10,9 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function main_simulink(Name_Model,W0,ListLine,...
+function main_simulink(Name_Model,ListLine,...
                        N_Bus,N_Branch,N_Device,DeviceType,...
-                       DiscreMethod,DiscreDampingFlag,LinearizationTimes,DirectFeedthrough)
+                       ListSimulation)
 
 %% Common variables
 NewSimulinkModel('ModelName',Name_Model);
@@ -27,6 +27,15 @@ R  = ListLine(:,3);
 X  = ListLine(:,4);
 B  = ListLine(:,5);
 G  = ListLine(:,6);
+
+Fs = ListSimulation(1);
+Ts = 1/Fs;
+DiscreMethod = ListSimulation(2);
+LinearizationTimes = ListSimulation(3);
+DiscreDampingFlag = ListSimulation(4);
+DirectFeedthrough = ListSimulation(5);
+FundamentalFreq = ListSimulation(length(ListSimulation));
+W0 = FundamentalFreq*2*pi;
 
 %% Add powergui into simulink model
 Position_powergui = [0,0];
