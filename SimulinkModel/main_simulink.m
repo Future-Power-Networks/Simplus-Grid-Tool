@@ -41,6 +41,14 @@ DirectFeedthrough = ListSimulation(5);
 FundamentalFreq = ListSimulation(length(ListSimulation));
 W0 = FundamentalFreq*2*pi;
 
+% Check if load data is combined into "ListLine"
+[~,cmax_ListLine] = size(ListLine);
+LoadCombinationFlag = 0;
+if cmax_ListLine>6
+    XL = ListLine(:,7);
+    LoadCombinationFlag = 1;
+end
+
 %% Add powergui into simulink model
 Position_powergui = [0,0];
 Size_powergui = [70,30];
@@ -215,7 +223,163 @@ for i = 1:N_Device
     end
 end
 
-%% Add load into model
+%% Add branches into simulink model
+% Parameter
+Size_MutualBranch = [Size_Bus(2),Size_Bus(2)];
+Size_SelfBranch   = Size_MutualBranch;
+Shift_SelfBranch  = [+100,+100];
+Shift_MutualBranch = [+100,+100];
+Counter_ToBus = zeros(max(tb),1);
+
+Size_BranchGND = Size_DeviceGND;
+Shift_BranchGND = [-Size_DeviceGND(1)/2,30];
+Counter_BranchGND = 0;
+
+% Add branch
+for i = 1:N_Branch
+    
+    % Initialize the postion of branch
+    Position_Branch{i} = [Position_Bus{tb(i)}(1),Position_Bus{fb(i)}(2)];
+    Name_Branch{i} = ['Branch' num2str(fb(i)) num2str(tb(i))];
+    FullName_Branch{i} = [Name_Model '/' Name_Branch{i}];
+    
+    % ### Add self branch
+    if fb(i) == tb(i)
+        % Add block
+        add_block(['powerlib/Elements/Three-Phase Parallel RLC Branch'],FullName_Branch{i});
+        Position_Branch{i} = Position_Branch{i} + Shift_SelfBranch;
+        set_param(FullName_Branch{i},'position',[Position_Branch{i},Position_Branch{i}+Size_SelfBranch]);
+        set_param(FullName_Branch{i},'Orientation','down');
+        set_param(FullName_Branch{i},'Measurements','None');
+        
+     	% Add self-branch ground
+        Counter_BranchGND = Counter_BranchGND + 1;
+        % if Counter_BranchGND == 1
+        if 1
+            Name_BranchGND{i} = ['B-GND' num2str(i)];
+            FullName_BranchGND{i} = [Name_Model '/' Name_BranchGND{i}];
+            add_block('powerlib/Elements/Ground',FullName_BranchGND{i});
+            PortPosition_Branch{i} = get_param(FullName_Branch{i},'PortConnectivity');
+            Position_BranchGND{i} = PortPosition_Branch{i}(5).Position;
+            Position_BranchGND{i} = Position_BranchGND{i} + Shift_BranchGND;
+            set_param(FullName_BranchGND{i},'position',[Position_BranchGND{i},Position_BranchGND{i}+Size_BranchGND]);
+           	add_line(Name_Model,[Name_Branch{i} '/RConn2'],[Name_BranchGND{i} '/LConn1'], ...
+                'autorouting','smart');
+        end
+        
+     	% Connect the floating terminals of self-branch to Y configuration
+        add_line(Name_Model,...
+            {[Name_Branch{i} '/Rconn2'],[Name_Branch{i} '/Rconn2']},...
+            {[Name_Branch{i} '/Rconn1'],[Name_Branch{i} '/Rconn3']});  
+
+        if (LoadCombinationFlag == 1) && (~isinf(XL(i)))
+         	if (Gbr(i)==0) && (Bbr(i)==0)
+                set_param(FullName_Branch{i},'BranchType','L');
+            elseif Gbr(i)==0
+                set_param(FullName_Branch{i},'BranchType','LC');
+            elseif Bbr(i)==0
+                set_param(FullName_Branch{i},'BranchType','RL');
+            else
+                set_param(FullName_Branch{i},'BranchType','RLC');
+            end
+            set_param(FullName_Branch{i},'Inductance',num2str(XL(i)/W0));
+        else
+            % Assume the self-branch is pure RC
+           	if ~((Rbr(i)==0) && (Xbr(i)==0))
+                error(['Error: the self branch contains L or R']);
+            end
+            if (Gbr(i)==0) && (Bbr(i)==0)
+                error(['Error: open circuit']);
+            elseif Gbr(i)==0        % Pure capacitance
+                set_param(FullName_Branch{i},'BranchType','C');
+            elseif Bbr(i)==0        % Pure resistance
+                set_param(FullName_Branch{i},'BranchType','R');
+            else                    % RC branch
+                set_param(FullName_Branch{i},'BranchType','RC');
+            end
+        end
+        
+    	% Set customer data
+      	set_param(FullName_Branch{i},'Capacitance',num2str(Bbr(i)/W0));
+      	set_param(FullName_Branch{i},'Resistance',num2str(1/Gbr(i)));
+
+        
+    % ### Add mutual branch
+    else
+        % Add block
+        add_block(['powerlib/Elements/Three-Phase Series RLC Branch'],FullName_Branch{i});
+        Counter_ToBus(tb(i)) = Counter_ToBus(tb(i)) + 1;
+        Position_Branch{i} = Position_Branch{i} + [Shift_MutualBranch(1)*Counter_ToBus(tb(i)),Shift_MutualBranch(2)];
+        set_param(FullName_Branch{i},'position',[Position_Branch{i},Position_Branch{i}+Size_MutualBranch]);
+        set_param(FullName_Branch{i},'Orientation','down');
+        set_param(FullName_Branch{i},'Measurements','None');
+        
+        % Assume the mutual-branch is pure RL
+        if ~(isinf(Gbr(i)) || isinf(Bbr(i)))
+            error('Error: the mutual branch contains B or G');      
+        end
+        if (Rbr(i)==0) && (Xbr(i)==0)
+            error('Error: short circuit')
+        elseif Rbr(i)==0      % Pure inductance
+            set_param(FullName_Branch{i},'BranchType','L');
+        elseif Xbr(i)==0      % Pure resistance
+            set_param(FullName_Branch{i},'BranchType','R');
+        else                % RL branch
+            set_param(FullName_Branch{i},'BranchType','RL');    
+        end
+        
+        % Set customer data
+        set_param(FullName_Branch{i},'Resistance',num2str(Rbr(i)));
+     	set_param(FullName_Branch{i},'Inductance',num2str(Xbr(i)/W0))
+    end
+    
+end
+
+%% Connect branch to bus
+% Connect mutual-branch to the output port of bus
+for i = 1:N_Branch
+    if fb(i) ~= tb(i)
+        
+        From = fb(i);
+        To = tb(i);
+        
+        % Connect branch and "from bus"
+        add_line(Name_Model,...
+            {[Name_Bus{From} '/Rconn1'],[Name_Bus{From} '/Rconn2'],[Name_Bus{From} '/Rconn3']},...
+            {[Name_Branch{i} '/Lconn1'],[Name_Branch{i} '/Lconn2'],[Name_Branch{i} '/Lconn3']},...
+            'autorouting','smart');
+        
+        % Connect branch and "to bus"
+     	add_line(Name_Model,...
+            {[Name_Bus{To} '/Rconn1'],[Name_Bus{To} '/Rconn2'],[Name_Bus{To} '/Rconn3']},...
+            {[Name_Branch{i} '/Rconn1'],[Name_Branch{i} '/Rconn2'],[Name_Branch{i} '/Rconn3']},...
+            'autorouting','smart');
+    end
+end
+
+% Connect self-branch to the output port of bus
+% Remarks: Doing this procedure seperately with the mutual-branch procedure
+% because this will lead to a better the autorouting quality of simulink.
+for i = 1:N_Branch
+  	if fb(i) == tb(i)
+        
+        From = fb(i);     % Index number of the bus
+        
+        % Connect self-branch to bus
+        add_line(Name_Model,...
+            {[Name_Bus{From} '/Rconn1'],[Name_Bus{From} '/Rconn2'],[Name_Bus{From} '/Rconn3']},...
+            {[Name_Branch{i} '/Lconn1'],[Name_Branch{i} '/Lconn2'],[Name_Branch{i} '/Lconn3']},...
+            'autorouting','smart');
+    end
+end
+
+%% 
+% =====================================================================
+% The following codes have been replaced by other functions and should not
+% be activated in normal operation cases.
+% =====================================================================
+
+%% Add device load into model
 Size_Load = [Size_Device(1),Size_Bus(2)];
 Shift_Load = Shift_Device;
 
@@ -232,7 +396,7 @@ for i = 1:N_Device
                 Q = PowerFlow{i}(2);
                 V = PowerFlow{i}(3);
                 if Para{i}.Connection == 1
-                    S = P + j*Q;
+                    S = P + 1i*Q;
                     I = conj(S/V);
                     Z = V/I;
                     R = real(Z);
@@ -305,142 +469,6 @@ for i = 1:N_Device
         add_line(Name_Model,...
             {[Name_Load{i} '/Lconn2'],[Name_Load{i} '/Lconn2']},...
             {[Name_Load{i} '/Lconn1'],[Name_Load{i} '/Lconn3']});
-    end
-end
-
-%% Add branches into simulink model
-% Parameter
-Size_MutualBranch = [Size_Bus(2),Size_Bus(2)];
-Size_SelfBranch   = Size_MutualBranch;
-Shift_SelfBranch  = [+100,+100];
-Shift_MutualBranch = [+100,+100];
-Counter_ToBus = zeros(max(tb),1);
-
-Size_BranchGND = Size_DeviceGND;
-Shift_BranchGND = [-Size_DeviceGND(1)/2,30];
-Counter_BranchGND = 0;
-
-% Add branch
-for i = 1:N_Branch
-    
-    % Initialize the postion of branch
-    Position_Branch{i} = [Position_Bus{tb(i)}(1),Position_Bus{fb(i)}(2)];
-    Name_Branch{i} = ['Branch' num2str(fb(i)) num2str(tb(i))];
-    FullName_Branch{i} = [Name_Model '/' Name_Branch{i}];
-    
-    % ### Add self branch
-    if fb(i) == tb(i)
-        % Add block
-        add_block(['powerlib/Elements/Three-Phase Parallel RLC Branch'],FullName_Branch{i});
-        Position_Branch{i} = Position_Branch{i} + Shift_SelfBranch;
-        set_param(FullName_Branch{i},'position',[Position_Branch{i},Position_Branch{i}+Size_SelfBranch]);
-        set_param(FullName_Branch{i},'Orientation','down');
-        set_param(FullName_Branch{i},'Measurements','None');
-        
-     	% Add self-branch ground
-        Counter_BranchGND = Counter_BranchGND + 1;
-        % if Counter_BranchGND == 1
-        if 1
-            Name_BranchGND{i} = ['B-GND' num2str(i)];
-            FullName_BranchGND{i} = [Name_Model '/' Name_BranchGND{i}];
-            add_block('powerlib/Elements/Ground',FullName_BranchGND{i});
-            PortPosition_Branch{i} = get_param(FullName_Branch{i},'PortConnectivity');
-            Position_BranchGND{i} = PortPosition_Branch{i}(5).Position;
-            Position_BranchGND{i} = Position_BranchGND{i} + Shift_BranchGND;
-            set_param(FullName_BranchGND{i},'position',[Position_BranchGND{i},Position_BranchGND{i}+Size_BranchGND]);
-           	add_line(Name_Model,[Name_Branch{i} '/RConn2'],[Name_BranchGND{i} '/LConn1'], ...
-                'autorouting','smart');
-        end
-        
-     	% Connect the floating terminals of self-branch to Y configuration
-        add_line(Name_Model,...
-            {[Name_Branch{i} '/Rconn2'],[Name_Branch{i} '/Rconn2']},...
-            {[Name_Branch{i} '/Rconn1'],[Name_Branch{i} '/Rconn3']});
-        
-        % Assume the self-branch is pure RC
-        if ~((Rbr(i)==0) && (Xbr(i)==0))
-            error(['Error: the self branch contains L or R']);
-        end
-        if (Gbr(i)==0) && (Bbr(i)==0)
-            error(['Error: open circuit']);
-        elseif Gbr(i)==0      % Pure capacitance
-            set_param(FullName_Branch{i},'BranchType','C');
-        elseif Bbr(i)==0      % Pure resistance
-            set_param(FullName_Branch{i},'BranchType','R');
-        else                % RC branch
-            set_param(FullName_Branch{i},'BranchType','RC');
-        end
-        
-        % Set customer data
-    	set_param(FullName_Branch{i},'Capacitance',num2str(Bbr(i)/W0));
-     	set_param(FullName_Branch{i},'Resistance',num2str(1/Gbr(i)));
-        
-    % ### Add mutual branch
-    else
-        % Add block
-        add_block(['powerlib/Elements/Three-Phase Series RLC Branch'],FullName_Branch{i});
-        Counter_ToBus(tb(i)) = Counter_ToBus(tb(i)) + 1;
-        Position_Branch{i} = Position_Branch{i} + [Shift_MutualBranch(1)*Counter_ToBus(tb(i)),Shift_MutualBranch(2)];
-        set_param(FullName_Branch{i},'position',[Position_Branch{i},Position_Branch{i}+Size_MutualBranch]);
-        set_param(FullName_Branch{i},'Orientation','down');
-        set_param(FullName_Branch{i},'Measurements','None');
-        
-        % Assume the mutual-branch is pure RL
-        if ~(isinf(Gbr(i)) || isinf(Bbr(i)))
-            error('Error: the mutual branch contains B or G');      
-        end
-        if (Rbr(i)==0) && (Xbr(i)==0)
-            error('Error: short circuit')
-        elseif Rbr(i)==0      % Pure inductance
-            set_param(FullName_Branch{i},'BranchType','L');
-        elseif Xbr(i)==0      % Pure resistance
-            set_param(FullName_Branch{i},'BranchType','R');
-        else                % RL branch
-            set_param(FullName_Branch{i},'BranchType','RL');    
-        end
-        
-        % Set customer data
-        set_param(FullName_Branch{i},'Resistance',num2str(Rbr(i)));
-     	set_param(FullName_Branch{i},'Inductance',num2str(Xbr(i)/W0))
-    end
-    
-end
-
-%% Connect branch to bus
-% Connect mutual-branch to the output port of bus
-for i = 1:N_Branch
-    if fb(i) ~= tb(i)
-        
-        From = fb(i);
-        To = tb(i);
-        
-        % Connect branch and "from bus"
-        add_line(Name_Model,...
-            {[Name_Bus{From} '/Rconn1'],[Name_Bus{From} '/Rconn2'],[Name_Bus{From} '/Rconn3']},...
-            {[Name_Branch{i} '/Lconn1'],[Name_Branch{i} '/Lconn2'],[Name_Branch{i} '/Lconn3']},...
-            'autorouting','smart');
-        
-        % Connect branch and "to bus"
-     	add_line(Name_Model,...
-            {[Name_Bus{To} '/Rconn1'],[Name_Bus{To} '/Rconn2'],[Name_Bus{To} '/Rconn3']},...
-            {[Name_Branch{i} '/Rconn1'],[Name_Branch{i} '/Rconn2'],[Name_Branch{i} '/Rconn3']},...
-            'autorouting','smart');
-    end
-end
-
-% Connect self-branch to the output port of bus
-% Remarks: Doing this procedure seperately with the mutual-branch procedure
-% because this will lead to a better the autorouting quality of simulink.
-for i = 1:N_Branch
-  	if fb(i) == tb(i)
-        
-        From = fb(i);     % Index number of the bus
-        
-        % Connect self-branch to bus
-        add_line(Name_Model,...
-            {[Name_Bus{From} '/Rconn1'],[Name_Bus{From} '/Rconn2'],[Name_Bus{From} '/Rconn3']},...
-            {[Name_Branch{i} '/Lconn1'],[Name_Branch{i} '/Lconn2'],[Name_Branch{i} '/Lconn3']},...
-            'autorouting','smart');
     end
 end
 

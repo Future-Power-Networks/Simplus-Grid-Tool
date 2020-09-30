@@ -1,6 +1,7 @@
-S = 2+j;
-V = 1;
-I = conj(S/V);
-Z = V/I;
-R = real(Z)
-L = imag(Z)
+
+a1 = [inf,0;
+     0, inf];
+ a2 = [0,0;
+      0,0];
+ b1 = inv(a1)
+ b2 = inv(a2)

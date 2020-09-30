@@ -70,7 +70,14 @@ fprintf('Do the power flow analysis.\n')
 
 % ### Get the model of lines
 fprintf('Get the descriptor-state-space model of network lines.\n')
-[YbusObj,~,~] = YbusCalcDSS(ListLine,W0);
+if 1
+    % Move load flow to bus admittance matrix
+    [ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow,2);
+    [YbusObj,~,~] = YbusCalcDSS_RX(ListLine,W0);        % This function considers the load in Ybus
+else
+    % Do not move load flow to bus admittance matrix
+    [YbusObj,~,~] = YbusCalcDSS(ListLine,W0);
+end
 [~,YbusDSS] = YbusObj.ReadDSS(YbusObj);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = obj_SwitchInOut(YbusObj,lsw);
@@ -116,7 +123,7 @@ fprintf('### Output the system\n')
 fprintf('System object name: GsysObj\n')
 fprintf('System name: GsysDSS')
 fprintf('Minimum realization system name: GminSS\n')
-[StateString,InputStr,OutputStr] = GsysObj.ReadString(GsysObj)
+[StateString,InputString,OutputString] = GsysObj.ReadString(GsysObj)
 
 %%
 % ==================================================

@@ -1,6 +1,6 @@
 % Program for Gauss - Seidel Power Flow Analysis
 
-function [PowerFlow,V,I,Ang0,P,Q,Vm]=PowerFlow_GS(busdata,linedata,w0)
+function [PowerFlow,V,I,Ang0,P,Q,Vm]=PowerFlow_GS(busdata,linedata,w0,EnableLoadPower)
 
 Ybus = YbusCalc(linedata);      % Get nodal admittance matrix 
 list_number = busdata(:,1);     % Bus number
@@ -91,6 +91,7 @@ P = real(S);    % Final Active Power, Generator Convention.
 Q = imag(S);    % Final Reactive Power, Generator Convention.
 
 for i = 1:n_bus
+    % The negative signs make P and Q in load convention
     PowerFlow{i} = [-P(i) -Q(i) Vm(i) Ang0(i) w0];
 end
 
