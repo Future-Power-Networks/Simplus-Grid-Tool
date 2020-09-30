@@ -107,6 +107,11 @@ Para90.Connection = 2;
 Para90.R = 2;
 Para90.L = 0.02;
 
+% ======================================
+% Floating bus
+% ======================================
+Para100 = [];
+
 %% Re-arrange device data
 % Get the size of netlist
 [N_Device,ColumnMax_Device] = size(NetlistDevice);
@@ -130,6 +135,8 @@ for i = 1:N_Device
             CellPara{i} = Para20;
         case 9
             CellPara{i} = Para90;
+        case 10
+            CellPara{i} = Para100;
         otherwise
             error(['Error: device type, bus ' num2str(bus) ' type ' num2str(type) '.']);
     end

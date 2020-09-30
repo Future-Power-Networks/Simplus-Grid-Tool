@@ -78,7 +78,7 @@ Shift_Device = [-150,0];
 
 % Add active device
 for i = 1:N_Device
-    if floor(DeviceType{i}/10) ~= 9
+    if floor(DeviceType{i}/10) < 9
         
         switch DeviceType{i}
             case 0
@@ -144,7 +144,7 @@ end
 
 %% Connect active device to bus
 for i = 1:N_Device
-    if floor(DeviceType{i}/10) ~= 9
+    if floor(DeviceType{i}/10) < 9
         add_line(Name_Model,...
             {[Name_Device{i} '/Lconn1'],[Name_Device{i} '/Lconn2'],[Name_Device{i} '/Lconn3']},...
             {[Name_Bus{i} '/Lconn1'],[Name_Bus{i} '/Lconn2'],[Name_Bus{i} '/Lconn3']},...
@@ -165,7 +165,7 @@ Shift_DeviceScopeBus = [-30,0];
 
 % Add block
 for i = 1:N_Device
-    if floor(DeviceType{i}/10) ~= 9
+    if floor(DeviceType{i}/10) < 9
         
         % Add device ground
         Name_DeviceGND{i} = ['D-GND' num2str(i)];

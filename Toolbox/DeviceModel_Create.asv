@@ -157,18 +157,14 @@ DevicePara = Device.Para;
 DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if floor(Type/10) < 9
-    Ak = ModelSS.A;
-    Ck = ModelSS.C;
-    Bk = ModelSS.B;
-    Wk = inv(eye(length(Ak)) - Ts/2*Ak);
-    MatrixY = Ts/2*Ck*Wk*Bk;
-    MatrixY = MatrixY(1:2,1:2);
-    MatrixR = inv(MatrixY);
-    DeviceDiscreDamping = MatrixR(1,1);
-else
-    DeviceDiscreDamping = -1;
-end
+Ak = ModelSS.A;
+Ck = ModelSS.C;
+Bk = ModelSS.B;
+Wk = inv(eye(length(Ak)) - Ts/2*Ak);
+MatrixY = Ts/2*Ck*Wk*Bk;
+MatrixY = MatrixY(1:2,1:2);
+MatrixR = inv(MatrixY);
+DeviceDiscreDamping = MatrixR(1,1);
 
 %% Impedance transformation: local swing frame dq -> local steady frame d'q'
 if floor(Type/10) >= 9
