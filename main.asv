@@ -133,8 +133,7 @@ close_system(Name_Model,0);
 
 % Create the simulink model
 main_simulink(Name_Model,...
-              ListBus,ListLine,DeviceType,Para,PowerFlow,...
-              ListSimulation);
+              ListBus,ListLine,ListDeviceListLine,N_Bus,N_Branch,N_Device,DeviceType,ListSimulation);
 fprintf('Get the simulink model successfully.\n')
 fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
 

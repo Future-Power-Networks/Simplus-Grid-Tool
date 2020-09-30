@@ -162,7 +162,7 @@ MatrixR = inv(MatrixY);
 DeviceDiscreDamping = MatrixR(1,1);
 
 %% Impedance transformation: local swing frame dq -> local steady frame d'q'
-if (Type >= 90) && (Type <= 99)
+if floor(Type/10) == 9
     % Device is a passive load
     Se = Gm;
 else
@@ -218,7 +218,7 @@ Se = series(Se,Sff);                        % i' = i + I0 * w/s
 end
 
 %% Impedance transformation: local steady frame d'q' -> global steady frame D'Q'
-if (Type >= 90) && (Type <= 99)
+if floor(Type/10) == 9
     % Device is a passive load
     Se = Gm;
 else

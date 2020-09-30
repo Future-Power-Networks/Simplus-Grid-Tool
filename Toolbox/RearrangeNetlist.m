@@ -82,4 +82,7 @@ NetlistDevice = sortrows(NetlistDevice,1);
 % Output
 UpdateDevice = NetlistDevice;
 
+%% Move the load device to self branch
+
+
 end

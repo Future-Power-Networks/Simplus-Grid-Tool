@@ -10,8 +10,8 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function main_simulink(Name_Model,ListLine,...
-                       N_Bus,N_Branch,N_Device,DeviceType,...
+function main_simulink(Name_Model,...
+                       ListBus,ListLine,DeviceType,Para,PowerFlow,...
                        ListSimulation)
 
 %% Common variables
@@ -23,10 +23,14 @@ Name_LibFile = 'Simplex_PowerSystems';
 %% Organize data
 fb = ListLine(:,1); % From bus
 tb = ListLine(:,2); % To bus
-R  = ListLine(:,3);
-X  = ListLine(:,4);
-B  = ListLine(:,5);
-G  = ListLine(:,6);
+Rbr  = ListLine(:,3);
+Xbr  = ListLine(:,4);
+Bbr  = ListLine(:,5);
+Gbr  = ListLine(:,6);
+
+N_Bus = max(max(fb),max(tb));
+N_Branch = length(fb);
+N_Device = length(DeviceType);
 
 Fs = ListSimulation(1);
 Ts = 1/Fs;
@@ -72,77 +76,83 @@ end
 Size_Device = [50,90];
 Shift_Device = [-150,0];
 
-% Add device
+% Add active device
 for i = 1:N_Device
-    switch DeviceType{i}
-        case 0
-            Name_Device{i} = ['SM' num2str(i)];
-            FullName_Device{i} = [Name_Model '/' Name_Device{i}];
-            add_block([Name_LibFile '/Synchronous Machine (dq-Frame System Object)'],FullName_Device{i});
-        case 10
-            Name_Device{i} = ['VSI-PLL' num2str(i)];
-            FullName_Device{i} = [Name_Model '/' Name_Device{i}];
-            add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
-        case 20
-            Name_Device{i} = ['VSI-Droop' num2str(i)];
-            FullName_Device{i} = [Name_Model '/' Name_Device{i}];
-            add_block([Name_LibFile '/Grid-Forming Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
-        otherwise
+    if floor(DeviceType{i}/10) ~= 9
+        
+        switch DeviceType{i}
+            case 0
+                Name_Device{i} = ['SM' num2str(i)];
+                FullName_Device{i} = [Name_Model '/' Name_Device{i}];
+                add_block([Name_LibFile '/Synchronous Machine (dq-Frame System Object)'],FullName_Device{i});
+            case 10
+                Name_Device{i} = ['VSI-PLL' num2str(i)];
+                FullName_Device{i} = [Name_Model '/' Name_Device{i}];
+                add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
+            case 20
+                Name_Device{i} = ['VSI-Droop' num2str(i)];
+                FullName_Device{i} = [Name_Model '/' Name_Device{i}];
+                add_block([Name_LibFile '/Grid-Forming Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
+            otherwise
+                error(['Error']);
+        end
+
+        % Set parameters
+        set_param(gcb,'Sbase','Sbase');
+        set_param(gcb,'Vbase','Vbase');
+        set_param(gcb,'Wbase','Wbase');
+        set_param(gcb,'Ts','Ts');
+        set_param(gcb,'DeviceType',['DeviceType{' num2str(i) '}']);
+        set_param(gcb,'DevicePara',['DevicePara{' num2str(i) '}']);
+        set_param(gcb,'PowerFlow',['PowerFlow{' num2str(i) '}']);
+        set_param(gcb,'x0',['x_e{' num2str(i) '}']);
+        set_param(gcb,'OtherInputs',['OtherInputs{' num2str(i) '}']);
+        switch DiscreMethod
+            case 1
+                DeviceDiscreMethod = 'Forward Euler';
+            case 2
+                DeviceDiscreMethod = 'Hybrid Trapezoidal';
+            case 3
+                DeviceDiscreMethod = 'Virtual Damping';
+            otherwise
+                error(['Error: Wrong discretization method.'])
+        end
+        set_param(gcb,'DiscreMethod',DeviceDiscreMethod);
+        set_param(gcb,'LinearizationTimes',num2str(LinearizationTimes));
+        if DirectFeedthrough == 1
+            set_param(gcb,'DirectFeedthrough','on');
+        else
+            set_param(gcb,'DirectFeedthrough','off');
+        end
+
+        set_param(gcb,'EnableInsideModification','on');
+        if DiscreDampingFlag == 1
+            set_param(gcb,'DiscreDampingFlag','on');
+            set_param(gcb,'DiscreDampingValue',['DeviceDiscreDamping{' num2str(i) '}']);
+        else
+            set_param(gcb,'DiscreDampingFlag','off');
+        end
+        set_param(gcb,'EnableInsideModification','off');
+
+        % The position of device is set by referring to the position of correpsonding bus
+        Position_Device{i} = Position_Bus{i} + Shift_Device;
+        set_param(FullName_Device{i},'position',[Position_Device{i},Position_Device{i}+Size_Device]);
+        set_param(FullName_Device{i},'Orientation','left');
+        
     end
-    
-    % Set parameters
-    set_param(gcb,'Sbase','Sbase');
-    set_param(gcb,'Vbase','Vbase');
-    set_param(gcb,'Wbase','Wbase');
-    set_param(gcb,'Ts','Ts');
-    set_param(gcb,'DeviceType',['DeviceType{' num2str(i) '}']);
-    set_param(gcb,'DevicePara',['DevicePara{' num2str(i) '}']);
-    set_param(gcb,'PowerFlow',['PowerFlow{' num2str(i) '}']);
-    set_param(gcb,'x0',['x_e{' num2str(i) '}']);
-    set_param(gcb,'OtherInputs',['OtherInputs{' num2str(i) '}']);
-    switch DiscreMethod
-        case 1
-            DeviceDiscreMethod = 'Forward Euler';
-        case 2
-            DeviceDiscreMethod = 'Hybrid Trapezoidal';
-        case 3
-            DeviceDiscreMethod = 'Virtual Damping';
-        otherwise
-            error(['Error: Wrong discretization method.'])
-    end
-    set_param(gcb,'DiscreMethod',DeviceDiscreMethod);
-    set_param(gcb,'LinearizationTimes',num2str(LinearizationTimes));
-    if DirectFeedthrough == 1
-        set_param(gcb,'DirectFeedthrough','on');
-    else
-        set_param(gcb,'DirectFeedthrough','off');
-    end
-    
-    set_param(gcb,'EnableInsideModification','on');
-  	if DiscreDampingFlag == 1
-        set_param(gcb,'DiscreDampingFlag','on');
-        set_param(gcb,'DiscreDampingValue',['DeviceDiscreDamping{' num2str(i) '}']);
-    else
-        set_param(gcb,'DiscreDampingFlag','off');
-    end
-    set_param(gcb,'EnableInsideModification','off');
-    
-    % The position of device is set by referring to the position of correpsonding bus
-    Position_Device{i} = Position_Bus{i} + Shift_Device;
-    set_param(FullName_Device{i},'position',[Position_Device{i},Position_Device{i}+Size_Device]);
-    set_param(FullName_Device{i},'Orientation','left');
-         
 end
 
-%% Connect device to bus
+%% Connect active device to bus
 for i = 1:N_Device
-	add_line(Name_Model,...
-        {[Name_Device{i} '/Lconn1'],[Name_Device{i} '/Lconn2'],[Name_Device{i} '/Lconn3']},...
-        {[Name_Bus{i} '/Lconn1'],[Name_Bus{i} '/Lconn2'],[Name_Bus{i} '/Lconn3']},...
-        'autorouting','smart');
+    if floor(DeviceType{i}/10) ~= 9
+        add_line(Name_Model,...
+            {[Name_Device{i} '/Lconn1'],[Name_Device{i} '/Lconn2'],[Name_Device{i} '/Lconn3']},...
+            {[Name_Bus{i} '/Lconn1'],[Name_Bus{i} '/Lconn2'],[Name_Bus{i} '/Lconn3']},...
+            'autorouting','smart');
+    end
 end
 
-%% Add device's scope, ground, etc
+%% Add active device's scope, ground, etc
 % Paramter
 Size_DeviceGND = [20,20];
 Shift_DeviceGND = [20,20];
@@ -155,50 +165,147 @@ Shift_DeviceScopeBus = [-30,0];
 
 % Add block
 for i = 1:N_Device
-  	% Add device ground
-    Name_DeviceGND{i} = ['D-GND' num2str(i)];
-    FullName_DeviceGND{i} = [Name_Model '/' Name_DeviceGND{i}];
-    add_block('powerlib/Elements/Ground',FullName_DeviceGND{i});
-    PortPosition_Device{i} = get_param(FullName_Device{i},'PortConnectivity');
-    % Position of device ground is set by referring to the position of
-    % corresponding device
-    Position_DeviceGND{i} = PortPosition_Device{i}(5).Position;
-    Position_DeviceGND{i} = Position_DeviceGND{i} + Shift_DeviceGND;
-    set_param(FullName_DeviceGND{i},'position',[Position_DeviceGND{i},Position_DeviceGND{i}+Size_DeviceGND]);
-    % Connect device to device ground
-    add_line(Name_Model,[Name_Device{i} '/LConn4'],[Name_DeviceGND{i} '/LConn1'],...
+    if floor(DeviceType{i}/10) ~= 9
+        
+        % Add device ground
+        Name_DeviceGND{i} = ['D-GND' num2str(i)];
+        FullName_DeviceGND{i} = [Name_Model '/' Name_DeviceGND{i}];
+        add_block('powerlib/Elements/Ground',FullName_DeviceGND{i});
+        PortPosition_Device{i} = get_param(FullName_Device{i},'PortConnectivity');
+        % Position of device ground is set by referring to the position of
+        % corresponding device
+        Position_DeviceGND{i} = PortPosition_Device{i}(5).Position;
+        Position_DeviceGND{i} = Position_DeviceGND{i} + Shift_DeviceGND;
+        set_param(FullName_DeviceGND{i},'position',[Position_DeviceGND{i},Position_DeviceGND{i}+Size_DeviceGND]);
+        % Connect device to device ground
+        add_line(Name_Model,[Name_Device{i} '/LConn4'],[Name_DeviceGND{i} '/LConn1'],...
+                'autorouting','smart');
+
+        % Add device scope bus
+        Name_DeviceScopeBus{i} = ['DS-Bus' num2str(i)];
+        FullName_DeviceScopeBus{i} = [Name_Model '/' Name_DeviceScopeBus{i}];
+        add_block('simulink/Signal Routing/Bus Selector',FullName_DeviceScopeBus{i});
+        set_param(gcb,'Orientation','left');
+        Position_DeviceScopeBus{i} = Position_Device{i} + Shift_DeviceScopeBus;
+        set_param(gcb,'position',[Position_DeviceScopeBus{i},Position_DeviceScopeBus{i}+Size_DeviceScopeBus]);
+        Output_DeviceScopeBus = ['v_dq,i_dq,v_abc,i_abc,w,theta'];
+        Length_DeviceMeasurement = 6;
+        set_param(gcb,'OutputSignals',Output_DeviceScopeBus);
+        PortHandles_DeviceScopeBus{i} = get_param(gcb,'PortHandles');
+
+        % Conect scope bus to device
+        add_line(Name_Model, {[Name_Device{i} '/1']}, {[Name_DeviceScopeBus{i} '/1']});
+
+        % Add device scope
+        Name_DeviceScope{i} = ['D-Scope' num2str(i)];
+        FullName_DeviceScope{i} = [Name_Model '/' Name_DeviceScope{i}];
+        add_block('simulink/Sinks/Scope',FullName_DeviceScope{i});
+        set_param(gcb,'NumInputPorts',num2str(Length_DeviceMeasurement));
+        set_param(gcb,'LayoutDimensionsString',['[' num2str(Length_DeviceMeasurement) ' 1]']);
+        PortHandles_DeviceScope{i} = get_param(gcb,'PortHandles');
+        set_param(gcb,'Orientation','left');
+        Position_DeviceScope{i} = Position_Device{i} + Shift_DeviceScope;
+        set_param(gcb,'position',[Position_DeviceScope{i},Position_DeviceScope{i}+Size_DeviceScope]);
+
+        % Connect scope to scope bus
+        for k = 1:Length_DeviceMeasurement
+            add_line(Name_Model,{PortHandles_DeviceScopeBus{i}.Outport(k)},{PortHandles_DeviceScope{i}.Inport(k)});
+        end
+        
+    end
+end
+
+%% Add load into model
+Size_Load = [Size_Device(1),Size_Bus(2)];
+Shift_Load = Shift_Device;
+
+Size_LoadGND = Size_DeviceGND;
+Shift_LoadGND = [-50,20];
+
+% Add load device
+for i = 1:N_Device
+    if floor(DeviceType{i}/10) == 9
+        % Calculate R and L
+        switch DeviceType{i}
+            case 90
+                P = PowerFlow{i}(1);
+                Q = PowerFlow{i}(2);
+                V = PowerFlow{i}(3);
+                if Para{i}.Connection == 1
+                    S = P + j*Q;
+                    I = conj(S/V);
+                    Z = V/I;
+                    R = real(Z);
+                    L = imag(Z)/W0;
+                elseif Para{i}.Connection == 2
+                    R = V^2/P;
+                    L = V^2/Q/W0;
+                else
+                    error(['Error']);
+                end
+            case 91
+                R = Para{i}.R;
+                L = Para{i}.L;
+            otherwise
+                error(['Error']);
+        end
+        
+        % Add block
+        switch Para{i}.Connection
+            case 1
+                Name_Load{i} = ['Series-Load' num2str(i)];
+                FullName_Load{i} = [Name_Model '/' Name_Load{i}];
+                add_block(['powerlib/Elements/Three-Phase Series RLC Branch'],FullName_Load{i});
+            case 2
+                Name_Load{i} = ['Parallel-Load' num2str(i)];
+                FullName_Load{i} = [Name_Model '/' Name_Load{i}];
+                add_block(['powerlib/Elements/Three-Phase Parallel RLC Branch'],FullName_Load{i});
+            otherwise
+                error(['Error']);
+                
+        end
+        
+        % Set detailed load type
+        if R == 0 
+            set_param(gcb,'BranchType','L');
+        elseif L == 0
+            set_param(gcb,'BranchType','R');
+        else
+            set_param(gcb,'BranchType','RL');
+        end
+        
+        % Set customer data
+        set_param(gcb,'Resistance',num2str(R));
+        set_param(gcb,'Inductance',num2str(L));
+        
+      	% The position of device is set by referring to the position of correpsonding bus
+        Position_Load{i} = Position_Bus{i} + Shift_Load;
+        set_param(gcb,'position',[Position_Load{i},Position_Load{i}+Size_Load]);
+        
+      	% Connect load to bus
+     	add_line(Name_Model,...
+            {[Name_Load{i} '/Rconn1'],[Name_Load{i} '/Rconn2'],[Name_Load{i} '/Rconn3']},...
+            {[Name_Bus{i} '/Lconn1'],[Name_Bus{i} '/Lconn2'],[Name_Bus{i} '/Lconn3']},...
             'autorouting','smart');
         
-  	% Add device scope bus
-    Name_DeviceScopeBus{i} = ['DS-Bus' num2str(i)];
-    FullName_DeviceScopeBus{i} = [Name_Model '/' Name_DeviceScopeBus{i}];
-    add_block('simulink/Signal Routing/Bus Selector',FullName_DeviceScopeBus{i});
-    set_param(gcb,'Orientation','left');
-    Position_DeviceScopeBus{i} = Position_Device{i} + Shift_DeviceScopeBus;
-    set_param(gcb,'position',[Position_DeviceScopeBus{i},Position_DeviceScopeBus{i}+Size_DeviceScopeBus]);
-    Output_DeviceScopeBus = ['v_dq,i_dq,v_abc,i_abc,w,theta'];
-    Length_DeviceMeasurement = 6;
-    set_param(gcb,'OutputSignals',Output_DeviceScopeBus);
-    PortHandles_DeviceScopeBus{i} = get_param(gcb,'PortHandles');
+        % Connect the floating side of load to ground
+     	Name_LoadGND{i} = ['L-GND' num2str(i)];
+        FullName_LoadGND{i} = [Name_Model '/' Name_LoadGND{i}];
+        add_block('powerlib/Elements/Ground',FullName_LoadGND{i});
+        PortPosition_Load{i} = get_param(FullName_Load{i},'PortConnectivity');
+        Position_LoadGND{i} = PortPosition_Load{i}(2).Position;
+        Position_LoadGND{i} = Position_LoadGND{i} + Shift_LoadGND;
+        set_param(FullName_LoadGND{i},'position',[Position_LoadGND{i},Position_LoadGND{i}+Size_LoadGND]);
         
- 	% Conect scope bus to device
-    add_line(Name_Model, {[Name_Device{i} '/1']}, {[Name_DeviceScopeBus{i} '/1']});
-    
-    % Add device scope
-    Name_DeviceScope{i} = ['D-Scope' num2str(i)];
-    FullName_DeviceScope{i} = [Name_Model '/' Name_DeviceScope{i}];
-    add_block('simulink/Sinks/Scope',FullName_DeviceScope{i});
-    set_param(gcb,'NumInputPorts',num2str(Length_DeviceMeasurement));
-    set_param(gcb,'LayoutDimensionsString',['[' num2str(Length_DeviceMeasurement) ' 1]']);
-    PortHandles_DeviceScope{i} = get_param(gcb,'PortHandles');
-    set_param(gcb,'Orientation','left');
-    Position_DeviceScope{i} = Position_Device{i} + Shift_DeviceScope;
-    set_param(gcb,'position',[Position_DeviceScope{i},Position_DeviceScope{i}+Size_DeviceScope]);
-
-    % Connect scope to scope bus
-    for k = 1:Length_DeviceMeasurement
-        add_line(Name_Model,{PortHandles_DeviceScopeBus{i}.Outport(k)},{PortHandles_DeviceScope{i}.Inport(k)});
-    end 
+        % Connect load to ground
+        add_line(Name_Model,[Name_Load{i} '/LConn2'],[Name_LoadGND{i} '/LConn1'],...
+                'autorouting','smart');
+        
+        % Form the Y confiration of the floating terminal
+        add_line(Name_Model,...
+            {[Name_Load{i} '/Lconn2'],[Name_Load{i} '/Lconn2']},...
+            {[Name_Load{i} '/Lconn1'],[Name_Load{i} '/Lconn3']});
+    end
 end
 
 %% Add branches into simulink model
@@ -251,22 +358,22 @@ for i = 1:N_Branch
             {[Name_Branch{i} '/Rconn1'],[Name_Branch{i} '/Rconn3']});
         
         % Assume the self-branch is pure RC
-        if ~((R(i)==0) && (X(i)==0))
+        if ~((Rbr(i)==0) && (Xbr(i)==0))
             error(['Error: the self branch contains L or R']);
         end
-        if (G(i)==0) && (B(i)==0)
+        if (Gbr(i)==0) && (Bbr(i)==0)
             error(['Error: open circuit']);
-        elseif G(i)==0      % Pure capacitance
+        elseif Gbr(i)==0      % Pure capacitance
             set_param(FullName_Branch{i},'BranchType','C');
-        elseif B(i)==0      % Pure resistance
+        elseif Bbr(i)==0      % Pure resistance
             set_param(FullName_Branch{i},'BranchType','R');
         else                % RC branch
             set_param(FullName_Branch{i},'BranchType','RC');
         end
         
         % Set customer data
-    	set_param(FullName_Branch{i},'Capacitance',num2str(B(i)/W0));
-     	set_param(FullName_Branch{i},'Resistance',num2str(1/G(i)));
+    	set_param(FullName_Branch{i},'Capacitance',num2str(Bbr(i)/W0));
+     	set_param(FullName_Branch{i},'Resistance',num2str(1/Gbr(i)));
         
     % ### Add mutual branch
     else
@@ -279,22 +386,22 @@ for i = 1:N_Branch
         set_param(FullName_Branch{i},'Measurements','None');
         
         % Assume the mutual-branch is pure RL
-        if ~(isinf(G(i)) || isinf(B(i)))
+        if ~(isinf(Gbr(i)) || isinf(Bbr(i)))
             error('Error: the mutual branch contains B or G');      
         end
-        if (R(i)==0) && (X(i)==0)
+        if (Rbr(i)==0) && (Xbr(i)==0)
             error('Error: short circuit')
-        elseif R(i)==0      % Pure inductance
+        elseif Rbr(i)==0      % Pure inductance
             set_param(FullName_Branch{i},'BranchType','L');
-        elseif X(i)==0      % Pure resistance
+        elseif Xbr(i)==0      % Pure resistance
             set_param(FullName_Branch{i},'BranchType','R');
         else                % RL branch
             set_param(FullName_Branch{i},'BranchType','RL');    
         end
         
         % Set customer data
-        set_param(FullName_Branch{i},'Resistance',num2str(R(i)));
-     	set_param(FullName_Branch{i},'Inductance',num2str(X(i)/W0))
+        set_param(FullName_Branch{i},'Resistance',num2str(Rbr(i)));
+     	set_param(FullName_Branch{i},'Inductance',num2str(Xbr(i)/W0))
     end
     
 end

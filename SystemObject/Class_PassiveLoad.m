@@ -25,7 +25,7 @@ classdef Class_PassiveLoad < Class_Model_Advance
                 Q	= obj.PowerFlow(2);
                 V	= obj.PowerFlow(3);
                 xi	= obj.PowerFlow(4);
-                w = obj.PowerFlow(5);
+                w   = obj.PowerFlow(5);
                 
                 % Error check
                 if P < 0
@@ -37,11 +37,11 @@ classdef Class_PassiveLoad < Class_Model_Advance
                 % Calculate the equivalent passive RL load
                 % Series RL connection
                 if obj.Connection == 1
-                    S = -(P+j*Q);
+                    S = P+j*Q;
                     I = conj(S/V);
-                    Z = V/I
+                    Z = V/I;
                     obj.R = real(Z);
-                    obj.L = imag(Z);
+                    obj.L = imag(Z)/w;
                 % Parallel RL connection
                 elseif obj.Connection == 2
                     obj.R = V^2/P;
