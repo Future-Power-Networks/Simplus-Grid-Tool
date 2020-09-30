@@ -43,6 +43,22 @@ properties
     PowerFlow = [];     % Power flow parameters
     Ts = [];            % Sampling period (s)
     x0 = [];            % Initial state
+    
+  	% Discretization methods
+    % 1-Forward Euler, 2-Trapezoidal, 3-Virtual Damping
+    DiscreMethod = [];
+    
+  	% Damping flag
+    % 0-no damping resistor,1-with damping resistor
+    DiscreDampingFlag = [];
+    
+    % Linearization times
+    % 1-Initial step, 2-Every step
+    LinearizationTimes = [];
+end
+
+properties(Nontunable)
+    DirectFeedthrough;
 end
 
 % ### Discrete state
@@ -73,17 +89,7 @@ properties(Access = protected)
 end
 
 properties(GetAccess = protected, Constant)
-	% Discretization methods: 
-    % 1-Forward Euler, 2-Trapezoidal, 3-Virtual Damping
-    DiscretizationMethod = 2;
-    
-    % Linearization times:
-    % 1-Initial step, 2-Every step
-    LinearizationTimes = 1;
-    
-    % Damping outside:
-    % 0-no damping resistor,1-with damping resistor
-    DampingResistor = 1;
+
 end
 
 %%
@@ -131,7 +137,7 @@ methods(Access = protected)
     % Update discreate states
     function updateImpl(obj, u)
         
-        switch obj.DiscretizationMethod
+        switch obj.DiscreMethod
             
             % ### Forward Euler 
             % s -> Ts/(z-1)
@@ -228,14 +234,14 @@ methods(Access = protected)
 	function y = outputImpl(obj,u)
      	y_Euler = obj.StateSpaceEqu(obj,obj.x,u,2);
     	ly = length(y_Euler);
-        switch obj.DiscretizationMethod
+        switch obj.DiscreMethod
             % ### Forward Euler
           	case 1
                 y = y_Euler;
                 
             % ### Hybrid Trapezoidal
             case 2
-                if obj.DampingResistor == 0
+                if obj.DiscreDampingFlag == 0
                 	y_Trapez = y_Euler ...
                         + obj.Ts/2*obj.C*obj.Wk*obj.B*(u - obj.uk) ...
                         + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.xk,obj.uk,1);
@@ -257,7 +263,7 @@ methods(Access = protected)
                 
             % ### Virtual damping
             case 3
-                if obj.DampingResistor == 0
+                if obj.DiscreDampingFlag == 0
                     % No linearization of g(x,u)
                     % xold_VD = obj.x + obj.Ts/2*obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1); 
                     % xold_VD = obj.x + obj.Ts/2*(obj.x - obj.xk);                          
@@ -289,7 +295,11 @@ methods(Access = protected)
     
   	% Set direct or nondirect feedthrough status of input
     function flag = isInputDirectFeedthroughImpl(obj)
-       flag = ~(obj.DampingResistor);
+        if obj.DirectFeedthrough
+            flag = true;
+        else
+            flag = false;
+        end
     end
     
     % Initialize / reset discrete-state properties

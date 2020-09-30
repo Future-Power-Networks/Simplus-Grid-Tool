@@ -10,7 +10,9 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function main_simulink(Name_Model,W0,ListLine,N_Bus,N_Branch,N_Device,DeviceType,DeviceDiscreDamping)
+function main_simulink(Name_Model,W0,ListLine,...
+                       N_Bus,N_Branch,N_Device,DeviceType,...
+                       DiscreMethod,DiscreDampingFlag,LinearizationTimes,DirectFeedthrough)
 
 %% Common variables
 NewSimulinkModel('ModelName',Name_Model);
@@ -79,7 +81,7 @@ for i = 1:N_Device
         otherwise
     end
     
-    % Set parameter
+    % Set parameters
     set_param(gcb,'Sbase','Sbase');
     set_param(gcb,'Vbase','Vbase');
     set_param(gcb,'Wbase','Wbase');
@@ -89,7 +91,32 @@ for i = 1:N_Device
     set_param(gcb,'PowerFlow',['PowerFlow{' num2str(i) '}']);
     set_param(gcb,'x0',['x_e{' num2str(i) '}']);
     set_param(gcb,'OtherInputs',['OtherInputs{' num2str(i) '}']);
-    set_param(gcb,'DiscreDamping',['DeviceDiscreDamping{' num2str(i) '}']);
+    switch DiscreMethod
+        case 1
+            DeviceDiscreMethod = 'Forward Euler';
+        case 2
+            DeviceDiscreMethod = 'Hybrid Trapezoidal';
+        case 3
+            DeviceDiscreMethod = 'Virtual Damping';
+        otherwise
+            error(['Error: Wrong discretization method.'])
+    end
+    set_param(gcb,'DiscreMethod',DeviceDiscreMethod);
+    set_param(gcb,'LinearizationTimes',num2str(LinearizationTimes));
+    if DirectFeedthrough == 1
+        set_param(gcb,'DirectFeedthrough','on');
+    else
+        set_param(gcb,'DirectFeedthrough','off');
+    end
+    
+    set_param(gcb,'EnableInsideModification','on');
+  	if DiscreDampingFlag == 1
+        set_param(gcb,'DiscreDampingFlag','on');
+        set_param(gcb,'DiscreDampingValue',['DeviceDiscreDamping{' num2str(i) '}']);
+    else
+        set_param(gcb,'DiscreDampingFlag','off');
+    end
+    set_param(gcb,'EnableInsideModification','off');
     
     % The position of device is set by referring to the position of correpsonding bus
     Position_Device{i} = Position_Bus{i} + Shift_Device;

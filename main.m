@@ -38,9 +38,10 @@ ListSimulation = xlsread('netlist.xlsx',4);
 
 % ### Re-arrange the simulation data
 Fs = ListSimulation(1);
-DisMethod = ListSimulation(2);
-LinearTimes = ListSimulation(3);
-DampingResistor = ListSimulation(4);
+DiscreMethod = ListSimulation(2);
+LinearizationTimes = ListSimulation(3);
+DiscreDampingFlag = ListSimulation(4);
+DirectFeedthrough = ListSimulation(5);
 FundamentalFreq = ListSimulation(length(ListSimulation));
 W0 = FundamentalFreq*2*pi;
 
@@ -137,7 +138,9 @@ Name_Model = 'mymodel_v1';
 close_system(Name_Model,0);
 
 % Create the simulink model
-main_simulink(Name_Model,W0,ListLine,N_Bus,N_Branch,N_Device,DeviceType,DeviceDiscreDamping);
+main_simulink(Name_Model,W0,...
+              ListLine,N_Bus,N_Branch,N_Device,DeviceType,...
+              DiscreMethod,DiscreDampingFlag,LinearizationTimes,DirectFeedthrough);
 fprintf('Get the simulink model successfully.\n')
 fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
 
