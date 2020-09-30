@@ -114,10 +114,15 @@ switch floor(Type/10)
                        Para.Rov;
                        Para.Xov];       % (23)
                    
-    % ### Load
+    % ### Passive load
     case 9 % Type 90-99
-        Device = Class_Load;
-        Device.Para = [];
+        Device = Class_PassiveLoad;
+        Device.Para = [Para.W0;
+                       Para.Connection;
+                       Para.R;
+                       Para.L];
+
+    % ### Otherwise
     otherwise
         error(['Error: device type']);
 end
@@ -130,7 +135,6 @@ Device.Equilibrium(Device);             % Calculate the equilibrium
 [x_e,u_e,y_e,xi] = Device.ReadEquilibrium(Device);
 Device.Linearization(Device,x_e,u_e); 	% Linearize the model
 Device.ConstructSS(Device);             % Construct the state space model
-
 
 [~,ModelSS] = Device.ReadSS(Device);
 [StateString,InputString,OutputString] = Device.ReadString(Device);
@@ -158,6 +162,11 @@ MatrixR = inv(MatrixY);
 DeviceDiscreDamping = MatrixR(1,1);
 
 %% Impedance transformation: local swing frame dq -> local steady frame d'q'
+if (Type >= 90) && (Type <= 99)
+    % Device is a passive load
+    Se = Gm;
+else
+    
 % Effect of the frame perturbation on arbitrary signal udq:
 % Complex vector dq frame:
 % [ud'q'+] = [exp(j*epsilon), 0              ] * [udq+]
@@ -206,7 +215,14 @@ Se = feedback(Se,Sfb,[1,2],[1]);            % v = v' - V0 * w/s
 Sff = ss([],[],[],[[I0;zeros((ly2_w-3),1)],eye(ly2_w-1)]);
 Se = series(Se,Sff);                        % i' = i + I0 * w/s
 
+end
+
 %% Impedance transformation: local steady frame d'q' -> global steady frame D'Q'
+if (Type >= 90) && (Type <= 99)
+    % Device is a passive load
+    Se = Gm;
+else
+    
 % Effect of frame alignment on arbitrary signal udq:
 % Complex vector dq frame:
 % [uD'Q'+] = [exp(j*xi), 0         ] * [ud'q'+]
@@ -243,6 +259,8 @@ Se = series(Se,Sxi_left);
 Txi_right = blkdiag(inv(Txi),eye(lu_xi-2));
 Sxi_right= ss([],[],[],Txi_right);
 Se = series(Sxi_right,Se);
+
+end
 
 %% Get the descritpor state space model
 % Set the SS system back

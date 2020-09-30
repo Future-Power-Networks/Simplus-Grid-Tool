@@ -102,10 +102,10 @@ Para20.Xov = 0;
 % ======================================
 % Load
 % ======================================
-Para90.R = 1/0.8;
-Para90.L = 1/0.2;
-Para90.P = 0.8;
-Para90.Q = 0.2;
+Para90.W0 = W0;
+Para90.Connection = 2;
+Para90.R = 2;
+Para90.L = 0.02;
 
 %% Re-arrange device data
 % Get the size of netlist
@@ -128,6 +128,8 @@ for i = 1:N_Device
             CellPara{i} = Para10;
         case 2
             CellPara{i} = Para20;
+        case 9
+            CellPara{i} = Para90;
         otherwise
             error(['Error: device type, bus ' num2str(bus) ' type ' num2str(type) '.']);
     end
@@ -136,20 +138,21 @@ end
 % Replace the default data by customized data
 % Notes: This method can reduce the calculation time of "for" loop
 for i = 1:length(row)
-  	bus      = NetlistDevice(row(i),1);
-	type     = NetlistDevice(row(i),2);
- 	cus_value 	= NetlistDevice(row(i),column(i));    % Customized value
+  	bus         = NetlistDevice(row(i),1);
+	type        = NetlistDevice(row(i),2);
+ 	cus_value 	= NetlistDevice(row(i),column(i));      % Customized value
+    switch_flag = column(i)-2;                         	% Find the updated parameter
   	if floor(type/10) == 0
-        switch column(i)-2         % Find the updated parameter
+        switch switch_flag 
          	case 1; CellPara{row(i)}.J = cus_value*2/W0^2;
             case 2; CellPara{row(i)}.D = cus_value/W0^2;
             case 3; CellPara{row(i)}.L = cus_value/W0;
             case 4; CellPara{row(i)}.R = cus_value; 
             otherwise
-                error(['Error: device data overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
+                error(['Error: paramter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
         end
     elseif floor(type/10) == 1
-        switch column(i)-2
+        switch switch_flag
             case 1; CellPara{row(i)}.V_dc     = cus_value;
             case 2; CellPara{row(i)}.C_dc     = cus_value*0.1*CellPara{row(i)}.V_dc^2;
             case 3; CellPara{row(i)}.L        = cus_value/(W0);
@@ -164,7 +167,15 @@ for i = 1:length(row)
                 error(['Error: parameter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
         end
     elseif floor(type/10) == 2
-        switch column(i)-2
+        switch switch_flag
+        end
+    elseif floor(type/10) == 9
+        switch switch_flag
+            case 1; CellPara{row(i)}.Connection = cus_value;
+            case 2; CellPara{row(i)}.R = cus_value;
+            case 3; CellPara{row(i)}.L = cus_value;
+     	otherwise
+          	error(['Error: paramter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
         end
     end
 end
