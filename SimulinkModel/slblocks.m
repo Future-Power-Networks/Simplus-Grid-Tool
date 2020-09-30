@@ -5,9 +5,9 @@
 
 function blkStruct = slblocks
 
-Browser.Library = 'simplex_lib';
+Browser.Library = 'Simplex_PowerSystems';
 
-Browser.Name = 'Simplex';
+Browser.Name = 'Simplex Power Systems';
 
 blkStruct.Browser = Browser;
 
