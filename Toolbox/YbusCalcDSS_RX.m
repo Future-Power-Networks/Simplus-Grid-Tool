@@ -97,6 +97,8 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
         if FB(n) == TB(n)
             if isinf(XL(n))
                 Ybranch{n} = Ybranch{n};
+            elseif (XL(n))==0
+                error(['Error: A inductive load is short-circuit. Please check QLi settings.']);
             else
                 % KVL equation for XL
                 % [vd] = {[sL -wL]}*[id]

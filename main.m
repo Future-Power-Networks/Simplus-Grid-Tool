@@ -72,7 +72,7 @@ fprintf('Do the power flow analysis.\n')
 fprintf('Get the descriptor-state-space model of network lines.\n')
 if 1
     % Move load flow to bus admittance matrix
-    [ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow,2);
+    [ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
     [YbusObj,~,~] = YbusCalcDSS_RX(ListLine,W0);        % This function considers the load in Ybus
 else
     % Do not move load flow to bus admittance matrix

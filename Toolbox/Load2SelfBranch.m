@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-function [UpdateListBus,UpdateListLine,UpdatePowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow,LoadConnection)
+function [UpdateListBus,UpdateListLine,UpdatePowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow)
 
 %% Initialize Output
 UpdateListBus = ListBus;
@@ -42,47 +42,41 @@ end
 
 %% Error check
 for i = 1:N_Bus
-    if PG(i)==0 && QG(i)==0
-        if DeviceType{i} ~= 100
-            error(['Error: a floating bus is required according to the power flow analysis.']);
-        end
-    elseif PL(i) < 0
-        error(['Error: passive load should not generate active power.']);
-    elseif QL(i) < 0
-        error(['Error: passive load should not generate reactive power.']);
+    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100)
+        error(['Error: Bus ' num2str(i) ' should be a floating bus because PGi=0 and QGi=0.']);
+    end
+    if PL(i) < 0
+        error(['Error: Passive load at bus ' num2str(i) ' can not generate active power.']);
     end
 end
 
 %% Calculate the load value
 for i = 1:N_Bus
-    
-    % Series RL connection
-    if LoadConnection == 1
-        SL = PL(i)+j*QL(i);
-        I = conj(SL/V(i));
-        Z = V(i)/I;
-        RL(i) = real(Z);
-        XL(i) = imag(Z);
-    % Parallel RL connection: This one is used
-    elseif LoadConnection == 2
-        RL(i) = V(i)^2/PL(i);
+    % Assume the load is parallel RL or RC
+    RL(i) = V(i)^2/PL(i);
+    if QL(i) > 0
+        % RL load
         XL(i) = V(i)^2/QL(i);
-    else
-        error(['Error']);
+        BL(i) = 0;
+    elseif QL(i) <= 0
+        % RC load
+        XL(i) = inf;
+        BL(i) = -QL(i)/V(i)^2;
     end
     
     % Error check
-    if (RL(i) == 0) || (XL(i) == 0)
-        error(['Error']);
+    if (RL(i) == 0) || (XL(i) == 0) || isinf(BL(i))
+        error(['Error: The passive load at bus ' num2str(i) 'is short-circuit.']);
     end
 end
 
 % Update "ListLine"
-UpdateListLine = [ListLine,zeros(N_Branch,1)];
+UpdateListLine = [ListLine,inf([N_Branch,1],'double')]; % Set XL to inf defaultly
 for i = 1:N_Branch
     if FB(i) == TB(i)
-        UpdateListLine(i,6) = UpdateListLine(i,6)+1/RL(FB(i));
-        UpdateListLine(i,7) = XL(FB(i));
+        UpdateListLine(i,5) = UpdateListLine(i,5)+BL(FB(i));    % Combine capacitive part to self branch
+        UpdateListLine(i,6) = UpdateListLine(i,6)+1/RL(FB(i));  % Combine resistive part to self branch
+        UpdateListLine(i,7) = XL(FB(i));                        % Update the inductive part
     end
 end
 
