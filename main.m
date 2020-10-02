@@ -121,7 +121,7 @@ end
 % ### Output the System
 fprintf('### Output the system\n')
 fprintf('System object name: GsysObj\n')
-fprintf('System name: GsysDSS')
+fprintf('System name: GsysDSS\n')
 fprintf('Minimum realization system name: GminSS\n')
 [StateString,InputString,OutputString] = GsysObj.ReadString(GsysObj)
 

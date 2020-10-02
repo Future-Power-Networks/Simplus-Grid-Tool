@@ -16,7 +16,7 @@
 
 %%
 % Example 1:
-% Original system
+% Original system:
 % State equation
 % E*dx/dt = A*x + [B1 B2]*[u1]
 %                         [u2]
@@ -24,7 +24,8 @@
 % [y1] = [C1]*x + [D11 D12]*[u1]
 % [y2]   [C2]     [D21 D22] [u2]
 %
-% -> switch u1 and y1
+% => switch u1 and y1 =>
+% New system:
 % State equation
 % [E 0]*[dx ]/dt = [A   B1  ]*[x ] + [0 B2  ]*[y1]
 % [0 0] [dxi]      [-C1 -D11] [xi]   [I -D12] [u2]
@@ -34,11 +35,16 @@
 
 % Example 2:
 % If system is static, i.e., A, E, B, C are empty matrices
-% Original system
+% Original system:
+% State equation
+% [] = []*[] + []*[u1]
+%                 [u2]
+% Output equation
 % [y1] = [D11 D12]*[u1]
 % [y2]   [D21 D22] [u2]
 %
-% -> switch u1 and y1
+% => switch u1 and y1 =>
+% New system:
 % State equation
 % [0]*[dxi]/dt = [-D11]*[xi] + [I -D12]*[y1]
 %                                       [u2]
