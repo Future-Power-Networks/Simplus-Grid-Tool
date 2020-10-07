@@ -100,17 +100,31 @@ Para20.Rov = 0;
 Para20.Xov = 0;
 
 % ======================================
-% Load
+% Infinite bus (short-circuit in small-signal)
+% ======================================
+Para90 = Para00;       % We use a large inertia synchronous machine to simulate infinite bus
+Para90.J = Para90.J*(1e3);
+Para90.R = 0;
+Para90.L = Para90.L/(1e3);
+Para90.D = 0;
+
+% ======================================
+% Floating bus (open-circuit)
+% ======================================
+Para100 = [];
+
+% ======================================
+% The following types are currently discarded and should not be used
+% ======================================
+if 0
+% ======================================
+% Passive Load
 % ======================================
 Para90.W0 = W0;
 Para90.Connection = 2;
 Para90.R = 2;
 Para90.L = 0.02;
-
-% ======================================
-% Floating bus
-% ======================================
-Para100 = [];
+end
 
 %% Re-arrange device data
 % Get the size of netlist
@@ -131,10 +145,10 @@ for i = 1:N_Device
             CellPara{i} = Para00;
         case 1
             CellPara{i} = Para10;
-        case 2
-            CellPara{i} = Para20;
-        case 9
-            CellPara{i} = Para90;
+%         case 2
+%             CellPara{i} = Para20;
+%         case 9
+%             CellPara{i} = Para90;
         case 10
             CellPara{i} = Para100;
         otherwise

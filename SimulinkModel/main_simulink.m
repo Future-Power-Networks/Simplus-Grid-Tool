@@ -374,10 +374,10 @@ for i = 1:N_Branch
 end
 
 %% 
-% =====================================================================
-% The following codes have been replaced by other functions and should not
-% be activated in normal operation cases.
-% =====================================================================
+% =======================================================================
+% Following codes are discarded currently, and should not be activated.
+% =======================================================================
+if 0
 
 %% Add device load into model
 Size_Load = [Size_Device(1),Size_Bus(2)];
@@ -388,7 +388,7 @@ Shift_LoadGND = [-50,20];
 
 % Add load device
 for i = 1:N_Device
-    if floor(DeviceType{i}/10) == 9
+    if floor(DeviceType{i}/10) == 9 % This might be changed in the future
         % Calculate R and L
         switch DeviceType{i}
             case 90
@@ -470,6 +470,8 @@ for i = 1:N_Device
             {[Name_Load{i} '/Lconn2'],[Name_Load{i} '/Lconn2']},...
             {[Name_Load{i} '/Lconn1'],[Name_Load{i} '/Lconn3']});
     end
+end
+
 end
 
 end

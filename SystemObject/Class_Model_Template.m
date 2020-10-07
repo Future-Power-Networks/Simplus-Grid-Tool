@@ -14,7 +14,7 @@
 classdef Class_Model_Template < Class_Model_Advance
     methods(Static)
         
-        % Set the strings of input, output, state
+        % Set the strings of state, input, output
         function SetString(obj)
         	obj.StateString  = {};        % x
             obj.InputString  = {};        % u

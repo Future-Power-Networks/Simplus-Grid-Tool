@@ -114,19 +114,27 @@ switch floor(Type/10)
                        Para.Rov;
                        Para.Xov];       % (23)
                    
-    % ### Passive load
+% 	% ### Passive load
+%     case 9 % Type 90-99
+%         Device = Class_PassiveLoad;
+%         Device.Para = [Para.W0;
+%                        Para.Connection;
+%                        Para.R;
+%                        Para.L];
+    % ### Infinite Bus
     case 9 % Type 90-99
-        Device = Class_PassiveLoad;
-        Device.Para = [Para.W0;
-                       Para.Connection;
-                       Para.R;
-                       Para.L];
+    Device = Class_SynchronousMachine;
+    Device.Para  = [Para.J;
+                    Para.D;
+                    Para.L;
+                    Para.R;
+                    Para.w0];       % (5)
                    
     % ### Floating Bus
     case 10
         Device = Class_FloatingBus;
         Device.Para = [];
-
+       
     % ### Otherwise
     otherwise
         error(['Error: device type']);
