@@ -165,7 +165,7 @@ DevicePara = Device.Para;
 DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if floor(Type/10) < 9
+if floor(Type/10) <= 9
     Ak = ModelSS.A;
     Ck = ModelSS.C;
     Bk = ModelSS.B;
@@ -179,8 +179,7 @@ else
 end
 
 %% Impedance transformation: local swing frame dq -> local steady frame d'q'
-if floor(Type/10) >= 9
-    % Device is a passive load
+if floor(Type/10) > 9
     Se = Gm;
 else
     
@@ -235,7 +234,7 @@ Se = series(Se,Sff);                        % i' = i + I0 * w/s
 end
 
 %% Impedance transformation: local steady frame d'q' -> global steady frame D'Q'
-if floor(Type/10) >= 9
+if floor(Type/10) > 9
     % Device is a passive load
     Se = Gm;
 else

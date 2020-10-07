@@ -46,7 +46,7 @@ for i = 1:N_Bus
         error(['Error: Bus ' num2str(i) ' should be a floating bus because PGi=0 and QGi=0.']);
     end
     if PL(i) < 0
-        error(['Error: Passive load at bus ' num2str(i) ' can not generate active power.']);
+        error(['Error: Passive load at bus ' num2str(i) ' can not generate active power, i.e., PLi can not be less than 0.']);
     end
 end
 

@@ -102,10 +102,12 @@ Para20.Xov = 0;
 % ======================================
 % Infinite bus (short-circuit in small-signal)
 % ======================================
-Para90 = Para00;       % We use a large inertia synchronous machine to simulate infinite bus
-Para90.J = Para90.J*(1e3);
+% A large inertia synchronous machine is used to simulate infinite bus for
+% theoretical analysis
+Para90 = Para00;
+Para90.J = Para90.J*(1e4);
 Para90.R = 0;
-Para90.L = Para90.L/(1e3);
+Para90.L = Para90.L/(1e4);
 Para90.D = 0;
 
 % ======================================
@@ -147,8 +149,8 @@ for i = 1:N_Device
             CellPara{i} = Para10;
 %         case 2
 %             CellPara{i} = Para20;
-%         case 9
-%             CellPara{i} = Para90;
+        case 9
+            CellPara{i} = Para90;
         case 10
             CellPara{i} = Para100;
         otherwise
