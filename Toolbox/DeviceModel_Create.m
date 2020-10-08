@@ -14,7 +14,6 @@
 % systems as diagonolization of harmonic transfer function." IEEE
 % Transctions on Circuit and Systems.
 
-
 %% function
 function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDamping] ...
         = DeviceModel_Create(varargin) 
@@ -58,6 +57,7 @@ catch
 end
 
 %% Create an object
+Flag_SwitchInOut = 0;   % Default: do not need to switch input and output
 switch floor(Type/10)
     
     % ### Synchronous generator
@@ -114,27 +114,19 @@ switch floor(Type/10)
                        Para.Rov;
                        Para.Xov];       % (23)
                    
-% 	% ### Passive load
-%     case 9 % Type 90-99
-%         Device = Class_PassiveLoad;
-%         Device.Para = [Para.W0;
-%                        Para.Connection;
-%                        Para.R;
-%                        Para.L];
     % ### Infinite Bus
     case 9 % Type 90-99
-    Device = Class_SynchronousMachine;
-    Device.Para  = [Para.J;
-                    Para.D;
-                    Para.L;
-                    Para.R;
-                    Para.w0];       % (5)
-                   
+        Device = Class_InfiniteBus;
+        Device.Para  = [];
+        % Because the infinite bus is defined with "i" input and "v" output,
+        % they need to be switched finally.
+        Flag_SwitchInOut = 1;   
+   
     % ### Floating Bus
     case 10
         Device = Class_FloatingBus;
         Device.Para = [];
-       
+        
     % ### Otherwise
     otherwise
         error(['Error: device type']);
@@ -152,11 +144,6 @@ Device.ConstructSS(Device);             % Construct the state space model
 [~,ModelSS] = Device.ReadSS(Device);
 [StateString,InputString,OutputString] = Device.ReadString(Device);
 
-v_d = u_e(1);
-v_q = u_e(2);
-i_d = y_e(1);
-i_q = y_e(2);
-
 % Get the swing frame system model
 Gm = ModelSS;   
 
@@ -165,7 +152,7 @@ DevicePara = Device.Para;
 DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if floor(Type/10) <= 9
+if floor(Type/10) <= 5
     Ak = ModelSS.A;
     Ck = ModelSS.C;
     Bk = ModelSS.B;
@@ -178,11 +165,12 @@ else
     DeviceDiscreDamping = -1;
 end
 
-%% Impedance transformation: local swing frame dq -> local steady frame d'q'
-if floor(Type/10) > 9
-    Se = Gm;
-else
+%% Check if need to adjust frame
+if floor(Type/10) >= 9
     
+else    
+    
+%% Impedance transformation: local swing frame dq -> local steady frame d'q'
 % Effect of the frame perturbation on arbitrary signal udq:
 % Complex vector dq frame:
 % [ud'q'+] = [exp(j*epsilon), 0              ] * [udq+]
@@ -201,6 +189,11 @@ else
 % [uq']   [uq]   [ ud0]
 
 % Get the steady-state operating points
+v_d = u_e(1);
+v_q = u_e(2);
+i_d = y_e(1);
+i_q = y_e(2);
+
 V0 = [-v_q ; v_d];
 I0 = [-i_q ; i_d];
 
@@ -231,14 +224,7 @@ Se = feedback(Se,Sfb,[1,2],[1]);            % v = v' - V0 * w/s
 Sff = ss([],[],[],[[I0;zeros((ly2_w-3),1)],eye(ly2_w-1)]);
 Se = series(Se,Sff);                        % i' = i + I0 * w/s
 
-end
-
 %% Impedance transformation: local steady frame d'q' -> global steady frame D'Q'
-if floor(Type/10) > 9
-    % Device is a passive load
-    Se = Gm;
-else
-    
 % Effect of frame alignment on arbitrary signal udq:
 % Complex vector dq frame:
 % [uD'Q'+] = [exp(j*xi), 0         ] * [ud'q'+]
@@ -276,12 +262,12 @@ Txi_right = blkdiag(inv(Txi),eye(lu_xi-2));
 Sxi_right= ss([],[],[],Txi_right);
 Se = series(Sxi_right,Se);
 
-end
-
-%% Get the descritpor state space model
 % Set the SS system back
 Gm = Se;
 
+end
+
+%% Get the descritpor state space model
 % Change SS system to DSS system
 An = Gm.A; Bn = Gm.B; Cn = Gm.C; Dn = Gm.D; 
 En = eye(size(An));
@@ -297,6 +283,10 @@ GmObj.LoadModel(GmObj,GmDSS);
 % Get the strings
 GmObj.WriteString(GmObj,StateString,InputString,OutputString);
 
+% Switch input and output for required device
+if Flag_SwitchInOut == 1
+    GmObj = obj_SwitchInOut(GmObj,2);
+end
 % Check dimension mismatch
 obj_CheckDim(GmObj);
 

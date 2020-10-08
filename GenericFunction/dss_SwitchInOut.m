@@ -5,6 +5,7 @@
 
 %%
 % Notes:
+%
 % The key of this function is adding a new state xi, and letting the
 % switched input u = xi.
 %
@@ -13,6 +14,9 @@
 %
 % The dimenstion of the switches input and output should be same. The heads
 % of input and output are switched.
+%
+% This functon can deal with the appearance of not only the derivative but
+% also the infinite gain.
 
 %%
 % Example 1:

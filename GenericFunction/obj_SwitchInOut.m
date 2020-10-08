@@ -29,6 +29,10 @@ for i = 1:length_sw
     % Add xi_i into state string vector, which is caused by calling
     % "dss_SwitchInOut"
     StateStr_new = [StateStr_new,strcat('xi_',num2str(i))];
+    
+    % Switch the corresponding input and output string
+    InputStr_new{i} = OutputStr{i};
+    OutputStr_new{i} = InputStr{i};
 end
 obj_new.WriteString(obj_new,StateStr_new,InputStr_new,OutputStr_new);
 

@@ -11,9 +11,9 @@ classdef Class_InfiniteBus < Class_Model_Advance
         
         % Set the strings of state, input, output
         function SetString(obj)
-            obj.StateString  = {'theta'};           	% x
+            obj.StateString  = {};           	% x
          	obj.InputString  = {'i_d','i_q'};           % u
-        	obj.OutputString = {'v_d','v_q','w','theta'};  	% y
+        	obj.OutputString = {'v_d','v_q','w'};  	% y
         end
         
         % Calculate the equilibrium
@@ -40,12 +40,12 @@ classdef Class_InfiniteBus < Class_Model_Advance
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)     
             w	= obj.PowerFlow(5);
             if CallFlag == 1
-                dtheta = w;
-              	f_xu = [dtheta];
+              	f_xu = [];
                 Output = f_xu;
             elseif CallFlag == 2
                 % Output equations: y = g(x,u)
-                v_d = 0;
+                V	= obj.PowerFlow(3);
+                v_d = V;
                 v_q = 0;
                 g_xu = [v_d; v_q; w];
                 Output = g_xu;              

@@ -17,8 +17,6 @@ fprintf('### Start.\n')
 % - Put the base value into excel
 % - Maybe it is better to put default parameters into excel
 % - Deal with the transformer
-% - Bus, device date, should be re-arranged somewhere, so that they can be
-% in order
 
 % The device from matlab is also in current-source type or voltage-source
 % type.
