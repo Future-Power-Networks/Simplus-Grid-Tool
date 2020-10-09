@@ -6,4 +6,4 @@ Matlab Version: 2020b. To be continued.
 
 Copyright 2020, Simplex, Ltd.
 
-Notes: For using the toolbox, please run "MainCustormer"
+Notes: For using the toolbox, please run "Main_Custormer"

@@ -63,9 +63,9 @@ end
 
 %% Add device scope
 % Parameters
-Size_D_Scope = [30,Size_Device(2)];
+Size_D_Scope = [30,Size_Device(2)+10];
 Shift_D_Scope = [-100,0];
-Size_DS_Bus = [5,Size_Device(2)];
+Size_DS_Bus = [5,Size_Device(2)+10];
 Shift_DS_Bus = [-30,0];
 
 % Add device scope

@@ -20,8 +20,8 @@ for i = 1:N_Device
         set_param(gcb,'Orientation','left');
         Pos_DS_Bus{i} = Pos_Device{i} + Shift_DS_Bus;
         set_param(gcb,'position',[Pos_DS_Bus{i},Pos_DS_Bus{i}+Size_DS_Bus]);
-        Output_DS_Bus = ['v_dq,i_dq,v_abc,i_abc,w,theta'];
-        Length_D_Measurement = 6;
+        Output_DS_Bus = ['v_dq,i_dq,v_abc,i_abc,w,theta,pq'];
+        Length_D_Measurement = 7;
         set_param(gcb,'OutputSignals',Output_DS_Bus);
         Port_DSBus{i} = get_param(gcb,'PortHandles');
 
