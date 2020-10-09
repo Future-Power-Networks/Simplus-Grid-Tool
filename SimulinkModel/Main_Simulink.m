@@ -73,20 +73,26 @@ Sim_AddDeviceScope(Name_Model,Size_D_Scope,Shift_D_Scope,Size_DS_Bus,Shift_DS_Bu
 
 %% Add branches
 % Parameter
-Size_Branch = [Size_Bus(2),Size_Bus(2)];
+Size_Branch = [Size_Bus(2),Size_Bus(2)];    % Branch
 Shift_Branch  = [+100,+100];
-Count_ToBus = zeros(max(ListLine(:,2)),1);
-
-Size_B_GND = Size_D_GND;
+Size_Trans = Size_Branch;                   % Transformer
+Shift_Trans = Shift_Branch;
+Size_B_GND = Size_D_GND;                    % Ground
 Shift_B_GND = [-Size_D_GND(1)/2,30];
 
 % Add branch
-[FullName_Branch,Name_Branch] = ...
-    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine,ListSimulation,Count_ToBus);
+[FullName_Branch,Name_Branch,Shift_ToBus] = ...
+    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine,ListSimulation);
+
+% Add transformer
+[Name_Trans] = ...
+    Sim_AddTransformer(Name_Model,Size_Trans,Shift_Trans,Pos_Bus,ListLine,ListSimulation,Shift_ToBus);
+
+% Add branch ground
 Sim_AddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName_Branch,Name_Branch,ListLine);
 
 % Connect branch to bus
-Sim_ConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,ListLine);
+Sim_ConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
 
 end
 

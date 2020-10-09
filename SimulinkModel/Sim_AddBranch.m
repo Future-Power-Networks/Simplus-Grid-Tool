@@ -2,8 +2,8 @@
 
 % Author(s): Yitong Li
 
-function [FullName_Branch,Name_Branch] = ...
-    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine,ListSimulation,Count_ToBus)
+function [FullName_Branch,Name_Branch,Shift_ToBus] = ...
+    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine,ListSimulation)
 
 % Organize data
 fb = ListLine(:,1); % From bus
@@ -12,10 +12,13 @@ Rbr  = ListLine(:,3);
 Xbr  = ListLine(:,4);
 Bbr  = ListLine(:,5);
 Gbr  = ListLine(:,6);
+Tbr  = ListLine(:,7);
 N_Branch = length(fb);
 
 F0 = ListSimulation(length(ListSimulation));
 W0 = F0*2*pi;
+
+Count_ToBus = zeros(max(tb),1);
 
 % Check if load data is combined into "ListLine"
 [~,cmax_ListLine] = size(ListLine);
@@ -35,7 +38,7 @@ for i = 1:N_Branch
     Name_Branch{i} = ['Branch' num2str(fb(i)) num2str(tb(i))];
     FullName_Branch{i} = [Name_Model '/' Name_Branch{i}];
     
-    % ### Add self branch
+    % ### Add self branch and load
     if fb(i) == tb(i)
         % Add block
         add_block(['powerlib/Elements/Three-Phase Parallel RLC Branch'],FullName_Branch{i});
@@ -84,10 +87,18 @@ for i = 1:N_Branch
         
     % ### Add mutual branch
     else
-        % Add block
+        % Check if transformer is added
+        if Tbr(i)== 1
+            Count_Trans = 0;
+        else
+            Count_Trans = 1;
+        end
+        
+        % Add mutual branch
         add_block(['powerlib/Elements/Three-Phase Series RLC Branch'],FullName_Branch{i});
         Count_ToBus(tb(i)) = Count_ToBus(tb(i)) + 1;
-        Pos_Branch{i} = Pos_Branch{i} + [Shift_Branch(1)*Count_ToBus(tb(i)),Shift_Branch(2)];
+        Shift_ToBus{i} = Count_ToBus(tb(i));
+        Pos_Branch{i} = Pos_Branch{i} + [Shift_Branch(1)*Shift_ToBus{i},Shift_Branch(2)*(Count_Trans+1)];
         set_param(FullName_Branch{i},'position',[Pos_Branch{i},Pos_Branch{i}+Size_Branch]);
         set_param(FullName_Branch{i},'Orientation','down');
         set_param(FullName_Branch{i},'Measurements','None');

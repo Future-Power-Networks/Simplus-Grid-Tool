@@ -16,7 +16,7 @@ ListBus = sortrows(ListBus,1);
 UpdateBus = ListBus;
 
 % Error check
-if (ColumnMax_Bus>10); 
+if (ColumnMax_Bus>10)
     error(['Error: Bus data overflow.']) 
 end
 list_bus_type = ListBus(:,2);

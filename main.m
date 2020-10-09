@@ -12,14 +12,7 @@ fprintf('### Start.\n')
 % Remained questions:
 % - Speed up the power flow
 % - Advanced power flow, including droop bus, etc
-% - The connection of inductor and SG, or the port type of SG. A simple
-% method: provide two types of port: v -> i and i-> v
 % - Put the base value into excel
-% - Maybe it is better to put default parameters into excel
-% - Deal with the transformer
-
-% The device from matlab is also in current-source type or voltage-source
-% type.
 
 %%
 % ==================================================
@@ -33,9 +26,9 @@ Name_Netlist = 'netlist.xlsx';
 % Name_Netlist = 'netlist_TestToolbox.xlsx';
 % Name_Netlist = 'netlist_TestInfiniteBus.xlsx';
 ListBus = xlsread(Name_Netlist,1);     
-ListLine = xlsread(Name_Netlist,2);
-ListDevice = xlsread(Name_Netlist,3);
-ListSimulation = xlsread(Name_Netlist,4);
+ListDevice = xlsread(Name_Netlist,2);
+ListSimulation = xlsread(Name_Netlist,3);
+ListLine = xlsread(Name_Netlist,4);
 ListLineIEEE = xlsread(Name_Netlist,5);
 
 % ### Re-arrange the simulation data
