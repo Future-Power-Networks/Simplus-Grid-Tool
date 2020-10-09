@@ -34,11 +34,11 @@ if ListLineIEEE(1,1) == 1
     TB_s = FB_s;
     
     % Initialize R, X, B, G for self branch
-    Rbr_s = zeros(N_Branch_s,0);
+    Rbr_s = zeros(N_Branch_s,1);
     Xbr_s = Rbr_s;
     Bbr_s = Rbr_s;
     Gbr_s = Rbr_s;
-    Tbr_s = ones(N_Branch_s,0);
+    Tbr_s = ones(N_Branch_s,1);
     
     for i = 1:N_Branch_m
         Bbr_s(FB_m(i)) = Bbr_s(FB_m(i))+Bbr_pi(i);

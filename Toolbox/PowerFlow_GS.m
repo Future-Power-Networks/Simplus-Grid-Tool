@@ -1,11 +1,11 @@
 % Program for Gauss - Seidel Power Flow Analysis
 
-function [PowerFlow,V,I,Ang0,P,Q,Vm]=PowerFlow_GS(busdata,linedata,w0,EnableLoadPower)
+function [PowerFlow,V,I,Ang0,P,Q,Vm]=PowerFlow_GS(ListBus,ListLine,w0)
 
-Ybus = YbusCalc(linedata);      % Get nodal admittance matrix 
-list_number = busdata(:,1);     % Bus number
+Ybus = YbusCalc(ListLine);      % Get nodal admittance matrix 
+list_number = ListBus(:,1);     % Bus number
 n_bus = max(list_number);       % Total number of buses
-list_type = busdata(:,2);      	% Bus type: 1-Slack, 2-PV, 3-PQ
+list_type = ListBus(:,2);      	% Bus type: 1-Slack, 2-PV, 3-PQ
 
 index_slack = find(list_type == 1);      % Index of slack bus
 if (isempty(index_slack)); 
@@ -15,16 +15,16 @@ elseif (length(index_slack) > 1);
 end
 number_slack = list_number(index_slack);
 
-V0   = busdata(:,3);         % Initial bus voltages.
-th0  = busdata(:,4);         % Initial bus voltage angles.
+V0   = ListBus(:,3);         % Initial bus voltages.
+th0  = ListBus(:,4);         % Initial bus voltage angles.
 
-PGi = busdata(:,5);     % Active power injected into the buses, G-generation
-QGi = busdata(:,6);     % Reactive power injected into the buses, G-generation
-PLi = busdata(:,7);     % Active power drawn from the buses, L-load
-QLi = busdata(:,8);     % Reactive power drawn from the buses, L-load
+PGi = ListBus(:,5);     % Active power injected into the buses, G-generation
+QGi = ListBus(:,6);     % Reactive power injected into the buses, G-generation
+PLi = ListBus(:,7);     % Active power drawn from the buses, L-load
+QLi = ListBus(:,8);     % Reactive power drawn from the buses, L-load
 
-Qmin = busdata(:,9);        % Minimum Reactive Power Limit
-Qmax = busdata(:,10);       % Maximum Reactive Power Limit
+Qmin = ListBus(:,9);        % Minimum Reactive Power Limit
+Qmax = ListBus(:,10);       % Maximum Reactive Power Limit
 
 P = PGi - PLi;  	% Net actove power at buses.
 Q = QGi - QLi;      % Net reactive power at buses.

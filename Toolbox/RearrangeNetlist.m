@@ -41,7 +41,7 @@ Bbr   = ListLine(:,5);
 Gbr   = ListLine(:,6);
 
 % Check data overflow
-if (ColumnMax_Line>6)
+if (ColumnMax_Line>7)
     error(['Error: line data overflow.']); 
 end
 

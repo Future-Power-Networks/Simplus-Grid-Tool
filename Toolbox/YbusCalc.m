@@ -24,15 +24,17 @@
 % P. Kunder, "power system stability and control", 1994.
 
 %% 
-function Ybus = YbusCalc(linedata) 
+function Ybus = YbusCalc(ListLine) 
 
-fb = linedata(:,1);             % From bus number
-tb = linedata(:,2);             % To bus number
+fb = ListLine(:,1);             % From bus number
+tb = ListLine(:,2);             % To bus number
 
-r = linedata(:,3);              % Resistance,  R
-x = linedata(:,4);              % Inductance,  wL
-b = linedata(:,5);              % Capacitance, wC
-g = linedata(:,6);              % Conductance, G
+r = ListLine(:,3);              % Resistance,  R
+x = ListLine(:,4);              % Inductance,  wL
+b = ListLine(:,5);              % Capacitance, wC
+g = ListLine(:,6);              % Conductance, G
+
+a = ListLine(:,7);              % Turns ratio, a
 
 zs= r + 1j*x;                   
 yp= g + 1j*b;                   % g and b can be "inf" without causing problems

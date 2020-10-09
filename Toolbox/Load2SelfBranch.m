@@ -77,7 +77,7 @@ for i = 1:N_Branch
     if FB(i) == TB(i)
         UpdateListLine(i,5) = UpdateListLine(i,5)+BL(FB(i));    % Combine capacitive part to self branch
         UpdateListLine(i,6) = UpdateListLine(i,6)+1/RL(FB(i));  % Combine resistive part to self branch
-        UpdateListLine(i,7) = XL(FB(i));                        % Update the inductive part
+        UpdateListLine(i,8) = XL(FB(i));                        % Update the inductive part
     end
 end
 
