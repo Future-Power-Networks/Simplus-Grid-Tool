@@ -29,10 +29,13 @@ fprintf('Load customized data.\n')
 
 % ### Load the data
 % Other possible function: readmatrix, csvread ...
-ListBus = xlsread('netlist.xlsx',1);     
-ListLine = xlsread('netlist.xlsx',2);
-ListDevice = xlsread('netlist.xlsx',3);
-ListSimulation = xlsread('netlist.xlsx',4);
+Name_Netlist = 'netlist.xlsx';
+% Name_Netlist = 'netlist_TestToolbox.xlsx';
+ListBus = xlsread(Name_Netlist,1);     
+ListLine = xlsread(Name_Netlist,2);
+ListDevice = xlsread(Name_Netlist,3);
+ListSimulation = xlsread(Name_Netlist,4);
+ListLineIEEE = xlsread(Name_Netlist,5);
 
 % ### Re-arrange the simulation data
 Fs = ListSimulation(1);
@@ -41,6 +44,7 @@ FundamentalFreq = ListSimulation(length(ListSimulation));
 W0 = FundamentalFreq*2*pi;
 
 % ### Re-arrange the netlist and check error
+[ListLine] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE);
 [ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice);
 
 % ### Re-arrange the device data

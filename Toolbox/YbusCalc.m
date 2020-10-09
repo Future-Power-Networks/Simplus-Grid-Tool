@@ -5,10 +5,11 @@
 %% Notes:
 %
 % Format of branch:
-%             --CCC--
-% --RRR--LLL--       ----
-%             --GGG--
-%
+%             ---             ---C---
+% FromBus ---|a:1|---R---L---|       |--- ToBus
+%             ---             ---G---
+% where (a:1) is the turn ratio of transformer 
+
 % Format of input:
 % netlist:   |  From |  To   |   R   |  wL   |  wC   |   G   |
 %            |  Bus  |  Bus  |       |       |       |       |

@@ -25,7 +25,8 @@ function [CellDeviceType,CellPara] = RearrangeDeviceData(NetlistDevice,W0)
 % Synchronous generator
 % ======================================
 Para00.J  = 3.5*2/W0^2;
-Para00.D  = 1/W0^2;
+% Para00.D  = 1/W0^2;
+Para00.D  = 5/W0^2;
 Para00.L  = 0.03/W0;
 Para00.R  = 0.01;
 Para00.w0 = W0;
@@ -180,7 +181,7 @@ for i = 1:length(row)
     elseif floor(type/10) == 1
         switch switch_flag
             case 1; CellPara{row(i)}.V_dc     = cus_value;
-            case 2; CellPara{row(i)}.C_dc     = cus_value*0.1*CellPara{row(i)}.V_dc^2;
+            case 2; CellPara{row(i)}.C_dc     = cus_value;
             case 3; CellPara{row(i)}.L        = cus_value/(W0);
             case 4; CellPara{row(i)}.R        = cus_value;
             case 5; CellPara{row(i)}.kp_v_dc  = CellPara{row(i)}.V_dc*CellPara{row(i)}.C_dc*(cus_value*2*pi);
@@ -194,14 +195,8 @@ for i = 1:length(row)
         end
     elseif floor(type/10) == 2
         switch switch_flag
-        end
-    elseif floor(type/10) == 9
-        switch switch_flag
-            case 1; CellPara{row(i)}.Connection = cus_value;
-            case 2; CellPara{row(i)}.R = cus_value;
-            case 3; CellPara{row(i)}.L = cus_value;
-     	otherwise
-          	error(['Error: paramter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
+            case 1
+            otherwise
         end
     end
 end

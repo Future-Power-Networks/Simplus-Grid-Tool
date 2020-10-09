@@ -11,6 +11,7 @@ UpdatePowerFlow = PowerFlow;
 
 %% Organize data
 IndBus  = ListBus(:,1);
+TypeBus = ListBus(:,2);
 PG      = ListBus(:,5);
 QG      = ListBus(:,6);
 PL      = ListBus(:,7);
@@ -42,8 +43,8 @@ end
 
 %% Error check
 for i = 1:N_Bus
-    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100)
-        error(['Error: Bus ' num2str(i) ' should be a floating bus because PGi=0 and QGi=0.']);
+    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (TypeBus{i}~=1)
+        error(['Error: Bus ' num2str(i) ' should be a slack bus (power flow) or floating bus (device) because PGi=0 and QGi=0.']);
     end
     if PL(i) < 0
         error(['Error: Passive load at bus ' num2str(i) ' can not generate active power, i.e., PLi can not be less than 0.']);
