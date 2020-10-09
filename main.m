@@ -31,6 +31,7 @@ fprintf('Load customized data.\n')
 % Other possible function: readmatrix, csvread ...
 Name_Netlist = 'netlist.xlsx';
 % Name_Netlist = 'netlist_TestToolbox.xlsx';
+% Name_Netlist = 'netlist_TestInfiniteBus.xlsx';
 ListBus = xlsread(Name_Netlist,1);     
 ListLine = xlsread(Name_Netlist,2);
 ListDevice = xlsread(Name_Netlist,3);
@@ -72,14 +73,9 @@ fprintf('Do the power flow analysis.\n')
 
 % ### Get the model of lines
 fprintf('Get the descriptor-state-space model of network lines.\n')
-if 1
-    % Move load flow to bus admittance matrix
-    [ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
-    [YbusObj,~,~] = YbusCalcDSS_RX(ListLine,W0);        % This function considers the load in Ybus
-else
-    % Do not move load flow to bus admittance matrix
-    [YbusObj,~,~] = YbusCalcDSS(ListLine,W0);
-end
+% Move load flow to bus admittance matrix
+[ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
+[YbusObj,~,~] = YbusCalcDSS(ListLine,W0);
 [~,YbusDSS] = YbusObj.ReadDSS(YbusObj);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = obj_SwitchInOut(YbusObj,lsw);
@@ -89,6 +85,9 @@ fprintf('Get the descriptor-state-space model of bus devices.\n')
 for i = 1:N_Device
     [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i}] = ...
         DeviceModel_Create('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i},'Ts',Ts);
+    
+    % The following data is not used in the script, but will be used in
+    % simulations, please do not delete.
     x_e{i} = DeviceEqui{i}{1};
     u_e{i} = DeviceEqui{i}{2};
     OtherInputs{i} = u_e{i}(3:end,:);

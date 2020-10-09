@@ -43,7 +43,7 @@ end
 
 %% Error check
 for i = 1:N_Bus
-    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (TypeBus{i}~=1)
+    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (TypeBus(i)~=1)
         error(['Error: Bus ' num2str(i) ' should be a slack bus (power flow) or floating bus (device) because PGi=0 and QGi=0.']);
     end
     if PL(i) < 0

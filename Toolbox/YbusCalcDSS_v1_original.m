@@ -4,33 +4,27 @@
 % Author(s): Yitong Li, Yunjie Gu
 
 %% Notes
-%
-% This function also considers the load impedance RL and XL.
-%
+
 % Self-branch: branches with from = to, connecting the bus and ground
 % Mutual-branch: branches with from ~= to, connecting two difference buses
-%
+
 % FrameFlag: 1-abc, 2-alpha/beta, 3-dq
 
 %% Function
 
-function [YbusObj,YbusDSS,YbusCell] = YbusCalcDSS_RX(ListLine,w) 
+function [YbusObj,YbusDSS,YbusCell] = YbusCalcDSS(linedata,w) 
 
 % Load the data
-FB    = ListLine(:,1);              % From bus number...
-TB    = ListLine(:,2);              % To bus number...
-Rlist = ListLine(:,3);              % Resistance,  R...
-Xlist = ListLine(:,4);              % Inductance,  wL...
-Blist = ListLine(:,5);              % Capacitance, wC...
-Glist = ListLine(:,6);              % Conductance, G...
-alist = ListLine(:,7);              % Turns ratio, a
+FB = linedata(:,1);             % From bus number...
+TB = linedata(:,2);             % To bus number...
+Rlist = linedata(:,3);              % Resistance,  R...
+Xlist = linedata(:,4);              % Inductance,  wL...
+Blist = linedata(:,5);              % Capacitance, wC...
+Glist = linedata(:,6);              % Conductance, G...
 
 N_Bus = max(max(FB),max(TB));           % Number of buses
 N_Branch = length(FB);                  % Number of branches, including self branches
       
-% Inductive load effect
-XL = ListLine(:,8);
-
 %%
 % Calculate the state space model of each branch
 for n = 1:N_Branch              % Calculate the branch paramter one by one
@@ -47,13 +41,13 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
     elseif ( (R==0) && (X==0) && ( isinf(G) || isinf(B) ) )
         error(['Error: short circuit, branch from ' num2str(FB(n)) ' to ' num2str(TB(n))]);
     elseif ( isinf(G) || isinf(B) )  	% RL branch, normally for mutual branch
+        % KVL equations
+        % [vd] = {[R  0] + [sL -wL]}*[id]
+        % [vq]    [0  R]   [wL  sL]  [iq]
         if X == 0                       % R branch
             A_RL = []; B_RL = []; E_RL = [];
             C_RL = []; D_RL = inv([R,0;0,R]);
         else                            % RL or L branch
-        	% KVL equations
-        	% [vd] = {[R  0] + [sL -wL]}*[id]
-            % [vq]    [0  R]   [wL  sL]  [iq]
             % State equations
             % [d_id]/dt = 1/L*[-R  wL]*[id] + 1/L*[1 0]*[vd]
             % [d_iq]          [-wL -R] [iq]       [0 1] [vq]
@@ -93,35 +87,6 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
         Z_GC = dss(A_GC,B_GC,C_GC,D_GC,E_GC);
         Y_GC= dss_SwitchInOut(Z_GC,2);
         Ybranch{n} = Y_GC;
-        
-        % For self branch, connect load to it
-        if FB(n) == TB(n)
-            if isinf(XL(n))
-                Ybranch{n} = Ybranch{n};
-            elseif (XL(n))==0
-                error(['Error: A inductive load is short-circuit. Please check QLi settings.']);
-            else
-                % KVL equation for XL
-                % [vd] = {[sL -wL]}*[id]
-                % [vq]    [wL  sL]  [iq]
-                % => State equation
-                % did/dt = -1/L*[0 -wL] + 1/L*[1 0]*[vd] 
-                % diq/dt        [wL  0]       [0 1] [vq]
-               	A_XL = -1/(XL(n)/w)*[0     -XL(n);
-                                     XL(n)      0];
-                B_XL = 1/(XL(n)/w)*[1,0;0,1];
-             	E_XL = [1,0;0,1];
-                % => Output equation
-                % [id] = [1 0]*[id] + [0 0]*[vd]
-                % [iq]   [0 1] [iq]   [0 0] [vq]
-                C_XL = [1,0;0,1];
-                D_XL = [0,0;0,0];
-                
-                Y_XL = dss(A_XL,B_XL,C_XL,D_XL,E_XL);
-                Ybranch{n} = dss_Sum(Ybranch{n},Y_XL);
-            end
-        end
-            
     else                                % RL-GC blended branch, for special branch
         error(['Error: RL-GC branch']);
     end

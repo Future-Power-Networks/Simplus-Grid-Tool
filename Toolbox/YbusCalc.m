@@ -34,7 +34,7 @@ x = ListLine(:,4);              % Inductance,  wL
 b = ListLine(:,5);              % Capacitance, wC
 g = ListLine(:,6);              % Conductance, G
 
-a = ListLine(:,7);              % Turns ratio, a
+T = ListLine(:,7);              % Turns ratio, T
 
 zs= r + 1j*x;                   
 yp= g + 1j*b;                   % g and b can be "inf" without causing problems
@@ -49,11 +49,11 @@ Ybus = zeros(n_bus,n_bus);        % Initialise YBus
 for k=1:n_branch     
     if(fb(k) ~= tb(k))    
         % Formation of the Off Diagonal Elements...
-        Ybus(fb(k),tb(k)) = Ybus(fb(k),tb(k)) - y(k);   % Mutual admittance is negative
-        Ybus(tb(k),fb(k)) = Ybus(tb(k),fb(k)) - y(k);
+        Ybus(fb(k),tb(k)) = Ybus(fb(k),tb(k)) - y(k)/T(k);      % Mutual admittance is negative
+        Ybus(tb(k),fb(k)) = Ybus(fb(k),tb(k));
         
         % Formation of the Diagonal Elements...
-        Ybus(fb(k),fb(k)) = Ybus(fb(k),fb(k)) + y(k);   % Self admittance is positive
+        Ybus(fb(k),fb(k)) = Ybus(fb(k),fb(k)) + y(k)/(T(k)^2);  % Self admittance is positive
         Ybus(tb(k),tb(k)) = Ybus(tb(k),tb(k)) + y(k);
     else
         % Formation of the Diagonal Elements...
