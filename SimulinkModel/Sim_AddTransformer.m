@@ -2,15 +2,13 @@
 
 % Author(s): Yitong Li
 
-function [Name_Trans] = Sim_AddTransformer(Name_Model,Size_Trans,Shift_Trans,Pos_Bus,ListLine,ListSimulation,Shift_ToBus)
+function [Name_Trans] = Sim_AddTransformer(Name_Model,Size_Trans,Shift_Trans,Pos_Bus,ListLine,Shift_ToBus)
 
 % Organize data
 fb = ListLine(:,1);     % From bus
 tb = ListLine(:,2);     % To bus
 Tbr  = ListLine(:,7);   % Transformer tap ratio
 N_Branch = length(fb);
-
-F0 = ListSimulation(length(ListSimulation));
 
 Name_Trans{1} = [];
 
@@ -31,7 +29,7 @@ for i = 1:N_Branch
             set_param(gcb,'Measurements','None');
 
             % Set parameters
-            set_param(gcb,'NominalPower',['[1, ' num2str(F0) ']']);
+            set_param(gcb,'NominalPower','[Sbase, Wbase]');
             set_param(gcb,'Winding1',['[' num2str(Tbr(i)) ', 1e-9, 1e-9]']);
             set_param(gcb,'Winding2','[1, 1e-9, 1e-9]');
             set_param(gcb,'Rm','1e4');

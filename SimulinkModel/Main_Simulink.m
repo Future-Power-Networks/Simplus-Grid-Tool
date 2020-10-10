@@ -86,7 +86,7 @@ Shift_B_GND = [-Size_D_GND(1)/2,30];
 
 % Add transformer
 [Name_Trans] = ...
-    Sim_AddTransformer(Name_Model,Size_Trans,Shift_Trans,Pos_Bus,ListLine,ListSimulation,Shift_ToBus);
+    Sim_AddTransformer(Name_Model,Size_Trans,Shift_Trans,Pos_Bus,ListLine,Shift_ToBus);
 
 % Add branch ground
 Sim_AddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName_Branch,Name_Branch,ListLine);
