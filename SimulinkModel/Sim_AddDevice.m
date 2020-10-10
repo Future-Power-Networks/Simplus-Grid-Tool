@@ -2,13 +2,14 @@
 
 % Author(s): Yitong Li
 
-function [FullName_Device,Name_Device,Pos_Device] = Sim_AddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListSimulation,PowerFlow)
+function [FullName_Device,Name_Device,Pos_Device] = Sim_AddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance,PowerFlow)
 
 % Organize data
-DiscreMethod = ListSimulation(2);
-LinearizationTimes = ListSimulation(3);
-DiscreDampingFlag = ListSimulation(4);
-DirectFeedthrough = ListSimulation(5);
+DiscreMethod = ListAdvance(1);
+LinearizationTimes = ListAdvance(2);
+DiscreDampingFlag = ListAdvance(3);
+DirectFeedthrough = ListAdvance(4);
+
 N_Device = length(DeviceType);
 
 % Add device

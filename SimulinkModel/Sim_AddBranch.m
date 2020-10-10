@@ -3,7 +3,7 @@
 % Author(s): Yitong Li
 
 function [FullName_Branch,Name_Branch,Shift_ToBus] = ...
-    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine,ListSimulation)
+    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine)
 
 % Organize data
 fb = ListLine(:,1); % From bus
@@ -14,9 +14,6 @@ Bbr  = ListLine(:,5);
 Gbr  = ListLine(:,6);
 Tbr  = ListLine(:,7);
 N_Branch = length(fb);
-
-F0 = ListSimulation(length(ListSimulation));
-W0 = F0*2*pi;
 
 Count_ToBus = zeros(max(tb),1);
 
@@ -63,7 +60,7 @@ for i = 1:N_Branch
             else
                 set_param(FullName_Branch{i},'BranchType','RLC');
             end
-            set_param(FullName_Branch{i},'Inductance',num2str(XL(i)/W0));
+            set_param(FullName_Branch{i},'Inductance',['(' num2str(XL(i)) ')*Zbase/Wbase']);
         else
             % Assume the self-branch is pure RC
            	if ~((Rbr(i)==0) && (Xbr(i)==0))
@@ -81,8 +78,8 @@ for i = 1:N_Branch
         end
         
     	% Set customer data
-      	set_param(FullName_Branch{i},'Capacitance',num2str(Bbr(i)/W0));
-      	set_param(FullName_Branch{i},'Resistance',num2str(1/Gbr(i)));
+      	set_param(FullName_Branch{i},'Capacitance',['(' num2str(Bbr(i)) ')*Ybase/Wbase']);
+      	set_param(FullName_Branch{i},'Resistance',['(' num2str(1/Gbr(i)) ')*Zbase']);
 
         
     % ### Add mutual branch
@@ -118,8 +115,8 @@ for i = 1:N_Branch
         end
         
         % Set customer data
-        set_param(FullName_Branch{i},'Resistance',num2str(Rbr(i)));
-     	set_param(FullName_Branch{i},'Inductance',num2str(Xbr(i)/W0))
+        set_param(FullName_Branch{i},'Resistance',['(' num2str(Rbr(i)) ')*Zbase']);
+     	set_param(FullName_Branch{i},'Inductance',['(' num2str(Xbr(i)) ')*Zbase/Wbase'])
     end
     
 end

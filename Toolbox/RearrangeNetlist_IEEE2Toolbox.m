@@ -7,6 +7,7 @@ function [UpdateLine] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE)
 
 if ListLineIEEE(1,1) == 1
     % "ListLineIEEE" is enabled, which over-writes "ListLine"
+    fprintf('Warning: Line data in IEEE form is enabled, which over-writes the original line data')
     ListLineIEEE = ListLineIEEE(4:end,:);
     
     % Organize mutual branch data

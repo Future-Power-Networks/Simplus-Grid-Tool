@@ -9,7 +9,7 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function Main_Simulink(Name_Model,ListLine,DeviceType,ListSimulation,PowerFlow)
+function Main_Simulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow)
 
 %% Common variables
 NewSimulinkModel('ModelName',Name_Model);
@@ -45,7 +45,7 @@ Shift_Device = [-150,0];
 
 % Add device
 [FullName_Device,Name_Device,Pos_Device] = ...
-    Sim_AddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListSimulation,PowerFlow);
+    Sim_AddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance,PowerFlow);
 
 % Connect device to bus
 Sim_ConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceType);
@@ -82,7 +82,7 @@ Shift_B_GND = [-Size_D_GND(1)/2,30];
 
 % Add branch
 [FullName_Branch,Name_Branch,Shift_ToBus] = ...
-    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine,ListSimulation);
+    Sim_AddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine);
 
 % Add transformer
 [Name_Trans] = ...
