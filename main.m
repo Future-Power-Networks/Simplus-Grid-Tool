@@ -164,16 +164,16 @@ figure_n = 1000;
 fprintf('Calculate pole/zero.\n')
 pole_sys = pole(GsysDSS)/2/pi;
 if Enable_PlotPole
+    fprintf('Plot pole/zero map.\n')
     figure_n = figure_n+1;
     figure(figure_n);
-
-    fprintf('Plot pole/zero map.\n')
     scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     axis([-25,5,-80,80]);
+    mtit('Pole Map');
 else
-    fprintf('Warning: The auto plot of default pole map is disabled.')
+    fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
 omega_p = logspace(-2,3,1e3)*2*pi;
@@ -199,8 +199,9 @@ if Enable_PlotAdmittance
     for k = 1:N_Bus
         bodec(Gr_c{k}(1,1),1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);                           
     end
+    mtit('Bode Diagram: Admittance');
 else
-    fprintf('Warning: The auto plot of default admittance spectrum is disabled.')
+    fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
 
 % Plot swing
@@ -220,8 +221,10 @@ if Enable_PlotSwing
             bodec(Gt_sym{k},1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);      
         end
     end
+    mtit('Bode Diagram: Swing');
+    
 else
-    fprintf('Warning: The auto plot of default swing spectrum is disabled.');
+    fprintf('Warning: The default plot of swing spectrum is disabled.\n');
 end
     
 %%

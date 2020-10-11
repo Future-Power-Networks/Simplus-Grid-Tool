@@ -23,16 +23,16 @@ for n = 1:length(InputStr)
 end
 
 % Find idq for feedout, and other output for later use
-CountOut = 0;
+CountOut_i = 0;
 for n = 1:length(OutputStr)
     if ( strcmp(OutputStr{n},'i_d') || strcmp(OutputStr{n},'i_q') ...
       || strcmp(OutputStr{n},'id') || strcmp(OutputStr{n},'iq'))
-        Count_i_Out = Count_i_Out+1;
-        feedout(Count_i_Out) = n;
+        CountOut_i = CountOut_i+1;
+        feedout(CountOut_i) = n;
     end
     if strcmp(OutputStr{n},'w')
         % Count_i_Out/2 can be seen as the index of bus number
-        Port_w(Count_i_Out/2) = n;
+        Port_w(CountOut_i/2) = n;
     end
 end
 
