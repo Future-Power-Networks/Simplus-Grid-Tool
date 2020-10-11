@@ -3,7 +3,7 @@
 % Author(s): Yitong Li
 
 %% Function
-function [UpdateBus,UpdateLine,UpdateDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice) 
+function [UpdateBus,UpdateLine,UpdateDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice,EnableIEEE) 
 
 %% Re-arrange netlist bus
 % Bus data for power flow analysis
@@ -58,16 +58,25 @@ netlist_line_NaN = isnan(ListLine);
 ListLine(r,c) = inf;
 
 % Check short-circuit and open-circuit
+CountIndDelete = 0;
+IndDelete = 0;
 for i = 1:N_Branch
     if ( isinf(Rbr(i)) || isinf(Xbr(i)) || ((Bbr(i)==0)&&(Gbr(i)==0)) )
-        error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is open circuit']);
-    elseif ( (Rbr(i)==0) && (Xbr(i)==0) && (isinf(Bbr(i)) || isinf(Gbr(i))) )
+        if EnableIEEE == 1
+            CountIndDelete = CountIndDelete + 1;
+            IndDelete(CountIndDelete) = i;
+        else
+            error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is open circuit']);
+        end
+    end
+    if ( (Rbr(i)==0) && (Xbr(i)==0) && (isinf(Bbr(i)) || isinf(Gbr(i))) )
         error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is short circuit']);
-    elseif ((Rbr(i)<0) || (Xbr(i)<0) || (Bbr(i)<0) || (Gbr(i)<0) )
+    end
+    if ((Rbr(i)<0) || (Xbr(i)<0) || (Bbr(i)<0) || (Gbr(i)<0) )
         error(['Error: Negative line paramters']);
     end
-    if Tbr(i) == 0
-        error(['Error: Turns ratio can not be 0.']);
+    if Tbr(i) <= 0
+        error(['Error: Turns ratio can not be less than or equal to 0.']);
     end
 end
 
@@ -90,6 +99,22 @@ for i = 1:N_Branch
         ListLine(i,7) = 1/ListLine(i,7);
     end
 end
+
+% Delete open circuit line
+CountDelete = 0;
+for i = 1:N_Branch
+    FindDelete = find(IndDelete == i, 1);
+    if isempty(FindDelete)
+        ListLine_(i-CountDelete,:) = ListLine(i,:);
+    else
+        CountDelete = CountDelete + 1;
+    end
+end
+if CountDelete ~= CountIndDelete
+    error(['Error: Wrongly delete the open-circuit branch.']);
+end
+ListLine = ListLine_;
+
 % Re-order the branch sequence
 ListLine = sortrows(ListLine,2);
 ListLine = sortrows(ListLine,1);

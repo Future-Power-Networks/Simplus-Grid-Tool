@@ -13,6 +13,9 @@ fprintf('### Start.\n')
 % - Speed up the power flow
 % - Advanced power flow, including droop bus, etc
 % - Put the base value into excel
+% - It looks like the toolbox can not deal with open circuit self branch,
+% in YbusCalcDSS.
+% - For system object, please make sure the first port is vdq or idq.
 
 %%
 % ==================================================
@@ -23,8 +26,8 @@ fprintf('Load customized data.\n')
 % ### Load the data
 % Other possible function: readmatrix, csvread ...
 Name_Netlist = 'netlist.xlsx';
-% Name_Netlist = 'netlist_TestToolbox.xlsx';
 % Name_Netlist = 'netlist_TestInfiniteBus.xlsx';
+% Name_Netlist = 'netlist_TestIEEE14Bus.xlsx';
 ListBus = xlsread(Name_Netlist,1);     
 ListDevice = xlsread(Name_Netlist,2);
 ListBasic = xlsread(Name_Netlist,3);
@@ -36,6 +39,8 @@ ListAdvance = xlsread(Name_Netlist,6);
 Enable_SimulinkModel    = ListAdvance(5);
 Enable_PlotPole         = ListAdvance(6);
 Enable_PlotAdmittance   = ListAdvance(7);
+Enable_PrintOutput      = ListAdvance(8);
+Enable_PlotSwing        = ListAdvance(9);
 
 % ### Re-arrange the simulation data
 Fs = ListBasic(1);
@@ -49,8 +54,8 @@ Ybase = 1/Zbase;
 Wbase = Fbase*2*pi;
 
 % ### Re-arrange the netlist and check error
-[ListLine] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE);
-[ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice);
+[ListLine,EnableIEEE] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE);
+[ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice,EnableIEEE);
 
 % ### Re-arrange the device data
 [DeviceType,Para] = RearrangeDeviceData(ListDevice,Wbase);
@@ -89,7 +94,7 @@ end
 % ### Get the model of whole system
 fprintf('Get the descriptor-state-space model of whole system.\n')
 GmObj = DeviceModel_Link(GmObj_Cell);
-[GsysObj,GsysDSS,vport,iport] = GmZbus_Connect(GmObj,ZbusObj);
+[GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_Tm] = GmZbus_Connect(GmObj,ZbusObj);
 
 % ### Chech if the system is proper
 fprintf('Check if the whole system is proper:\n')
@@ -117,8 +122,10 @@ fprintf('### Output the system\n')
 fprintf('System object name: GsysObj\n')
 fprintf('System name: GsysDSS\n')
 fprintf('Minimum realization system name: GminSS\n')
-[StateString,InputString,OutputString] = GsysObj.ReadString(GsysObj)
-
+if Enable_PrintOutput
+    [StateString,InputString,OutputString] = GsysObj.ReadString(GsysObj)
+end
+    
 %%
 % ==================================================
 % Create Simulink Model
@@ -154,13 +161,14 @@ fprintf('### Plot\n')
 figure_n = 1000;
 
 % Plot pole/zero map
+fprintf('Calculate pole/zero.\n')
+pole_sys = pole(GsysDSS)/2/pi;
 if Enable_PlotPole
     figure_n = figure_n+1;
     figure(figure_n);
-    fprintf('Calculate pole/zero.\n')
-    psys = pole(GsysDSS)/2/pi;
+
     fprintf('Plot pole/zero map.\n')
-    scatter(real(psys),imag(psys),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     axis([-25,5,-80,80]);
@@ -171,16 +179,16 @@ end
 omega_p = logspace(-2,3,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
-% Plot admittance: method 1
+% Plot admittance
 if Enable_PlotAdmittance
     fprintf('Calculate admittance.\n')
     Tj = [1 1j;     % real to complex transform
           1 -1j];  
     for k = 1:N_Bus
         if InverseOn == 0
-            Gr_ss{k} = GminSS(iport([2*k-1,2*k]),vport([2*k-1,2*k]));
+            Gr_ss{k} = GminSS(Port_i([2*k-1,2*k]),Port_v([2*k-1,2*k]));
         else          
-            Gr_ss{k} = GminSS(vport([2*k-1,2*k]),iport([2*k-1,2*k]));
+            Gr_ss{k} = GminSS(Port_v([2*k-1,2*k]),Port_i([2*k-1,2*k]));
         end
         Gr_sym{k} = ss2sym(Gr_ss{k});
         Gr_c{k} = Tj*Gr_sym{k}*Tj^(-1);
@@ -193,6 +201,27 @@ if Enable_PlotAdmittance
     end
 else
     fprintf('Warning: The auto plot of default admittance spectrum is disabled.')
+end
+
+% Plot swing
+if Enable_PlotSwing
+    fprintf('Find the swing relation.\n')
+    for k = 1:N_Bus
+        if DeviceType{k} == 0
+            Gt_ss{k} = GminSS(Port_w(k),Port_Tm(k));
+            Gt_sym{k} = ss2sym(Gt_ss{k});
+        end
+    end
+    fprintf('Plot swing.\n')
+ 	figure_n = figure_n+1;
+ 	figure(figure_n);
+    for k = 1:N_Bus
+        if DeviceType{k} == 0
+            bodec(Gt_sym{k},1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);      
+        end
+    end
+else
+    fprintf('Warning: The auto plot of default swing spectrum is disabled.');
 end
     
 %%

@@ -3,11 +3,12 @@
 
 % Author(s): Yitong Li
 
-function [UpdateLine] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE)
+function [UpdateLine,EnableFlag] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE)
 
 if ListLineIEEE(1,1) == 1
     % "ListLineIEEE" is enabled, which over-writes "ListLine"
-    fprintf('Warning: Line data in IEEE form is enabled, which over-writes the original line data')
+    EnableFlag = 1;
+    fprintf('Warning: Line data in IEEE form is enabled, which over-writes the original line data.\n')
     ListLineIEEE = ListLineIEEE(4:end,:);
     
     % Organize mutual branch data
@@ -66,6 +67,7 @@ if ListLineIEEE(1,1) == 1
     UpdateLine = [FB,TB,R,X,B,G,T];
 else
     % Use the toolbox form
+    EnableFlag = 0;
     UpdateLine = ListLine;
 end
 

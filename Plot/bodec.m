@@ -4,12 +4,11 @@
 % Authors(s): Yunjie Gu, Yitong Li
 
 %%
+% Notes:
+%
 % ### modified 2019.10.23: use matlabFunction to speed up symbolic eval
 % ### modified 2019.10.25: anti wind up for phase plot
 % ### modified 2019.10.27: add transfer function matrix plot (not just singular value)
-
-%%
-% Notes:
 %
 % Input of this function:
 % X        - target system with symbolic Laplace operator "s"
@@ -20,6 +19,7 @@
 %%
 function Xw = bodec(X,sbd,wbase,varargin)
 
+    % Settings
     [Option,~] = LoadVar(0,'Option',varargin);          % Default 0, i.e., plot bode rather than singular value
     [InverseOn,~] = LoadVar(0,'InverseOn',varargin);    % Default 0, i.e., inverse is off
     [PhaseOn,~] = LoadVar(1,'PhaseOn',varargin);        % Default 1, i.e., plotting phase
@@ -41,7 +41,8 @@ function Xw = bodec(X,sbd,wbase,varargin)
 
     funcX = matlabFunction(X);
 
-    if Option == 0           % bode for transfer function matrix
+    % ### bode for transfer function matrix
+    if Option == 0           
         Xw = zeros(M,N,length(sbd));
         for n = 1:length(sbd)
             try 
@@ -58,7 +59,9 @@ function Xw = bodec(X,sbd,wbase,varargin)
                 Xw(:,:,n) = zeros(M,N);
             end
         end
-    elseif Option == 1       % singular value for matrix transfer function
+        
+    % ### singular value for matrix transfer function
+    elseif Option == 1       
         Xw = zeros(1,1,length(sbd));
         for n = 1:length(sbd)
             try 
@@ -76,11 +79,13 @@ function Xw = bodec(X,sbd,wbase,varargin)
             end
         end
     else
-        return;
+        error(['Error: Wrong option.']);
     end
 
     if PlotOn == 1
         plotc(Xw,imag(sbd)/wbase,'PhaseOn',PhaseOn,varargin);
+    else
+        fprintf('Warning: The bode plot is disabled.');
     end
     
 end

@@ -11,6 +11,6 @@ GsysObj;        % System object
 GsysDSS;        % Descriptor state space model with original state preserved
 GminSS;         % Minimum realization of descritptor state space model
 PowerFlow;      % Power flow results
-mymodel_v1;     % Simulink model
+pole_sys;       % Poles of system
 
 %% Customer plot

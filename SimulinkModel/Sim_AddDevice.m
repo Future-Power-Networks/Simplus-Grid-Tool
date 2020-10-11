@@ -91,7 +91,7 @@ for i = 1:N_Device
         % If the device is an "infinite bus"
         if floor(DeviceType{i}/10) == 9
             set_param(gcb,'theta0',[num2str(PowerFlow{i}(4))]);
-            set_param(gcb,'w',[num2str(PowerFlow{i}(5))]);
+            set_param(gcb,'w','Wbase');
         end
         
     end
