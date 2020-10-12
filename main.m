@@ -25,9 +25,9 @@ fprintf('Load customized data.\n')
 
 % ### Load the data
 % Other possible function: readmatrix, csvread ...
-% Name_Netlist = 'netlist.xlsx';
+Name_Netlist = 'netlist.xlsx';
 % Name_Netlist = 'netlist_TestInfiniteBus.xlsx';
-Name_Netlist = 'netlist_TestIEEE14Bus.xlsx';
+% Name_Netlist = 'netlist_TestIEEE14Bus.xlsx';
 ListBus = xlsread(Name_Netlist,1);     
 ListDevice = xlsread(Name_Netlist,2);
 ListBasic = xlsread(Name_Netlist,3);
