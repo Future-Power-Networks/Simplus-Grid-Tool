@@ -16,9 +16,10 @@ for n = 1:length(InputStr)
         CountIn_v = CountIn_v+1;
         Port_v(CountIn_v) = n;      % Index of port v
     end
-    if  strcmp(InputStr{n},'T_m')
-        % Count_v_In/2 can be seen as the index of bus number
-        Port_Tm(CountIn_v/2) = n;   % Index of port Tm
+    % Count_v_In/2 can be seen as the index of bus number
+    IndexIn_Bus = CountIn_v/2;
+    if  ( strcmp(InputStr{n},'T_m') || strcmp(InputStr{n},'Tm') )
+        Port_Tm(IndexIn_Bus) = n;   % Index of port Tm
     end
 end
 
@@ -30,9 +31,10 @@ for n = 1:length(OutputStr)
         CountOut_i = CountOut_i+1;
         Port_i(CountOut_i) = n;     % Index of port i
     end
-    if strcmp(OutputStr{n},'w')
-        % Count_i_Out/2 can be seen as the index of bus number
-        Port_w(CountOut_i/2) = n;
+    % Count_i_Out/2 can be seen as the index of bus number
+    IndexOut_Bus = CountOut_i/2;
+    if ( strcmp(OutputStr{n},'w') || strcmp(OutputStr{n},'omega') )
+        Port_w(IndexOut_Bus) = n;   % Index of port omega
     end
 end
 

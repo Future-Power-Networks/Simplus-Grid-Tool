@@ -1,4 +1,4 @@
-# Power-System-Analysis-Toolbox (Version: v2020-OCT-12_1)
+# Power-System-Analysis-Toolbox (Version: v2020-OCT-12)
 
 A Matlab/Simulink-based toolbox for dynamic analysis and simulations of large power systems.
 
