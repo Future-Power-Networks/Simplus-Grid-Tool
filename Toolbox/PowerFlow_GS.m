@@ -1,17 +1,20 @@
 % Program for Gauss - Seidel Power Flow Analysis
 
-function [PowerFlow,V,I,Ang0,P,Q,Vm]=PowerFlow_GS(ListBus,ListLine,w0)
+function [PowerFlow,Ybus,V,I,Ang0,P,Q,Vm]=PowerFlow_GS(ListBus,ListLine,w0)
 
-Ybus = YbusCalc(ListLine);      % Get nodal admittance matrix 
+Ybus = YbusCalc(ListLine);      % Get nodal admittance matrix
 list_number = ListBus(:,1);     % Bus number
 n_bus = max(list_number);       % Total number of buses
 list_type = ListBus(:,2);      	% Bus type: 1-Slack, 2-PV, 3-PQ
 
 index_slack = find(list_type == 1);      % Index of slack bus
-if (isempty(index_slack)); 
+
+if (isempty(index_slack))
     error(['Error: no slack bus']);
-elseif (length(index_slack) > 1); 
+elseif (length(index_slack) > 1)
     error(['Error: more than one slack bus']);
+elseif (index_slack ~= 1)
+    error(['Error: bus 1 is not slack bus']);
 end
 number_slack = list_number(index_slack);
 

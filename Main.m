@@ -5,16 +5,15 @@ clc;
 close all;
 
 % cmap = get(groot,'defaultAxesColorOrder');
-fprintf('### Start.\n')
+fprintf('==================================\n')
+fprintf('Start.\n')
+fprintf('==================================\n')
 
 %%
 % check1 = 0      % For test, will be deleted later
 % Remained questions:
 % - Speed up the power flow
 % - Advanced power flow, including droop bus, etc
-% - Put the base value into excel
-% - It looks like the toolbox can not deal with open circuit self branch,
-% in YbusCalcDSS.
 % - For system object, please make sure the first port is vdq or idq.
 
 %%
@@ -67,12 +66,15 @@ Wbase = Fbase*2*pi;
 
 % ### Power flow analysis
 fprintf('Do the power flow analysis.\n')
-[PowerFlow,~,~,~,~,~,~]=PowerFlow_GS(ListBus,ListLine,Wbase);
+[PowerFlow,YbusPowerFlow,~,~,~,~,~,~]=PowerFlow_GS(ListBus,ListLine,Wbase);
+ListPowerFlow = RearrangePowerFlow(PowerFlow);
+% Move load flow to bus admittance matrix
+[ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
+ListPowerFlow_ = RearrangePowerFlow(PowerFlow);
 
 % ### Get the model of lines
 fprintf('Get the descriptor-state-space model of network lines.\n')
-% Move load flow to bus admittance matrix
-[ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
+
 [YbusObj,YbusDSS,~] = YbusCalcDSS(ListLine,Wbase);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = obj_SwitchInOut(YbusObj,lsw);
@@ -118,20 +120,29 @@ if ~isempty(GminSS.E)
 end
 
 % ### Output the System
-fprintf('### Print the system\n')
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Print the system\n')
+fprintf('==================================\n')
 fprintf('System object name: GsysObj\n')
 fprintf('System name: GsysDSS\n')
 fprintf('Minimum realization system name: GminSS\n')
 if Enable_PrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.ReadString(GsysObj);
-    PrintSysString(N_Device,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
+    fprintf('Print power flow results: | bus | P | Q | V | angle | omega |')
+    ListPowerFlow
+    fprintf('Print system ports:\n')
+    PrintSysString(N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
 end
     
 %%
 % ==================================================
 % Create Simulink Model
 % ==================================================
-fprintf('### Simulink Model\n')
+fprintf('\n')
+fprintf('=================================\n')
+fprintf('Simulink Model\n')
+fprintf('=================================\n')
 
 if Enable_SimulinkModel == 1
     
@@ -157,7 +168,10 @@ end
 % Plot
 % ==================================================
     
-fprintf('### Plot\n')
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Plot\n')
+fprintf('==================================\n')
 
 figure_n = 1000;
 
@@ -182,24 +196,33 @@ omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
 if Enable_PlotAdmittance
-    fprintf('Calculate admittance.\n')
+    fprintf('Calculate complex-form admittance.\n')
     Tj = [1 1j;     % real to complex transform
           1 -1j];  
     for k = 1:N_Bus
-        if InverseOn == 0
-            Gr_ss{k} = GminSS(Port_i([2*k-1,2*k]),Port_v([2*k-1,2*k]));
-        else          
-            Gr_ss{k} = GminSS(Port_v([2*k-1,2*k]),Port_i([2*k-1,2*k]));
+        if DeviceType{k} <= 50
+            if InverseOn == 0
+                Gr_ss{k} = GminSS(Port_i([2*k-1,2*k]),Port_v([2*k-1,2*k]));
+            else          
+                Gr_ss{k} = GminSS(Port_v([2*k-1,2*k]),Port_i([2*k-1,2*k]));
+            end
+            Gr_sym{k} = ss2sym(Gr_ss{k});
+            Gr_c{k} = Tj*Gr_sym{k}*Tj^(-1);
         end
-        Gr_sym{k} = ss2sym(Gr_ss{k});
-        Gr_c{k} = Tj*Gr_sym{k}*Tj^(-1);
     end
     fprintf('Plot admittance.\n')
  	figure_n = figure_n+1;
  	figure(figure_n);
+    CountLegend = 0;
+    VecLegend = {};
     for k = 1:N_Bus
-        bodec(Gr_c{k}(1,1),1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);                           
+        if DeviceType{k} <= 50
+            bodec(Gr_c{k}(1,1),1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0); 
+            CountLegend = CountLegend + 1;
+            VecLegend{CountLegend} = num2str(k);
+        end
     end
+    legend(VecLegend);
     mtit('Bode Diagram: Admittance');
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
@@ -217,11 +240,16 @@ if Enable_PlotSwing
     fprintf('Plot swing.\n')
  	figure_n = figure_n+1;
  	figure(figure_n);
+    CountLegend = 0;
+    VecLegend = {};
     for k = 1:N_Bus
         if DeviceType{k} == 0
             bodec(Gt_sym{k},1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);      
+         	CountLegend = CountLegend + 1;
+            VecLegend{CountLegend} = num2str(k);
         end
     end
+    legend(VecLegend);
     mtit('Bode Diagram: Swing');
     
 else
@@ -229,5 +257,8 @@ else
 end
     
 %%
-fprintf('### End: toolbox run successfully.\n')
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('End: toolbox run successfully.\n')
+fprintf('==================================\n')
    
