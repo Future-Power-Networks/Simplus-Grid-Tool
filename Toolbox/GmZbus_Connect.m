@@ -14,11 +14,11 @@ for n = 1:length(InputStr)
     if ( strcmp(InputStr{n},'v_d') || strcmp(InputStr{n},'v_q') ...
       || strcmp(InputStr{n},'vd') || strcmp(InputStr{n},'vq'))
         CountIn_v = CountIn_v+1;
-        feedin(CountIn_v) = n;
+        Port_v(CountIn_v) = n;      % Index of port v
     end
     if  strcmp(InputStr{n},'T_m')
         % Count_v_In/2 can be seen as the index of bus number
-        Port_Tm(CountIn_v/2) = n;
+        Port_Tm(CountIn_v/2) = n;   % Index of port Tm
     end
 end
 
@@ -28,7 +28,7 @@ for n = 1:length(OutputStr)
     if ( strcmp(OutputStr{n},'i_d') || strcmp(OutputStr{n},'i_q') ...
       || strcmp(OutputStr{n},'id') || strcmp(OutputStr{n},'iq'))
         CountOut_i = CountOut_i+1;
-        feedout(CountOut_i) = n;
+        Port_i(CountOut_i) = n;     % Index of port i
     end
     if strcmp(OutputStr{n},'w')
         % Count_i_Out/2 can be seen as the index of bus number
@@ -37,12 +37,10 @@ for n = 1:length(OutputStr)
 end
 
 % Connect
-GsysObj = obj_Feedback(GmObj,ZbusObj,feedin,feedout);
+GsysObj = obj_Feedback(GmObj,ZbusObj,Port_v,Port_i);
 obj_CheckDim(GsysObj);
 
 % Output auxiliary data
 [~,GsysDSS] = GsysObj.ReadDSS(GsysObj);	% Descriptor state space model
-Port_v = feedin;                         % Index of vdq ports in input vector
-Port_i = feedout;                        % Index of idq ports in output vector
 
 end

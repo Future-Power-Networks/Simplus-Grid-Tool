@@ -15,7 +15,7 @@
 % Transctions on Circuit and Systems.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDamping] ...
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDamping,StateString,InputString,OutputString] ...
         = DeviceModel_Create(varargin) 
 
 %% load arguments and common symbols

@@ -73,15 +73,15 @@ fprintf('Do the power flow analysis.\n')
 fprintf('Get the descriptor-state-space model of network lines.\n')
 % Move load flow to bus admittance matrix
 [ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
-[YbusObj,~,~] = YbusCalcDSS(ListLine,Wbase);
-[~,YbusDSS] = YbusObj.ReadDSS(YbusObj);
+[YbusObj,YbusDSS,~] = YbusCalcDSS(ListLine,Wbase);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = obj_SwitchInOut(YbusObj,lsw);
+[ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.ReadString(ZbusObj);
 
 % ### Get the models of bus devices
 fprintf('Get the descriptor-state-space model of bus devices.\n')
 for i = 1:N_Device
-    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i}] = ...
+    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},DeviceStateStr{i},DeviceInputStr{i},DeviceOutputStr{i}] = ...
         DeviceModel_Create('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i},'Ts',Ts);
     
     % The following data is not used in the script, but will be used in
@@ -118,12 +118,13 @@ if ~isempty(GminSS.E)
 end
 
 % ### Output the System
-fprintf('### Output the system\n')
+fprintf('### Print the system\n')
 fprintf('System object name: GsysObj\n')
 fprintf('System name: GsysDSS\n')
 fprintf('Minimum realization system name: GminSS\n')
 if Enable_PrintOutput
-    [StateString,InputString,OutputString] = GsysObj.ReadString(GsysObj)
+    [SysStateString,SysInputString,SysOutputString] = GsysObj.ReadString(GsysObj);
+    PrintSysString(N_Device,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
 end
     
 %%
