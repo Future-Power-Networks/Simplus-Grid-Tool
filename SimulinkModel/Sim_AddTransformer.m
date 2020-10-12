@@ -29,9 +29,9 @@ for i = 1:N_Branch
             set_param(gcb,'Measurements','None');
 
             % Set parameters
-            set_param(gcb,'NominalPower','[Sbase, Wbase]');
-            set_param(gcb,'Winding1',['[' num2str(Tbr(i)) ', 1e-9, 1e-9]']);
-            set_param(gcb,'Winding2','[1, 1e-9, 1e-9]');
+            set_param(gcb,'NominalPower','[Sbase, Fbase]');
+            set_param(gcb,'Winding1',['[' num2str(Tbr(i)) ', 0, 0]']);
+            set_param(gcb,'Winding2','[1, 0, 0]');
             set_param(gcb,'Rm','1e4');
             set_param(gcb,'Lm','1e4');
         end

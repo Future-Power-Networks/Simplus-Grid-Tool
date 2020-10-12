@@ -25,9 +25,9 @@ fprintf('Load customized data.\n')
 
 % ### Load the data
 % Other possible function: readmatrix, csvread ...
-Name_Netlist = 'netlist.xlsx';
+% Name_Netlist = 'netlist.xlsx';
 % Name_Netlist = 'netlist_TestInfiniteBus.xlsx';
-% Name_Netlist = 'netlist_TestIEEE14Bus.xlsx';
+Name_Netlist = 'netlist_TestIEEE14Bus.xlsx';
 ListBus = xlsread(Name_Netlist,1);     
 ListDevice = xlsread(Name_Netlist,2);
 ListBasic = xlsread(Name_Netlist,3);
@@ -54,8 +54,8 @@ Ybase = 1/Zbase;
 Wbase = Fbase*2*pi;
 
 % ### Re-arrange the netlist and check error
-[ListLine,EnableIEEE] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE);
-[ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice,EnableIEEE);
+[ListLine] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE);
+[ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice);
 
 % ### Re-arrange the device data
 [DeviceType,Para] = RearrangeDeviceData(ListDevice,Wbase);

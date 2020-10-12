@@ -3,7 +3,7 @@
 % Author(s): Yitong Li
 
 %% Function
-function [UpdateBus,UpdateLine,UpdateDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice,EnableIEEE) 
+function [UpdateBus,UpdateLine,UpdateDevice,N_Bus,N_Branch,N_Device] = RearrangeNetlist(ListBus,ListLine,ListDevice) 
 
 %% Re-arrange netlist bus
 % Bus data for power flow analysis
@@ -58,16 +58,9 @@ netlist_line_NaN = isnan(ListLine);
 ListLine(r,c) = inf;
 
 % Check short-circuit and open-circuit
-CountIndDelete = 0;
-IndDelete = 0;
 for i = 1:N_Branch
     if ( isinf(Rbr(i)) || isinf(Xbr(i)) || ((Bbr(i)==0)&&(Gbr(i)==0)) )
-        if EnableIEEE == 1
-            CountIndDelete = CountIndDelete + 1;
-            IndDelete(CountIndDelete) = i;
-        else
-            error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is open circuit']);
-        end
+    	error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is open circuit']);
     end
     if ( (Rbr(i)==0) && (Xbr(i)==0) && (isinf(Bbr(i)) || isinf(Gbr(i))) )
         error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is short circuit']);
@@ -99,21 +92,6 @@ for i = 1:N_Branch
         ListLine(i,7) = 1/ListLine(i,7);
     end
 end
-
-% Delete open circuit line
-CountDelete = 0;
-for i = 1:N_Branch
-    FindDelete = find(IndDelete == i, 1);
-    if isempty(FindDelete)
-        ListLine_(i-CountDelete,:) = ListLine(i,:);
-    else
-        CountDelete = CountDelete + 1;
-    end
-end
-if CountDelete ~= CountIndDelete
-    error(['Error: Wrongly delete the open-circuit branch.']);
-end
-ListLine = ListLine_;
 
 % Re-order the branch sequence
 ListLine = sortrows(ListLine,2);

@@ -3,11 +3,10 @@
 
 % Author(s): Yitong Li
 
-function [UpdateLine,EnableFlag] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE)
+function [UpdateLine] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE)
 
 if ListLineIEEE(1,1) == 1
     % "ListLineIEEE" is enabled, which over-writes "ListLine"
-    EnableFlag = 1;
     fprintf('Warning: Line data in IEEE form is enabled, which over-writes the original line data.\n')
     ListLineIEEE = ListLineIEEE(4:end,:);
     
@@ -65,6 +64,45 @@ if ListLineIEEE(1,1) == 1
     
     % Use IEEE form to over-write toolbox form 
     UpdateLine = [FB,TB,R,X,B,G,T];
+    
+    % Delete open circuit branch
+    N_Br = N_Br_m + N_Br_s;
+    CountIndDelete = 0;
+    IndDelete = 0;
+    for i = 1:N_Br
+        % If a branch is open circuit
+        if ( isinf(R(i)) || isinf(X(i)) || ((B(i)==0)&&(G(i)==0)) ) 
+            if (FB(i) == TB(i))
+                % If this open-circuit branch is self branch, set a small
+                % value for later use
+                % G(i) = 1e-20;
+                % UpdateLine(i,6) = 1e-20;
+                % It looks like adding small B is better than adding small G, why?
+                B(i) = 1e-20;   
+                UpdateLine(i,5) = 1e-20;
+            else
+                % If this open-circuit branch is a mutual branch, delete it
+                % later.
+                CountIndDelete = CountIndDelete + 1;
+                IndDelete(CountIndDelete) = i;
+            end
+        end
+    end
+
+    CountDelete = 0;
+    for i = 1:N_Br
+        FindDelete = find(IndDelete == i, 1);
+        if isempty(FindDelete)
+            UpdateLine_(i-CountDelete,:) = UpdateLine(i,:);
+        else
+            CountDelete = CountDelete + 1;
+        end
+    end
+    if CountDelete ~= CountIndDelete
+        error(['Error: Wrongly delete the open-circuit branch.']);
+    end
+    UpdateLine = UpdateLine_;
+    
 else
     % Use the toolbox form
     EnableFlag = 0;
