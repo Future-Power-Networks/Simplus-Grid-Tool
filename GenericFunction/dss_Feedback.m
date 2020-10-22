@@ -37,6 +37,7 @@
 % Output equation
 % [y1]              = [D]*[x1] + [D]*[u1]
 %                         [x2]
+% In other words, the feedback operation does not influence matrix E.
 
 %% Function
 
@@ -54,7 +55,7 @@ end
 if nargin == 2
     [ly1,lu1] = size(G1.D);
     feedin = [1:lu1]; 
-    feedout = [1:ly1]
+    feedout = [1:ly1];
 end
 if nargin == 3
     error(['Error: feedout is missing'])

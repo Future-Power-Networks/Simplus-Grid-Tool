@@ -4,7 +4,6 @@ clear all;
 clc;
 close all;
 
-% cmap = get(groot,'defaultAxesColorOrder');
 fprintf('==================================\n')
 fprintf('Start.\n')
 fprintf('==================================\n')
@@ -25,8 +24,11 @@ fprintf('Load customized data.\n')
 % ### Load the data
 % Other possible function: readmatrix, csvread ...
 Name_Netlist = 'netlist.xlsx';
-% Name_Netlist = 'netlist_TestInfiniteBus.xlsx';
-% Name_Netlist = 'netlist_TestIEEE14Bus.xlsx';
+% Name_Netlist = 'netlist_Paper_SingleSGInfiniteBus.xlsx';
+% Name_Netlist = 'netlist_Paper_IEEE14Bus_v5.xlsx';
+% Name_Netlist = 'netlist_Gu4Bus.xlsx';
+% Name_Netlist = 'netlist_Li6Bus.xlsx';
+
 ListBus = xlsread(Name_Netlist,1);     
 ListDevice = xlsread(Name_Netlist,2);
 ListBasic = xlsread(Name_Netlist,3);
@@ -35,11 +37,12 @@ ListLineIEEE = xlsread(Name_Netlist,5);
 ListAdvance = xlsread(Name_Netlist,6);
 
 % ### Re-arrange advanced settings
-Enable_SimulinkModel    = ListAdvance(5);
-Enable_PlotPole         = ListAdvance(6);
-Enable_PlotAdmittance   = ListAdvance(7);
-Enable_PrintOutput      = ListAdvance(8);
-Enable_PlotSwing        = ListAdvance(9);
+Flag_PowerFlow          = ListAdvance(5);
+Enable_SimulinkModel    = ListAdvance(6);
+Enable_PlotPole         = ListAdvance(7);
+Enable_PlotAdmittance   = ListAdvance(8);
+Enable_PrintOutput      = ListAdvance(9);
+Enable_PlotSwing        = ListAdvance(10);
 
 % ### Re-arrange the simulation data
 Fs = ListBasic(1);
@@ -66,7 +69,14 @@ Wbase = Fbase*2*pi;
 
 % ### Power flow analysis
 fprintf('Do the power flow analysis.\n')
-[PowerFlow,YbusPowerFlow,~,~,~,~,~,~]=PowerFlow_GS(ListBus,ListLine,Wbase);
+switch Flag_PowerFlow
+    case 1
+        [PowerFlow,~,~,~,~,~,~,~] = PowerFlow_GS(ListBus,ListLine,Wbase);
+    case 2
+        [PowerFlow] = PowerFlow_NR(ListBus,ListLine,Wbase);
+    otherwise
+        error(['Error: Wrong setting for power flow algorithm.']);
+end
 ListPowerFlow = RearrangePowerFlow(PowerFlow);
 % Move load flow to bus admittance matrix
 [ListBus,ListLine,PowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
@@ -96,7 +106,8 @@ end
 % ### Get the model of whole system
 fprintf('Get the descriptor-state-space model of whole system.\n')
 GmObj = DeviceModel_Link(GmObj_Cell);
-[GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_Tm] = GmZbus_Connect(GmObj,ZbusObj);
+[GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r] = ...
+    GmZbus_Connect(GmObj,ZbusObj);
 
 % ### Chech if the system is proper
 fprintf('Check if the whole system is proper:\n')
@@ -104,16 +115,12 @@ if isproper(GsysDSS)
     fprintf('Proper.\n');
     fprintf('Calculate the minimum realization of the system model for later use.\n')
     GminSS = minreal(GsysDSS);    
-    % This function only changes the element sequence of state vectors, but
-    % does not change the element sequence of input and output vectors.
+    % This "minreal" function only changes the element sequence of state
+    % vectors, but does not change the element sequence of input and output
+    % vectors.
     InverseOn = 0;
-elseif isproper(1/GsysDSS)
-    fprintf('Warrning: improper.\n');
-    fprintf('Calculate the minimum realization of the inverse of the system model for later use.\n')
-    GminSS = minreal(1/GsysDSS);
-    InverseOn = 1;
 else
-    error(['Error: both the system and the its inverse are improper.'])
+    error('Error: The system is improper, which has more zeros than poles.')
 end
 if ~isempty(GminSS.E)
     error(['Error: minimum realization is in descriptor state space form.']);
@@ -153,7 +160,7 @@ if Enable_SimulinkModel == 1
 
     % Close existing model with same name
     close_system(Name_Model,0);
-
+    
     % Create the simulink model
     Main_Simulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow);
     fprintf('Get the simulink model successfully.\n')
@@ -178,6 +185,12 @@ figure_n = 1000;
 % Plot pole/zero map
 fprintf('Calculate pole/zero.\n')
 pole_sys = pole(GsysDSS)/2/pi;
+fprintf('Check if the system is stable:\n')
+if isempty(find(real(pole_sys)>1e-7, 1))
+    fprintf('Stable.\n');
+else
+    fprintf('Warning: Unstable.\n')
+end
 if Enable_PlotPole
     fprintf('Plot pole/zero map.\n')
     figure_n = figure_n+1;
@@ -185,13 +198,20 @@ if Enable_PlotPole
     scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
-    axis([-25,5,-80,80]);
-    mtit('Pole Map');
+    mtit('Global Pole Map');
+    
+	figure_n = figure_n+1;
+    figure(figure_n);
+    scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
+    xlabel('Real Part (Hz)');
+    ylabel('Imaginary Part (Hz)');
+    mtit('Zoomed Pole Map');
+    axis([-250,50,-250,250]);
 else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
-omega_p = logspace(-2,3,1e3)*2*pi;
+omega_p = logspace(-2,4,5e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
@@ -219,7 +239,7 @@ if Enable_PlotAdmittance
         if DeviceType{k} <= 50
             bodec(Gr_c{k}(1,1),1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
-            VecLegend{CountLegend} = num2str(k);
+            VecLegend{CountLegend} = ['Bus',num2str(k)];
         end
     end
     legend(VecLegend);
@@ -228,25 +248,28 @@ else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
 
-% Plot swing
+% Plot w related
 if Enable_PlotSwing
-    fprintf('Find the swing relation.\n')
+    fprintf('Find the w port relation.\n')
     for k = 1:N_Bus
-        if DeviceType{k} == 0
-            Gt_ss{k} = GminSS(Port_w(k),Port_Tm(k));
+        if floor(DeviceType{k}/10) == 0
+            Gt_ss{k} = GminSS(Port_w(k),Port_T_m(k));
+            Gt_sym{k} = ss2sym(Gt_ss{k});
+        elseif floor(DeviceType{k}/10) == 1
+         	Gt_ss{k} = GminSS(Port_w(k),Port_ang_r(k));
             Gt_sym{k} = ss2sym(Gt_ss{k});
         end
     end
-    fprintf('Plot swing.\n')
+    fprintf('Plot w port dynamics.\n')
  	figure_n = figure_n+1;
  	figure(figure_n);
     CountLegend = 0;
     VecLegend = {};
     for k = 1:N_Bus
-        if DeviceType{k} == 0
+        if (floor(DeviceType{k}/10) == 0) || (floor(DeviceType{k}/10) == 1)
             bodec(Gt_sym{k},1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);      
          	CountLegend = CountLegend + 1;
-            VecLegend{CountLegend} = num2str(k);
+            VecLegend{CountLegend} = ['Bus',num2str(k)]; 
         end
     end
     legend(VecLegend);

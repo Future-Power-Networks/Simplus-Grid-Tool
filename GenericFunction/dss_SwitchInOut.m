@@ -1,5 +1,5 @@
 % This function switches the input and output of a descriptor (implicit)
-% state space system by extend the state vector.
+% state space system by extending the state vector.
 
 % Author(s): Yitong Li, Yunjie Gu
 

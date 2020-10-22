@@ -18,6 +18,7 @@ function plotc(Xw,fbd,varargin)
     [LineStyle,~] = LoadVar('-','LineStyle',varargin);
     [Color,~] = LoadVar([],'Color',varargin);
     [PhaseOn,~] = LoadVar(1,'PhaseOn',varargin);
+    [PhaseShift,~] = LoadVar(0,'PhaseShift',varargin);
 
     [M,N,W] = size(Xw);
 
@@ -81,7 +82,7 @@ function plotc(Xw,fbd,varargin)
                     grid on;  hold on;
 
                     subplot(2,2,3);
-                    p(2)= semilogx(wbdn,squeeze(Arg_wn(m,n,:))*180/pi);
+                    p(2)= semilogx(wbdn,squeeze(Arg_wn(m,n,:)-PhaseShift)*180/pi);
                     grid on;  hold on;
 
                     subplot(2,2,2);
@@ -89,7 +90,7 @@ function plotc(Xw,fbd,varargin)
                     grid on;  hold on;
 
                     subplot(2,2,4);
-                    p(4)= semilogx(wbdp,squeeze(Arg_wp(m,n,:))*180/pi);
+                    p(4)= semilogx(wbdp,squeeze(Arg_wp(m,n,:)+PhaseShift)*180/pi);
                     grid on;  hold on;
                 end
             end    
@@ -132,7 +133,7 @@ function plotc(Xw,fbd,varargin)
                     grid on;  hold on;
 
                     subplot(2,1,2);
-                    p(2)= semilogx(fbd,squeeze(Arg_w(m,n,:))*180/pi);
+                    p(2)= semilogx(fbd,squeeze(Arg_w(m,n,:)+PhaseShift)*180/pi);
                     grid on;  hold on;  
                 end
             end    

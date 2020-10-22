@@ -32,7 +32,6 @@ classdef Class_Model_Advance < Class_Model_Linearization ...
 % =================================================
 % ### Public properties
 properties
-    DeviceType = [];  	% Device type
     Para = [];          % Device parameters
     PowerFlow = [];     % Power flow parameters
     Ts = [];            % Sampling period (s)
@@ -52,6 +51,7 @@ properties
 end
 
 properties(Nontunable)
+    DeviceType;         % Device type
     DirectFeedthrough;
 end
 
@@ -78,7 +78,10 @@ properties(Access = protected)
     Wk;
     fk;
     xk;
-    uk;      
+    uk;     
+    
+    % Timer
+    Timer = 0;
     
 end
 
@@ -121,6 +124,9 @@ methods(Access = protected)
         
         % Initialize W[k]
         obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
+        
+        % Initialize Timer
+        obj.Timer = 0;
     end
 
   	% Update states and calculate output in the same function
@@ -130,6 +136,8 @@ methods(Access = protected)
     
     % Update discreate states
     function updateImpl(obj, u)
+        
+        obj.Timer = obj.Timer + obj.Ts;
         
         switch obj.DiscreMethod
             

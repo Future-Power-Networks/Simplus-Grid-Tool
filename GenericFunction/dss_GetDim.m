@@ -20,14 +20,15 @@
 % this relation is not valid for a system without input and output but only
 % state theoratically, i.e., B=C=D=[] but A~=[] and E~=[]. Hence it is
 % always better to use length(A) to get the dimenstion of state vector.
-%
-% The model can be in either descriptor-state-space form or state-space
-% form.
 
 %%
-function [lx,lu,ly] = dss_GetDim(G)
+function [lx,lu,ly] = dss_GetDim(Gdss)
 
-lx = length(G.A);
-[ly,lu] = size(G.D);
+if ~is_dss(Gdss)
+    error(['Error: The system is not in dss form.']);
+end
+
+lx = length(Gdss.A);
+[ly,lu] = size(Gdss.D);
 
 end

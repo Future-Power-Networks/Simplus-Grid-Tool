@@ -75,11 +75,11 @@ if ListLineIEEE(1,1) == 1
             if (FB(i) == TB(i))
                 % If this open-circuit branch is self branch, set a small
                 % value for later use
-                % G(i) = 1e-20;
-                % UpdateLine(i,6) = 1e-20;
+                % G(i) = 1e-10;
+                % UpdateLine(i,6) = 1e-10;
                 % It looks like adding small B is better than adding small G, why?
-                B(i) = 1e-20;   
-                UpdateLine(i,5) = 1e-20;
+                B(i) = 1e-5;   
+                UpdateLine(i,5) = 1e-5;
             else
                 % If this open-circuit branch is a mutual branch, delete it
                 % later.

@@ -12,15 +12,21 @@
 % y      = Cx + Du
 
 %%
-function Gsym = dss2sym(Gss)
+function Gsym = dss2sym(Gdss)
 
-    A = Gss.A;
-    B = Gss.B;
-    C = Gss.C;
-    D = Gss.D;
-    E = Gss.E;
+    A = Gdss.A;
+    B = Gdss.B;
+    C = Gdss.C;
+    D = Gdss.D;
+    E = Gdss.E;
+    
+    if isempty(E)
+        error(['Error: The input system is not in dss form.']);
+    end
+    
     I = eye(length(E));
     s = sym('s');
     
-    Gsym = C*inv(E*(s*I)-A)*B + D;  
+    Gsym = C*inv(E*(s*I)-A)*B + D;
+    
 end

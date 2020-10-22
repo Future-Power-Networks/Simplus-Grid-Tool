@@ -1,6 +1,6 @@
-% convert a state-space model to a symbolic transfer function
+% Convert a state-space model to a symbolic transfer function
 
-% Author(s): Yunjie Gu
+% Author(s): Yunjie Gu, Yitong Li
 
 %%
 % this is very time consuming and should be used with care
@@ -9,35 +9,40 @@
 % overflow problem of tf
 
 %%
-function G = ss2sym(S,nu,ny)
+function Gsym = ss2sym(Gss,nu,ny)
+
+    % Check if the system is in dss form or ss form.
+    if is_dss(Gss)
+        error(['Error: The system is in dss form.']);
+    end
 
     try 
         nu; %#ok<VUNUS>
     catch
-        nu = 1:length(S.B(1,:));
+        nu = 1:length(Gss.B(1,:));
     end
     
     try 
         ny; %#ok<VUNUS>
     catch
-        ny = 1:length(S.C(:,1));
+        ny = 1:length(Gss.C(:,1));
     end
     
     s = sym('s');
     
-    [V,D] = eig(S.A);
+    [V,D] = eig(Gss.A);
     e = diag(D);
     h = 1./vpa(s*ones(length(e),1)-e);
     
-    G = zeros(length(ny),length(nu));
-    G = vpa(G);
+    Gsym = zeros(length(ny),length(nu));
+    Gsym = vpa(Gsym);
     for n = nu
         for m = ny
-            b = V^(-1)*S.B(:,n);
+            b = V^(-1)*Gss.B(:,n);
             b = b.';
-            c = S.C(m,:)*V;
+            c = Gss.C(m,:)*V;
             f = b.*c;
-            G(m,n) = vpa(f)*h + S.D(m,n);
+            Gsym(m,n) = vpa(f)*h + Gss.D(m,n);
         end
     end
 

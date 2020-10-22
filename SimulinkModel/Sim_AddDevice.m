@@ -16,20 +16,20 @@ N_Device = length(DeviceType);
 for i = 1:N_Device
     if floor(DeviceType{i}/10) <= 9
         
-        switch DeviceType{i}
+        switch floor(DeviceType{i}/10)
             case 0
                 Name_Device{i} = ['SM' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Synchronous Machine (dq-Frame System Object)'],FullName_Device{i});
-            case 10
+            case 1
                 Name_Device{i} = ['VSI-PLL' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
-            case 20
+            case 2
                 Name_Device{i} = ['VSI-Droop' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Grid-Forming Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
-            case 90
+            case 9
             	Name_Device{i} = ['Inf-Bus' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Infinite Bus'],FullName_Device{i});

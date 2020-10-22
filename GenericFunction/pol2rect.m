@@ -3,5 +3,5 @@
 % Author(s): Yunjie Gu， Yitong Li
 
 function rect = pol2rect(r,o)   % r = magnitude, o = angle in radians.
-rect = r*cos(o) + j*r*sin(o);   % rect = real + j*imag
+rect = r.*cos(o) + j*r.*sin(o);   % rect = real + j*imag
 end

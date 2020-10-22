@@ -10,7 +10,7 @@ Main();
 GsysObj;        % System object
 GsysDSS;        % Descriptor state space model with original state preserved
 GminSS;         % Minimum realization of descritptor state space model
-PowerFlow;      % Power flow results
+ListPowerFlow;  % Power flow results
 pole_sys;       % Poles of system
 
 %% Customer plot

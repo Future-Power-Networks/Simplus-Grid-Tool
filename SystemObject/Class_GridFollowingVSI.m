@@ -19,8 +19,14 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
         function SetString(obj)
           	% Notes:
             % P_dc is the absorbed power.
-            obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','v_dc','v_dc_i','w_pll_i','w','theta'};            
-            obj.InputString  = {'v_d','v_q','ang_r','P_dc'};
+            if obj.DeviceType == 10
+                obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
+            elseif obj.DeviceType == 11
+                obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
+            else
+                error(['Error: DeviceType.']);
+            end
+         	obj.InputString  = {'v_d','v_q','ang_r','P_dc'};
             obj.OutputString = {'i_d','i_q','w','v_dc','theta'};
         end
         
@@ -65,30 +71,18 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
             obj.i_q_r = i_q_r;
 
             % Get equilibrium
-            obj.x_e = [i_d; i_q; i_d_i; i_q_i; v_dc; v_dc_i; w_pll_i; w; theta];            
+            x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
+            if obj.DeviceType == 10
+                obj.x_e = [x_e_1; v_dc; v_dc_i];
+            elseif obj.DeviceType == 11
+                obj.x_e = x_e_1;
+            end
             obj.u_e = [v_d; v_q; ang_r; P_dc];
             obj.xi  = [xi];
         end
 
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
-            % Get states
-            i_d   	= x(1);
-            i_q   	= x(2);
-            i_d_i  	= x(3);
-            i_q_i 	= x(4);
-            v_dc  	= x(5);
-            v_dc_i 	= x(6);
-            w_pll_i = x(7);
-            w       = x(8);
-            theta   = x(9);
-
-            % Get input
-            v_d   = u(1);
-            v_q   = u(2);
-            ang_r = u(3);
-            P_dc  = u(4);
-
-            % Get parameters
+           	% Get parameters
             C_dc    = obj.Para(1);
             v_dc_r  = obj.Para(2);
             kp_v_dc = obj.Para(3);      % v_dc P
@@ -103,11 +97,40 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
             R       = obj.Para(12);     % L filter's inner resistance
             W0      = obj.Para(13);
             Gi_cd   = obj.Para(14);     % Cross-decouping gain
+            
+            % Get states
+          	i_d   	= x(1);
+         	i_q   	= x(2);
+          	i_d_i  	= x(3);
+            i_q_i 	= x(4);
+            w_pll_i = x(5);
+            w       = x(6);
+            theta   = x(7);
+            if obj.DeviceType == 10
+                v_dc  	= x(8);
+                v_dc_i 	= x(9);
+            elseif obj.DeviceType == 11
+                v_dc    = v_dc_r;
+            else
+                error(['Error: DeviceType.']);
+            end
+
+            % Get input
+        	v_d   = u(1);
+            v_q   = u(2);
+            ang_r = u(3);
+            P_dc  = u(4);
 
             % State space equations
             if CallFlag == 1 % Call state equations
                 % Auxiliary equations
-                i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
+                if obj.DeviceType == 10
+                    i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
+                elseif obj.DeviceType == 11
+                    i_d_r = P_dc/v_d;
+                else
+                    error(['Error: DeviceType.']);
+                end
                 % i_q_r = i_d_r * -k_pf;  %constant pf control, PQ node in power flow
                 % i_q_r = 0;
                 i_q_r = obj.i_q_r;    %constant q control, PQ/PV node in power flow
@@ -116,8 +139,10 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
                 e_ang = atan2(v_q,v_d) - ang_r;                 % PLL
 
                 % State equations: dx/dt = f(x,u)
-                dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc; 	% C_dc
-                dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
+                if obj.DeviceType == 10
+                    dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc; 	% C_dc
+                    dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
+                end
                 di_d_i = -(i_d_r - i_d)*ki_i_dq;               	% i_d I
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
                 di_d = (v_d - R*i_d + w*L*i_q - e_d)/L;      	% L
@@ -125,8 +150,14 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
                 dw_pll_i = e_ang*ki_pll;                    	% PLL I
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;      % PLL tau
                 dtheta = w;
-
-                f_xu = [di_d; di_q; di_d_i; di_q_i; dv_dc; dv_dc_i; dw_pll_i; dw; dtheta];
+                
+                % Output state
+                f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
+                if obj.DeviceType == 10
+                    f_xu = [f_xu_1; dv_dc; dv_dc_i];
+                elseif obj.DeviceType == 11
+                    f_xu = f_xu_1;
+                end
                 Output = f_xu;
             elseif CallFlag == 2 
                 % Output equations: y = g(x,u)

@@ -36,7 +36,7 @@ for r = 1:rmax
     C1 = []; D1 = [];
 
     % Get the state space model of one row
-    for c = 1:cmax      
+    for c = 1:cmax
         An = Gcell{r,c}.A;
         Bn = Gcell{r,c}.B;
         Cn = Gcell{r,c}.C;

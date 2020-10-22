@@ -30,8 +30,8 @@ for i = 1:N_Branch
 
             % Set parameters
             set_param(gcb,'NominalPower','[Sbase, Fbase]');
-            set_param(gcb,'Winding1',['[' num2str(Tbr(i)) ', 0, 0]']);
-            set_param(gcb,'Winding2','[1, 0, 0]');
+            set_param(gcb,'Winding1',['[' num2str(Tbr(i)) '*Vbase, 0, 0]']);
+            set_param(gcb,'Winding2','[Vbase, 0, 0]');
             set_param(gcb,'Rm','1e4');
             set_param(gcb,'Lm','1e4');
         end

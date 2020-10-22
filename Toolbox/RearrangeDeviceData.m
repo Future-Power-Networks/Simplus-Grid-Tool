@@ -4,19 +4,7 @@
 
 %% Notes
 %
-% ### motor convention, d lagging q, with d aligned to voltage
-% ### model can use either be perunit or SI unit, but time related
-%
-% variables (omega) should never be in perunit, which means:
-% current = Ib; 
-% voltage = Vb; 
-% frequency(omega) = 1;
-% resistance = Vb/Ib; 
-% inductance = Vb/Ib; 
-% capacitance = Ib/Vb;
-% power = torque = Ib*Vb; 
-% flux linkage = Vb;
-% damping torque = inertia = Ib*Vb;
+% The device model is in load convention.
 
 function [CellDeviceType,CellPara] = RearrangeDeviceData(NetlistDevice,W0)
 
@@ -38,7 +26,7 @@ Para00.w0 = W0;
 w_vdc     = 20*2*pi; 	% (rad/s) bandwidth, vdc
 w_pll     = 20*2*pi;  	% (rad/s) bandwidth, pll
 w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
-w_tau_pll = 200*2*pi;   
+w_tau_pll = 400*2*pi;   
 
 % vdc loop
 Para10.V_dc   	= 2.5;
@@ -109,28 +97,6 @@ Para90 = [];
 % Floating bus (open-circuit)
 % ======================================
 Para100 = [];
-
-%% Discarded codes
-% if 0
-% % ======================================
-% % Infinite bus (short-circuit in small-signal)
-% % ======================================
-% % A large inertia synchronous machine is used to simulate infinite bus for
-% % theoretical analysis
-% Para90 = Para00;
-% Para90.J = Para90.J*(1e4);
-% Para90.R = 0;
-% Para90.L = Para90.L/(1e4);
-% Para90.D = 0;
-%     
-% % ======================================
-% % Passive Load
-% % ======================================
-% Para90.W0 = W0;
-% Para90.Connection = 2;
-% Para90.R = 2;
-% Para90.L = 0.02;
-% end
 
 %% Re-arrange device data
 % Get the size of netlist

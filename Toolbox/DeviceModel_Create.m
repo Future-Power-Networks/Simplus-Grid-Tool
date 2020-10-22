@@ -207,7 +207,7 @@ for i = 1:length(OutputString)
         break
     end
 end
-[~,~,ly1_w] = dss_GetDim(Gm);
+[~,~,ly1_w] = ss_GetDim(Gm);
 Aw = 0;
 Bw = zeros(1,ly1_w);   Bw(ind_w) = 1;
 Cw = [1;zeros(ly1_w,1)];
@@ -220,7 +220,7 @@ StateString = [{'epsilon'},StateString];
 Sfb = ss([],[],[],V0);
 Se = feedback(Se,Sfb,[1,2],[1]);            % v = v' - V0 * w/s
 
-[~,~,ly2_w] = dss_GetDim(Se);
+[~,~,ly2_w] = ss_GetDim(Se);
 Sff = ss([],[],[],[[I0;zeros((ly2_w-3),1)],eye(ly2_w-1)]);
 Se = series(Se,Sff);                        % i' = i + I0 * w/s
 
@@ -244,7 +244,7 @@ Se = series(Se,Sff);                        % i' = i + I0 * w/s
 % G_D'Q' = Txi*G_d'q'*inv(Txi)
 
 % Get the dimension
-[~,lu_xi,ly_xi] = dss_GetDim(Se);
+[~,lu_xi,ly_xi] = ss_GetDim(Se);
 
 % Transform matrix
 Txi = [cos(xi),-sin(xi);
