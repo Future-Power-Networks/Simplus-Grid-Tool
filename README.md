@@ -1,13 +1,15 @@
-# Power-System-Analysis-Toolbox (Version: v2020-OCT-22)
+# Power-System-Analysis-Toolbox (Version: v2020-NOV-07)
 
-A Matlab/Simulink-based toolbox for dynamic analysis and simulations of large power systems.
+A Matlab/Simulink-based toolbox (Matlab 2020b) for dynamic analysis and simulations of large power systems.
 
-Matlab Version: 2020b. To be continued.
+To be continued.
 
 Copyright 2020, Simplex, Ltd.
 
-Notes: 
+# Help
 
-For using the toolbox, please run "Main_Custormer". 
+For using the toolbox, please run "Main_Custormer.m".
 
-For previous version of matlab, please convert "Simplex_PowerSystems_2016a.slx" to the required version, and then use it to cover "Simplex_PowerSystems.slx".
+For setting custormized data, please use "netlist.xlsx".
+
+If the old version of Matlab is used, please convert "Simplex_PowerSystems_2016a.slx" to the required version, and make it cover "Simplex_PowerSystems.slx". The Matlab version eailier than 2016a is not supported currently.

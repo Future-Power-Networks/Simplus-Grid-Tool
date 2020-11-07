@@ -57,8 +57,10 @@ while ((tolerance>tolerance_max) && (iteration<iteration_max))
             if list_type(i) == 2             % Computing Qi for PV bus
                 Q(i) = -imag(conj(V(i))*(sum_yv + Ybus(i,i)*V(i)));
                 if (Q(i) > Qmax(i)) || (Q(i) < Qmin(i))  % Checking for Qi violation
-                    if Q(i) < Qmin(i);   Q(i) = Qmin(i); % Set Qi to lower limit
-                    else;                Q(i) = Qmax(i); % Set Qi to upper limit
+                    if Q(i) < Qmin(i)
+                        Q(i) = Qmin(i); % Set Qi to lower limit
+                    else          
+                        Q(i) = Qmax(i); % Set Qi to upper limit
                     end
                     list_type(i) = 3;        % If violated, change bus type from PV to PQ
                 end

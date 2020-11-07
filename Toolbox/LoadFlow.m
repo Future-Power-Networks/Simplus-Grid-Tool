@@ -51,7 +51,7 @@ for m=1:nb
             Z(k,4)= imag(Sij(m,n));
             k=k+1;
          end
-        else % m>n ????
+        else % m>n ???
           if Sij(m,n)~=0;
             Z(l,5)=m;
             Z(l,6)=n;

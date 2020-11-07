@@ -8,7 +8,7 @@
 
 %% Class
 
-classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
+classdef Class_GridFollowingVSI < Class_Model_Advance
 
     properties(Access = protected)
         i_q_r;
@@ -98,20 +98,6 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
             W0      = obj.Para(13);
             Gi_cd   = obj.Para(14);     % Cross-decouping gain
             
-            % =================================
-            % For 14-bus SG-VSI-composite system
-            % =================================
-            % Add disturbance
-            if obj.Timer >= 15
-                %k = 20/5;
-                k = 5/25;
-                kp_pll = k*kp_pll;
-                ki_pll = k^2*ki_pll;
-                kp_v_dc = k*kp_v_dc;
-                ki_v_dc = k*ki_v_dc;
-            end
-            % =================================
-            
             % Get states
           	i_d   	= x(1);
          	i_q   	= x(2);
@@ -151,6 +137,8 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
                 e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i - Gi_cd*W0*L*(-i_q);
                 e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i + Gi_cd*W0*L*(-i_q);
                 e_ang = atan2(v_q,v_d) - ang_r;                 % PLL
+                        % - ang_r gives the reference in "load" convention,
+                        % like the Tw port.
 
                 % State equations: dx/dt = f(x,u)
                 if obj.DeviceType == 10

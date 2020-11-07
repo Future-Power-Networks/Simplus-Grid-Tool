@@ -24,7 +24,8 @@ function Xw = bodec(X,sbd,wbase,varargin)
     [InverseOn,~] = LoadVar(0,'InverseOn',varargin);    % Default 0, i.e., inverse is off
     [PhaseOn,~] = LoadVar(1,'PhaseOn',varargin);        % Default 1, i.e., plotting phase
     [PhaseShift,~] = LoadVar(0,'PhaseShift',varargin);  % Default 0, i.e., no phase shift
-    [LineWidth,~] = LoadVar(1.5,'LineWidth',varargin);  % Default 0, i.e., no phase shift
+    [LineWidth,~] = LoadVar(1.5,'LineWidth',varargin);  % Default 1.5
+    [Color,~] = LoadVar([],'Color',varargin);
     
     if (Option == 1)
         PlotOn = 1;
@@ -85,7 +86,7 @@ function Xw = bodec(X,sbd,wbase,varargin)
     end
 
     if PlotOn == 1
-        plotc(Xw,imag(sbd)/wbase,'PhaseOn',PhaseOn,'PhaseShift',PhaseShift,'LineWidth',LineWidth,varargin);
+        plotc(Xw,imag(sbd)/wbase,'PhaseOn',PhaseOn,'PhaseShift',PhaseShift,'LineWidth',LineWidth,'Color',Color,varargin);
     else
         fprintf('Warning: The bode plot is disabled.');
     end

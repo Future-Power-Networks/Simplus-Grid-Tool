@@ -1,6 +1,6 @@
 % Convert a state-space model to a symbolic transfer function
 
-% Author(s): Yunjie Gu, Yitong Li
+% Author(s): Yunjie Gu
 
 %%
 % this is very time consuming and should be used with care

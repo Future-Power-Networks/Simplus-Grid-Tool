@@ -4,7 +4,10 @@
 
 %% Notes
 %
-% The model is in load convention, admittance form.
+% The model is in 
+% ac-side load convention, admittance form.
+% dc-side generator convention, impedance form.
+
 
 %% Class
 
@@ -18,15 +21,15 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
         
         function SetString(obj)
           	% Notes:
-            % P_dc is the absorbed power.
-            if obj.DeviceType == 10
+            % P_dc is the output power to dc side.
+            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
             elseif obj.DeviceType == 11
                 obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
             else
                 error(['Error: DeviceType.']);
             end
-         	obj.InputString  = {'v_d','v_q','ang_r','P_dc'};
+        	obj.InputString  = {'v_d','v_q','ang_r','P_dc'};
             obj.OutputString = {'i_d','i_q','w','v_dc','theta'};
         end
         
@@ -48,7 +51,7 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
 
             % Calculate paramters
             i_d = P/V;
-            i_q = -Q/V;
+            i_q = -Q/V;     % Because of conjugate "i"
             v_d = V;
             v_q = 0;
             i_dq = i_d + 1j*i_q;
@@ -72,12 +75,12 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
 
             % Get equilibrium
             x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
-            if obj.DeviceType == 10
+            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 obj.x_e = [x_e_1; v_dc; v_dc_i];
             elseif obj.DeviceType == 11
                 obj.x_e = x_e_1;
             end
-            obj.u_e = [v_d; v_q; ang_r; P_dc];
+        	obj.u_e = [v_d; v_q; ang_r; P_dc];
             obj.xi  = [xi];
         end
 
@@ -106,7 +109,7 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
             w_pll_i = x(5);
             w       = x(6);
             theta   = x(7);
-            if obj.DeviceType == 10
+            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 v_dc  	= x(8);
                 v_dc_i 	= x(9);
             elseif obj.DeviceType == 11
@@ -116,15 +119,15 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
             end
 
             % Get input
-        	v_d   = u(1);
-            v_q   = u(2);
-            ang_r = u(3);
-            P_dc  = u(4);
-
+        	v_d    = u(1);
+            v_q    = u(2);
+            ang_r  = u(3);
+            P_dc   = u(4);
+            
             % State space equations
             if CallFlag == 1 % Call state equations
                 % Auxiliary equations
-                if obj.DeviceType == 10
+               	if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                     i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
                 elseif obj.DeviceType == 11
                     i_d_r = P_dc/v_d;
@@ -137,11 +140,17 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
                 e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i - Gi_cd*W0*L*(-i_q);
                 e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i + Gi_cd*W0*L*(-i_q);
                 e_ang = atan2(v_q,v_d) - ang_r;                 % PLL
+                        % "- ang_r" gives the reference in "load"
+                        % convention, like the Tw port.
 
                 % State equations: dx/dt = f(x,u)
                 if obj.DeviceType == 10
                     dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc; 	% C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
+                elseif obj.DeviceType == 12
+                    i_dc = P_dc/v_dc_r;
+                  	dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
+                    dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
                 end
                 di_d_i = -(i_d_r - i_d)*ki_i_dq;               	% i_d I
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
@@ -153,7 +162,7 @@ classdef Class_GridFollowingVSI < Class_Model_Advance
                 
                 % Output state
                 f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
-                if obj.DeviceType == 10
+                if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
                 elseif obj.DeviceType == 11
                     f_xu = f_xu_1;

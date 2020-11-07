@@ -11,7 +11,7 @@
 %%
 function G = ss2sym_(S)
 
-s = sym('s');
+s = sym('s','real');
 A = S.A;
 B = S.B;
 C = S.C;

@@ -45,7 +45,8 @@ for r = 1:rmax
         
         % Check if in desctiptor form
         if (isempty(En) && (~isempty(An)))
-            error(['Error: the system is not in descritpor-state-space form']);
+            En = eye(length(An));   % This will convert the ss form to dss form.
+            % error(['Error: the system is not in descritpor-state-space form']);
         end
         
         % Re-arrange two cells horizontally

@@ -3,7 +3,7 @@
 
 % Author(s): Yitong Li
 
-function [GsysObj,GsysDSS,Port_v_dq,Port_i_dq,Port_w,Port_T_m,Port_ang_r] = GmZbus_Connect(GmObj,ZbusObj)
+function [GsysObj,GsysDSS,Port_v_dq,Port_i_dq,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = GmZbus_Connect(GmObj,ZbusObj)
 
 % Get the strings
 [~,InputStr,OutputStr] = GmObj.ReadString(GmObj);
@@ -14,6 +14,8 @@ Port_i_dq  = [];
 Port_w  = [];
 Port_T_m = [];
 Port_ang_r = [];
+Port_P_dc = [];
+Port_v_dc = [];
 
 % Find vdq for feedin, and other port for later use
 CountIn_v = 0;
@@ -31,6 +33,9 @@ for n = 1:length(InputStr)
     if strcmp(InputStr{n},'ang_r')
         Port_ang_r(IndexIn_Bus) = n;
     end
+    if strcmp(InputStr{n},'P_dc')
+        Port_P_dc(IndexIn_Bus) = n;
+    end
 end
 
 % Find idq for feedout, and other output for later use
@@ -45,6 +50,9 @@ for n = 1:length(OutputStr)
     IndexOut_Bus = CountOut_i/2;
     if ( strcmp(OutputStr{n},'w') || strcmp(OutputStr{n},'omega') )
         Port_w(IndexOut_Bus) = n;   % Index of port omega
+    end
+    if strcmp(OutputStr{n},'v_dc')
+        Port_v_dc(IndexOut_Bus) = n;
     end
 end
 

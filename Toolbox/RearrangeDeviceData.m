@@ -13,8 +13,7 @@ function [CellDeviceType,CellPara] = RearrangeDeviceData(NetlistDevice,W0)
 % Synchronous generator
 % ======================================
 Para00.J  = 3.5*2/W0^2;
-% Para00.D  = 1/W0^2;
-Para00.D  = 5/W0^2;
+Para00.D  = 1/W0^2;
 Para00.L  = 0.03/W0;
 Para00.R  = 0.01;
 Para00.w0 = W0;
@@ -26,7 +25,7 @@ Para00.w0 = W0;
 w_vdc     = 20*2*pi; 	% (rad/s) bandwidth, vdc
 w_pll     = 20*2*pi;  	% (rad/s) bandwidth, pll
 w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
-w_tau_pll = 400*2*pi;   
+w_tau_pll = 200*2*pi;   
 
 % vdc loop
 Para10.V_dc   	= 2.5;
@@ -54,8 +53,8 @@ Para10.Gi_cd    = 0;
 % Grid-forming VSI (Droop-Controlled)
 % ======================================
 % Bandwidth
-w_ildq  = 500*2*pi;     % (Hz)
-w_droop = 10*2*pi;
+w_ildq  = 500*2*pi;     % (rad/s), current loop bandwidth
+w_droop = 10*2*pi;      % (rad/s), droop filter bandwidth
 
 % AC filter
 Para20.Lf = 0.03/W0;

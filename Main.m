@@ -17,6 +17,12 @@ fprintf('==================================\n')
 
 %%
 % ==================================================
+% Add folder to path
+% ==================================================
+AddFolder2Path();
+
+%%
+% ==================================================
 % Load customized data
 % ==================================================
 fprintf('Load customized data.\n')
@@ -24,10 +30,6 @@ fprintf('Load customized data.\n')
 % ### Load the data
 % Other possible function: readmatrix, csvread ...
 Name_Netlist = 'netlist.xlsx';
-% Name_Netlist = 'netlist_Paper_SingleSGInfiniteBus.xlsx';
-% Name_Netlist = 'netlist_Paper_IEEE14Bus_v5.xlsx';
-% Name_Netlist = 'netlist_Gu4Bus.xlsx';
-% Name_Netlist = 'netlist_Li6Bus.xlsx';
 
 ListBus = xlsread(Name_Netlist,1);     
 ListDevice = xlsread(Name_Netlist,2);
@@ -37,12 +39,12 @@ ListLineIEEE = xlsread(Name_Netlist,5);
 ListAdvance = xlsread(Name_Netlist,6);
 
 % ### Re-arrange advanced settings
-Flag_PowerFlow          = ListAdvance(5);
-Enable_SimulinkModel    = ListAdvance(6);
-Enable_PlotPole         = ListAdvance(7);
-Enable_PlotAdmittance   = ListAdvance(8);
-Enable_PrintOutput      = ListAdvance(9);
-Enable_PlotSwing        = ListAdvance(10);
+Flag_PowerFlow                  = ListAdvance(5);
+Enable_CreateSimulinkModel      = ListAdvance(6);
+Enable_PlotPole                 = ListAdvance(7);
+Enable_PlotAdmittance           = ListAdvance(8);
+Enable_PrintOutput              = ListAdvance(9);
+Enable_PlotSwing                = ListAdvance(10);
 
 % ### Re-arrange the simulation data
 Fs = ListBasic(1);
@@ -70,9 +72,9 @@ Wbase = Fbase*2*pi;
 % ### Power flow analysis
 fprintf('Do the power flow analysis.\n')
 switch Flag_PowerFlow
-    case 1
+    case 1  % Gauss-Seidel 
         [PowerFlow,~,~,~,~,~,~,~] = PowerFlow_GS(ListBus,ListLine,Wbase);
-    case 2
+    case 2  % Newton-Raphson
         [PowerFlow] = PowerFlow_NR(ListBus,ListLine,Wbase);
     otherwise
         error(['Error: Wrong setting for power flow algorithm.']);
@@ -106,7 +108,7 @@ end
 % ### Get the model of whole system
 fprintf('Get the descriptor-state-space model of whole system.\n')
 GmObj = DeviceModel_Link(GmObj_Cell);
-[GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r] = ...
+[GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ...
     GmZbus_Connect(GmObj,ZbusObj);
 
 % ### Chech if the system is proper
@@ -120,10 +122,10 @@ if isproper(GsysDSS)
     % vectors.
     InverseOn = 0;
 else
-    error('Error: The system is improper, which has more zeros than poles.')
+    error('Error: System is improper, which has more zeros than poles.')
 end
-if ~isempty(GminSS.E)
-    error(['Error: minimum realization is in descriptor state space form.']);
+if is_dss(GminSS)
+    error(['Error: Minimum realization is in descriptor state space (dss) form.']);
 end
 
 % ### Output the System
@@ -151,7 +153,7 @@ fprintf('=================================\n')
 fprintf('Simulink Model\n')
 fprintf('=================================\n')
 
-if Enable_SimulinkModel == 1
+if Enable_CreateSimulinkModel == 1
     
     fprintf('Create the simulink model aotumatically.\n')
 
@@ -186,7 +188,7 @@ figure_n = 1000;
 fprintf('Calculate pole/zero.\n')
 pole_sys = pole(GsysDSS)/2/pi;
 fprintf('Check if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-7, 1))
+if isempty(find(real(pole_sys)>1e-9, 1))
     fprintf('Stable.\n');
 else
     fprintf('Warning: Unstable.\n')
@@ -221,11 +223,7 @@ if Enable_PlotAdmittance
           1 -1j];  
     for k = 1:N_Bus
         if DeviceType{k} <= 50
-            if InverseOn == 0
-                Gr_ss{k} = GminSS(Port_i([2*k-1,2*k]),Port_v([2*k-1,2*k]));
-            else          
-                Gr_ss{k} = GminSS(Port_v([2*k-1,2*k]),Port_i([2*k-1,2*k]));
-            end
+            Gr_ss{k} = GminSS(Port_i([2*k-1,2*k]),Port_v([2*k-1,2*k]));
             Gr_sym{k} = ss2sym(Gr_ss{k});
             Gr_c{k} = Tj*Gr_sym{k}*Tj^(-1);
         end
@@ -237,13 +235,13 @@ if Enable_PlotAdmittance
     VecLegend = {};
     for k = 1:N_Bus
         if DeviceType{k} <= 50
-            bodec(Gr_c{k}(1,1),1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0); 
+            bodec(Gr_c{k}(1,1),1j*omega_pn,2*pi,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)];
         end
     end
     legend(VecLegend);
-    mtit('Bode Diagram: Admittance');
+    mtit('Bode diagram: admittance');
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
@@ -254,10 +252,10 @@ if Enable_PlotSwing
     for k = 1:N_Bus
         if floor(DeviceType{k}/10) == 0
             Gt_ss{k} = GminSS(Port_w(k),Port_T_m(k));
-            Gt_sym{k} = ss2sym(Gt_ss{k});
+            Gt_sym{k} = -ss2sym(Gt_ss{k});  % The negative sign is because of the load convention.
         elseif floor(DeviceType{k}/10) == 1
          	Gt_ss{k} = GminSS(Port_w(k),Port_ang_r(k));
-            Gt_sym{k} = ss2sym(Gt_ss{k});
+            Gt_sym{k} = -ss2sym(Gt_ss{k});
         end
     end
     fprintf('Plot w port dynamics.\n')
@@ -273,10 +271,10 @@ if Enable_PlotSwing
         end
     end
     legend(VecLegend);
-    mtit('Bode Diagram: Swing');
+    mtit('Bode diagram: omega-related transfer function');
     
 else
-    fprintf('Warning: The default plot of swing spectrum is disabled.\n');
+    fprintf('Warning: The default plot of omega-related spectrum is disabled.\n');
 end
     
 %%
