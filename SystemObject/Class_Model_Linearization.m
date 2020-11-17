@@ -35,14 +35,13 @@ classdef Class_Model_Linearization < Class_Model_Base
             D = zeros(ly,lu);
 
             % Get the perturb size
-            perturb_factor = 1e-5;
-            perturb_x = perturb_factor * abs(1+norm(x_e));
-            perturb_u = perturb_factor * abs(1+norm(u_e));
+            perturb_factor = 1e-6;
 
             % Perturb x to calculate Ass and Css
             for i = 1:lx
                 x_p = x_e;                      % Reset xp
-                x_p(i) = x_e(i) + perturb_x;    % Positive perturb on the ith element of xp
+                perturb_x = perturb_factor * abs(1+abs(x_e(i))); 	% Perturb size
+                x_p(i) = x_e(i) + perturb_x;                        % Positive perturb on the ith element of xp
                 dx_p = obj.StateSpaceEqu(obj, x_p, u_e, 1);
                 y_p  = obj.StateSpaceEqu(obj, x_p, u_e, 2);
                 A(:,i) = (dx_p - dx_e)/(x_p(i) - x_e(i));
@@ -52,7 +51,8 @@ classdef Class_Model_Linearization < Class_Model_Base
             % Perturb u to calculate Bss and Dss
             for i = 1:lu
                 up = u_e;                       % Reset up
-                up(i) = u_e(i) + perturb_u;     % Positve perturb on the ith element of up
+                perturb_u = perturb_factor * abs(1+abs(u_e(i)));    % Perturb size
+                up(i) = u_e(i) + perturb_u;                         % Positve perturb on the ith element of up
                 dx_p = obj.StateSpaceEqu(obj, x_e, up, 1);
                 y_p  = obj.StateSpaceEqu(obj, x_e, up, 2);
                 B(:,i) = (dx_p - dx_e)/(up(i) - u_e(i));

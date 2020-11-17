@@ -108,7 +108,7 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
                 kp_pll = k*kp_pll;
                 ki_pll = k^2*ki_pll;
                 kp_v_dc = k*kp_v_dc;
-                ki_v_dc = k*ki_v_dc;
+                ki_v_dc = k^2*ki_v_dc;
             end
             % =================================
             

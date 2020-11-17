@@ -1,25 +1,33 @@
 % Author(s): Yitong Li, Yunjie Gu
 
-clear all; 
-clc;
-close all;
-
-fprintf('==================================\n')
-fprintf('Start.\n')
-fprintf('==================================\n')
+%% 
+% Notes:
+%
+% Please read "README.md" first before using the toolbox.
+%
+% Please use "Main_Customer.m" rather than this file for running the
+% toolbox.
 
 %%
-% check1 = 0      % For test, will be deleted later
-% Remained questions:
-% - Speed up the power flow
-% - Advanced power flow, including droop bus, etc
-% - For system object, please make sure the first port is vdq or idq.
+clear all;  % Clear matlab workspace
+clc;        % Clear matlab command window
+close all;  % Close all figures, etc
+
+fprintf('==================================\n')
+fprintf('Start\n')
+fprintf('==================================\n')
 
 %%
 % ==================================================
 % Add folder to path
 % ==================================================
-AddFolder2Path();
+% AddFolder2Path();
+addpath('GenericFunction');
+addpath('Plot');
+addpath('SimulinkModel');
+addpath('SystemObject');
+addpath('Toolbox');
+addpath('ForTest');
 
 %%
 % ==================================================
@@ -27,19 +35,19 @@ AddFolder2Path();
 % ==================================================
 fprintf('Load customized data.\n')
 
-% ### Load the data
-% Other possible function: readmatrix, csvread ...
+% ### Load the customized data
+% Other available function: readmatrix, csvread ...
 Name_Netlist = 'netlist.xlsx';
 
-ListBus = xlsread(Name_Netlist,1);     
-ListDevice = xlsread(Name_Netlist,2);
-ListBasic = xlsread(Name_Netlist,3);
-ListLine = xlsread(Name_Netlist,4);
+ListBus    	 = xlsread(Name_Netlist,1);     
+ListDevice	 = xlsread(Name_Netlist,2);
+ListBasic    = xlsread(Name_Netlist,3);
+ListLine     = xlsread(Name_Netlist,4);
 ListLineIEEE = xlsread(Name_Netlist,5);
-ListAdvance = xlsread(Name_Netlist,6);
+ListAdvance  = xlsread(Name_Netlist,6);
 
 % ### Re-arrange advanced settings
-Flag_PowerFlow                  = ListAdvance(5);
+Flag_PowerFlowAlgorithm      	= ListAdvance(5);
 Enable_CreateSimulinkModel      = ListAdvance(6);
 Enable_PlotPole                 = ListAdvance(7);
 Enable_PlotAdmittance           = ListAdvance(8);
@@ -52,10 +60,10 @@ Ts = 1/Fs;              % (s), sampling period
 Fbase = ListBasic(2);   % (Hz), base frequency
 Sbase = ListBasic(3);   % (VA), base power
 Vbase = ListBasic(4);   % (V), base voltage
-Ibase = Sbase/Vbase;
-Zbase = Sbase/Ibase;
-Ybase = 1/Zbase;
-Wbase = Fbase*2*pi;
+Ibase = Sbase/Vbase;    % (A), base current
+Zbase = Sbase/Ibase;    % (Ohm), base impedance
+Ybase = 1/Zbase;        % (S), base admittance
+Wbase = Fbase*2*pi;     % (rad/s), base angular frequency
 
 % ### Re-arrange the netlist and check error
 [ListLine] = RearrangeNetlist_IEEE2Toolbox(ListLine,ListLineIEEE);
@@ -71,7 +79,7 @@ Wbase = Fbase*2*pi;
 
 % ### Power flow analysis
 fprintf('Do the power flow analysis.\n')
-switch Flag_PowerFlow
+switch Flag_PowerFlowAlgorithm
     case 1  % Gauss-Seidel 
         [PowerFlow,~,~,~,~,~,~,~] = PowerFlow_GS(ListBus,ListLine,Wbase);
     case 2  % Newton-Raphson
@@ -85,7 +93,7 @@ ListPowerFlow = RearrangePowerFlow(PowerFlow);
 ListPowerFlow_ = RearrangePowerFlow(PowerFlow);
 
 % ### Get the model of lines
-fprintf('Get the descriptor-state-space model of network lines.\n')
+fprintf('Get the descriptor state space model of network lines.\n')
 
 [YbusObj,YbusDSS,~] = YbusCalcDSS(ListLine,Wbase);
 [~,lsw] = size(YbusDSS.B);
@@ -93,7 +101,7 @@ ZbusObj = obj_SwitchInOut(YbusObj,lsw);
 [ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.ReadString(ZbusObj);
 
 % ### Get the models of bus devices
-fprintf('Get the descriptor-state-space model of bus devices.\n')
+fprintf('Get the descriptor state space model of bus devices.\n')
 for i = 1:N_Device
     [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},DeviceStateStr{i},DeviceInputStr{i},DeviceOutputStr{i}] = ...
         DeviceModel_Create('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i},'Ts',Ts);
@@ -106,7 +114,7 @@ for i = 1:N_Device
 end
 
 % ### Get the model of whole system
-fprintf('Get the descriptor-state-space model of whole system.\n')
+fprintf('Get the descriptor state space model of whole system.\n')
 GmObj = DeviceModel_Link(GmObj_Cell);
 [GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ...
     GmZbus_Connect(GmObj,ZbusObj);
@@ -131,17 +139,18 @@ end
 % ### Output the System
 fprintf('\n')
 fprintf('==================================\n')
-fprintf('Print the system\n')
+fprintf('Print results\n')
 fprintf('==================================\n')
-fprintf('System object name: GsysObj\n')
-fprintf('System name: GsysDSS\n')
-fprintf('Minimum realization system name: GminSS\n')
+fprintf('Model (system object form): GsysObj\n')
+fprintf('Model (descriptor state space form): GsysDSS\n')
+fprintf('Model (state space form): GminSS\n')
 if Enable_PrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.ReadString(GsysObj);
-    fprintf('Print power flow results: | bus | P | Q | V | angle | omega |')
-    ListPowerFlow
-    fprintf('Print system ports:\n')
+    fprintf('Print ports of GsysDSS:\n')
     PrintSysString(N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
+	fprintf('Print power flow result:\n')
+    fprintf('| bus | P | Q | V | angle | omega |')
+    ListPowerFlow
 end
     
 %%
@@ -155,7 +164,7 @@ fprintf('=================================\n')
 
 if Enable_CreateSimulinkModel == 1
     
-    fprintf('Create the simulink model aotumatically.\n')
+    fprintf('Creating the simulink model aotumatically, please wait for a few seconds...\n')
 
     % Set the simulink model name
     Name_Model = 'mymodel_v1';
@@ -283,3 +292,10 @@ fprintf('==================================\n')
 fprintf('End: toolbox run successfully.\n')
 fprintf('==================================\n')
    
+%%
+% Remained questions:
+% - Advanced power flow, including droop bus, etc
+% - For system object, please make sure the first port is vdq or idq.
+% - The power flow calculation assumes the frequency is Wbase
+% - Initialization of network lines, such as the current of line inductor
+% and the voltage of line capacitor.

@@ -44,10 +44,10 @@ Para10.tau_pll  = 1/w_tau_pll;
 
 % Current loop
 Para10.k_pf     = 0;
-Para10.kp_i_dq  = Para10.L * w_idq;
-Para10.ki_i_dq  = Para10.L * w_idq^2 /4;
-Para10.w0       = W0;
-Para10.Gi_cd    = 0;
+Para10.kp_i_dq  = Para10.L * w_idq;         % P
+Para10.ki_i_dq  = Para10.L * w_idq^2 /4;    % I
+Para10.w0       = W0;   
+Para10.Gi_cd    = 0;                        % Cross-decoupling gain
 
 % ======================================
 % Grid-forming VSI (Droop-Controlled)

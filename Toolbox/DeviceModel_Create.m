@@ -1,6 +1,6 @@
-% This function creates a descriptor state space model for devices
-% connected to buses (such as synchronous generator, PLL-controlled VSI
-% ...)
+% This function creates the descriptor state space model for devices
+% connected to buses (such as synchronous generators, voltage source
+% inverters, ...)
 
 % Author(s): Yitong Li, Yunjie Gu
 
@@ -8,11 +8,11 @@
 
 % Y. Gu, Y. Li, Y. Zhu, T. C. Green, "Impedance-based whole-system modeling
 % for a composite grid via embedding of frame dynamics." IEEE Transactions
-% on Power Systems.
+% on Power Systems, Early Access.
 
 % Y. Li, Y. Gu, T. C. Green, "Interpreting frame tramsformations in ac
 % systems as diagonolization of harmonic transfer function." IEEE
-% Transctions on Circuit and Systems.
+% Transctions on Circuit and Systems, 2020.
 
 %% function
 function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDamping,StateString,InputString,OutputString] ...
@@ -165,21 +165,30 @@ else
     DeviceDiscreDamping = -1;
 end
 
-%% Check if need to adjust frame
+%% Check if the device needs to adjust its frame
 if floor(Type/10) >= 9
     
 else    
     
-%% Impedance transformation: local swing frame dq -> local steady frame d'q'
+%% Frame transformation: local swing frame dq -> local steady frame d'q'
 % Effect of the frame perturbation on arbitrary signal udq:
 % Complex vector dq frame:
 % [ud'q'+] = [exp(j*epsilon), 0              ] * [udq+]
 % [ud'q'-]   [0,              exp(-j*epsilon)]   [udq-]
+%             \_____________________________/
+%                           \/
+%            T_epsilon in complex vector form
+% Transfer matrix dq frame:
+% [ud'] = [cos(epsilon), -sin(epsilon)] * [ud]
+% [uq']   [sin(epsilon),  cos(epsilon)]   [uq]
+%          \_________________________/
+%                      \/
+%       T_epsilon in transfer matrix form
 % where "epsilon" is the angle that swing frame axes leads steady frame
 % axes, which is also the angle that swing-frame signals lag the
 % steady-frame signals.
 %
-% Linearized effect:
+% Linearized:
 % Steady = Swing + Equilibrium * epsilon with epsilon = omega/s.
 % Complex vector dq frame:
 % [ud'q'+] = [udq+] + [ judq+0] * epsilon
@@ -229,24 +238,26 @@ Se = series(Se,Sff);                        % i' = i + I0 * w/s
 % Complex vector dq frame:
 % [uD'Q'+] = [exp(j*xi), 0         ] * [ud'q'+]
 % [uD'Q'-]   [0,         exp(-j*xi)]   [ud'q'-]
-%             \-------------------/
-%                      Txi
+%             \___________________/
+%                      \/
+%           T_xi in complex vector form
 % Transfer matrix dq frame:
 % [uD'] = [cos(xi), -sin(xi)] * [ud']
 % [uQ']   [sin(xi),  cos(xi)]   [uq']
-%          \---------------/
-%                 Txi
-% where "xi" is the angle that local steady frame axes lead the global
-% steady frame axes, which is also the local signals lag the global
-% signals.
+%          \_______________/
+%                 \/
+%     T_xi in transfer matrix form
+% where "xi" is the steady-state angle that local steady frame axes lead
+% the global steady frame axes, which is also the local signals lag the
+% global signals.
 %
 % Effect on the transfer function: similarity transform
-% G_D'Q' = Txi*G_d'q'*inv(Txi)
+% G_D'Q' = T_xi * G_d'q' * inv(T_xi)
 
 % Get the dimension
 [~,lu_xi,ly_xi] = ss_GetDim(Se);
 
-% Transform matrix
+% Transformation matrix
 Txi = [cos(xi),-sin(xi);
        sin(xi), cos(xi)];
 
@@ -287,6 +298,7 @@ GmObj.WriteString(GmObj,StateString,InputString,OutputString);
 if Flag_SwitchInOut == 1
     GmObj = obj_SwitchInOut(GmObj,2);
 end
+
 % Check dimension mismatch
 obj_CheckDim(GmObj);
 
