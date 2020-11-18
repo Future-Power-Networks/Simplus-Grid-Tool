@@ -16,8 +16,6 @@ If the old version of Matlab is used, please convert "Simplex_PowerSystems_2016a
 
 # Contact
 
-Yitong Li
-Email: yitong.li15@imperial.ac.uk
+Yitong Li, yitong.li15@imperial.ac.uk
 
-Yunjie Gu
-Email: yg934@bath.ac.uk
+Yunjie Gu, yg934@bath.ac.uk
