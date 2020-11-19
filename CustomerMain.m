@@ -1,15 +1,16 @@
-% Customer uses this function to run toolbox.
+% To customer:
+% Please use and only use this file to run toolbox.
 
 %% Tips
 
-% Please ensure that the toolbox is installed ("Install.m") the first time.
+% Please ensure that the toolbox is installed (by using "Install.m") the
+% first time.
 
-% For changing default data to custormized data, please use
-% "CustomerData.xlsx". (More examples can be found in the "Examples"
-% folder)
+% For changing default data, please use "CustomerData.xlsx". (More examples
+% can be found in the "Examples" folder)
 
-% The toolbox defaultly prints the results in matlab command window, saves
-% the results into matlab workspace, and prints figures.
+% The toolbox defaultly prints the results in Matlab command window, saves
+% the results into Matlab workspace, and prints figures.
 
 %% Run toolbox
 SimplexPS.Toolbox.Main(); 	% This function runs toolbox.

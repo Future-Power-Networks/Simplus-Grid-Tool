@@ -14,4 +14,4 @@ savepath;
 clc;
 
 fprintf('SimplexPowerSystem is uninstalled successfully! \n')
-fprintf('Many thanks for choosing SimplexPowerSystem! \n')
+fprintf('Many thanks for using SimplexPowerSystem! \n')
