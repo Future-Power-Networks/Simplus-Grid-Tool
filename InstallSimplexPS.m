@@ -17,10 +17,11 @@ addpath(genpath(pwd));  % Add path
 savepath;               % Save path
 
 %% Save lib to the corresponding matlab version
-MatlabVersion = ver('MATLAB').Release;
-MatlabVersion = MatlabVersion(2:(end-1));
-MatlabVersionYear = MatlabVersion(1:(end-1));
-if str2num(MatlabVersionYear)<2015
+%MatlabVersion = ver('MATLAB').Release;
+MatlabVersion = version('-release');
+MatlabVersion = MatlabVersion(1:(end-1));
+MatlabVersionYear = MatlabVersion;
+if str2double(MatlabVersionYear)<2015
     error(['Error: Please use Matlab version 2015a or later!']);
 end
 
