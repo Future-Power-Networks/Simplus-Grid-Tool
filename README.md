@@ -1,21 +1,32 @@
-# Power-System-Analysis-Toolbox (Version: v2020-NOV-18)
+# SimplexPowerSystem (Version: v2020-NOV-18)
 
-A Matlab/Simulink-based toolbox (Matlab 2020b) for dynamic analysis and simulation of large-scale power systems.
+An open-source toolbox for dynamic analysis and simulation of large-scale power systems.
+Based on Matlab/Simulink but is going to be extended to Python. To be continued.
 
-Copyright. Simplex.
+Copyright. 2019-2020 Simplex Co. Ltd.
 
-## Quick Start
+# System Requirement
 
-Download all codes, and run "CustormerMain.m" by using Matlab 2020b.
+Matlab 2016a or later, with Simulink, Simscape/PowerSystem
 
-## Quick Help
+# Insallation
 
-If the old version of Matlab is used, please convert "Simplex_PowerSystems_2016a.slx" to the required version, and make it cover "Simplex_PowerSystems.slx". This file contains the Simulink blocks used in this toolbox. The Matlab version eailier than 2016a is not supported currently.
+Installation: copy the repository into your PC and run install.m under the root path of the repository
+Uninstallation: run uninstall.m under the root path of the repository
 
-For setting custormer data, please use "CustormerData.xlsx". It defaultly contains the data of a 4-bus generator-inverter-composite power system example.
+# Examples
+# Yitong, the two files below are moved to /Exmaples
+For running examples of the toolbox, please use "Main_Custormer.m".
 
-## Contact
+For changing custormized data, please use "netlist.xlsx".
+
+# Yitong: the step below needs to be included in install.m
+# If the old version of Matlab is used, please convert "Simplex_PowerSystems_2016a.slx" to the required version, and make it cover "Simplex_PowerSystems.slx". The Matlab version eailier than 2016a is not supported currently.
+
+# Contact
 
 Yitong Li, yitong.li15@imperial.ac.uk
 
 Yunjie Gu, yg934@bath.ac.uk
+
+Yue Zhu, yue.zhu18@imperial.ac.uk
