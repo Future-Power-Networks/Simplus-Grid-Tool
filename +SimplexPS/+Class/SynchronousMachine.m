@@ -8,7 +8,7 @@
 
 %% Class
 
-classdef Class_SynchronousMachine_Disturb < Class_Model_Advance
+classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
 
     properties(Access = protected)
         psi_f;
@@ -83,51 +83,6 @@ classdef Class_SynchronousMachine_Disturb < Class_Model_Advance
             L  = obj.Para(3);
             R  = obj.Para(4);
             W0 = obj.Para(5);
-            
-            % =================================
-            % For single-SG-infinite-bus system
-            % =================================
-            % Reduce D to the rated case in the paper
-            if obj.Timer >= 9  
-                D_new = D/100;
-                T_m_new = T_m + D*W0 - D_new*W0;
-                
-                D = D_new;
-                T_m = T_m_new;
-            end
-            
-          % Increase D to damp the swing osillation
-         	if obj.Timer >= 15
-                D_new = D*50;
-                T_m_new = T_m + D*W0 - D_new*W0;
-                
-                D = D_new;
-                T_m = T_m_new;
-            end
-            % =================================
-
-%              % =================================
-%              % For 14-bus SG-VSI-composite system
-%              % =================================
-%              % Increase D to make the system reach steady state faster at
-%              % the first few seconds
-%              if (obj.Timer >= 0) && (obj.Timer <=5)
-%                  D_new = D*2;
-%                  T_m_new = T_m + D*W0 - D_new*W0;
-%                  
-%                  D = D_new;
-%                  T_m = T_m_new;
-%              end
-%              if (obj.Timer >= 20)
-%                  D_new = D*2;
-%                  T_m_new = T_m + D*W0 - D_new*W0;
-%                  
-%                  D = D_new;
-%                  T_m = T_m_new;
-%              end
-%              % =================================
-            
-
 
             % ??? Temp
             psi_f = obj.psi_f;

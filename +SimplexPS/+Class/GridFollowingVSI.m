@@ -4,11 +4,13 @@
 
 %% Notes
 %
-% The model is in load convention, admittance form.
+% The model is in 
+% ac-side load convention, admittance form.
+% dc-side generator convention, impedance form.
 
 %% Class
 
-classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
+classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
 
     properties(Access = protected)
         i_q_r;
@@ -18,15 +20,15 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
         
         function SetString(obj)
           	% Notes:
-            % P_dc is the absorbed power.
-            if obj.DeviceType == 10
+            % P_dc is the output power to dc side.
+            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
             elseif obj.DeviceType == 11
                 obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
             else
                 error(['Error: DeviceType.']);
             end
-         	obj.InputString  = {'v_d','v_q','ang_r','P_dc'};
+        	obj.InputString  = {'v_d','v_q','ang_r','P_dc'};
             obj.OutputString = {'i_d','i_q','w','v_dc','theta'};
         end
         
@@ -48,7 +50,7 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
 
             % Calculate paramters
             i_d = P/V;
-            i_q = -Q/V;
+            i_q = -Q/V;     % Because of conjugate "i"
             v_d = V;
             v_q = 0;
             i_dq = i_d + 1j*i_q;
@@ -72,12 +74,12 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
 
             % Get equilibrium
             x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
-            if obj.DeviceType == 10
+            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 obj.x_e = [x_e_1; v_dc; v_dc_i];
             elseif obj.DeviceType == 11
                 obj.x_e = x_e_1;
             end
-            obj.u_e = [v_d; v_q; ang_r; P_dc];
+        	obj.u_e = [v_d; v_q; ang_r; P_dc];
             obj.xi  = [xi];
         end
 
@@ -85,32 +87,18 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
            	% Get parameters
             C_dc    = obj.Para(1);
             v_dc_r  = obj.Para(2);
-            kp_v_dc = obj.Para(3);      % v_dc P
-            ki_v_dc = obj.Para(4);      % v_dc I
-            kp_pll  = obj.Para(5);      % PLL P
-            ki_pll  = obj.Para(6);      % PLL I
+            kp_v_dc = obj.Para(3);      % v_dc, P
+            ki_v_dc = obj.Para(4);      % v_dc, I
+            kp_pll  = obj.Para(5);      % PLL, P
+            ki_pll  = obj.Para(6);      % PLL, I
             tau_pll = obj.Para(7);
-            kp_i_dq = obj.Para(8);      % i_dq P
-            ki_i_dq = obj.Para(9);      % i_dq I
+            kp_i_dq = obj.Para(8);      % i_dq, P
+            ki_i_dq = obj.Para(9);      % i_dq, I
             k_pf    = obj.Para(10);
             L       = obj.Para(11);     % L filter
             R       = obj.Para(12);     % L filter's inner resistance
             W0      = obj.Para(13);
-            Gi_cd   = obj.Para(14);     % Cross-decouping gain
-            
-            % =================================
-            % For 14-bus SG-VSI-composite system
-            % =================================
-            % Add disturbance
-            if obj.Timer >= 15
-                %k = 20/5;
-                k = 5/25;
-                kp_pll = k*kp_pll;
-                ki_pll = k^2*ki_pll;
-                kp_v_dc = k*kp_v_dc;
-                ki_v_dc = k^2*ki_v_dc;
-            end
-            % =================================
+            Gi_cd   = obj.Para(14);     % Current cross-decouping gain
             
             % Get states
           	i_d   	= x(1);
@@ -120,7 +108,7 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
             w_pll_i = x(5);
             w       = x(6);
             theta   = x(7);
-            if obj.DeviceType == 10
+            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 v_dc  	= x(8);
                 v_dc_i 	= x(9);
             elseif obj.DeviceType == 11
@@ -130,32 +118,90 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
             end
 
             % Get input
-        	v_d   = u(1);
-            v_q   = u(2);
-            ang_r = u(3);
-            P_dc  = u(4);
-
+        	v_d    = u(1);
+            v_q    = u(2);
+            ang_r  = u(3);
+            P_dc   = u(4);
+            
             % State space equations
-            if CallFlag == 1 % Call state equations
-                % Auxiliary equations
-                if obj.DeviceType == 10
+            % dx/dt = f(x,u)
+            % y     = g(x,u)
+            if CallFlag == 1    % Call state equations
+                
+              	% Current limit
+                i_d_limit = 1.5;
+                i_q_limit = 1.5;
+                
+                % Get current reference
+               	if (obj.DeviceType == 10) || (obj.DeviceType == 12)
+                    % Anti wind-up for vdc control
+                    v_dc_i = min(v_dc_i,i_d_limit);
+                    v_dc_i = max(v_dc_i,-i_d_limit);
+                    
+                    % Dc-link control
                     i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
                 elseif obj.DeviceType == 11
-                    i_d_r = P_dc/v_d;
+                    
+                    % Direct current control
+                    i_d_r = P_dc/v_d;   
                 else
                     error(['Error: DeviceType.']);
                 end
-                % i_q_r = i_d_r * -k_pf;  %constant pf control, PQ node in power flow
+                
+              	% i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
+                i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
                 % i_q_r = 0;
-                i_q_r = obj.i_q_r;    %constant q control, PQ/PV node in power flow
+                
+                % Current saturation
+                i_d_r = min(i_d_r,i_d_limit);
+                i_d_r = max(i_d_r,-i_d_limit);
+                i_q_r = min(i_q_r,i_q_limit);
+                i_q_r = max(i_q_r,-i_q_limit);
+                
+                % Ac voltage limit
+             	e_d_limit_H = 1.5;
+                e_d_limit_L = -1.5;
+               	e_q_limit_H = 1.5;
+                e_q_limit_L = -1.5;
+                
+                % Current controller anti-windup
+             	i_d_i = min(i_d_i,e_d_limit_H);
+                i_d_i = max(i_d_i,e_d_limit_L);
+             	i_q_i = min(i_q_i,e_q_limit_H);
+                i_q_i = max(i_q_i,e_q_limit_L);
+                
+                % Ac voltage (duty cycle*v_dc)
                 e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i - Gi_cd*W0*L*(-i_q);
                 e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i + Gi_cd*W0*L*(-i_q);
-                e_ang = atan2(v_q,v_d) - ang_r;                 % PLL
+                
+                % Ac voltage (duty cycle) saturation
+                e_d = min(e_d,e_d_limit_H);
+                e_d = max(e_d,e_d_limit_L);
+                e_q = min(e_q,e_q_limit_H);
+                e_q = max(e_q,e_q_limit_L);
 
+                % PLL angle measurement
+                e_ang = atan2(v_q,v_d) - ang_r;
+                        % "- ang_r" gives the reference in "load"
+                        % convention, like the Tw port.
+
+                % Frequency limit
+                w_limit_H = W0*1.5;
+                w_limit_L = W0*0.5;
+                
+                % Frequency saturation
+                w = min(w,w_limit_H);
+                w = max(w,w_limit_L);
+                        
+                % ###
                 % State equations: dx/dt = f(x,u)
                 if obj.DeviceType == 10
                     dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc; 	% C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
+                elseif obj.DeviceType == 12
+                    i_dc = P_dc/v_dc_r;
+                  	dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
+                    dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
                 end
                 di_d_i = -(i_d_r - i_d)*ki_i_dq;               	% i_d I
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
@@ -167,13 +213,14 @@ classdef Class_GridFollowingVSI_Disturb < Class_Model_Advance
                 
                 % Output state
                 f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
-                if obj.DeviceType == 10
+                if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
                 elseif obj.DeviceType == 11
                     f_xu = f_xu_1;
                 end
                 Output = f_xu;
-            elseif CallFlag == 2 
+                
+            elseif CallFlag == 2
                 % Output equations: y = g(x,u)
                 g_xu = [i_d; i_q; w; v_dc; theta];
                 Output = g_xu;

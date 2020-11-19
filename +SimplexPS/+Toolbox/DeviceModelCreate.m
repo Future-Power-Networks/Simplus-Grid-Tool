@@ -62,7 +62,7 @@ switch floor(Type/10)
     
     % ### Synchronous generator
     case 0      % Type 0-9
-        Device = Class_SynchronousMachine;
+        Device = SimplexPS.Class.SynchronousMachine;
         Device.Para  = [Para.J;
                         Para.D;
                         Para.L;
@@ -71,7 +71,7 @@ switch floor(Type/10)
                     
     % ### Grid-Following VSI
     case 1      % Type 10-19
-        Device = Class_GridFollowingVSI;
+        Device = SimplexPS.Class.GridFollowingVSI;
         Device.Para = [Para.C_dc;
                        Para.V_dc;
                        Para.kp_v_dc;
@@ -89,7 +89,7 @@ switch floor(Type/10)
                    
     % ### Grid-Forming VSI
     case 2  % Type 20-29
-        Device = Class_GridFormingVSI;
+        Device = SimplexPS.Class.GridFormingVSI;
         Device.Para = [Para.Lf;
                        Para.Rf;
                        Para.Cf;
@@ -116,7 +116,7 @@ switch floor(Type/10)
                    
     % ### Infinite Bus
     case 9 % Type 90-99
-        Device = Class_InfiniteBus;
+        Device = SimplexPS.Class.InfiniteBus;
         Device.Para  = [];
         % Because the infinite bus is defined with "i" input and "v" output,
         % they need to be switched finally.
@@ -124,7 +124,7 @@ switch floor(Type/10)
    
     % ### Floating Bus
     case 10
-        Device = Class_FloatingBus;
+        Device = SimplexPS.Class.FloatingBus;
         Device.Para = [];
         
     % ### Otherwise
@@ -286,7 +286,7 @@ GmDSS = dss(An,Bn,Cn,Dn,En);
 
 %% Get the object model
 % Create an object
-GmObj = Class_Model_Base;
+GmObj = SimplexPS.Class.ModelBase;
 
 % Load the model
 GmObj.LoadDSS(GmObj,GmDSS);
@@ -296,7 +296,7 @@ GmObj.WriteString(GmObj,StateString,InputString,OutputString);
 
 % Switch input and output for required device
 if Flag_SwitchInOut == 1
-    GmObj = obj_SwitchInOut(GmObj,2);
+    GmObj = SimplexPS.ObjSwitchInOut(GmObj,2);
 end
 
 % Check dimension mismatch

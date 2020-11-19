@@ -1,0 +1,13 @@
+matlab.System
+	-> ModelBase 
+		& matlab.system.mixin.Nondirect
+		& matlab.system.mixin.Propagates
+		-> ModelAdvance
+			-> ModelTemplate
+			-> Inductor
+			-> SynchronousMachine
+			-> GridFollowingVSI
+			-> GridFormingVSI
+			-> InfiniteBus
+			-> FloatingBus
+			

@@ -26,6 +26,8 @@ fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
 Name_Netlist = 'CustomerData.xlsx';
+% Name_Netlist = 'SingleSGInfiniteBus.xlsx';
+% Name_Netlist = 'SingleVSIInfiniteBus.xlsx';
 
 ListBus    	 = xlsread(Name_Netlist,1);     
 ListDevice	 = xlsread(Name_Netlist,2);
@@ -206,7 +208,7 @@ if Enable_PlotPole
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
-    axis([-250,50,-250,250]);
+    axis([-80,20,-150,150]);
     
     %SimplexPS.mtit('Pole Map');
 else

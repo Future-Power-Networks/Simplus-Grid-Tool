@@ -15,7 +15,7 @@ function obj_new = ObjSwitchInOut(obj,length_sw)
 [StateStr,InputStr,OutputStr] = obj.ReadString(obj);
 
 % Create a new object
-obj_new = Class_Model_Base;
+obj_new =SimplexPS.Class.ModelBase;
 
 % Switch
 G_new = SimplexPS.DssSwitchInOut(G,length_sw);

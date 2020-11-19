@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-classdef Class_Model_Inductor < Class_Model_Advance
+classdef Inductor < SimplexPS.Class.ModelAdvance
     methods(Static)
         % Set the strings of input, output, state
         function SetString(obj)

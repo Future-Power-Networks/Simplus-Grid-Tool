@@ -8,7 +8,7 @@
 
 %% Class
 
-classdef Class_GridFormingVSI < Class_Model_Advance
+classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
     methods(Static)
         
         % Set the strings of input, output, state

@@ -24,7 +24,7 @@
 % file.
 
 %%
-classdef Class_Model_Base < matlab.System
+classdef ModelBase < matlab.System
     
 %%   
 % =================================================

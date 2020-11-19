@@ -191,7 +191,7 @@ YbusDSS = SimplexPS.DssArrange(YbusCell);      	% Whole state space form
 
 %% Get the object model
 % Create a new object
-YbusObj = Class_Model_Base;
+YbusObj = SimplexPS.Class.ModelBase;
 
 % Load the model
 YbusObj.LoadDSS(YbusObj,YbusDSS);

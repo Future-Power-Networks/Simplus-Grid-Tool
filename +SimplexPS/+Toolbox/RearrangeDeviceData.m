@@ -14,7 +14,7 @@ function [CellDeviceType,CellPara] = RearrangeDeviceData(NetlistDevice,W0)
 % ======================================
 Para00.J  = 3.5*2/W0^2;
 Para00.D  = 1/W0^2;
-Para00.L  = 0.03/W0;
+Para00.L  = 0.1/W0;
 Para00.R  = 0.01;
 Para00.w0 = W0;
 

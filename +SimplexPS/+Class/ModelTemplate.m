@@ -11,7 +11,7 @@
 
 %% Class
 
-classdef Class_Model_Template < Class_Model_Advance
+classdef ModelTemplate < SimplexPS.Class.ModelAdvance
     methods(Static)
         
         % Set the strings of state, input, output

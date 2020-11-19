@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-classdef Class_PassiveLoad < Class_Model_Advance
+classdef PassiveLoad < SimplexPS.Class.ModelAdvance
     properties(Access = protected)
         Connection;
         W0;

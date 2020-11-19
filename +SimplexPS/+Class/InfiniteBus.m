@@ -1,16 +1,19 @@
-% This class defines the model of a floating bus, i.e., open circuit bus.
+% This class is currently discarded, and should not be used!
+% This class defines the model of an infinite bus.
+
+% Notes: An infinite bus is short-circuit in small-signal analysis.
 
 % Author(s): Yitong Li
 
-classdef Class_FloatingBus < Class_Model_Advance
+classdef InfiniteBus < SimplexPS.Class.ModelAdvance
     
     methods(Static)
         
-        % Set the strings of input, output, state
+        % Set the strings of state, input, output
         function SetString(obj)
-         	obj.InputString  = {'v_d','v_q'};  	% u
-        	obj.OutputString = {'i_d','i_q'};  	% y
-        	obj.StateString  = {};           	% x
+            obj.StateString  = {};           	% x
+         	obj.InputString  = {'i_d','i_q'};           % u
+        	obj.OutputString = {'v_d','v_q','w'};  	% y
         end
         
         % Calculate the equilibrium
@@ -25,22 +28,26 @@ classdef Class_FloatingBus < Class_Model_Advance
             % Calculate
             v_d = V;
             v_q = 0;
+            i_d = P/V;
+            i_q = -Q/V;
             
-            obj.u_e = [v_d; v_q];
+            obj.u_e = [i_d; i_q];
             obj.x_e = [];
             obj.xi = [xi];
         end
         
         % State space model
-        function [Output] = StateSpaceEqu(obj,x,u,CallFlag)        
+        function [Output] = StateSpaceEqu(obj,x,u,CallFlag)     
+            w	= obj.PowerFlow(5);
             if CallFlag == 1
               	f_xu = [];
                 Output = f_xu;
             elseif CallFlag == 2
                 % Output equations: y = g(x,u)
-                i_d = 0;
-                i_q = 0;
-                g_xu = [i_d; i_q];
+                V	= obj.PowerFlow(3);
+                v_d = V;
+                v_q = 0;
+                g_xu = [v_d; v_q; w];
                 Output = g_xu;              
             end
         end

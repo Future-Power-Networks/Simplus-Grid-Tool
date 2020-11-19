@@ -4,14 +4,16 @@ Document tree:
 
 Rootpath
 	-> +SimplexPS (root name space)
+		-> +Class
+		-> +PowerFlow
 		-> +Toolbox
+		-> +Simulink
 		-> Generic functions such as dss2ss ...
 	-> Documentations
 	-> Examples
 	-> Library (Simulink library for SimplexPS)
-		-> slblocks.m (Load SimplexPS lib to simulink broswer)
-		-> SimplexPS_2016a.slx (SimplexPS lib in version 2016a)
-		-> SimplexPS_2020b.slx (SimplexPS lib in version 2016a)
+		-> slblocks.m (Load SimplexPS lib to Simulink broswer)
+		-> SimplexPS.slx (SimplexPS libaray file)
 	-> Install.m
 	-> Unstall.m
 	-> CustomerData.xlsx

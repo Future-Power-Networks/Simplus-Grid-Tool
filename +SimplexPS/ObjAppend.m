@@ -22,7 +22,7 @@ InputStr = [InputStr1,InputStr2];
 OutputStr = [OutputStr1,OutputStr2];
 
 % Create a new object
-Gobj = Class_Model_Base;
+Gobj = SimplexPS.Class.ModelBase;
 Gobj.LoadDSS(Gobj,G);
 Gobj.WriteString(Gobj,StateStr,InputStr,OutputStr);
 

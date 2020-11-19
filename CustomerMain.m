@@ -5,13 +5,14 @@
 % Please ensure that the toolbox is installed ("Install.m") the first time.
 
 % For changing default data to custormized data, please use
-% "CustomerData.xlsx".
+% "CustomerData.xlsx". (More examples can be found in the "Examples"
+% folder)
 
 % The toolbox defaultly prints the results in matlab command window, saves
 % the results into matlab workspace, and prints figures.
 
 %% Run toolbox
-SimplexPS.ToolboxMain(); 	% This function runs toolbox.
+SimplexPS.Toolbox.Main(); 	% This function runs toolbox.
 
 %% Custormer available results
 GsysDSS;            % Whole-system model (descriptor state space form)
