@@ -35,8 +35,8 @@ InputStr = InputStr1;
 OutputStr = OutputStr1;
 
 % Create a new object
-Gobj = Class_Model_DSS;
-Gobj.LoadModel(Gobj,G);
+Gobj = Class_Model_Base;
+Gobj.LoadDSS(Gobj,G);
 Gobj.WriteString(Gobj,StateStr,InputStr,OutputStr);
 SimplexPS.ObjCheckDim(Gobj);
 

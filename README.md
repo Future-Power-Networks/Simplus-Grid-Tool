@@ -7,7 +7,7 @@ Copyright. 2019-2020 Simplex Co. Ltd.
 
 ## System Requirement
 
-Matlab 2016a or later, with Simulink, Simscape/PowerSystem.
+Matlab 2015a or later, with Simulink, Simscape/PowerSystem.
 
 ## Quick Start
 

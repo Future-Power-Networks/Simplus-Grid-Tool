@@ -286,10 +286,10 @@ GmDSS = dss(An,Bn,Cn,Dn,En);
 
 %% Get the object model
 % Create an object
-GmObj = Class_Model_DSS;
+GmObj = Class_Model_Base;
 
 % Load the model
-GmObj.LoadModel(GmObj,GmDSS);
+GmObj.LoadDSS(GmObj,GmDSS);
 
 % Get the strings
 GmObj.WriteString(GmObj,StateString,InputString,OutputString);

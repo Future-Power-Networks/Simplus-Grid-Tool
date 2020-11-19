@@ -15,11 +15,11 @@ function obj_new = ObjSwitchInOut(obj,length_sw)
 [StateStr,InputStr,OutputStr] = obj.ReadString(obj);
 
 % Create a new object
-obj_new = Class_Model_DSS;
+obj_new = Class_Model_Base;
 
 % Switch
 G_new = SimplexPS.DssSwitchInOut(G,length_sw);
-obj_new.LoadModel(obj_new,G_new);
+obj_new.LoadDSS(obj_new,G_new);
 
 % Get the string
 StateStr_new = StateStr;

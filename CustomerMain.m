@@ -11,7 +11,7 @@
 % the results into matlab workspace, and prints figures.
 
 %% Run toolbox
-SimplexPS.Toolbox.Main(); 	% This function runs toolbox.
+SimplexPS.ToolboxMain(); 	% This function runs toolbox.
 
 %% Custormer available results
 GsysDSS;            % Whole-system model (descriptor state space form)

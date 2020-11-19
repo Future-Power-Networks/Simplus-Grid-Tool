@@ -5,8 +5,8 @@
 function Gobj = DeviceModelLink(GmObj)
 
     % Create a new obj
-    Gobj = Class_Model_DSS;
-    Gobj.LoadModel(Gobj,dss([],[],[],[],[]));
+    Gobj = Class_Model_Base;
+    Gobj.LoadDSS(Gobj,dss([],[],[],[],[]));
     Gobj.WriteString(Gobj,{},{},{});
     
     % Append

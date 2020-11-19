@@ -1,14 +1,11 @@
-Class_Model_Base < matlab.System
-
-Class_Model_DSS           < Class_Model_Base
-Class_Model_Linearization <
-
-Class_Model_Advance < Class_Model_Linearization
+matlab.System
+	-> Class_Model_Base 
 		& matlab.system.mixin.Nondirect
 		& matlab.system.mixin.Propagates
-
-Class_Model_Template     < Class_Model_Advance
-Class_Model_Inductor     <
-Class_GridFollowingVSI 	 <
-Class_GridFormingVSI 	 <
-Class_SynchronousMachine <
+		-> Class_Model_Advance
+			-> Class_Model_Template
+			-> Class_Model_Inductor
+			-> Class_SynchronousMachine
+			-> Class_GridFollowingVSI
+			-> Class_GridFormingVSI
+			

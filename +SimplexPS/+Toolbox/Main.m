@@ -21,7 +21,7 @@ fprintf('==================================\n')
 % ==================================================
 % Load customized data
 % ==================================================
-fprintf('Loading customized data, please wait a second...\n')
+fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
@@ -164,7 +164,7 @@ if Enable_CreateSimulinkModel == 1
     SimplexPS.Simulink.MainSimulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
-    fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
+    %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
 
 else
     fprintf('Warning: The auto creation of simulink model is disabled.\n')
