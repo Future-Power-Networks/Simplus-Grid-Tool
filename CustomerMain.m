@@ -1,19 +1,17 @@
-% This function is for customer use
+% Customer uses this function to run toolbox.
 
-%% Notes
+%% Tips
 
-% Please run "Install.m" before using the toolbox.
+% Please ensure that the toolbox is installed ("Install.m") the first time.
 
-% For changing custormized data, please use "CustomerData.xlsx", which
-% contains default data for running the toolbox the first time.
+% For changing default data to custormized data, please use
+% "CustomerData.xlsx".
 
-% The toolbox defaultly prints the results in matlab command window and
-% save the results into matlab workspace. Additionally, three figures are
-% defaultly plotted: pole map; admittance spectrum measured at each bus;
-% frequency related transfer function for each machine.
+% The toolbox defaultly prints the results in matlab command window, saves
+% the results into matlab workspace, and prints figures.
 
-%% Call "Main"
-SimplexPS.Main();             % This function runs the toolbox.
+%% Run toolbox
+SimplexPS.Toolbox.Main(); 	% This function runs toolbox.
 
 %% Custormer available results
 GsysDSS;            % Whole-system model (descriptor state space form)
@@ -34,7 +32,8 @@ ListPowerFlow_;     % Power flow result only for active device by combing
                     
 pole_sys;           % Whole-system poles, or equivalently eigenvalues.
 
-mymodel_v1;         % This is the simulink model generated automatically.
+mymodel_v1;         % This is the simulink model generated automatically 
+                    % based on "CustomerData.xlsx".
 
 %% Customer function and plot
 % Custormer can write their functions here to further deal with the data

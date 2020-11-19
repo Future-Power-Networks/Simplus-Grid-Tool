@@ -10,3 +10,8 @@ close all
 %% Remove folder from path
 rmpath(genpath(pwd));
 restoredefaultpath;
+savepath;
+clc;
+
+fprintf('SimplexPowerSystem is uninstalled successfully! \n')
+fprintf('Many thanks for choosing SimplexPowerSystem! \n')

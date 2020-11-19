@@ -1,20 +1,21 @@
 ====================================
-Documentation tree:
+Document tree:
 ====================================
 
-Rootpath ->
-+SimplexPS (root name space)
-Examples
-Library (Simulink library for SimplexPS)
-Documentations
-Install.m
-Unstall.m
-CustomerData.xlsx
-README.md
-
-+SimplexPS ->
-+Toolbox
-GenericFunctions such as
+Rootpath
+	-> +SimplexPS (root name space)
+		-> +Toolbox
+		-> Generic functions such as dss2ss ...
+	-> Documentations
+	-> Examples
+	-> Library (Simulink library for SimplexPS)
+		-> slblocks.m (Load SimplexPS lib to simulink broswer)
+		-> SimplexPS_2016a.slx (SimplexPS lib in version 2016a)
+		-> SimplexPS_2020b.slx (SimplexPS lib in version 2016a)
+	-> Install.m
+	-> Unstall.m
+	-> CustomerData.xlsx
+	-> README.md
 
 ====================================
 Notes:

@@ -11,11 +11,7 @@ Matlab 2016a or later, with Simulink, Simscape/PowerSystem.
 
 ## Quick Start
 
-Simply copy the repository (or download all codes) into your PC, and run "Install.m".
-
-## Uninstall Toolbox
-
-Please run "Uninstall.m".
+Copy the repository (download all codes) into your PC, and run "Install.m".
 
 ## Contact
 
