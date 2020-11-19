@@ -14,7 +14,7 @@ function Main_Simulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow)
 %% Common variables
 NewSimulinkModel('ModelName',Name_Model);
 Name_Lib = 'Simplex Power Systems';
-Name_LibFile = 'Simplex_PowerSystems';
+Name_LibFile = 'SimplexPS_2016a';
 % load_system(Name_LibFile);
 
 %% Add powergui

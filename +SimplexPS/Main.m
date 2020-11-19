@@ -19,25 +19,13 @@ fprintf('==================================\n')
 
 %%
 % ==================================================
-% Add folder to path
-% ==================================================
-% AddFolder2Path();
-addpath('GenericFunction');
-addpath('Plot');
-addpath('SimulinkModel');
-addpath('SystemObject');
-addpath('Toolbox');
-addpath('ForTest');
-
-%%
-% ==================================================
 % Load customized data
 % ==================================================
 fprintf('Load customized data.\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
-Name_Netlist = 'netlist.xlsx';
+Name_Netlist = 'CustomerData.xlsx';
 
 ListBus    	 = xlsread(Name_Netlist,1);     
 ListDevice	 = xlsread(Name_Netlist,2);

@@ -1,6 +1,31 @@
+====================================
+Documentation tree:
+====================================
+
+Rootpath ->
++SimplexPS (root name space)
+Examples
+Library (Simulink library for SimplexPS)
+Documentations
+Install.m
+Unstall.m
+CustomerData.xlsx
+README.md
+
++SimplexPS ->
++Toolbox
+GenericFunctions such as
+
+====================================
+Notes:
+====================================
+
 1. The Project is going to be renamed SimplexPowerSystem (SimplexPS, in short), while the project on HIL is called SimplexRealTime (SimplexRT)
+
 2. under the root folder there will be three main folders: +SimplexPS (root name space), Examples, and Documentations
+
 3. +SimplexPS will contain all source codes and sub-namespaces, say +netlist
+
 4. there are three set of naming conventions: 
     1) microsoft, like PlotFigure EpwmConfig
     2) gnu-linux, like plot_figure pwm_config

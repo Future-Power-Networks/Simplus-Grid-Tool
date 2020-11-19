@@ -1,13 +1,18 @@
+% This function installs the toolbox into the customer PC.
+
+%% Notes
+%
+% After running this file, simply run "CustomerMain.m" to run the toolbox.
+
 %%
-% ==================================================
-% Add folder to path
-% ==================================================
-% AddFolder2Path();
-addpath(pwd);
-savepath;
-// addpath('GenericFunction');
-// addpath('Plot');
-// addpath('SimulinkModel');
-// addpath('SystemObject');
-// addpath('Toolbox');
-// addpath('ForTest');
+clear all
+clc
+close all
+
+%% Add folder to path
+addpath(genpath(pwd));  % Add path
+savepath;               % Save path
+
+%%
+fprintf('Install SimplexPowerSystem successfully! \n')
+fprintf('Please run "CustomerMain.m" to run the toolbox.')
