@@ -14,8 +14,9 @@ Rootpath
 	-> Library (Simulink library for SimplexPS)
 		-> slblocks.m (Load SimplexPS lib to Simulink broswer)
 		-> SimplexPS.slx (SimplexPS libaray file)
-	-> Install.m
-	-> Unstall.m
+	-> InstallSimplexPS.m
+	-> UnstallSimplexPS.m
+	-> CustomerMain.m
 	-> CustomerData.xlsx
 	-> README.md
 
@@ -27,7 +28,7 @@ Notes:
 
 2. under the root folder there will be three main folders: +SimplexPS (root name space), Examples, and Documentations
 
-3. +SimplexPS will contain all source codes and sub-namespaces, say +netlist
+3. +SimplexPS will contain all source codes and sub-namespaces.
 
 4. there are three set of naming conventions: 
     1) microsoft, like PlotFigure EpwmConfig
