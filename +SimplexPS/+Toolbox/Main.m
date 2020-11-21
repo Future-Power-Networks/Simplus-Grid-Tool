@@ -114,7 +114,8 @@ fprintf('Checking if the whole system is proper:\n')
 if isproper(GsysDSS)
     fprintf('Proper.\n');
     fprintf('Calculating the minimum realization of the system model for later use.\n')
-    GminSS = minreal(GsysDSS);    
+    % GminSS = minreal(GsysDSS);
+    GminSS = SimplexPS.dss2ss(GsysDSS);
     % This "minreal" function only changes the element sequence of state
     % vectors, but does not change the element sequence of input and output
     % vectors.
