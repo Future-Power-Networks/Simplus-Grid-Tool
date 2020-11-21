@@ -290,3 +290,8 @@ fprintf('==================================\n')
 % - The power flow calculation assumes the frequency is Wbase
 % - Initialization of network lines, such as the current of line inductor
 % and the voltage of line capacitor.
+
+%%
+% save results to GreyBox.xlsx, for users to config the GreyBox approach.
+% SimplexPS.GreyBox.GreyBoxExcelGenerate(N_Device,DeviceType,DeviceStateStr,...
+%     DeviceInputStr,DeviceOutputStr,ZbusStateStr,GsysDSS);
