@@ -45,11 +45,8 @@ properties(Access = protected)
     InputString;
     OutputString;
     
-    % Models
-    MatrixSS;   % MatrixSS = {A,B,C,D}
-    ModelSS;    % ModelSS = ss(A,B,C,D)
- 	MatrixDSS;
-    ModelDSS;
+    % Model type
+    ModelBaseType;  % 1-ss; 2-dss
 end
 
 %%
@@ -61,46 +58,60 @@ end
 % CAN invoke/call external matlab functions which is saved in the visiable matlab path.
 
 methods(Static)
-    % Write properties
- 	function WriteString(obj,StateString,InputString,OutputString)
-        obj.StateString  = StateString;     
-        obj.InputString  = InputString;     
-        obj.OutputString = OutputString;
-    end
-    function WriteSS(obj,MatrixSS,ModelSS)
-        obj.MatrixSS = MatrixSS;            
-        obj.ModelSS = ModelSS;
-    end
-    function WriteDSS(obj,MatrixDSS,ModelDSS)
-        obj.MatrixDSS = MatrixDSS;
-        obj.ModelDSS = ModelDSS;
-    end
-    
-    % Read properties
+   	% Read properties
   	function [Read1,Read2,Read3] = ReadString(obj)
         Read1 = obj.StateString;
         Read2 = obj.InputString;
         Read3 = obj.OutputString;
     end
 	function [Read1,Read2] = ReadSS(obj)
-        Read1 = obj.MatrixSS;
-        Read2 = obj.ModelSS;
+        if obj.ModelBaseType == 1
+            MatrixSS = {obj.A,obj.B,obj.C,obj.D};
+            ModelSS = ss(obj.A,obj.B,obj.C,obj.D);
+            Read1 = MatrixSS;
+            Read2 = ModelSS;
+        else
+            error('Error: The model is in dss rather than ss form.');
+        end
     end
     function [Read1,Read2] = ReadDSS(obj)
-        Read1 = obj.MatrixDSS;
-        Read2 = obj.ModelDSS;
-    end
-    
-    % Construct models
-    function ConstructSS(obj)
-        obj.ModelSS = ss(obj.A,obj.B,obj.C,obj.D);
-    end
-    function ConstructDSS(obj)
-        obj.ModelDSS = dss(obj.A,obj.B,obj.C,obj.D,obj.E);
+        if obj.ModelBaseType == 2
+          	MatrixDSS = {obj.A,obj.B,obj.C,obj.D,obj.E};
+            ModelDSS = dss(obj.A,obj.B,obj.C,obj.D,obj.E);
+            Read1 = MatrixDSS;
+            Read2 = ModelDSS;
+        else
+            error('Error: The model is in ss rather than dss form.');
+        end
     end
     
     % Write properties
-    function LoadDSS(obj,G)
+ 	function WriteString(obj,StateString,InputString,OutputString)
+        obj.StateString  = StateString;     
+        obj.InputString  = InputString;     
+        obj.OutputString = OutputString;
+    end
+  	function LoadSS(obj,G)
+        % Get the date from G
+        A = G.A;
+        B = G.B;
+        C = G.C;
+        D = G.D;
+        E = G.E;
+        
+        % Check if G is in descriptor state space form
+        if ( ~isempty(E) )
+            error(['Error: the model is in dss rather than ss form.']);
+        end
+        
+        % Set the properties
+        obj.A = A;
+        obj.B = B;
+        obj.C = C;
+        obj.D = D;
+        obj.ModelBaseType = 1;
+    end
+  	function LoadDSS(obj,G)
         % Get the date from G
         A = G.A;
         B = G.B;
@@ -110,7 +121,7 @@ methods(Static)
         
         % Check if G is in descriptor state space form
         if ( isempty(E) && (~isempty(A)) )
-            error(['Error: the system is not in descriptor-state-space form']);
+            error(['Error: the model is in ss rather than dss form.']);
         end
         
         % Set the properties
@@ -119,8 +130,7 @@ methods(Static)
         obj.C = C;
         obj.D = D;
         obj.E = E;
-        obj.MatrixDSS   = {A,B,C,D,E};
-        obj.ModelDSS    = dss(A,B,C,D,E);
+        obj.ModelBaseType = 2;
     end
     
  	% Linearize state and output equations to get the linearized state
@@ -167,8 +177,8 @@ methods(Static)
             D(:,i) = (y_p - y_e)/(up(i) - u_e(i));
         end
 
-        obj.MatrixSS    = {A,B,C,D};
         obj.A = A; obj.B = B; obj.C = C; obj.D = D;
+        obj.ModelBaseType = 1;
     end
     
 end

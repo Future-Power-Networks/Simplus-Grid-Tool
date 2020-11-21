@@ -40,15 +40,15 @@ properties
   	% Discretization methods
     % 1-Forward Euler, 2-Hybrid Euler-Trapezoidal, 3-General virtual
     % dissipation.
-    DiscreMethod = [];
+    DiscreMethod = 1;
     
   	% Damping flag
     % 0-no damping resistor, 1-with damping resistor
-    DiscreDampingFlag = [];
+    DiscreDampingFlag = 0;
     
     % Linearization times
     % 1-Initial step, 2-Every step
-    LinearizationTimes = [];
+    LinearizationTimes = 1;
 end
 
 properties(Nontunable)
@@ -78,7 +78,6 @@ properties(Access = protected)
     
     % Used for Trapezoidal method
     Wk;         % (I-Ts/2*A)
-    fk;         % Might not be useful!
     xk;
     uk;     
     

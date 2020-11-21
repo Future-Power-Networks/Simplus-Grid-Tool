@@ -139,7 +139,6 @@ Device.SetString(Device);               % Set strings automatically
 Device.Equilibrium(Device);             % Calculate the equilibrium
 [x_e,u_e,y_e,xi] = Device.ReadEquilibrium(Device);
 Device.Linearization(Device,x_e,u_e); 	% Linearize the model
-Device.ConstructSS(Device);             % Construct the state space model
 
 [~,ModelSS] = Device.ReadSS(Device);
 [StateString,InputString,OutputString] = Device.ReadString(Device);
