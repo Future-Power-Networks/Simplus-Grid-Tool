@@ -7,6 +7,7 @@
 % 1: E must be diagonal
 % 2: The system must have no more zeros than poles
 
+
 function Gss = dss2ss(Gdss) 
 
 A = Gdss.A;
