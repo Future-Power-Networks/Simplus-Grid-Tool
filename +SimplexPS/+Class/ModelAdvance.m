@@ -12,7 +12,7 @@
 % The models should satisfy these conditions:
 % - First two inputs are "v_d" and "v_q"
 % - First two outputs are "i_d" and "i_q"
-% - Second output is "w"
+% - Third output is "w"
 % - Final state is "theta"
 % - The final state "theta" SHOULD NOT appear in other state equations
 % - The D matrix for system should be 0.
@@ -38,11 +38,12 @@ properties
     x0 = [];            % Initial state
     
   	% Discretization methods
-    % 1-Forward Euler, 2-Trapezoidal, 3-Virtual Damping
+    % 1-Forward Euler, 2-Hybrid Euler-Trapezoidal, 3-General virtual
+    % dissipation.
     DiscreMethod = [];
     
   	% Damping flag
-    % 0-no damping resistor,1-with damping resistor
+    % 0-no damping resistor, 1-with damping resistor
     DiscreDampingFlag = [];
     
     % Linearization times
@@ -63,20 +64,21 @@ end
 properties(DiscreteState)
     % Notes: It is better to put only x here, and put other states (such as
     % x[k+1], x[k-1], u[k+1]) to other types of properties, because the
-    % size of states characteristics are also defined below.
+    % size of states characteristics also needs to be defined. Putting
+    % other states here would make it confused.
     x;          % It is a column vector generally
 end
 
 % ### Protected properties
 properties(Access = protected)
  	% Steady-state operating points
-   	x_e;
- 	u_e;
+   	x_e;        % State
+ 	u_e;        % Input
     xi;         % Angle difference
     
     % Used for Trapezoidal method
-    Wk;
-    fk;
+    Wk;         % (I-Ts/2*A)
+    fk;         % Might not be useful!
     xk;
     uk;     
     
@@ -130,18 +132,18 @@ methods(Access = protected)
     end
 
   	% Update states and calculate output in the same function
-    % Notes: This function is replaced by "UpdateImpl" and "outputImpl"
-    % function y = stepImpl(obj,u)
-    % end
+    % function y = stepImpl(obj,u); end
+ 	% Notes: This function is replaced by two following functions:
+ 	% "UpdateImpl" and "outputImpl", and hence is commented out.
     
-    % Update discreate states
+    % ### Update discreate states
     function updateImpl(obj, u)
         
         obj.Timer = obj.Timer + obj.Ts;
         
         switch obj.DiscreMethod
             
-            % ### Forward Euler 
+            % ### Case 1: Forward Euler 
             % s -> Ts/(z-1)
             % which leads to
             % x[k+1]-x[k] = Ts * f(x[k],u[k])
@@ -150,16 +152,18 @@ methods(Access = protected)
                 f_xu = obj.StateSpaceEqu(obj, obj.x, u, 1);
                 obj.x = obj.Ts * f_xu  + obj.x;
                 
-            % ### Hybrid Trapezoidal
+            % ### Case 2: Hybrid Euler-Trapezoidal (Yunjie's Method)
             % s -> Ts/2*(z+1)/(z-1)
             % which leads to
+            % state equations:
             % (x[k+1] - x[k])/Ts 
             % = (f(x[k+1],u(k+1)) + f(x[k],u[k]))/2
             % or
             % = f((x[k+1]+x[k])/2, (u[k+1]+u[k])/2) 
-            % -> f(x[k],u[k]) + Ak*(x[k+1]-x[k])/2 + Bk*(u[k+1]-u[k])/2
-            % and
-            % y[k+1] - y[k] = Ts*Ck*Wk*(Bk*(u[k+1]-u[k])/2 + fk)
+            % -> 
+            % f(x[k],u[k]) + Ak*(x[k+1]-x[k])/2 + Bk*(u[k+1]-u[k])/2
+            % output equations:
+            % y[k+1] - y[k] = Ts*Ck*Wk* (Bk*(u[k+1]-u[k])/2 + fk)
             case 2
                 
                 % Update x[k]
@@ -167,6 +171,8 @@ methods(Access = protected)
                 
                 % Linear Trapezoidal
                 if obj.LinearizationTimes == 2
+                    % Update the linearized system every step during the
+                    % simulation.
                     obj.Linearization(obj,obj.xk,obj.uk);
                     obj.Wk = inv(eye(length(obj.A)) - obj.Ts/2*obj.A);
                 end
@@ -177,15 +183,15 @@ methods(Access = protected)
                 
                 % Split the states
                 lx = length(obj.xk);
-            	x_k1_linear = x_k1_Trapez(1:(lx-1));
-              	x_k1_others = x_k1_Euler(lx:end);   % Theta
+            	x_k1_linearized = x_k1_Trapez(1:(lx-1));    % Trapez    
+              	x_k1_others     = x_k1_Euler(lx:end);       % Euler for theta only
          
                 % Update x[k+1] and u[k]
-                obj.x = [x_k1_linear;
+                obj.x = [x_k1_linearized;
                          x_k1_others];
                 obj.uk = u;
                 
-            % ###  Virtual damping: 
+            % ###  Case 3: General virtual dissipation (Yitong's Method)
             % Euler -> Trapezoidal
             % s -> s/(1+s*Ts/2)
             % which makes the new state x' replace the old state x with
@@ -223,38 +229,42 @@ methods(Access = protected)
                 
                 % Split the states
                 lx = length(obj.x);
-                x_k1_linear = x_k1_VD(1:(lx-1));
+                x_k1_linearized = x_k1_VD(1:(lx-1));
                 x_k1_others = x_k1_Euler(lx:end);   % Theta
                 
-                obj.x = [x_k1_linear;
+                obj.x = [x_k1_linearized;
                          x_k1_others];
             otherwise
         end
     end
         
-    % Calculate output y
+    % ### Calculate output y
 	function y = outputImpl(obj,u)
      	y_Euler = obj.StateSpaceEqu(obj,obj.x,u,2);
     	ly = length(y_Euler);
         switch obj.DiscreMethod
-            % ### Forward Euler
+            % ### Case 1: Forward Euler
           	case 1
                 y = y_Euler;
                 
-            % ### Hybrid Trapezoidal
+            % ### Case 2: Hybrid Euler-Trapezoidal (Yunjie's Method)
             case 2
                 if obj.DiscreDampingFlag == 0
+                    % Consider the virtual dissipation here
                 	y_Trapez = y_Euler ...
                         + obj.Ts/2*obj.C*obj.Wk*obj.B*(u - obj.uk) ...
                         + obj.Ts*obj.C*obj.Wk*obj.StateSpaceEqu(obj,obj.xk,obj.uk,1);
                 else
+                    % Consider the virtual dissipation by using a
+                    % resistor in simulink model. Exclude the dissipation
+                    % here.
                     Ck1 = obj.C;
                     Ck2 = obj.C;
-                    Ck1(1:2,1:2) = zeros(2,2);
+                    Ck1(1:2,1:2) = zeros(2,2);  % Set corresponding Ck to 0
                     Ck2 = Ck2 - Ck1;
                     Bk1 = obj.B;
                     Bk2 = obj.B;
-                    Bk1(1:2,1:2) = zeros(2,2);
+                    Bk1(1:2,1:2) = zeros(2,2);  % Set corresponding Bk to 0
                     Bk2 = Bk2 - Bk1;
                     y_Trapez = y_Euler ...
                         + obj.Ts/2*(Ck1*obj.Wk*Bk1*(u - obj.uk) - Ck2*obj.Wk*Bk2*obj.uk) ...
@@ -263,7 +273,7 @@ methods(Access = protected)
                 y = [y_Trapez(1:(ly-1));
                      y_Euler(ly)];
                 
-            % ### Virtual damping
+            % ### Case 3: General virtual dissipation (Yitong's Method)
             case 3
                 if obj.DiscreDampingFlag == 0
                     % No linearization of g(x,u)
