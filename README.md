@@ -1,4 +1,4 @@
-# SimplexPowerSystem (Version: v2020-NOV-20)
+# SimplexPowerSystem (Version: v2020-NOV-21)
 
 An open-source toolbox for dynamic analysis and simulation of large-scale power systems.
 The toolbox is based on Matlab/Simulink but is going to be extended to Python. To be continued.
