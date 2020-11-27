@@ -18,18 +18,20 @@ for DeviceCount = 1:DeviceSelNum
             SimplexPS.Toolbox.DeviceModelCreate('Type', DeviceType{DeviceSelL3} ,...
             'Flow',PowerFlow{DeviceSelL3},'Para',ParaNew,'Ts',Ts);
         ZmValNew = SimplexPS.GreyBox.DeviceImpedanceCal(GmDSS_Cell_New, FreqSel, DeviceSelL3);
-
-        Layer3Result{DeviceCount}(k).ParaName = ParamName{k};
-        Layer3Result{DeviceCount}(k).DeltaZ.dd = ZmValNew.dd - ZmValOrig.dd;
-        Layer3Result{DeviceCount}(k).DeltaZ.dq = ZmValNew.dq - ZmValOrig.dq;
-        Layer3Result{DeviceCount}(k).DeltaZ.qd = ZmValNew.qd - ZmValOrig.qd;
-        Layer3Result{DeviceCount}(k).DeltaZ.qq = ZmValNew.qq - ZmValOrig.qq;
         
-         Layer3Result{DeviceCount}(k).DLambda = -1*(...
-             Layer3Result{DeviceCount}(k).DeltaZ.dd * Residue_.dd...
-            + Layer3Result{DeviceCount}(k).DeltaZ.dq * Residue_.qd ...
-            + Layer3Result{DeviceCount}(k).DeltaZ.qd * Residue_.dq ...
-            + Layer3Result{DeviceCount}(k).DeltaZ.qq * Residue_.qq);
+        Layer3Result(DeviceCount).Device={['Device',num2str(DeviceSelL3)]};
+        %Layer3Result(DeviceCount).Result(k)={['Device',num2str(DeviceSelL3)]};
+        Layer3Result(DeviceCount).Result(k).ParaName = {ParamName{k}};
+        Layer3Result(DeviceCount).Result(k).DeltaZ.dd = ZmValNew.dd - ZmValOrig.dd;
+        Layer3Result(DeviceCount).Result(k).DeltaZ.dq = ZmValNew.dq - ZmValOrig.dq;
+        Layer3Result(DeviceCount).Result(k).DeltaZ.qd = ZmValNew.qd - ZmValOrig.qd;
+        Layer3Result(DeviceCount).Result(k).DeltaZ.qq = ZmValNew.qq - ZmValOrig.qq;
+        
+         Layer3Result(DeviceCount).Result(k).DLambda = -1*(...
+             Layer3Result(DeviceCount).Result(k).DeltaZ.dd * Residue_.dd...
+            + Layer3Result(DeviceCount).Result(k).DeltaZ.dq * Residue_.qd ...
+            + Layer3Result(DeviceCount).Result(k).DeltaZ.qd * Residue_.dq ...
+            + Layer3Result(DeviceCount).Result(k).DeltaZ.qq * Residue_.qq);
     end
 end
 end
