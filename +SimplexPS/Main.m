@@ -275,7 +275,8 @@ if Enable_PlotSwing
 else
     fprintf('Warning: The default plot of omega-related spectrum is disabled.\n');
 end
-    
+
+   
 %%
 fprintf('\n')
 fprintf('==================================\n')

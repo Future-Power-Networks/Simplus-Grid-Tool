@@ -12,10 +12,8 @@
 %%
 %Basic infomation acquirement.
 BodeEnable = 0;
-Layer12Enable = 0;
-Layer3Enable = 1;
 DeviceSelL12 = [1,2,3,6,8,11,12,13]; %Level1 & 2 device selection
-DeviceSelL3All = [3,12]; %Level 3 device selection
+DeviceSelL3 = [3, 12]; %Level 3 device selection
 ModeSelAll = [62,74]; % Mode selection.
 AxisSel = [1, 4];  %axis selection for bodeplot.
 ModeSelNum = length(ModeSelAll);
@@ -34,16 +32,12 @@ for modei=1:ModeSelNum
     Residue = ResidueAll{modei};
     ZmVal = ZmValAll{modei};
     FreqSel = imag(GbMode(ModeSelAll(modei)));
-    if Layer12Enable ==1
     [Layer1, Layer2] = SimplexPS.GreyBox.GbLayer12(Residue,ZmVal,N_Bus,...
         DeviceType,modei,DeviceSelL12,FreqSel);
     GbLayer1{modei}=Layer1;
     GbLayer2{modei}=Layer2;
-    end
-    if Layer3Enable ==1
-    GbLayer3{modei} = SimplexPS.GreyBox.GbLayer3(Residue,ZmVal,...
-        FreqSel,DeviceType,DeviceSelL3All,Para,PowerFlow,Ts);
-    end
+    
+    
 end
 
 

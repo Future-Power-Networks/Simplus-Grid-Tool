@@ -25,7 +25,7 @@ fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
-Name_Netlist = 'CustomerData.xlsx';
+Name_Netlist = 'CustomerData2.xlsx';
 % Name_Netlist = 'SingleSGInfiniteBus.xlsx';
 % Name_Netlist = 'SingleVSIInfiniteBus.xlsx';
 
@@ -276,13 +276,15 @@ if Enable_PlotSwing
 else
     fprintf('Warning: The default plot of omega-related spectrum is disabled.\n');
 end
-    
+%%
+SimplexPS.GreyBox.ExcelPrep;
+%SimplexPS.GreyBox.ExcelWrite()
+fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 %%
 fprintf('\n')
 fprintf('==================================\n')
 fprintf('End: run successfully.\n')
 fprintf('==================================\n')
-   
 %%
 % Remained questions:
 % - Advanced power flow, including droop bus, etc
