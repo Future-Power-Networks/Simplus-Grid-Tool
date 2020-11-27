@@ -3,6 +3,16 @@
 % Author(s): Yitong Li
 
 classdef Inductor < SimplexPS.Class.ModelAdvance
+    
+    methods
+        function obj = Inductor(varargin)
+            obj.VoidJacobStates = [];
+            obj.VoidFeedthrough = [];
+            obj.ElecPortIOs = [1];
+            setProperties(obj,nargin,varargin{:});
+        end
+    end
+    
     methods(Static)
         % Set the strings of input, output, state
         function SetString(obj)
