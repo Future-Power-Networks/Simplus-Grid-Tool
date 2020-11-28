@@ -4,9 +4,8 @@ function ExcelPrep
 %and rewrtie all the contents.
 %further Greybox analysis.
 % Author: Yue Zhu
-fprintf('Preparing Excel file for user configuration...\n');
-
-FileGreybox=[pwd '\GreyBoxConfig.xlsx'];%pwd - current folder location.
+%fprintf('Preparing Excel file for user configuration...\n');
+FileGreybox=[cd '\GreyBoxConfig.xlsx'];%pwd - current folder location.
 %delete(FileGreybox); %delete the old file.
 new=0;
 try

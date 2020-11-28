@@ -1,127 +1,132 @@
-function ExcelWrite(N_Bus,N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS)
+function ExcelWrite(N_Bus,N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS)
 %this function is to write states, devices, axes to select for
 %further Greybox analysis.
 % Author: Yue Zhu
+filename = 'GreyBoxConfig.xlsx';
 
 %%
-%States sheet write
-fprintf('Writing values in state-PF sheet... \n');
-filename = 'GreyBoxConfig.xlsx';
+%*********States sheet write
+%Based on GsysDSS.
+[~,D]=eig(GsysDSS.A,GsysDSS.E);
+D=D/(2*pi);
+Mode=diag(D);
+ModeNum = length(Mode);
+
 xlswrite(filename,{'Select states for state participation analysis. Only 1 mode should be selected.'},'State-PF','A1');
 xlswrite(filename,{'write "1" for for selection, others for not'},'State-PF','A2');
-IndexStart=6;
-
-index = IndexStart;
+StartSpace='A6';
+StateSheet(1,1) = {'Device'};
+StateSheet(1,2) = {'State'};
+StateSheet(1,3) = {'Select'};
+index = 2;
 for k = 1:N_Bus
     if DeviceType{k} <= 89 %devices)
         DeviceName=strcat('Device',num2str(k));
         StateName = DeviceStateStr{k};
         StateNum = length(DeviceStateStr{k});
-        Space1 = strcat('A',num2str(index));
-        Space2 = strcat('B',num2str(index));
-        xlswrite(filename,{DeviceName},'State-PF',Space1);
-        xlswrite(filename,{'Select'},'State-PF',Space2);
+        StateSheet(index,1) = {DeviceName};
         for j = 1: StateNum
-            Space1 = strcat('A',num2str(index+j));
-            xlswrite(filename,{StateName{j}},'State-PF',Space1);
+            StateSheet(index,2) = {StateName{j}};
+            StateSheet(index,3) = {0};
+            index = index+1;
         end
-        index = index + 1 + StateNum;
     else % floating bus, infinite bus...
     end
 end
+StateSheet(index,1) = {'Line'};
+for i = 1: length(ZbusStateStr)
+    StateSheet{index,2} = ZbusStateStr{i};
+    StateSheet(index,3) = {0};
+    index = index + 1;
+end
+
+StateSheet(1,5) = {'Mode'};
+StateSheet(1,6) = {'Value'};
+StateSheet(1,7) = {'Select'};
+index = 2;
+for i=1:ModeNum
+    ModeName = strcat('Mode',num2str(i));
+    StateSheet(index,5) = {ModeName};
+    StateSheet(index,6) = {num2str(Mode(i),'%.2f')};
+    StateSheet(index,7) = {0};
+    index=index+1;
+end
+
+xlswrite(filename,StateSheet,'State-PF',StartSpace);
 
 %%
 %Impedance-PF sheet write
-fprintf('Writing values in impdance-PF sheet... \n');
-xlswrite(filename,{'Select devices and mode for bode-plot and Greybox Layer1&2 analysis'},'Impedance-PF','A1');
-xlswrite(filename,{'write "1" for for selection, others for not'},'Impedance-PF','A2');
-
-%***
-xlswrite(filename,{'Device selection for Layer1&2'},'Impedance-PF',['A',num2str(IndexStart-1)]);
-xlswrite(filename,{'Device'},'Impedance-PF',['A',num2str(IndexStart)]);
-xlswrite(filename,{'Select'},'Impedance-PF',['B',num2str(IndexStart)]);
-index=IndexStart;
-for k = 1:N_Bus
-        if DeviceType{k} <= 89 %devices)
-            DeviceName=strcat('Device',num2str(k));
-            xlswrite(filename,{DeviceName},'Impedance-PF',['A',num2str(index+1)]);
-            xlswrite(filename,0,'Impedance-PF',['B',num2str(index+1)]);
-            index=index+1;
-        else % floating bus, infinite bus...
-        end
-end
-
-%***
-index=IndexStart;
-xlswrite(filename,{'Bodeplot axis'},'Impedance-PF',['D',num2str(index)]);
-xlswrite(filename,{'d-d'},'Impedance-PF',['D',num2str(index+1)]);
-xlswrite(filename,{'d-q'},'Impedance-PF',['D',num2str(index+2)]);
-xlswrite(filename,{'q-d'},'Impedance-PF',['D',num2str(index+3)]);
-xlswrite(filename,{'q-q'},'Impedance-PF',['D',num2str(index+4)]);
-xlswrite(filename,{'Select'},'Impedance-PF',['E',num2str(index)]);
-xlswrite(filename,0,'Impedance-PF',['E',num2str(index+1)]);
-xlswrite(filename,0,'Impedance-PF',['E',num2str(index+2)]);
-xlswrite(filename,0,'Impedance-PF',['E',num2str(index+3)]);
-xlswrite(filename,0,'Impedance-PF',['E',num2str(index+4)]);
-
-%***
-xlswrite(filename,{'Mode selection for Layer 1&2&3'},'Impedance-PF',['G',num2str(index-1)]);
-xlswrite(filename,{'Mode'},'Impedance-PF',['G',num2str(index)]);
-xlswrite(filename,{'Complex value'},'Impedance-PF',['H',num2str(index)]);
-%xlswrite(filename,{'Natural Frequency'},'Impedance-PF',['I',num2str(index)]);
-xlswrite(filename,{'Select'},'Impedance-PF',['I',num2str(index)]);
-
+%Based on GminSS
 [~,D]=eig(GminSS.A);
 D=D/(2*pi);
 Mode=diag(D);
 ModeReal = real(Mode);
 ModeImag = imag(Mode);
-Num = length(Mode);
+ModeNum = length(Mode);
 
-index=IndexStart;
-for i=1:Num
-    ModeName = strcat('Mode',num2str(i));
-    xlswrite(filename,{ModeName},'Impedance-PF',['G',num2str(index+1)]);
-    xlswrite(filename,{num2str(Mode(i),'%.2f')},'Impedance-PF',['H',num2str(index+1)]);
-    xlswrite(filename,0,'Impedance-PF',['I',num2str(index+1)]);
-    %xlswrite(filename,{num2str(ModeImag(i),'%.2f')},'Impedance-PF',['I',num2str(index+1)]);
-    index=index+1;
-end
+StartSpace='A6';
 
-%***
-xlswrite(filename,{'Device selection for Layer3'},'Impedance-PF',['K',num2str(IndexStart-1)]);
-xlswrite(filename,{'Device'},'Impedance-PF',['K',num2str(IndexStart)]);
-xlswrite(filename,{'Select'},'Impedance-PF',['L',num2str(IndexStart)]);
-index=IndexStart;
+xlswrite(filename,{'Select devices and mode for bode-plot and Greybox Layer1&2 analysis'},'Impedance-PF','A1');
+xlswrite(filename,{'write "1" for for selection, others for not'},'Impedance-PF','A2');
+
+%*** Layer1&2 device select
+ImpedanceSheet(1,1) = {'Device selection for Layer1&2'};
+ImpedanceSheet(2,1) = {'Device'};
+ImpedanceSheet(2,2) = {'Select'};
+index=3;
 for k = 1:N_Bus
         if DeviceType{k} <= 89 %devices)
             DeviceName=strcat('Device',num2str(k));
-            xlswrite(filename,{DeviceName},'Impedance-PF',['K',num2str(index+1)]);
-            xlswrite(filename,0,'Impedance-PF',['L',num2str(index+1)]);
+            ImpedanceSheet(index,1) = {DeviceName};
+            ImpedanceSheet(index,2) = {0};
             index=index+1;
         else % floating bus, infinite bus...
         end
 end
 
-% %%
-% %parameters sheet write
-% fprintf('Writing devices for Layer3... \n');
-% xlswrite(filename,{'Select devices for Layer3 analysis.'},'Parameters','A1');
-% xlswrite(filename,{'write "1" for for selection, others for not'},'Parameters','A2');
-% xlswrite(filename,{'Impedance-PF'},'Parameters','A4');
-% xlswrite(filename,{'Select'},'Parameters','B4');
-% index=4;
-% for k = 1:N_Bus
-%         if DeviceType{k} <= 89 %devices)
-%             DeviceName=strcat('Device',num2str(k));
-%             Space = strcat('A',num2str(index+1));
-%             xlswrite(filename,{DeviceName},'Parameters',Space);
-%             index=index+1;
-%         else % floating bus, infinite bus...
-%         end
-% end
+%*** bodplot d-q select
+ImpedanceSheet(1,4) ={'Bodeplot axis selection'};
+ImpedanceSheet(2,4) = {'Axis'};
+ImpedanceSheet(2,5) = {'Select'};
+ImpedanceSheet(3,4) = {'d-d'};
+ImpedanceSheet(4,4) = {'d-q'};
+ImpedanceSheet(5,4) = {'q-d'};
+ImpedanceSheet(6,4) = {'q-q'};
+ImpedanceSheet(3,5) = {0};
+ImpedanceSheet(4,5) = {0};
+ImpedanceSheet(5,5) = {0};
+ImpedanceSheet(6,5) = {0};
+
+%*** Mode select.
+ImpedanceSheet(1,7) = {'Mode selection for Layer 1&2&3'};
+ImpedanceSheet(2,7) = {'Mode'};
+ImpedanceSheet(2,8) = {'Value'};
+ImpedanceSheet(2,9) = {'Select'};
+index=3;
+for i=1:ModeNum
+    ModeName = strcat('Mode',num2str(i));
+    ImpedanceSheet(index,7)={ModeName};
+    ImpedanceSheet(index,8)={num2str(Mode(i),'%.2f')};
+    ImpedanceSheet(index,9)={0};
+    index=index+1;
+end
+
+%***Layer3 device Select
+ImpedanceSheet(1,11)={'Device selection for Layer3'};
+ImpedanceSheet(2,11)={'Device'};
+ImpedanceSheet(2,12)={'Select'};
+index=3;
+for k = 1:N_Bus
+        if DeviceType{k} <= 89 %devices)
+            DeviceName=strcat('Device',num2str(k));
+            ImpedanceSheet(index,11)= {DeviceName};
+            ImpedanceSheet(index,12)= {0};
+            index=index+1;
+        else % floating bus, infinite bus...
+        end
+end
+xlswrite(filename,ImpedanceSheet,'Impedance-PF',StartSpace);
+
 %%
-fprintf('GreyboxConfig.xlsx is now ready. Plese open the file and select the states and devices interested.\n');
-fprintf('After selection, save the excel file and run GreyBoxAnalysis.m.\n');
 %%
 end

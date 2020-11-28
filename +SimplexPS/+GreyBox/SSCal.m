@@ -1,8 +1,13 @@
 %calculate modes, residues from state-space, based on the modes and
 %devicese the user selected.
 %Author: Yue Zhu
-function [GbMode,ResidueAll,ZmValAll,ModeTotalNum]=...
-    SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell)
+function [GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS]=...
+    SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS)
+
+[Phi_DSS,D]=eig(GsysDSS.A,GsysDSS.E);
+D=D/(2*pi);
+ModeDSS=diag(D);
+
 A=GminSS.A;
 B=GminSS.B;
 C=GminSS.C;

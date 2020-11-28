@@ -1,10 +1,27 @@
-function [AxisSel, DeviceSel12, ModeSel, DeviceSel3] = ExcelRead(filename, N_Bus, DeviceType, GminSS)
-%filename='GreyBoxConfig.xlsx';
-Config=xlsread(filename,2);
+function [AxisSel, DeviceSel12, ModeSel, DeviceSel3,StateSel_DSS, ModeSel_DSS]...
+    = ExcelRead(filename, N_Bus, DeviceType, GminSS)
 
+%% State-PF sheet reading
+StateConfig = xlsread(filename,1);
+StateSel_DSS = 0;
+ModeSel_DSS = 0;
+SelIndex1 = 1;
+SelIndex2 = 1;
 
-%%
+for Count = 1: size(StateConfig,1)
+    if StateConfig(Count,1) ==1
+        StateSel_DSS(SelIndex1) = Count;
+        SelIndex1 = SelIndex1+1;
+    end
+    if StateConfig(Count,5) ==1
+        ModeSel_DSS(SelIndex2) = Count;
+        SelIndex2 = SelIndex2+1;
+    end
+end
+
+%% Impedance-PF sheet reading
 %read for impedance-PF.
+Config=xlsread(filename,2);
 SelIndex = 1;
 AxisSel=0;
 for ax=1:4
