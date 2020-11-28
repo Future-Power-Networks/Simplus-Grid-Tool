@@ -15,7 +15,7 @@
 % Transctions on Circuit and Systems, 2020.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDamping,StateString,InputString,OutputString] ...
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDampingResistor,StateString,InputString,OutputString] ...
         = DeviceModelCreate(varargin) 
 
 %% load arguments and common symbols
@@ -133,15 +133,17 @@ switch floor(Type/10)
 end
 
 %% Calculate the linearized state space model
-Device.DeviceType = Type;
-Device.PowerFlow = PowerFlow;           % Power flow data
-Device.SetString(Device);               % Set strings automatically
-Device.Equilibrium(Device);             % Calculate the equilibrium
-[x_e,u_e,y_e,xi] = Device.ReadEquilibrium(Device);
-Device.Linearization(Device,x_e,u_e); 	% Linearize the model
+Device.DeviceType = Type;                           % Device type
+Device.Ts = Ts;                                     % Samping period
+Device.PowerFlow = PowerFlow;                       % Power flow data
+Device.SetString(Device);                           % Set strings automatically
+Device.Equilibrium(Device);                         % Calculate the equilibrium
+[x_e,u_e,y_e,xi] = Device.ReadEquilibrium(Device);  % Get the equilibrium
+Device.Linearization(Device,x_e,u_e);               % Linearize the model
 
-[~,ModelSS] = Device.ReadSS(Device);
-[StateString,InputString,OutputString] = Device.ReadString(Device);
+[~,ModelSS] = Device.ReadSS(Device);                % Get the ss model
+[StateString,InputString,OutputString] ...
+    = Device.ReadString(Device);                    % Get the string
 
 % Get the swing frame system model
 Gm = ModelSS;   
@@ -152,16 +154,10 @@ DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
 if floor(Type/10) <= 5
-    Ak = ModelSS.A;
-    Ck = ModelSS.C;
-    Bk = ModelSS.B;
-    Wk = inv(eye(length(Ak)) - Ts/2*Ak);
-    MatrixY = Ts/2*Ck*Wk*Bk;
-    MatrixY = MatrixY(1:2,1:2);
-    MatrixR = inv(MatrixY);
-    DeviceDiscreDamping = MatrixR(1,1);
+    Device.PrepareHybridUpdate(Device);
+    DeviceDiscreDampingResistor = Device.GetVirtualResistor(Device);
 else
-    DeviceDiscreDamping = -1;
+    DeviceDiscreDampingResistor = -1;
 end
 
 %% Check if the device needs to adjust its frame

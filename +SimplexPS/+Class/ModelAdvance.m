@@ -29,13 +29,14 @@ properties
     Para = [];          % Device parameters   
 end
 
+% Nontunable properties can be set to []
 properties(Nontunable)
     
     PowerFlow = [];     % Power flow parameters
     x0 = [];            % Initial state
     
   	% Discretization methods
-    % 1-Forward Euler, 2-Hybrid Euler-Trapezoidal, 3-General virtual
+    % 1-Forward Euler, 2-Hybrid Euler-Trapezoidal, 2'-General virtual
     % dissipation.
     DiscreMethod = 1;
     
@@ -43,17 +44,17 @@ properties(Nontunable)
     % 1-Initial step, 2-Every step
     LinearizationTimes = 1;
     
-    % Void Jacobian  
-    % the corresponding Jacobian is to set as null (A,C).
-    % equivalently, the marked states are updated by Euler's method.
-    % the index is counted backward, i.e. k->end-k, for compactablity with
-    % Yitong's code
-    VoidJacobStates = [0]; 
+    % Void Jacobian
+    % The corresponding Jacobian is to set as null (A,C).
+    % Equivalently, the marked states are updated by Euler's method.
+    % The index is counted backward, i.e. k -> end-k, for compactablity 
+    % with Yitong's code
+    VoidJacobStates = [0];
     
     % Void feedthrough
     % void the corresponding feedthrough matrix to break algebraic loop
-    % the index is counted backward, i.e. k->end-k, for compactablity with
-    % Yitong's code
+    % the index is counted backward, i.e. k -> end-k, for compactablity 
+    % with Yitong's code
     VoidFeedthrough = [0];
     
   	% Takeout feedthrough
@@ -71,8 +72,11 @@ properties(Nontunable)
     % Initialize to steady-state  
     EquiInitial = 0;
     
-    DeviceType = [];         % Device type
-    DirectFeedthrough = 0;   % Direct Feedthrough
+    % Device type
+    DeviceType = [];
+    
+    % Direct Feedthrough
+    DirectFeedthrough = 0;
 end
 
 % ### Discrete state
@@ -94,17 +98,17 @@ properties(Access = protected)
     % Steady-state operating points
    	x_e;        % State
  	u_e;        % Input
-    xi;         % Angle difference 
+    xi;         % Angle difference calculated by power flow analysis
     
     % Used for Trapezoidal method
     Ak;
     Bk;
     Ck;
     Dk;
-    Wk;
-    Qk;
-    Gk;
-    Fk;
+    Wk;     % State update gain
+    Qk;     % Feedthrough gain
+    Gk;     % Virtual resistor gain
+    Fk;     % Feedthrough gain by taking out the virtual resistor 
     
     % Store previous input. Used for eliminate algebraic loop.
     uk;     
@@ -128,29 +132,35 @@ end
 
 % ### Static methods
 methods(Static)
+    % Read Equilibrium
   	function [read1,read2,read3,read4] = ReadEquilibrium(obj)
-        y_e = obj.StateSpaceEqu(obj,obj.x_e,obj.u_e,2);
-        read1 = obj.x_e;
-        read2 = obj.u_e;
-        read3 = y_e;
-        read4 = obj.xi;
+        if (isempty(obj.x_e) || isempty(obj.u_e) || isempty(obj.xi))
+            error(['Error: The equilibrium is null']);
+        else
+            y_e = obj.StateSpaceEqu(obj,obj.x_e,obj.u_e,2);
+            read1 = obj.x_e;
+            read2 = obj.u_e;
+            read3 = y_e;
+            read4 = obj.xi;
+        end
     end
     
-    function PrepareHybridUpdate(obj) % preparation for Hybrid Euler-Trapezoidal update
+    % Preparation for Hybrid Euler-Trapezoidal update
+    function PrepareHybridUpdate(obj) 
         
         obj.Ak = obj.A;
-        if ~isempty(obj.VoidJacobStates) % null the corresponding A
+        if ~isempty(obj.VoidJacobStates) % null the corresponding column of A
             %obj.Ak(end-obj.VoidJacobStates,:) = zeros(length(obj.VoidJacobStates),length(obj.Ak));
             obj.Ak(:,end-obj.VoidJacobStates) = zeros(length(obj.Ak),length(obj.VoidJacobStates));   
         end
         
         obj.Bk = obj.B;
-        %if ~isempty(obj.VoidJacobStates) % null the corresponding B
-        %    obj.Bk(end-obj.VoidJacobStates,:) = zeros(length(obj.VoidJacobStates),length(obj.Bk(1,:)));   
-        %end
+        if ~isempty(obj.VoidJacobStates) % null the corresponding row of B
+           obj.Bk(end-obj.VoidJacobStates,:) = zeros(length(obj.VoidJacobStates),length(obj.Bk(1,:)));   
+        end
         
         obj.Ck = obj.C;
-        if ~isempty(obj.VoidJacobStates) % null the corresponding C
+        if ~isempty(obj.VoidJacobStates) % null the corresponding column of C
             obj.Ck(:,end-obj.VoidJacobStates) = zeros(length(obj.Ck(:,1)),length(obj.VoidJacobStates));   
         end
         
@@ -158,40 +168,45 @@ methods(Static)
         
         obj.Wk = (eye(length(obj.Ak))/obj.Ts - 1/2*obj.Ak)^(-1);    % state update
         obj.Qk = obj.Dk + 1/2*obj.Ck*obj.Wk*obj.Bk;                 % feedthrough
-        if ~isempty(obj.VoidFeedthrough) % null the corresponding Q
+        if ~isempty(obj.VoidFeedthrough) % null the corresponding row of Q ???
             obj.Qk(end-obj.VoidFeedthrough,:) = zeros(size(obj.Qk(end-obj.VoidFeedthrough,:)));   
         end
                 
-        % split obj.Qk = obj.Gk + obj.Fk
+        % Split obj.Qk = obj.Gk + obj.Fk
+        % where Gk is the virtual resistor gain, and Fk is the feedthrough
+        % gain by taking out the virtual resistor
+        obj.Gk = zeros(size(obj.Qk));
+        obj.Fk = obj.Qk;
         if ~isempty(obj.ElecPortIOs)                    
             Gk_ = obj.Qk(obj.ElecPortIOs,obj.ElecPortIOs);
-            Gk_ = diag(Gk_);
-            Gk_ = mean(Gk_);
-            Gk_ = Gk_*eye(length(obj.ElecPortIOs));
-            obj.Gk = zeros(size(obj.Qk));
+            Gk_ = diag(Gk_);                        % Get the diagonal elements
+            Gk_ = mean(Gk_);                        % Calculate the average
+            Gk_ = Gk_*eye(length(obj.ElecPortIOs)); % Form the resistor matrix
             obj.Gk(obj.ElecPortIOs,obj.ElecPortIOs) = Gk_;
-            obj.Fk = obj.Qk;
             obj.Fk(obj.ElecPortIOs,obj.ElecPortIOs) = zeros(size(Gk_));
         end
     end
     
+    % Caculate the virtual resistor
     function Rv = GetVirtualResistor(obj)
-        obj.Equilibrium(obj);
-        obj.Linearization(obj,obj.x_e,obj.u_e);              
-        obj.PrepareHybridUpdate(obj);
-        Rv = obj.Gk(1,1)^(-1);
+        if ~isempty(obj.Gk)
+            Gk_ = obj.Gk(obj.ElecPortIOs,obj.ElecPortIOs);
+            Rv = (Gk_(1,1))^(-1);
+        else
+            error(['Error: Gk is empty.'])
+        end
     end
     
+    % State space equation for the system
     function rtn = StateSpaceEqu(obj,x,u,flag)
         rtn = [];
-        % state space equation for the system
         % should be overrided in the subclass in the following format
         % rtn = dx/dt = f(x,u), if flag == 1
         % rtn =  y    = g(x,u), if flag == 2
     end
     
+    % Get equilibrium x_e and u_e from power flow
     function Equilibrium(obj)
-        % get equilibrium x_e and u_e from power flow
         % should be overrided in the subclass in the following format
         % set x_e,u_e and xi according to PowerFlow
         % x_e and u_e are column vectors with the same dimention as x and u
@@ -204,6 +219,7 @@ methods(Access = protected)
 
     % Perform one-time calculations, such as computing constants
     function setupImpl(obj)
+        % Set string vectors for x, u, y
         obj.SetString(obj);
         
         % Initialize x_e, u_e
@@ -219,6 +235,7 @@ methods(Access = protected)
         % Initialize Timer
         obj.Timer = 0;
         
+        % Initialize start flag
         obj.Start = 0;       
     end
     
@@ -244,7 +261,7 @@ methods(Access = protected)
         switch obj.DiscreMethod
             
             % ### Case 1: Forward Euler 
-            % s -> Ts/(z-1)
+            % s -> (z-1)/Ts
             % which leads to
             % x[k+1]-x[k] = Ts * f(x[k],u[k])
             % y[k+1] = g(x[k],u[k]);
@@ -253,12 +270,15 @@ methods(Access = protected)
                 obj.x = delta_x + obj.x;
                 
             % ### Case 2 : Hybrid Euler-Trapezoidal (Yunjie's Method)
-            % s -> Ts/2*(z+1)/(z-1)
+            % s -> 2/Ts*(z-1)/(z+1)
             % which leads to
+            %
             % state equations:
             % dx[k]/Ts = (x[k+1] - x[k])/Ts = f(x[k+1/2], u[k+1/2])
             %          = f(x[k], u[k+1/2]) + 1/2*A[k]*dx[k] ->
             % dx[k] = W[k]*f(x[k],u[k+1/2]), W[k]=[I/Ts - 1/2*A[k]]^(-1)
+            % where x[k+1/2] = (x[k]+x[k+1])/2
+            %
             % output equations:
             % y[k+1/2] = g(x[k+1/2],u[k+1/2]) 
             %          = g(x[k],u[k+1/2]) + 1/2*C[k]*dx[k]
@@ -301,7 +321,7 @@ methods(Access = protected)
                     % update Jacobian in real time    
                     obj.Linearization(obj,obj.x,u);
                     obj.PrepareHybridUpdate(obj);
-                end                              
+                end
                 delta_x = obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);               
                 obj.x = obj.x + delta_x;    % update x             
                 

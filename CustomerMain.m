@@ -3,7 +3,7 @@
 
 %% Tips
 
-% Please ensure that the toolbox is installed (by using "Install.m") the
+% Please ensure that the toolbox is installed (by using "InstallSimplexPS.m") the
 % first time.
 
 % For changing default data, please use "CustomerData.xlsx". (More examples
