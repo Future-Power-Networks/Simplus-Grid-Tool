@@ -34,7 +34,7 @@ ListPowerFlow_;     % Power flow result only for active device by combing
                     
 pole_sys;           % Whole-system poles, or equivalently eigenvalues.
 
-mymodel_v1;         % This is the simulink model generated automatically 
+%mymodel_v1;         % This is the simulink model generated automatically 
                     % based on "CustomerData.xlsx".
 
 %% Customer function and plot

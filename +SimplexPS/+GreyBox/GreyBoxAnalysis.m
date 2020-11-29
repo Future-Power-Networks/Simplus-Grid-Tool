@@ -16,7 +16,7 @@ BodeEnable = 1;
 Layer12Enable = 1;
 Layer3Enable = 1;
 
-[AxisSel, DeviceSel12, ModeSel, DeviceSel3,StateSel_DSS, ModeSel_DSS] = ...
+[AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,StateSel_DSS, ModeSel_DSS] = ...
     SimplexPS.GreyBox.ExcelRead(filename, N_Bus, DeviceType, GminSS);
 ModeSelNum = length(ModeSelAll);
 %get ResidueAll, ZmValAll.

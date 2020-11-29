@@ -12,7 +12,7 @@ for DeviceCount = 1:DeviceSelNum
     for k=1:ParamNum
         ParaNew = Para;
         ParaSel = getfield(Para{DeviceSelL3},ParamName{k});
-        ParaPerturb = ParaSel * 1.01; % 1% perturabation
+        ParaPerturb = ParaSel * (1+1e-5); % 1% perturabation
         ParaNew = setfield(ParaNew{DeviceSelL3}, ParamName{k}, ParaPerturb);
         [~,GmDSS_Cell_New,~,~,~,~,~,~] = ...
             SimplexPS.Toolbox.DeviceModelCreate('Type', DeviceType{DeviceSelL3} ,...
@@ -22,10 +22,10 @@ for DeviceCount = 1:DeviceSelNum
         Layer3Result(DeviceCount).Device={['Device',num2str(DeviceSelL3)]};
         %Layer3Result(DeviceCount).Result(k)={['Device',num2str(DeviceSelL3)]};
         Layer3Result(DeviceCount).Result(k).ParaName = {ParamName{k}};
-        Layer3Result(DeviceCount).Result(k).DeltaZ.dd = ZmValNew.dd - ZmValOrig.dd;
-        Layer3Result(DeviceCount).Result(k).DeltaZ.dq = ZmValNew.dq - ZmValOrig.dq;
-        Layer3Result(DeviceCount).Result(k).DeltaZ.qd = ZmValNew.qd - ZmValOrig.qd;
-        Layer3Result(DeviceCount).Result(k).DeltaZ.qq = ZmValNew.qq - ZmValOrig.qq;
+        Layer3Result(DeviceCount).Result(k).DeltaZ.dd = (ZmValNew.dd - ZmValOrig.dd)/(1e-5);
+        Layer3Result(DeviceCount).Result(k).DeltaZ.dq = (ZmValNew.dq - ZmValOrig.dq)/(1e-5);
+        Layer3Result(DeviceCount).Result(k).DeltaZ.qd = (ZmValNew.qd - ZmValOrig.qd)/(1e-5);
+        Layer3Result(DeviceCount).Result(k).DeltaZ.qq = (ZmValNew.qq - ZmValOrig.qq)/(1e-5);
         
          Layer3Result(DeviceCount).Result(k).DLambda = -1*(...
              Layer3Result(DeviceCount).Result(k).DeltaZ.dd * Residue_.dd...

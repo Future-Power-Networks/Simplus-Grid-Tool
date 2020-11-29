@@ -37,7 +37,7 @@ for k = 1:N_Bus
             if (ismember(k,DeviceSel)) %if selected
                 bode(GminSS(pout+poutBias, pin+pinBias),P)
                 CountLegend = CountLegend + 1;
-                VecLegend{CountLegend} = ['Device',num2str(k)];
+                VecLegend{CountLegend} = ['Node',num2str(k)];
                 hold on;
             end
             pin = pin + 4;    %4 inputs and 5 outputs.
