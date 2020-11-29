@@ -154,6 +154,7 @@ DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
 if floor(Type/10) <= 5
+    % CalcRv_old();
     Device.PrepareHybridUpdate(Device);
     DeviceDiscreDampingResistor = Device.GetVirtualResistor(Device);
 else

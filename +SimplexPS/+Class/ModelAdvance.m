@@ -134,7 +134,9 @@ end
 methods(Static)
     % Read Equilibrium
   	function [read1,read2,read3,read4] = ReadEquilibrium(obj)
-        if (isempty(obj.x_e) || isempty(obj.u_e) || isempty(obj.xi))
+        if (isempty(obj.u_e) || isempty(obj.xi))
+            % Only check u_e and xi, cause x_e can be empty for certain
+            % device such as floating bus.
             error(['Error: The equilibrium is null']);
         else
             y_e = obj.StateSpaceEqu(obj,obj.x_e,obj.u_e,2);

@@ -130,7 +130,7 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
                 D_XL = [0,0;0,0];
 
                 Y_XL = dss(A_XL,B_XL,C_XL,D_XL,E_XL);
-                Ybranch{n} = dss_Sum(Ybranch{n},Y_XL);
+                Ybranch{n} = SimplexPS.DssSum(Ybranch{n},Y_XL);
             end
         end
         

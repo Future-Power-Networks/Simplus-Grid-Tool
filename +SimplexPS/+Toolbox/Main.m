@@ -9,10 +9,6 @@
 % toolbox.
 
 %%
-clear all;  % Clear matlab workspace
-clc;        % Clear matlab command window
-close all;  % Close all figures, etc
-
 fprintf('==================================\n')
 fprintf('Start to run SimplexPowerSystem\n')
 fprintf('==================================\n')
@@ -25,10 +21,6 @@ fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
-Name_Netlist = 'CustomerData.xlsx';
-% Name_Netlist = 'SingleSGInfiniteBus.xlsx';
-% Name_Netlist = 'SingleVSIInfiniteBus.xlsx';
-
 ListBus    	 = xlsread(Name_Netlist,1);     
 ListDevice	 = xlsread(Name_Netlist,2);
 ListBasic    = xlsread(Name_Netlist,3);
