@@ -1,4 +1,7 @@
-%Greybox approach for participation analysis.
+%% Before using. 
+% State / Impedance participation factor analysis.
+% Reference: Participation Analysis in Impedance Models: The Grey-Box Approach for Power System Stability
+%  
 % Author(s): Yue Zhu
 
 %% Notes

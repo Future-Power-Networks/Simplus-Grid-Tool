@@ -1,4 +1,4 @@
-function ExcelPrep
+function ExcelPrep(FileGreybox)
 %this function is to create a new excel file for users to config Greybox
 %analysis. If the GreyboxCofig.xlsx exists, this funciton will wipe it up,
 %and rewrtie all the contents.
