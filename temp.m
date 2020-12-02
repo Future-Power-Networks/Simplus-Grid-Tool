@@ -10,7 +10,9 @@ clear D;
 clear E;
 clear GsysNew2;
 [GsysNew, IndexSS] = SimplexPS.dss2ss(GsysDSS);
-D=eig(GsysNew.A)/(2*pi);
+
+%D=eig(GsysNew.A)/(2*pi);
+D=eig(GsysDSS.A, GsysDSS.E)/(2*pi);
 GsysNew2=minreal(GsysNew);
 E = eig(GsysNew2.A)/(2*pi);
 
