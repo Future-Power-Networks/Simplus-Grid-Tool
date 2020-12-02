@@ -1,4 +1,4 @@
-function [Layer1, Layer2] = GbLayer12(Residue,ZmVal,N_Bus,DeviceType,modei,DeviceSel,FreqSel)
+function [Layer1, Layer2] = GbLayer12(Residue,ZmVal,N_Bus,DeviceType,modei,DeviceSel,FreqSel,ModeSel)
 
 pin = 1;   %pointer to input
 pout = 1;  %pointer to output
@@ -21,7 +21,7 @@ for k = 1:N_Bus
 end
 
 %%
-%%plot draw
+%%diagrams drawing
 close(figure(14+modei));
 figure(14+modei)
 Count=0;
@@ -57,7 +57,7 @@ for i=1:Count
     text(i-0.4,Layer2.imag(i),num2str(Layer2.imag(i)));
 end
 
-TitStr = ['Mode: ',num2str(FreqSel), ' Hz'];
+TitStr = ['Mode: ',num2str(ModeSel,'%.2f'), ' Hz'];
 mtit(TitStr, 'color',[1 0 0], 'xoff', -0.3);
 
 end

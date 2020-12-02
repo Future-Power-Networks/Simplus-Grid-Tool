@@ -25,7 +25,7 @@ fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
-Name_Netlist = 'CustomerData.xlsx';
+Name_Netlist = 'CustomerData3.xlsx';
 % Name_Netlist = 'SingleSGInfiniteBus.xlsx';
 % Name_Netlist = 'SingleVSIInfiniteBus.xlsx';
 

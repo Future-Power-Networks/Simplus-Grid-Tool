@@ -3,7 +3,9 @@ function ExcelPrep(FileGreybox)
 %analysis. If the GreyboxCofig.xlsx exists, this funciton will wipe it up,
 %and rewrtie all the contents.
 %further Greybox analysis.
+% Sheet modification is based on Microsoft Automation Server.
 % Author: Yue Zhu
+
 %fprintf('Preparing Excel file for user configuration...\n');
 FileGreybox=[cd '\GreyBoxConfig.xlsx'];%pwd - current folder location.
 %delete(FileGreybox); %delete the old file.
@@ -33,7 +35,7 @@ SheetCount = Sheets.Count;
 index_adjust = 0;
 Sheets.Add([], Sheets.Item(SheetCount)); %add a new sheet after the last sheet.
 Sheets.Add([], Sheets.Item(SheetCount+1));
-%Sheets.Add([], Sheets.Item(SheetCount+2));
+Sheets.Add([], Sheets.Item(SheetCount+2));
 for i=1:SheetCount %delete old sheets
     current_sheet = get(Sheets, 'Item', (i-index_adjust));
     invoke(current_sheet, 'Delete')
@@ -46,7 +48,7 @@ Sheets.Item(1).Name = 'State-PF';
 %fprintf('Worksheet called %s added. \n',sheet_names{1});
 Sheets.Item(2).Name = 'Impedance-PF';
 %fprintf('Worksheet called %s added. \n',sheet_names{2});
-%Sheets.Item(3).Name = 'Parameters';
+Sheets.Item(3).Name = 'Enabling';
 %fprintf('Worksheet called %s added. \n',sheet_names{3});
 
 Workbook.Save;

@@ -50,7 +50,7 @@ for modei=1:ModeSelNum
     if Layer12Enable ==1
         fprintf('Calculating GreyBox Layer1&2 and plotting the results...\n')
         [Layer1, Layer2] = SimplexPS.GreyBox.GbLayer12(Residue,ZmVal,N_Bus,...
-            DeviceType,modei,DeviceSelL12,FreqSel,GbMode(ModeSelAll(modei)));
+            DeviceType,modei,DeviceSelL12,FreqSel);
         GbLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
         GbLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
         for count = 1: length(DeviceSelL12)
@@ -105,6 +105,7 @@ for modei = 1: length(ModeSel_DSS)
             GbStatePF(modei).result(statei).PF_ABS = abs(StatePF);
     end
     
+
 end
 end
 

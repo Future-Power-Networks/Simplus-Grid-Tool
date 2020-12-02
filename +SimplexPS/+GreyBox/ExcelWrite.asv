@@ -210,21 +210,7 @@ for k = 1:N_Bus
 end
 xlswrite(filename,ImpedanceSheet,'Impedance-PF',StartSpace);
 
-%% Enabling sheet writing
-EnableSheet(1,1) = {'Select the function you wish to enable'};
-EnableSheet(2,1) = {'write "1" for for selection, others for not'};
-
-EnableSheet(6,1) = {'function'};
-EnableSheet(6,2) = {'Select'};
-EnableSheet(7,1) = {'State-PF'};
-EnableSheet(8,1) = {'Bodeplot'};
-EnableSheet(9,1) = {'Impedance-PF Layer 1&2'};
-EnableSheet(10,1) = {'Impedance-PF Layer 3'};
-for i=7:10
-    EnableSheet(i,2) = {1};
-end
-xlswrite(filename,EnableSheet,'Enabling','A1');
-
+EnableSheet(1,1) = {''}
 
 %%
 %%
