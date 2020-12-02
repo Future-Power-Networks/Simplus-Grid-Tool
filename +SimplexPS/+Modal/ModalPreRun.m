@@ -1,10 +1,12 @@
 % this .m file is used to prepare an excel file for user to config 
-% participation analysis. If the file existed, this program will clear the
+% Participation / Sensitivity analysis. If the file existed, this program will clear the
 % original contents. The excel file is built based on the running results
 % of the toolbox.
 % Author: Yue Zhu
 
-SimplexPS.GreyBox.ExcelPrep; %create a new excel file, or clear old contents.
+FileModal=[cd '\ModalConfig.xlsx'];
+%filename = 'ModalConfig.xlsx';
+SimplexPS.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old contents.
 % write contents in the excel file.
 
 % *For State PF analysis, Auto-Select will select all states at each device. It will
@@ -16,14 +18,14 @@ SimplexPS.GreyBox.ExcelPrep; %create a new excel file, or clear old contents.
 % Write 1 to enable auto select.
 AutoSel = 1;
 
-[AutoSelResult] = SimplexPS.GreyBox.ExcelWrite(N_Bus,N_Device,DeviceType,...
-    DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase);
+[AutoSelResult] = SimplexPS.Modal.ExcelWrite(N_Bus,N_Device,DeviceType,...
+    DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, FileModal);
 
-fprintf('GreyboxConfig.xlsx is now ready. Plese open the file and select the states and devices you are interested.\n');
-fprintf('After selection, save the excel file and run GreyBoxAnalysis.m.\n');
+fprintf('ModalConfig.xlsx is now ready. Plese open the file and select the states and devices you are interested.\n');
+fprintf('After selection, save the excel file and run Modal Analysis.m.\n');
 
 if AutoSel == 1 && AutoSelResult == 1
-    SimplexPS.GreyBox.GreyBoxAnalysis
+    SimplexPS.Modal.ModalAnalysis
 elseif AutoSelResult == 0
-    error('Mode Auto-Selection failed. Please open GreyboxConfig.xlsx file to select the mode manually.')
+    error('Mode Auto-Selection failed. Please open ModalConfig.xlsx file to select the mode manually.')
 end

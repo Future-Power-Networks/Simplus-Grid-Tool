@@ -1,9 +1,9 @@
 function [AutoSelResult] = ExcelWrite(N_Bus,N_Device,DeviceType,DeviceStateStr,DeviceInputStr,...
-    DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase)
+    DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, filename)
 %this function is to write states, devices, axes to select for
-%further Greybox analysis.
+%further Modal analysis.
 % Author: Yue Zhu
-filename = 'GreyBoxConfig.xlsx';
+
 AutoSelResult = 0;
 %%
 %*********States sheet write
@@ -104,7 +104,7 @@ ModeNum = length(Mode);
 
 StartSpace='A6';
 
-xlswrite(filename,{'Select devices and mode for bode-plot and Greybox Layer1&2 analysis'},'Impedance-PF','A1');
+xlswrite(filename,{'Select devices and mode for bode-plot and Modal Layer1&2 analysis'},'Impedance-PF','A1');
 xlswrite(filename,{'write "1" for for selection, others for not'},'Impedance-PF','A2');
 
 %*** Layer1&2 device select

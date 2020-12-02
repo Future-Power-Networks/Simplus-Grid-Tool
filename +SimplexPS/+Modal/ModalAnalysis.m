@@ -6,7 +6,7 @@
 
 %% Notes
 % Before running this program, you need to config the analysis from
-% GreyboxConfig.xlsx, which should be located in the toolbox root folder.
+% ModalConfig.xlsx, which should be located in the toolbox root folder.
 % Note1: device numbering keeps the same as bus numbering. For example: the device
 % on bus7 will always be named as Device7.
 % Note2: The final results will be saved in GbLayer1, GbLayer2, GbLayer3,
@@ -14,57 +14,57 @@
 
 %% Basic
 %Basic infomation acquirement.
-filename='GreyBoxConfig.xlsx';
-clear GbLayer1;
-clear GbLayer2;
-clear GbLayer3;
-clear GbStatePF;
-clear GbMode;
+FileModal=[cd '\ModalConfig.xlsx'];
+clear MdLayer1;
+clear MdLayer2;
+clear MdLayer3;
+clear MdStatePF;
+clear MdMode;
 
-%read greybox config file.
+%read Modal config file.
 [AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,StateSel_DSS, ModeSel_DSS] = ...
-    SimplexPS.GreyBox.ExcelRead(filename, N_Bus, DeviceType, GminSS);
+    SimplexPS.Modal.ExcelRead(FileModal, N_Bus, DeviceType, GminSS);
 [StatePFEnable, BodeEnable, Layer12Enable, Layer3Enable] = ...
-    SimplexPS.GreyBox.EnablingRead(filename); %Enablling control.
+    SimplexPS.Modal.EnablingRead(FileModal); %Enablling control.
 
 %check for illegal selection.
-SimplexPS.GreyBox.DataCheck(AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,...
+SimplexPS.Modal.DataCheck(AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,...
     StateSel_DSS, ModeSel_DSS,BodeEnable,Layer12Enable,Layer3Enable,StatePFEnable);
 
 ModeSelNum = length(ModeSelAll);
 %get ResidueAll, ZmValAll.
-[GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS,Psi_DSS]=...
-    SimplexPS.GreyBox.SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS);
+[MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS,Psi_DSS]=...
+    SimplexPS.Modal.SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS);
 
 %% Impedance Participation Factor
 %Analysis.
 if BodeEnable ==1
     fprintf('plotting bode diagram for selected whole-system admittance...\n')
-    SimplexPS.GreyBox.BodeDraw(DeviceSelL12, AxisSel, GminSS, DeviceType, N_Bus);
+    SimplexPS.Modal.BodeDraw(DeviceSelL12, AxisSel, GminSS, DeviceType, N_Bus);
 end
 
 for modei=1:ModeSelNum
     Residue = ResidueAll{modei};
     ZmVal = ZmValAll{modei};
-    FreqSel = imag(GbMode(ModeSelAll(modei)));
+    FreqSel = imag(MdMode(ModeSelAll(modei)));
     if Layer12Enable ==1
-        fprintf('Calculating GreyBox Layer1&2 and plotting the results...\n')
-        [Layer1, Layer2] = SimplexPS.GreyBox.GbLayer12(Residue,ZmVal,N_Bus,...
-            DeviceType,modei,DeviceSelL12,FreqSel,GbMode(ModeSelAll(modei)));
-        GbLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
-        GbLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
+        fprintf('Calculating Modal Analysis Layer1&2 and plotting the results...\n')
+        [Layer1, Layer2] = SimplexPS.Modal.MdLayer12(Residue,ZmVal,N_Bus,...
+            DeviceType,modei,DeviceSelL12,FreqSel,MdMode(ModeSelAll(modei)));
+        MdLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
+        MdLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
         for count = 1: length(DeviceSelL12)
-            GbLayer1(modei).result(count).Device={['Device',num2str(DeviceSelL12(count))]};
-            GbLayer1(modei).result(count).Abs_Max=Layer1(count);
-            GbLayer2(modei).result(count).Device={['Device',num2str(DeviceSelL12(count))]};
-            GbLayer2(modei).result(count).DeltaLambdaReal=Layer2.real(count);
-            GbLayer2(modei).result(count).DeltaLambdaImag=Layer2.imag(count);
+            MdLayer1(modei).result(count).Device={['Device',num2str(DeviceSelL12(count))]};
+            MdLayer1(modei).result(count).Abs_Max=Layer1(count);
+            MdLayer2(modei).result(count).Device={['Device',num2str(DeviceSelL12(count))]};
+            MdLayer2(modei).result(count).DeltaLambdaReal=Layer2.real(count);
+            MdLayer2(modei).result(count).DeltaLambdaImag=Layer2.imag(count);
         end
     end
     if Layer3Enable ==1
-        fprintf('Calculating GreyBox Layer3...\n')
-        GbLayer3(modei).mode = [num2str(FreqSel),'~Hz'];
-        GbLayer3(modei).result = SimplexPS.GreyBox.GbLayer3(Residue,ZmVal,...
+        fprintf('Calculating Modal Layer3...\n')
+        MdLayer3(modei).mode = [num2str(FreqSel),'~Hz'];
+        MdLayer3(modei).result = SimplexPS.Modal.MdLayer3(Residue,ZmVal,...
         FreqSel,DeviceType,DeviceSelL3All,Para,PowerFlow,Ts);
     end
 end
@@ -81,7 +81,7 @@ end
 for modei = 1: length(ModeSel_DSS)
     FreqSel = imag(ModeDSS(ModeSel_DSS(modei)));
     ModeSel = ModeSel_DSS(modei);
-    GbStatePF(modei).mode = [num2str(FreqSel),'~Hz'];
+    MdStatePF(modei).mode = [num2str(FreqSel),'~Hz'];
     for statei=1:length(StateSel_DSS)
             StateSel = StateSel_DSS(statei);
             DeviceNum = length(DeviceStateStr);
@@ -99,10 +99,10 @@ for modei = 1: length(ModeSel_DSS)
                 end
             end
             StatePF = Phi_DSS(StateSel,ModeSel)^2 ;%* Phi_DSS(StateSel,ModeSel);
-            GbStatePF(modei).result(statei).Device = StateName;
-            GbStatePF(modei).result(statei).State = SysStateString(StateSel);
-            GbStatePF(modei).result(statei).PF = StatePF;
-            GbStatePF(modei).result(statei).PF_ABS = abs(StatePF);
+            MdStatePF(modei).result(statei).Device = StateName;
+            MdStatePF(modei).result(statei).State = SysStateString(StateSel);
+            MdStatePF(modei).result(statei).PF = StatePF;
+            MdStatePF(modei).result(statei).PF_ABS = abs(StatePF);
     end
     
 end

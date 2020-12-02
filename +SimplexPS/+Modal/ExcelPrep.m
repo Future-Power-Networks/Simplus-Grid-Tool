@@ -1,32 +1,32 @@
-function ExcelPrep(FileGreybox)
-%this function is to create a new excel file for users to config Greybox
-%analysis. If the GreyboxCofig.xlsx exists, this funciton will wipe it up,
+function ExcelPrep(FileModal)
+%this function is to create a new excel file for users to config Modal
+%analysis. If the ModalCofig.xlsx exists, this funciton will wipe it up,
 %and rewrtie all the contents.
-%further Greybox analysis.
+%further Modal analysis.
 % Sheet modification is based on Microsoft Automation Server.
 % Author: Yue Zhu
 
 %fprintf('Preparing Excel file for user configuration...\n');
-FileGreybox=[cd '\GreyBoxConfig.xlsx'];%pwd - current folder location.
-%delete(FileGreybox); %delete the old file.
+%pwd - current folder location.
+%delete(FileModal); %delete the old file.
 new=0;
 try
     Excel = actxGetRunningServer('Excel.Application');
 catch
     Excel = actxserver('Excel.Application');
 end
-if exist(FileGreybox,'file')
+if exist(FileModal,'file')
 else
     eWorkbook = Excel.Workbooks.Add; %add a workbook
-    SaveAs(eWorkbook,FileGreybox);
+    SaveAs(eWorkbook,FileModal);
     Close(eWorkbook);
     new=1;
 end
-[~, sheet_names] = xlsfinfo(FileGreybox);
+[~, sheet_names] = xlsfinfo(FileModal);
 set(Excel, 'Visible', 0); %application invisible
 set(Excel,'DisplayAlerts',0); %mute all alerts
 Workbooks = Excel.Workbooks;  % Get a handle to Excel's Workbooks
-Workbook=Workbooks.Open(FileGreybox); % Open an Excel Workbook and activate it
+Workbook=Workbooks.Open(FileModal); % Open an Excel Workbook and activate it
 Sheets = Excel.ActiveWorkBook.Sheets;
 if new ==1 
     Sheets.Add([], Sheets.Item(Sheets.Count));

@@ -1,4 +1,4 @@
-function Layer3Result = GbLayer3(Residue,ZmVal,FreqSel,DeviceType,DeviceSelL3All,Para,PowerFlow,Ts)
+function Layer3Result = MdLayer3(Residue,ZmVal,FreqSel,DeviceType,DeviceSelL3All,Para,PowerFlow,Ts)
 
 DeviceSelNum=length(DeviceSelL3All);
 
@@ -17,7 +17,7 @@ for DeviceCount = 1:DeviceSelNum
         [~,GmDSS_Cell_New,~,~,~,~,~,~] = ...
             SimplexPS.Toolbox.DeviceModelCreate('Type', DeviceType{DeviceSelL3} ,...
             'Flow',PowerFlow{DeviceSelL3},'Para',ParaNew,'Ts',Ts);
-        ZmValNew = SimplexPS.GreyBox.DeviceImpedanceCal(GmDSS_Cell_New, FreqSel, DeviceSelL3);
+        ZmValNew = SimplexPS.Modal.DeviceImpedanceCal(GmDSS_Cell_New, FreqSel, DeviceSelL3);
         
         Layer3Result(DeviceCount).Device={['Device',num2str(DeviceSelL3)]};
         %Layer3Result(DeviceCount).Result(k)={['Device',num2str(DeviceSelL3)]};
