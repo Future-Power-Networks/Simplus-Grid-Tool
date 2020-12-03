@@ -59,7 +59,7 @@ for i=1:ModeNum
     StateSheet(index,6) = {num2str(Mode(i),'%.2f')};
     %auto select two modes
     if AutoSel ==1 && i >= 3
-        if imag(Mode(i)) < 100*2*pi % below 100Hz mode
+        if abs(imag(Mode(i))) < 100 % below 100Hz mode
             if abs(abs(imag(Mode(i))) - 0) >= 0.1 % not around 0.
                 if abs(abs(imag(Mode(i))) - Fbase) >= 1 % not around Fbase
                     if abs(real(Mode(i))) < SmodeSel1 || SmodeSel1 == 0
@@ -160,7 +160,7 @@ for i=1:ModeNum
     ImpedanceSheet(index,8)={num2str(Mode(i),'%.2f')};
     
     if AutoSel ==1 && i >= 3
-        if imag(Mode(i)) < 100*2*pi % below 100Hz mode
+        if abs(imag(Mode(i))) < 100 % below 100Hz mode
             if abs(abs(imag(Mode(i))) - 0) >= 0.1 % not around 0.
                 if abs(abs(imag(Mode(i))) - Fbase) >= 1 % not around Fbase
                     if abs(real(Mode(i))) < SmodeSel1 || SmodeSel1 == 0 || abs(abs(imag(Mode(i))) - Fbase) <=1

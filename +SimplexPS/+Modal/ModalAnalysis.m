@@ -33,7 +33,7 @@ SimplexPS.Modal.DataCheck(AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,...
 
 ModeSelNum = length(ModeSelAll);
 %get ResidueAll, ZmValAll.
-[MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS,Psi_DSS]=...
+[MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS]=...
     SimplexPS.Modal.SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS);
 
 %% Impedance Participation Factor
@@ -98,11 +98,14 @@ for modei = 1: length(ModeSel_DSS)
                     end
                 end
             end
-            StatePF = Phi_DSS(StateSel,ModeSel)^2 ;%* Phi_DSS(StateSel,ModeSel);
+            Psi_DSS = inv(Phi_DSS);
+            StatePF = Phi_DSS(StateSel,ModeSel) * Psi_DSS(ModeSel,StateSel);
             MdStatePF(modei).result(statei).Device = StateName;
             MdStatePF(modei).result(statei).State = SysStateString(StateSel);
             MdStatePF(modei).result(statei).PF = StatePF;
             MdStatePF(modei).result(statei).PF_ABS = abs(StatePF);
+            MdStatePF(modei).result(statei).PF_Real = real(StatePF);
+            MdStatePF(modei).result(statei).PF_Imag = imag(StatePF);
     end
     
 end
