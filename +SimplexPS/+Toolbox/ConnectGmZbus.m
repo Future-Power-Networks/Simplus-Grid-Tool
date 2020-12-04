@@ -6,7 +6,7 @@
 function [GsysObj,GsysDSS,Port_v_dq,Port_i_dq,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ConnectGmZbus(GmObj,ZbusObj)
 
 % Get the strings
-[~,InputStr,OutputStr] = GmObj.ReadString(GmObj);
+[~,InputStr,OutputStr] = GmObj.GetString(GmObj);
 
 % Initialize port
 Port_v_dq  = [];
@@ -61,6 +61,6 @@ GsysObj = SimplexPS.ObjFeedback(GmObj,ZbusObj,Port_v_dq,Port_i_dq);
 SimplexPS.ObjCheckDim(GsysObj);
 
 % Output auxiliary data
-[~,GsysDSS] = GsysObj.ReadDSS(GsysObj);	% Descriptor state space model
+[~,GsysDSS] = GsysObj.GetDSS(GsysObj);	% Descriptor state space model
 
 end

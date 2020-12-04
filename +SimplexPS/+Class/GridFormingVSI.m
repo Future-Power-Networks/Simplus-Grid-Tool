@@ -9,13 +9,23 @@
 %% Class
 
 classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
+    
+    methods
+        % constructor
+        function obj = GridFormingVSI(varargin)
+
+            % Support name-value pair arguments when constructing object
+            setProperties(obj,nargin,varargin{:});
+
+        end
+    end
+    
     methods(Static)
         
-        % Set the strings of input, output, state
-        function SetString(obj)
-         	obj.StateString  = {'i_ld','i_lq','i_ld_i','i_lq_i','v_od','v_oq','v_od_i','v_oq_i','i_d','i_q','w','v_od_r'};
-            obj.InputString  = {'v_d','v_q','?','?'};
-            obj.OutputString = {'i_d','i_q','w','?'};
+        function [State,Input,Output] = SignalList(obj)
+         	State  = {'i_ld','i_lq','i_ld_i','i_lq_i','v_od','v_oq','v_od_i','v_oq_i','i_d','i_q','w','v_od_r'};
+            Input  = {'v_d','v_q','?','?'};
+            Output = {'i_d','i_q','w','?'};
         end
         
         % Calculate the equilibrium

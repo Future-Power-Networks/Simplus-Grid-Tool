@@ -23,14 +23,14 @@ classdef ModelAdvance < SimplexPS.Class.ModelBase ...
 % =================================================
 % Properties
 % =================================================
-% ### Public properties
+% ### Public properties % Public can be set to []
 properties
     Ts = 1e-4;          % Sampling period (s)
-    Para = [];          % Device parameters   
+    Para = [];          % Device parameters            
 end
 
-% Nontunable properties can be set to []
 properties(Nontunable)
+% Note: Nontunable properties will be read first during construction    
     
     PowerFlow = [];     % Power flow parameters
     x0 = [];            % Initial state
@@ -38,45 +38,25 @@ properties(Nontunable)
   	% Discretization methods
     % 1-Forward Euler, 2-Hybrid Euler-Trapezoidal, 2'-General virtual
     % dissipation.
-    DiscreMethod = 1;
+    DiscreMethod = 2;
     
     % Jacobian calculation
     % 1-Initial step, 2-Every step
     LinearizationTimes = 1;
     
-    % Void Jacobian
-    % The corresponding Jacobian is to set as null (A,C).
-    % Equivalently, the marked states are updated by Euler's method.
-    % The index is counted backward, i.e. k -> end-k, for compactablity 
-    % with Yitong's code
-    VoidJacobStates = [0];
+    % Direct Feedthrough
+    DirectFeedthrough = false;
     
-    % Void feedthrough
-    % void the corresponding feedthrough matrix to break algebraic loop
-    % the index is counted backward, i.e. k -> end-k, for compactablity 
-    % with Yitong's code
-    VoidFeedthrough = [0];
-    
-  	% Takeout feedthrough
-    % 0: do not take out feedthrough as resistor (may have algebraic loop)
-    % 1: take out feedthrough as resistor (eliminate algebraic loop)
-    DiscreDampingFlag = 1;
-    
-    % Electrical ports
-    % The electical port IOs with direct feedthrough (due to Trapezoidal
-    % method, for example) can take out the feedthrough parts as virtual
-    % resistors to eliminate algebraic loops. This property is used with 
-    % DiscreDampingFlag to control which ports to take out.
-    ElecPortIOs = [1,2];
+  	% Virtual Resistor
+    % 0: do not take out feedthrough as resistor
+    % 1: take out feedthrough as resistor
+    VirtualResistor = true;
     
     % Initialize to steady-state  
-    EquiInitial = 0;
+    EquiInitial = true;
     
-    % Device type
-    DeviceType = [];
+    DeviceType = 0;    % Device type
     
-    % Direct Feedthrough
-    DirectFeedthrough = 0;
 end
 
 % ### Discrete state
@@ -94,21 +74,44 @@ end
 
 % ### Protected properties
 properties(Access = protected)
+        
+    % Void Jacobian
+    % The corresponding Jacobian is to set as null (A,C).
+    % Equivalently, the marked states are updated by Euler's method.
+    % The index is counted backward, i.e. k -> end-k, for compactablity 
+    % with Yitong's code
+    % This property is only effective when LinearizationTimes == 1
+    VoidJacobStates = [0]; %#ok<*NBRAK>
+    
+    % Void feedthrough
+    % void the corresponding feedthrough matrix to break algebraic loop
+    % the index is counted backward, i.e. k -> end-k, for compactablity 
+    % with Yitong's code
+    % This property is only effective when DirectFeedthrough == 0
+    VoidFeedthrough = [0];
+    
+    % Electrical ports
+    % The electical port IOs with direct feedthrough (due to Trapezoidal
+    % method, for example) can take out the feedthrough parts as virtual
+    % resistors to eliminate algebraic loops. 
+    % This property is only effective when DirectFeedthrough == 0 and
+    % VirtualResistor == 1.
+    ElecPortIOs = [1,2];
     
     % Steady-state operating points
    	x_e;        % State
  	u_e;        % Input
     xi;         % Angle difference calculated by power flow analysis
     
-    % Used for Trapezoidal method
+    % Dynamic SS Model
     Ak;
     Bk;
     Ck;
     Dk;
-    Wk;     % State update gain
-    Qk;     % Feedthrough gain
-    Gk;     % Virtual resistor gain
-    Fk;     % Feedthrough gain by taking out the virtual resistor 
+    Wk;         % State update gain
+    Qk;         % Feedthrough gain
+    Gk;         % Virtual resistor gain
+    Fk;         % Feedthrough gain by taking out the virtual resistor
     
     % Store previous input. Used for eliminate algebraic loop.
     uk;     
@@ -129,11 +132,20 @@ end
 % Methods
 % =================================================
 
+methods
+    % constructor
+    function obj = ModelAdvance(varargin)
+        
+        % Support name-value pair arguments when constructing object
+        setProperties(obj,nargin,varargin{:});
+
+    end
+end
 
 % ### Static methods
 methods(Static)
-    % Read Equilibrium
-  	function [read1,read2,read3,read4] = ReadEquilibrium(obj)
+
+  	function [read1,read2,read3,read4] = GetEquilibrium(obj)
         if (isempty(obj.u_e) || isempty(obj.xi))
             % Only check u_e and xi, cause x_e can be empty for certain
             % device such as floating bus.
@@ -147,72 +159,96 @@ methods(Static)
         end
     end
     
-    % Preparation for Hybrid Euler-Trapezoidal update
-    function PrepareHybridUpdate(obj) 
-        
-        obj.Ak = obj.A;
-        if ~isempty(obj.VoidJacobStates) % null the corresponding column of A
-            %obj.Ak(end-obj.VoidJacobStates,:) = zeros(length(obj.VoidJacobStates),length(obj.Ak));
-            obj.Ak(:,end-obj.VoidJacobStates) = zeros(length(obj.Ak),length(obj.VoidJacobStates));   
-        end
-        
-        obj.Bk = obj.B;
-        if ~isempty(obj.VoidJacobStates) % null the corresponding row of B
-           obj.Bk(end-obj.VoidJacobStates,:) = zeros(length(obj.VoidJacobStates),length(obj.Bk(1,:)));   
-        end
-        
-        obj.Ck = obj.C;
-        if ~isempty(obj.VoidJacobStates) % null the corresponding column of C
-            obj.Ck(:,end-obj.VoidJacobStates) = zeros(length(obj.Ck(:,1)),length(obj.VoidJacobStates));   
-        end
-        
-        obj.Dk = obj.D;
-        
-        obj.Wk = (eye(length(obj.Ak))/obj.Ts - 1/2*obj.Ak)^(-1);    % state update
-        obj.Qk = obj.Dk + 1/2*obj.Ck*obj.Wk*obj.Bk;                 % feedthrough
-        if ~isempty(obj.VoidFeedthrough) % null the corresponding row of Q ???
-            obj.Qk(end-obj.VoidFeedthrough,:) = zeros(size(obj.Qk(end-obj.VoidFeedthrough,:)));   
-        end
-                
-        % Split obj.Qk = obj.Gk + obj.Fk
-        % where Gk is the virtual resistor gain, and Fk is the feedthrough
-        % gain by taking out the virtual resistor
-        obj.Gk = zeros(size(obj.Qk));
-        obj.Fk = obj.Qk;
-        if ~isempty(obj.ElecPortIOs)                    
-            Gk_ = obj.Qk(obj.ElecPortIOs,obj.ElecPortIOs);
-            Gk_ = diag(Gk_);                        % Get the diagonal elements
-            Gk_ = mean(Gk_);                        % Calculate the average
-            Gk_ = Gk_*eye(length(obj.ElecPortIOs)); % Form the resistor matrix
-            obj.Gk(obj.ElecPortIOs,obj.ElecPortIOs) = Gk_;
-            obj.Fk(obj.ElecPortIOs,obj.ElecPortIOs) = zeros(size(Gk_));
-        end
+    function SetEquilibrium(obj)
+        [obj.x_e,obj.u_e,obj.xi] = obj.Equilibrium(obj);
     end
     
-    % Caculate the virtual resistor
-    function Rv = GetVirtualResistor(obj)
-        if ~isempty(obj.Gk)
-            Gk_ = obj.Gk(obj.ElecPortIOs,obj.ElecPortIOs);
-            Rv = (Gk_(1,1))^(-1);
-        else
-            error(['Error: Gk is empty.'])
-        end
-    end
-    
-    % State space equation for the system
-    function rtn = StateSpaceEqu(obj,x,u,flag)
-        rtn = [];
-        % should be overrided in the subclass in the following format
-        % rtn = dx/dt = f(x,u), if flag == 1
-        % rtn =  y    = g(x,u), if flag == 2
-    end
-    
-    % Get equilibrium x_e and u_e from power flow
-    function Equilibrium(obj)
-        % should be overrided in the subclass in the following format
+    % calc equilibrium x_e and u_e from power flow
+    function [x_e, u_e, xi] = Equilibrium(obj)
+        error('The Equilibrium method should be overloaded in subclasses.');
         % set x_e,u_e and xi according to PowerFlow
         % x_e and u_e are column vectors with the same dimention as x and u
     end
+        
+    function SetDynamicSS(obj,xk,uk)
+        [Ak,Bk,Ck,Dk,Wk,Qk,Gk,Fk] = obj.CalcDynamicSS(obj,xk,uk);
+        
+        obj.Ak = Ak;
+        obj.Bk = Bk;
+        obj.Ck = Ck;
+        obj.Dk = Dk;
+        obj.Wk = Wk;
+        obj.Qk = Qk;
+        obj.Gk = Gk;
+        obj.Fk = Fk;           
+    end
+    
+    function [Ak,Bk,Ck,Dk,Wk,Qk,Gk,Fk] = CalcDynamicSS(obj,xk,uk) 
+        
+        [Ak,Bk,Ck,Dk] = obj.Linearization(obj,xk,uk);
+        
+        if obj.LinearizationTimes == 1
+            if ~isempty(obj.VoidJacobStates) % null the corresponding column of A
+                Ak(:,end-obj.VoidJacobStates) = zeros(length(Ak),length(obj.VoidJacobStates));   
+            end
+
+            if ~isempty(obj.VoidJacobStates) % null the corresponding row of B
+                Bk(end-obj.VoidJacobStates,:) = zeros(length(obj.VoidJacobStates),length(Bk(1,:)));   
+            end
+
+            if ~isempty(obj.VoidJacobStates) % null the corresponding column of C
+                Ck(:,end-obj.VoidJacobStates) = zeros(length(Ck(:,1)),length(obj.VoidJacobStates));   
+            end
+        end
+        
+        Wk = (eye(length(Ak))/obj.Ts - 1/2*Ak)^(-1);    % state update
+        Qk = Dk + 1/2*Ck*Wk*Bk;                         % feedthrough
+        
+        switch obj.DiscreMethod          
+            case 1
+                Fk = Dk;                
+            case 2                
+                Fk = Qk;
+            otherwise
+                error('Invalid discretization method.');
+        end
+        
+        Gk = zeros(size(Fk));
+                
+        if ~obj.DirectFeedthrough
+            if obj.VirtualResistor
+                if ~isempty(obj.ElecPortIOs)                    
+                    Gk_ = Fk(obj.ElecPortIOs,obj.ElecPortIOs);
+                    Gk_ = diag(Gk_);                            % Get the diagonal elements
+                    Gk_ = mean(Gk_);                            % Calculate the average
+                    Gk_ = Gk_*eye(length(obj.ElecPortIOs));     % Form the resistor matrix
+                    Gk(obj.ElecPortIOs,obj.ElecPortIOs) = Gk_;
+                    Fk(obj.ElecPortIOs,obj.ElecPortIOs) = zeros(size(Gk_));
+                end                       
+            end
+
+            if ~isempty(obj.VoidFeedthrough)                    
+                if obj.VoidFeedthrough(1) == -1                 % null all of F
+                     Fk = zeros(size(Fk));
+                else                                            % null the corresponding row of F
+                     Fk(end-obj.VoidFeedthrough,:) = zeros(size(Fk(end-obj.VoidFeedthrough,:)));
+                end                     
+            end
+        end
+    end
+    
+    % get the virtual resistor from property obj.Gk
+    function Rv = GetVirtualResistor(obj)
+        Rv = 1/obj.Gk(1,1)/1.002; 
+    end
+    
+    % calculate the virtual resistor from parameter
+    function Rv = CalcVirtualResistor(obj)
+        [x_e,u_e,~] = obj.Equilibrium(obj);
+        [~,~,~,~,~,~,Gk,~] = CalcDynamicSS(obj,x_e,u_e);        
+        Rv = 1/Gk(1,1)/1.002;
+    end
+    
 end
 
 % ### Protected default methods provided by matlab
@@ -221,18 +257,27 @@ methods(Access = protected)
 
     % Perform one-time calculations, such as computing constants
     function setupImpl(obj)
-        % Set string vectors for x, u, y
-        obj.SetString(obj);
         
         % Initialize x_e, u_e
-        obj.Equilibrium(obj);
-                
-        % Initialize A, B, C, D
-        obj.Linearization(obj,obj.x_e,obj.u_e);              
-        obj.PrepareHybridUpdate(obj);
+        obj.SetEquilibrium(obj);
         
         % Initialize uk
-        obj.uk = obj.u_e;
+        if obj.EquiInitial
+            obj.uk = obj.u_e;
+        else
+            obj.uk = 0*obj.u_e;
+        end  
+        
+        % Initialize A, B, C, D
+        if obj.LinearizationTimes == 1
+            obj.SetDynamicSS(obj,obj.x_e,obj.u_e);            
+        else
+            if obj.EquiInitial 
+                obj.SetDynamicSS(obj,obj.x_e,obj.u_e);
+            else
+                obj.SetDynamicSS(obj,obj.x0,0*obj.u_e);
+            end                          
+        end
                 
         % Initialize Timer
         obj.Timer = 0;
@@ -248,7 +293,7 @@ methods(Access = protected)
             obj.x = obj.x_e;
         else
             obj.x = obj.x0;
-        end
+        end        
     end
 
   	% Update states and calculate output in the same function
@@ -319,16 +364,11 @@ methods(Access = protected)
             % case 2' turns out to be equivalent to case 2 and therefore 
             % is combined with case 2  
             case 2               
-                if obj.LinearizationTimes == 2 
-                    % update Jacobian in real time    
-                    obj.Linearization(obj,obj.x,u);
-                    obj.PrepareHybridUpdate(obj);
+                if obj.LinearizationTimes == 2    
+                    obj.SetDynamicSS(obj,obj.x,obj.u);
                 end
                 delta_x = obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);               
-                obj.x = obj.x + delta_x;    % update x             
-                
-            otherwise
-                error(['Error: discretization method invalid.']);
+                obj.x = obj.x + delta_x;             
         end
         
         obj.Timer = obj.Timer + obj.Ts;
@@ -341,21 +381,31 @@ methods(Access = protected)
             
             % ### Case 1: Forward Euler
           	case 1
-                y = obj.StateSpaceEqu(obj,obj.x,u,2);
+                if obj.DirectFeedthrough
+                    y = obj.StateSpaceEqu(obj,obj.x,u,2);
+                else
+                    if obj.VirtualResistor
+                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);
+                    else
+                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + obj.Fk*(u-obj.uk);
+                    end
+                end
                 
             % ### Case 2 : Hybrid Euler-Trapezoidal (Yunjie's Method)
             % ### Case 2': General virtual dissipation (Yitong's Method)
             % case 2' turns out to be equivalent to case 2 and therefore 
             % is combined with case 2
             case 2
-                if obj.DiscreDampingFlag
-                    y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);
-                else
-                    y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) + obj.Qk*(u-obj.uk);
-                end
                 
-            otherwise
-                error(['Error: discretization method invalid.']);
+                if obj.DirectFeedthrough
+                    y = obj.StateSpaceEqu(obj,obj.x,u,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,u,1);
+                else
+                    if obj.VirtualResistor
+                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);
+                    else
+                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) + obj.Fk*(u-obj.uk);
+                    end
+                end
         end
         
         obj.uk = u;                 % store the current u=u[k+1/2]
@@ -364,11 +414,7 @@ methods(Access = protected)
     
   	% Set direct or nondirect feedthrough status of input
     function flag = isInputDirectFeedthroughImpl(obj)
-        if obj.DirectFeedthrough
-            flag = true;
-        else
-            flag = false;
-        end
+        flag = obj.DirectFeedthrough;
     end
     
     % Release resources, such as file handles
@@ -387,14 +433,14 @@ methods(Access = protected)
     
     % Set the size of output
     function [size] = getOutputSizeImpl(obj)
-        obj.SetString(obj);
-        size = [length(obj.OutputString)];
+        [~,~,Output] = obj.SignalList(obj);
+        size = length(Output);
     end
         
     % Set the characteristics of state
-    function [size,dataType,complexity] = getDiscreteStateSpecificationImpl(obj, x)
-        obj.SetString(obj);
-        size = [length(obj.StateString)];
+    function [size,dataType,complexity] = getDiscreteStateSpecificationImpl(obj, x)        
+        [State,~,~] = obj.SignalList(obj);
+        size = length(State);
         dataType = 'double';
         complexity = false;
     end

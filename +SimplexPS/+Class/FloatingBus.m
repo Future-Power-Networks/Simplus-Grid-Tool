@@ -14,7 +14,7 @@ classdef FloatingBus < SimplexPS.Class.ModelAdvance
         end
         
         % Calculate the equilibrium
-        function Equilibrium(obj)
+        function [x_e,u_e,xi] = Equilibrium(obj)
          	% Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
             Q	= obj.PowerFlow(2);
@@ -26,9 +26,8 @@ classdef FloatingBus < SimplexPS.Class.ModelAdvance
             v_d = V;
             v_q = 0;
             
-            obj.u_e = [v_d; v_q];
-            obj.x_e = [];
-            obj.xi = [xi];
+            u_e = [v_d; v_q];
+            x_e = [];
         end
         
         % State space model

@@ -194,7 +194,7 @@ YbusDSS = SimplexPS.DssArrange(YbusCell);      	% Whole state space form
 YbusObj = SimplexPS.Class.ModelBase;
 
 % Load the model
-YbusObj.LoadDSS(YbusObj,YbusDSS);
+YbusObj.SetDSS(YbusObj,YbusDSS);
 
 % Get the string
 for k = 1:N_Bus
@@ -210,7 +210,7 @@ for i = 1:N_Bus
         StateStr = [StateStr,YbusCell_StateStr{i,j}];
     end
 end
-YbusObj.WriteString(YbusObj,StateStr,InputStr,OutputStr);
+YbusObj.SetString(YbusObj,StateStr,InputStr,OutputStr);
 
 % Check dimension mismatch
 SimplexPS.ObjCheckDim(YbusObj);

@@ -6,8 +6,8 @@ function Gobj = DeviceModelLink(GmObj)
 
     % Create a new obj
     Gobj = SimplexPS.Class.ModelBase;
-    Gobj.LoadDSS(Gobj,dss([],[],[],[],[]));
-    Gobj.WriteString(Gobj,{},{},{});
+    Gobj.SetDSS(Gobj,dss([],[],[],[],[]));
+    Gobj.SetString(Gobj,{},{},{});
     
     % Append
     for n = 1:length(GmObj)

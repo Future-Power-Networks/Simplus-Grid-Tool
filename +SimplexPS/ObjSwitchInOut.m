@@ -11,15 +11,15 @@
 function obj_new = ObjSwitchInOut(obj,length_sw)
 
 % Load data
-[~,G] = obj.ReadDSS(obj);
-[StateStr,InputStr,OutputStr] = obj.ReadString(obj);
+[~,G] = obj.GetDSS(obj);
+[StateStr,InputStr,OutputStr] = obj.GetString(obj);
 
 % Create a new object
 obj_new =SimplexPS.Class.ModelBase;
 
 % Switch
 G_new = SimplexPS.DssSwitchInOut(G,length_sw);
-obj_new.LoadDSS(obj_new,G_new);
+obj_new.SetDSS(obj_new,G_new);
 
 % Get the string
 StateStr_new = StateStr;
@@ -34,7 +34,7 @@ for i = 1:length_sw
     InputStr_new{i} = OutputStr{i};
     OutputStr_new{i} = InputStr{i};
 end
-obj_new.WriteString(obj_new,StateStr_new,InputStr_new,OutputStr_new);
+obj_new.SetString(obj_new,StateStr_new,InputStr_new,OutputStr_new);
 
 % Check the dimension
 SimplexPS.ObjCheckDim(obj_new);

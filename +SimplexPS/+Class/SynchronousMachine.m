@@ -9,20 +9,30 @@
 %% Class
 
 classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
-
+    
     properties(Access = protected)
         psi_f;
     end
     
+    methods
+        % constructor
+        function obj = SynchronousMachine(varargin)
+
+            % Support name-value pair arguments when constructing object
+            setProperties(obj,nargin,varargin{:});
+
+        end
+    end
+    
     methods(Static)
         
-        function SetString(obj)
-            obj.StateString	 = {'i_d','i_q','w','theta'};            
-            obj.InputString	 = {'v_d','v_q','T_m','v_ex'};
-            obj.OutputString = {'i_d','i_q','w','i_ex','theta'};
+        function [State,Input,Output] = SignalList(obj)
+            State	 = {'i_d','i_q','w','theta'};            
+            Input	 = {'v_d','v_q','T_m','v_ex'};
+            Output = {'i_d','i_q','w','i_ex','theta'};
         end
         
-        function Equilibrium(obj)
+        function [x_e,u_e,xi] = Equilibrium(obj)
             % Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
             Q	= obj.PowerFlow(2);
@@ -59,9 +69,9 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             theta = xi;
 
             % Get equilibrium
-            obj.x_e = [i_d; i_q; w; theta];
-            obj.u_e = [v_d; v_q; T_m; v_ex];
-            obj.xi  = [xi];
+            x_e = [i_d; i_q; w; theta];
+            u_e = [v_d; v_q; T_m; v_ex];
+            xi  = [xi];
         end
         
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)

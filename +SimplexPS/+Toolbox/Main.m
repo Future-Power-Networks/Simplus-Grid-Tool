@@ -80,7 +80,7 @@ fprintf('Getting the descriptor state space model of network lines.\n')
 [YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListLine,Wbase);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
-[ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.ReadString(ZbusObj);
+[ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.GetString(ZbusObj);
 
 % ### Get the models of bus devices
 fprintf('Getting the descriptor state space model of bus devices.\n')
@@ -128,7 +128,7 @@ fprintf('Model (system object form): GsysObj\n')
 fprintf('Model (descriptor state space form): GsysDSS\n')
 fprintf('Model (state space form): GminSS\n')
 if Enable_PrintOutput
-    [SysStateString,SysInputString,SysOutputString] = GsysObj.ReadString(GsysObj);
+    [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
     SimplexPS.Toolbox.PrintSysString(N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
 	fprintf('Print power flow result:\n')
@@ -147,7 +147,7 @@ fprintf('=================================\n')
 
 if Enable_CreateSimulinkModel == 1
     
-    fprintf('Creating the simulink model aotumatically, please wait a second...\n')
+    fprintf('Creating the simulink model automatically, please wait a second...\n')
 
     % Set the simulink model name
     Name_Model = 'mymodel_v1';
