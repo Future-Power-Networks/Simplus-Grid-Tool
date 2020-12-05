@@ -1,13 +1,16 @@
 %calculate modes, residues from state-space, based on the modes and
 %devicese the user selected.
 %Author: Yue Zhu
-function [GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS]=...
+function [GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
     SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS)
 
-[Phi_DSS,D]=eig(GsysDSS.A,GsysDSS.E);
+%% for state PF, use GsysDSS
+[GsysSS, IndexSS] = SimplexPS.dss2ss(GsysDSS);
+[Phi_DSS,D]=eig(GsysSS.A);
 D=D/(2*pi);
 ModeDSS=diag(D);
 
+%% for impedance PF, use GminSS
 A=GminSS.A;
 B=GminSS.B;
 C=GminSS.C;

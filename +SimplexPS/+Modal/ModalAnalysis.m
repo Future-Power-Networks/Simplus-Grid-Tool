@@ -33,7 +33,7 @@ SimplexPS.Modal.DataCheck(AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,...
 
 ModeSelNum = length(ModeSelAll);
 %get ResidueAll, ZmValAll.
-[MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS]=...
+[MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
     SimplexPS.Modal.SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS);
 
 %% Impedance Participation Factor
@@ -83,13 +83,12 @@ for modei = 1: length(ModeSel_DSS)
     ModeSel = ModeSel_DSS(modei);
     MdStatePF(modei).mode = [num2str(FreqSel),'~Hz'];
     for statei=1:length(StateSel_DSS)
-            StateSel = StateSel_DSS(statei);
-            DeviceNum = length(DeviceStateStr);
+            StateSel = IndexSS(StateSel_DSS(statei)); % this is used to print the correct name
             if StateSel > DeviceStateTotal %belong to line.
                 StateName = {'Line'};
             else %belong to device
                 StateSel_ = StateSel;
-                for Di = 1:DeviceNum
+                for Di = 1:N_Device
                     if StateSel_ <= length(DeviceStateStr{Di})
                         StateName = {['Device',num2str(Di)]};
                         break;
@@ -98,10 +97,12 @@ for modei = 1: length(ModeSel_DSS)
                     end
                 end
             end
-            Psi_DSS = inv(Phi_DSS);
-            StatePF = Phi_DSS(StateSel,ModeSel) * Psi_DSS(ModeSel,StateSel);
             MdStatePF(modei).result(statei).Device = StateName;
             MdStatePF(modei).result(statei).State = SysStateString(StateSel);
+            % after printing the correct name, change StateSel back to match with GsysSS.
+            StateSel = StateSel_DSS(statei); 
+            Psi_DSS = inv(Phi_DSS);
+            StatePF = Phi_DSS(StateSel,ModeSel) * Psi_DSS(ModeSel,StateSel);            
             MdStatePF(modei).result(statei).PF = StatePF;
             MdStatePF(modei).result(statei).PF_ABS = abs(StatePF);
             MdStatePF(modei).result(statei).PF_Real = real(StatePF);

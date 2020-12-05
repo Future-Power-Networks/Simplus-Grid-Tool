@@ -8,7 +8,8 @@ AutoSelResult = 0;
 %%
 %*********States sheet write
 %Based on GsysDSS.
-[~,D]=eig(GsysDSS.A,GsysDSS.E);
+[GsysSS, IndexSS] = SimplexPS.dss2ss(GsysDSS);
+[~,D]=eig(GsysSS.A);
 D=D/(2*pi);
 Mode=diag(D);
 ModeNum = length(Mode);
@@ -20,29 +21,38 @@ StateSheet(1,1) = {'Device'};
 StateSheet(1,2) = {'State'};
 StateSheet(1,3) = {'Select'};
 index = 2;
+StateCount = 0;
 for k = 1:N_Bus
-    if DeviceType{k} <= 89 %devices)
+    if DeviceType{k} <= 89 %devices)    
         DeviceName=strcat('Device',num2str(k));
         StateName = DeviceStateStr{k};
         StateNum = length(DeviceStateStr{k});
         StateSheet(index,1) = {DeviceName};
         for j = 1: StateNum
-            StateSheet(index,2) = {StateName{j}};
-            if (AutoSel==1 && j == 1) || (AutoSel==1 && j == 2)%select id for pf analysis for each device.
+            StateCount = StateCount +1;
+            if ismember(StateCount,IndexSS)
+                StateSheet(index,2) = {StateName{j}};
                 StateSheet(index,3) = {1};
-            else
-            StateSheet(index,3) = {1};
+%                 if (AutoSel==1 && j == 1) || (AutoSel==1 && j == 2) %select 'epsilon', and 'id' for pf analysis for each device.
+%                     StateSheet(index,3) = {1};
+%                 else
+%                     StateSheet(index,3) = {0};
+%                 end
+                index = index+1;
             end
-            index = index+1;
         end
     else % floating bus, infinite bus...
     end
 end
+
 StateSheet(index,1) = {'Line'};
 for i = 1: length(ZbusStateStr)
-    StateSheet{index,2} = ZbusStateStr{i};
-    StateSheet(index,3) = {0};
-    index = index + 1;
+    StateCount = StateCount +1;
+    if ismember(StateCount,IndexSS)
+        StateSheet{index,2} = ZbusStateStr{i};
+        StateSheet(index,3) = {0};
+        index = index + 1;
+    end
 end
 
 StateSheet(1,5) = {'Mode'};
