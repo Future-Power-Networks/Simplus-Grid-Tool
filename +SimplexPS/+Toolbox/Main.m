@@ -21,6 +21,7 @@ fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
+
 ListBus    	 = xlsread(Name_Netlist,1);     
 ListDevice	 = xlsread(Name_Netlist,2);
 ListBasic    = xlsread(Name_Netlist,3);
@@ -269,13 +270,15 @@ if Enable_PlotSwing
 else
     fprintf('Warning: The default plot of omega-related spectrum is disabled.\n');
 end
-    
+%%
+%SimplexPS.GreyBox.ExcelPrep;
+%SimplexPS.GreyBox.ExcelWrite()
+fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 %%
 fprintf('\n')
 fprintf('==================================\n')
 fprintf('End: run successfully.\n')
 fprintf('==================================\n')
-   
 %%
 % Remained questions:
 % - Advanced power flow, including droop bus, etc
@@ -283,3 +286,8 @@ fprintf('==================================\n')
 % - The power flow calculation assumes the frequency is Wbase
 % - Initialization of network lines, such as the current of line inductor
 % and the voltage of line capacitor.
+
+%%
+% save results to GreyBox.xlsx, for users to config the GreyBox approach.
+% SimplexPS.GreyBox.GreyBoxExcelGenerate(N_Device,DeviceType,DeviceStateStr,...
+%     DeviceInputStr,DeviceOutputStr,ZbusStateStr,GsysDSS);
