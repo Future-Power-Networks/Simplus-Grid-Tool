@@ -16,4 +16,4 @@ Matlab 2015a or later, with Simulink, Simscape/PowerSystem.
 Run Toolbox the First Time
 ================================
 
-Run "InstallSimplex.m" by Matlab. That's it!
+Run "InstallSimplex.m" by Matlab. That's all!

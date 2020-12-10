@@ -11,7 +11,7 @@ Matlab 2015a or later, with Simulink, Simscape/PowerSystem.
 
 ## Quick Start
 
-Copy the repository (download all codes) into your PC, and run "InstallSimplexPS.m". That's it!
+Copy the repository (download all codes) into your PC, and run "InstallSimplexPS.m". That's all!
 
 ## Contact
 

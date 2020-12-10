@@ -121,7 +121,7 @@ matlab.System
 
 This folder contains functions for power flow analysis. "PowerFlowGS.m" and "PowerFlowNR" correspond to Gauss-Seidel and Newton–Raphson methods respectively.
 
-### "+Participation" Sub-folder
+### "+Modal" Sub-folder
 
 This folder contains functions for participation analysis.
 
