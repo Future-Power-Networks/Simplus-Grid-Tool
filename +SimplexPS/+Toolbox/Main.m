@@ -270,10 +270,12 @@ if Enable_PlotSwing
 else
     fprintf('Warning: The default plot of omega-related spectrum is disabled.\n');
 end
+
 %%
 %SimplexPS.GreyBox.ExcelPrep;
 %SimplexPS.GreyBox.ExcelWrite()
 fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
+
 %%
 fprintf('\n')
 fprintf('==================================\n')
