@@ -94,5 +94,9 @@ SimplexPS.Simulink.SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName
 % Connect branch to bus
 SimplexPS.Simulink.SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
 
+%% Fit the model to view
+% set_param(gcs, 'ZoomFactor','FitSystem')
+set_param(gcs,'Zoomfactor','fit to view')
+
 end
 

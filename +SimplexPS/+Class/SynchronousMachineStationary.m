@@ -8,21 +8,21 @@
 
 %% Class
 
-classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
+classdef SynchronousMachineStationary < SimplexPS.Class.ModelAdvanceStationary
     
     properties(Access = protected)
         psi_f;
     end
     
-    methods
-        % constructor
-        function obj = SynchronousMachine(varargin)
-
-            % Support name-value pair arguments when constructing object
-            setProperties(obj,nargin,varargin{:});
-
-        end
-    end
+%     methods
+%         % constructor
+%         function obj = SynchronousMachine(varargin)
+% 
+%             % Support name-value pair arguments when constructing object
+%             setProperties(obj,nargin,varargin{:});
+% 
+%         end
+%     end
     
     methods(Static)
         

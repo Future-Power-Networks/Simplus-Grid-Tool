@@ -11,28 +11,38 @@
 %% Class
 
 classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
-
+    
     properties(Access = protected)
         i_q_r;
+    end
+    
+    methods
+        % constructor
+        function obj = GridFollowingVSI(varargin)
+
+            % Support name-value pair arguments when constructing object
+            setProperties(obj,nargin,varargin{:});
+
+        end
     end
 
     methods(Static)
         
-        function SetString(obj)
+        function [State,Input,Output] = SignalList(obj)
           	% Notes:
             % P_dc is the output power to dc side.
             if (obj.DeviceType == 10) || (obj.DeviceType == 12)
-                obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
+                State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
             elseif obj.DeviceType == 11
-                obj.StateString  = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
+                State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
             else
-                error(['Error: DeviceType.']);
+                error('Error: Invalid DeviceType.');
             end
-        	obj.InputString  = {'v_d','v_q','ang_r','P_dc'};
-            obj.OutputString = {'i_d','i_q','w','v_dc','theta'};
+        	Input = {'v_d','v_q','ang_r','P_dc'};
+            Output = {'i_d','i_q','w','v_dc','theta'};
         end
         
-        function Equilibrium(obj)
+        function [x_e,u_e,xi] = Equilibrium(obj)
             % Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
             Q	= obj.PowerFlow(2);
@@ -75,12 +85,13 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             % Get equilibrium
             x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
             if (obj.DeviceType == 10) || (obj.DeviceType == 12)
-                obj.x_e = [x_e_1; v_dc; v_dc_i];
+                x_e = [x_e_1; v_dc; v_dc_i];
             elseif obj.DeviceType == 11
-                obj.x_e = x_e_1;
+                x_e = x_e_1;
+            else
+                error('Error: Invalid DeviceType.');
             end
-        	obj.u_e = [v_d; v_q; ang_r; P_dc];
-            obj.xi  = [xi];
+        	u_e = [v_d; v_q; ang_r; P_dc];
         end
 
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
@@ -113,8 +124,9 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 v_dc_i 	= x(9);
             elseif obj.DeviceType == 11
                 v_dc    = v_dc_r;
+                v_dc_i  = 0;
             else
-                error(['Error: DeviceType.']);
+                error('Error: Invalid DeviceType.');
             end
 
             % Get input
@@ -138,14 +150,14 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     v_dc_i = min(v_dc_i,i_d_limit);
                     v_dc_i = max(v_dc_i,-i_d_limit);
                     
-                    % Dc-link control
+                    % DC-link control
                     i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
                 elseif obj.DeviceType == 11
                     
-                    % Direct current control
-                    i_d_r = P_dc/v_d;   
+                    % Power control                                           
+                    i_d_r = P_dc/v_d;
                 else
-                    error(['Error: DeviceType.']);
+                   error('Invalid DeviceType.');
                 end
                 
               	% i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
@@ -202,6 +214,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     i_dc = P_dc/v_dc_r;
                   	dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
+                else
+                    error('Invalid DeviceType.');
                 end
                 di_d_i = -(i_d_r - i_d)*ki_i_dq;               	% i_d I
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
@@ -217,6 +231,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
                 elseif obj.DeviceType == 11
                     f_xu = f_xu_1;
+                else
+                    error('Invalid DeviceType.');
                 end
                 Output = f_xu;
                 

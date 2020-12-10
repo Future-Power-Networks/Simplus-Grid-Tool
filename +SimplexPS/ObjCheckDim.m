@@ -6,11 +6,11 @@
 %%
 function [lx,lu,ly] = ObjCheckDim(Obj)
     % Calculate the dimension from dss model
-    [~,ModelDss] = Obj.ReadDSS(Obj);
+    [~,ModelDss] = Obj.GetDSS(Obj);
     [lx,lu,ly] = SimplexPS.DssGetDim(ModelDss);
     
     % Calculate the dimension from strings
-    [StateString,InputString,OutputString] = Obj.ReadString(Obj);
+    [StateString,InputString,OutputString] = Obj.GetString(Obj);
     lx_ = length(StateString);
     lu_ = length(InputString);
     ly_ = length(OutputString);

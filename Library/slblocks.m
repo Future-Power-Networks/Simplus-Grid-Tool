@@ -5,8 +5,10 @@
 
 function blkStruct = slblocks
 
+% Name of the library file saved in the same path
 Browser.Library = 'SimplexPS';
 
+% Library name shown in the Simulink library browser
 Browser.Name = 'Simplex Power Systems';
 
 blkStruct.Browser = Browser;

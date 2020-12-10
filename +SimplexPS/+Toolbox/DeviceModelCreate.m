@@ -15,7 +15,7 @@
 % Transctions on Circuit and Systems, 2020.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDamping,StateString,InputString,OutputString] ...
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDampingResistor,StateString,InputString,OutputString] ...
         = DeviceModelCreate(varargin) 
 
 %% load arguments and common symbols
@@ -62,7 +62,7 @@ switch floor(Type/10)
     
     % ### Synchronous generator
     case 0      % Type 0-9
-        Device = SimplexPS.Class.SynchronousMachine;
+        Device = SimplexPS.Class.SynchronousMachine('DeviceType',Type);
         Device.Para  = [Para.J;
                         Para.D;
                         Para.L;
@@ -71,7 +71,7 @@ switch floor(Type/10)
                     
     % ### Grid-Following VSI
     case 1      % Type 10-19
-        Device = SimplexPS.Class.GridFollowingVSI;
+        Device = SimplexPS.Class.GridFollowingVSI('DeviceType',Type);
         Device.Para = [Para.C_dc;
                        Para.V_dc;
                        Para.kp_v_dc;
@@ -89,7 +89,7 @@ switch floor(Type/10)
                    
     % ### Grid-Forming VSI
     case 2  % Type 20-29
-        Device = SimplexPS.Class.GridFormingVSI;
+        Device = SimplexPS.Class.GridFormingVSI('DeviceType',Type);
         Device.Para = [Para.Lf;
                        Para.Rf;
                        Para.Cf;
@@ -133,16 +133,17 @@ switch floor(Type/10)
 end
 
 %% Calculate the linearized state space model
-Device.DeviceType = Type;
-Device.PowerFlow = PowerFlow;           % Power flow data
-Device.SetString(Device);               % Set strings automatically
-Device.Equilibrium(Device);             % Calculate the equilibrium
-[x_e,u_e,y_e,xi] = Device.ReadEquilibrium(Device);
-Device.Linearization(Device,x_e,u_e); 	% Linearize the model
-Device.ConstructSS(Device);             % Construct the state space model
+Device.DeviceType = Type;                           % Device type
+Device.Ts = Ts;                                     % Samping period
+Device.PowerFlow = PowerFlow;                       % Power flow data
+Device.SetString(Device);                           % Set strings automatically
+Device.SetEquilibrium(Device);                      % Calculate the equilibrium
+[x_e,u_e,y_e,xi] = Device.GetEquilibrium(Device);   % Get the equilibrium
+Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
 
-[~,ModelSS] = Device.ReadSS(Device);
-[StateString,InputString,OutputString] = Device.ReadString(Device);
+[~,ModelSS] = Device.GetSS(Device);                % Get the ss model
+[StateString,InputString,OutputString] ...
+    = Device.GetString(Device);                    % Get the string
 
 % Get the swing frame system model
 Gm = ModelSS;   
@@ -153,16 +154,11 @@ DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
 if floor(Type/10) <= 5
-    Ak = ModelSS.A;
-    Ck = ModelSS.C;
-    Bk = ModelSS.B;
-    Wk = inv(eye(length(Ak)) - Ts/2*Ak);
-    MatrixY = Ts/2*Ck*Wk*Bk;
-    MatrixY = MatrixY(1:2,1:2);
-    MatrixR = inv(MatrixY);
-    DeviceDiscreDamping = MatrixR(1,1);
+    % CalcRv_old();
+    Device.SetDynamicSS(Device,x_e,u_e);
+    DeviceDiscreDampingResistor = Device.GetVirtualResistor(Device);
 else
-    DeviceDiscreDamping = -1;
+    DeviceDiscreDampingResistor = -1;
 end
 
 %% Check if the device needs to adjust its frame
@@ -289,10 +285,10 @@ GmDSS = dss(An,Bn,Cn,Dn,En);
 GmObj = SimplexPS.Class.ModelBase;
 
 % Load the model
-GmObj.LoadDSS(GmObj,GmDSS);
+GmObj.SetDSS(GmObj,GmDSS);
 
 % Get the strings
-GmObj.WriteString(GmObj,StateString,InputString,OutputString);
+GmObj.SetString(GmObj,StateString,InputString,OutputString);
 
 % Switch input and output for required device
 if Flag_SwitchInOut == 1

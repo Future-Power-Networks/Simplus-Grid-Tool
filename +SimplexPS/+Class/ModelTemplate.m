@@ -1,4 +1,4 @@
-% This class gives a template for models based on "Class_Model_Advance"
+% This class shows a template for models based on "ModelAdvance"
 
 % Author(s): Yitong Li
 
@@ -12,13 +12,14 @@
 %% Class
 
 classdef ModelTemplate < SimplexPS.Class.ModelAdvance
+    
     methods(Static)
         
         % Set the strings of state, input, output
-        function SetString(obj)
-        	obj.StateString  = {};        % x
-            obj.InputString  = {};        % u
-            obj.OutputString = {};        % y
+        function SignalList(obj)
+        	obj.StateString  = {''};        % x
+            obj.InputString  = {''};        % u
+            obj.OutputString = {''};        % y
         end
         
         % Calculate the equilibrium
@@ -29,25 +30,37 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
             V	= obj.PowerFlow(3);
             xi	= obj.PowerFlow(4);
             w   = obj.PowerFlow(5);
+            
+            % Get parameters
+            obj.Para(1);
+            
+            % Calculate equilibrium
+            
+            % Set equilibrium
+            obj.x_e = [];
+            obj.u_e = [];
+            obj.xi  = [];
         end
         
         % State space model
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
-            % Get input
-            u(1);
+          	% Get parameter
+            obj.Para(1);
             
-            % Get state
+        	% Get state
             x(1);
             
-            % Get parameter
-            obj.Para(1);
+            % Get input
+            u(1);
             
             % State space equation
             if CallFlag == 1
                 % ### State equation
+                f_xu = [];
                 Output = f_xu;
             elseif CallFlag == 2
                 % ### Output equation
+                g_xu = [];
                 Output = g_xu;
             end
         end

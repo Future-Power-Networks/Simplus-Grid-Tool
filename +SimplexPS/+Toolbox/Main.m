@@ -9,10 +9,6 @@
 % toolbox.
 
 %%
-clear all;  % Clear matlab workspace
-clc;        % Clear matlab command window
-close all;  % Close all figures, etc
-
 fprintf('==================================\n')
 fprintf('Start to run SimplexPowerSystem\n')
 fprintf('==================================\n')
@@ -25,10 +21,6 @@ fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...
-%Name_Netlist = 'CustomerData.xlsx';
-Name_Netlist = 'CustomerData14Bus.xlsx';
-% Name_Netlist = 'SingleSGInfiniteBus.xlsx';
-% Name_Netlist = 'SingleVSIInfiniteBus.xlsx';
 
 ListBus    	 = xlsread(Name_Netlist,1);     
 ListDevice	 = xlsread(Name_Netlist,2);
@@ -89,7 +81,7 @@ fprintf('Getting the descriptor state space model of network lines.\n')
 [YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListLine,Wbase);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
-[ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.ReadString(ZbusObj);
+[ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.GetString(ZbusObj);
 
 % ### Get the models of bus devices
 fprintf('Getting the descriptor state space model of bus devices.\n')
@@ -115,7 +107,8 @@ fprintf('Checking if the whole system is proper:\n')
 if isproper(GsysDSS)
     fprintf('Proper.\n');
     fprintf('Calculating the minimum realization of the system model for later use.\n')
-    GminSS = minreal(GsysDSS);    
+    % GminSS = minreal(GsysDSS);
+    GminSS = SimplexPS.dss2ss(GsysDSS);
     % This "minreal" function only changes the element sequence of state
     % vectors, but does not change the element sequence of input and output
     % vectors.
@@ -136,7 +129,7 @@ fprintf('Model (system object form): GsysObj\n')
 fprintf('Model (descriptor state space form): GsysDSS\n')
 fprintf('Model (state space form): GminSS\n')
 if Enable_PrintOutput
-    [SysStateString,SysInputString,SysOutputString] = GsysObj.ReadString(GsysObj);
+    [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
     SimplexPS.Toolbox.PrintSysString(N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
 	fprintf('Print power flow result:\n')
@@ -155,7 +148,7 @@ fprintf('=================================\n')
 
 if Enable_CreateSimulinkModel == 1
     
-    fprintf('Creating the simulink model aotumatically, please wait a second...\n')
+    fprintf('Creating the simulink model automatically, please wait a second...\n')
 
     % Set the simulink model name
     Name_Model = 'mymodel_v1';

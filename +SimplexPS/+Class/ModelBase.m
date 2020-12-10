@@ -45,11 +45,8 @@ properties(Access = protected)
     InputString;
     OutputString;
     
-    % Models
-    MatrixSS;   % MatrixSS = {A,B,C,D}
-    ModelSS;    % ModelSS = ss(A,B,C,D)
- 	MatrixDSS;
-    ModelDSS;
+    % Model type
+    ModelBaseType;  % 1-ss; 2-dss
 end
 
 %%
@@ -60,47 +57,63 @@ end
 % CAN invoke/call class-related functions.
 % CAN invoke/call external matlab functions which is saved in the visiable matlab path.
 
-methods(Static)
-    % Write properties
- 	function WriteString(obj,StateString,InputString,OutputString)
-        obj.StateString  = StateString;     
-        obj.InputString  = InputString;     
-        obj.OutputString = OutputString;
-    end
-    function WriteSS(obj,MatrixSS,ModelSS)
-        obj.MatrixSS = MatrixSS;            
-        obj.ModelSS = ModelSS;
-    end
-    function WriteDSS(obj,MatrixDSS,ModelDSS)
-        obj.MatrixDSS = MatrixDSS;
-        obj.ModelDSS = ModelDSS;
-    end
-    
-    % Read properties
-  	function [Read1,Read2,Read3] = ReadString(obj)
-        Read1 = obj.StateString;
-        Read2 = obj.InputString;
-        Read3 = obj.OutputString;
-    end
-	function [Read1,Read2] = ReadSS(obj)
-        Read1 = obj.MatrixSS;
-        Read2 = obj.ModelSS;
-    end
-    function [Read1,Read2] = ReadDSS(obj)
-        Read1 = obj.MatrixDSS;
-        Read2 = obj.ModelDSS;
+% Only the functions begin with "Set" can set/write properties.
+% Only the functions begin with "Get" can get/read properties.
+
+% methods
+%     % constructor
+%     function obj = ModelBase(varargin)
+%         
+%         % Support name-value pair arguments when constructing object
+%         setProperties(obj,nargin,varargin{:});
+%         
+%     end
+% end
+
+methods(Static)    
+  	%% Set/write properties
+    function SetString(obj,varargin)
+        if nargin > 1
+            obj.StateString = varargin{1};
+            obj.InputString = varargin{2};
+            obj.OutputString = varargin{3};
+        else
+            % The function "SignalList" is defined in subclass
+            [State,Input,Output] = obj.SignalList(obj);
+            obj.StateString = State;
+            obj.InputString = Input;
+            obj.OutputString = Output;
+        end
     end
     
-    % Construct models
-    function ConstructSS(obj)
-        obj.ModelSS = ss(obj.A,obj.B,obj.C,obj.D);
-    end
-    function ConstructDSS(obj)
-        obj.ModelDSS = dss(obj.A,obj.B,obj.C,obj.D,obj.E);
+    % Set the ss model
+  	function SetSS(obj,G)
+        % Get the date from G
+        A = G.A;
+        B = G.B;
+        C = G.C;
+        D = G.D;
+        
+        % Check if G is in descriptor state space form
+        try E = G.E;
+            if ( ~isempty(E) )
+                error('Error: the model is in dss rather than ss form.');
+            end
+        catch
+            E = [];
+        end
+        
+        % Set properties
+        obj.A = A;
+        obj.B = B;
+        obj.C = C;
+        obj.D = D;
+        obj.E = E;
+        obj.ModelBaseType = 1;
     end
     
-    % Write properties
-    function LoadDSS(obj,G)
+    % Set the dss model
+  	function SetDSS(obj,G)
         % Get the date from G
         A = G.A;
         B = G.B;
@@ -110,24 +123,72 @@ methods(Static)
         
         % Check if G is in descriptor state space form
         if ( isempty(E) && (~isempty(A)) )
-            error(['Error: the system is not in descriptor-state-space form']);
+            error('Error: the model is in ss rather than dss form.');
         end
         
-        % Set the properties
+        % Set properties
         obj.A = A;
         obj.B = B;
         obj.C = C;
         obj.D = D;
         obj.E = E;
-        obj.MatrixDSS   = {A,B,C,D,E};
-        obj.ModelDSS    = dss(A,B,C,D,E);
+        obj.ModelBaseType = 2;
     end
     
+    % Set the ss model from linearization function.
+    function SetSSLinearized(obj,x_e,u_e)
+        % Calculate linearized state space model
+        [A,B,C,D] = obj.Linearization(obj,x_e,u_e);
+        
+        % Set properties
+        obj.A = A;
+        obj.B = B;
+        obj.C = C;
+        obj.D = D;
+        obj.E = [];
+        obj.ModelBaseType = 1;
+    end
+    
+   	%% Get properties  
+    function Value = GetProperty(obj,Name)
+        Value = obj.(Name);
+    end
+    
+    function [State,Input,Output] = GetString(obj)
+        State = obj.StateString;
+        Input = obj.InputString;
+        Output = obj.OutputString;
+    end
+    
+	function [Read1,Read2] = GetSS(obj)
+        if obj.ModelBaseType == 1
+            MatrixSS = {obj.A,obj.B,obj.C,obj.D};
+            ModelSS = ss(obj.A,obj.B,obj.C,obj.D);
+            Read1 = MatrixSS;
+            Read2 = ModelSS;
+        else
+            error('Error: The model is in dss rather than ss form.');
+        end
+    end
+    
+    function [Read1,Read2] = GetDSS(obj)
+        if obj.ModelBaseType == 2
+          	MatrixDSS = {obj.A,obj.B,obj.C,obj.D,obj.E};
+            ModelDSS = dss(obj.A,obj.B,obj.C,obj.D,obj.E);
+            Read1 = MatrixDSS;
+            Read2 = ModelDSS;
+        else
+            error('Error: The model is in ss rather than dss form.');
+        end
+    end
+    
+    %% Linearization
  	% Linearize state and output equations to get the linearized state
     % space matrices at a given steady-state operating point
-    function Linearization(obj,x_e,u_e)
+    function [A,B,C,D] = Linearization(obj,x_e,u_e)
 
         % Calculate equilibrium of dx_e and y_e
+        % The function "StateSpaceEqu" is defined in the subclass
         dx_e = obj.StateSpaceEqu(obj, x_e, u_e, 1);
         y_e  = obj.StateSpaceEqu(obj, x_e, u_e, 2);
 
@@ -165,12 +226,25 @@ methods(Static)
             y_p  = obj.StateSpaceEqu(obj, x_e, up, 2);
             B(:,i) = (dx_p - dx_e)/(up(i) - u_e(i));
             D(:,i) = (y_p - y_e)/(up(i) - u_e(i));
-        end
-
-        obj.MatrixSS    = {A,B,C,D};
-        obj.A = A; obj.B = B; obj.C = C; obj.D = D;
+        end 
+    end   
+    
+    %% virtual functions to be overloaded in subclass
+    % State space equation for the system
+    function rtn = StateSpaceEqu(obj, x, u, flag)
+        error('The StateSpaceEqu method should be overloaded in subclasses.');
+        % rtn = dx/dt = f(x,u), if flag == 1
+        % rtn =  y    = g(x,u), if flag == 2
     end
     
+    % Signal list in the state space model
+    function [State,Input,Output] = SignalList(obj)
+        error('The SignalList method should be overloaded in subclasses.');
+        % set signal list by string arrays in the format below:
+        % State  = {'x1','x2', ...};
+        % Input  = {'u1','u2', ...};
+        % Output = {'y1','y2', ...};
+    end
 end
 
 end % End class definition

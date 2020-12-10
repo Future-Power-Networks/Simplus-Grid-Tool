@@ -7,10 +7,10 @@
 function Gobj = ObjFeedback(Gobj1,Gobj2,feedin,feedout,sign)
 
 % Load object date
-[~,G1] = Gobj1.ReadDSS(Gobj1);
-[~,G2] = Gobj2.ReadDSS(Gobj2);
-[StateStr1,InputStr1,OutputStr1] = Gobj1.ReadString(Gobj1);
-[StateStr2,InputStr2,OutputStr2] = Gobj1.ReadString(Gobj2);
+[~,G1] = Gobj1.GetDSS(Gobj1);
+[~,G2] = Gobj2.GetDSS(Gobj2);
+[StateStr1,InputStr1,OutputStr1] = Gobj1.GetString(Gobj1);
+[StateStr2,InputStr2,OutputStr2] = Gobj1.GetString(Gobj2);
 
 % Default
 if nargin == 2
@@ -36,8 +36,8 @@ OutputStr = OutputStr1;
 
 % Create a new object
 Gobj = SimplexPS.Class.ModelBase;
-Gobj.LoadDSS(Gobj,G);
-Gobj.WriteString(Gobj,StateStr,InputStr,OutputStr);
+Gobj.SetDSS(Gobj,G);
+Gobj.SetString(Gobj,StateStr,InputStr,OutputStr);
 SimplexPS.ObjCheckDim(Gobj);
 
 end

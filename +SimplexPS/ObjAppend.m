@@ -6,15 +6,15 @@
 function Gobj = ObjAppend(Gobj1,Gobj2)
 
 % Get the DSS models
-[~,G1] = Gobj1.ReadDSS(Gobj1);
-[~,G2] = Gobj2.ReadDSS(Gobj2);
+[~,G1] = Gobj1.GetDSS(Gobj1);
+[~,G2] = Gobj2.GetDSS(Gobj2);
 
 % Append the models
 G = SimplexPS.DssAppend(G1,G2);
 
 % Get the strings
-[StateStr1,InputStr1,OutputStr1] = Gobj1.ReadString(Gobj1);
-[StateStr2,InputStr2,OutputStr2] = Gobj2.ReadString(Gobj2);
+[StateStr1,InputStr1,OutputStr1] = Gobj1.GetString(Gobj1);
+[StateStr2,InputStr2,OutputStr2] = Gobj2.GetString(Gobj2);
 
 % Connect the strings
 StateStr = [StateStr1,StateStr2];
@@ -23,7 +23,7 @@ OutputStr = [OutputStr1,OutputStr2];
 
 % Create a new object
 Gobj = SimplexPS.Class.ModelBase;
-Gobj.LoadDSS(Gobj,G);
-Gobj.WriteString(Gobj,StateStr,InputStr,OutputStr);
+Gobj.SetDSS(Gobj,G);
+Gobj.SetString(Gobj,StateStr,InputStr,OutputStr);
 
 end

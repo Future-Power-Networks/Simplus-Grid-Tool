@@ -1,4 +1,3 @@
-% This class is currently discarded, and should not be used!
 % This class defines the model of an infinite bus.
 
 % Notes: An infinite bus is short-circuit in small-signal analysis.
@@ -11,8 +10,8 @@ classdef InfiniteBus < SimplexPS.Class.ModelAdvance
         
         % Set the strings of state, input, output
         function SetString(obj)
-            obj.StateString  = {};           	% x
-         	obj.InputString  = {'i_d','i_q'};           % u
+            obj.StateString  = {};                  % x
+         	obj.InputString  = {'i_d','i_q'};     	% u
         	obj.OutputString = {'v_d','v_q','w'};  	% y
         end
         
