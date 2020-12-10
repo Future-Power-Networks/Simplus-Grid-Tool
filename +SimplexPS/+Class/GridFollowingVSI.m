@@ -36,7 +36,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             elseif obj.DeviceType == 11
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
             else
-                error('Error: DeviceType.');
+                error('Error: Invalid DeviceType.');
             end
         	Input = {'v_d','v_q','ang_r','P_dc'};
             Output = {'i_d','i_q','w','v_dc','theta'};
@@ -89,7 +89,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             elseif obj.DeviceType == 11
                 x_e = x_e_1;
             else
-                error('Invalid DeviceType.');
+                error('Error: Invalid DeviceType.');
             end
         	u_e = [v_d; v_q; ang_r; P_dc];
         end
@@ -126,7 +126,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 v_dc    = v_dc_r;
                 v_dc_i  = 0;
             else
-                error('Invalid DeviceType.');
+                error('Error: Invalid DeviceType.');
             end
 
             % Get input

@@ -57,18 +57,99 @@ end
 % CAN invoke/call class-related functions.
 % CAN invoke/call external matlab functions which is saved in the visiable matlab path.
 
-methods
-    % constructor
-    function obj = ModelBase(varargin)
-        
-        % Support name-value pair arguments when constructing object
-        setProperties(obj,nargin,varargin{:});
-        
-    end
-end
+% Only the functions begin with "Set" can set/write properties.
+% Only the functions begin with "Get" can get/read properties.
+
+% methods
+%     % constructor
+%     function obj = ModelBase(varargin)
+%         
+%         % Support name-value pair arguments when constructing object
+%         setProperties(obj,nargin,varargin{:});
+%         
+%     end
+% end
 
 methods(Static)    
-   	%% Read properties  
+  	%% Set/write properties
+    function SetString(obj,varargin)
+        if nargin > 1
+            obj.StateString = varargin{1};
+            obj.InputString = varargin{2};
+            obj.OutputString = varargin{3};
+        else
+            % The function "SignalList" is defined in subclass
+            [State,Input,Output] = obj.SignalList(obj);
+            obj.StateString = State;
+            obj.InputString = Input;
+            obj.OutputString = Output;
+        end
+    end
+    
+    % Set the ss model
+  	function SetSS(obj,G)
+        % Get the date from G
+        A = G.A;
+        B = G.B;
+        C = G.C;
+        D = G.D;
+        
+        % Check if G is in descriptor state space form
+        try E = G.E;
+            if ( ~isempty(E) )
+                error('Error: the model is in dss rather than ss form.');
+            end
+        catch
+            E = [];
+        end
+        
+        % Set properties
+        obj.A = A;
+        obj.B = B;
+        obj.C = C;
+        obj.D = D;
+        obj.E = E;
+        obj.ModelBaseType = 1;
+    end
+    
+    % Set the dss model
+  	function SetDSS(obj,G)
+        % Get the date from G
+        A = G.A;
+        B = G.B;
+        C = G.C;
+        D = G.D;
+        E = G.E;
+        
+        % Check if G is in descriptor state space form
+        if ( isempty(E) && (~isempty(A)) )
+            error('Error: the model is in ss rather than dss form.');
+        end
+        
+        % Set properties
+        obj.A = A;
+        obj.B = B;
+        obj.C = C;
+        obj.D = D;
+        obj.E = E;
+        obj.ModelBaseType = 2;
+    end
+    
+    % Set the ss model from linearization function.
+    function SetSSLinearized(obj,x_e,u_e)
+        % Calculate linearized state space model
+        [A,B,C,D] = obj.Linearization(obj,x_e,u_e);
+        
+        % Set properties
+        obj.A = A;
+        obj.B = B;
+        obj.C = C;
+        obj.D = D;
+        obj.E = [];
+        obj.ModelBaseType = 1;
+    end
+    
+   	%% Get properties  
     function Value = GetProperty(obj,Name)
         Value = obj.(Name);
     end
@@ -101,82 +182,13 @@ methods(Static)
         end
     end
     
-    %% Write properties
-    function SetString(obj,varargin)
-        if nargin > 1
-            obj.StateString = varargin{1};
-            obj.InputString = varargin{2};
-            obj.OutputString = varargin{3};
-        else
-            [State,Input,Output] = obj.SignalList(obj);
-            obj.StateString = State;
-            obj.InputString = Input;
-            obj.OutputString = Output;
-        end
-    end
-    
-  	function SetSS(obj,G)
-        % Get the date from G
-        A = G.A;
-        B = G.B;
-        C = G.C;
-        D = G.D;
-        
-        % Check if G is in descriptor state space form
-        try E = G.E;
-            if ( ~isempty(E) )
-                error('Error: the model is in dss rather than ss form.');
-            end
-        catch
-            E = [];
-        end
-        
-        % Set the properties
-        obj.A = A;
-        obj.B = B;
-        obj.C = C;
-        obj.D = D;
-        obj.E = E;
-        obj.ModelBaseType = 1;
-    end
-    
-  	function SetDSS(obj,G)
-        % Get the date from G
-        A = G.A;
-        B = G.B;
-        C = G.C;
-        D = G.D;
-        E = G.E;
-        
-        % Check if G is in descriptor state space form
-        if ( isempty(E) && (~isempty(A)) )
-            error('Error: the model is in ss rather than dss form.');
-        end
-        
-        % Set the properties
-        obj.A = A;
-        obj.B = B;
-        obj.C = C;
-        obj.D = D;
-        obj.E = E;
-        obj.ModelBaseType = 2;
-    end
-    
-    function SetSSLinearized(obj,x_e,u_e)
-        [A,B,C,D] = obj.Linearization(obj,x_e,u_e);
-        obj.A = A;
-        obj.B = B;
-        obj.C = C;
-        obj.D = D;
-        obj.E = [];
-        obj.ModelBaseType = 1;
-    end
-    
+    %% Linearization
  	% Linearize state and output equations to get the linearized state
     % space matrices at a given steady-state operating point
     function [A,B,C,D] = Linearization(obj,x_e,u_e)
 
         % Calculate equilibrium of dx_e and y_e
+        % The function "StateSpaceEqu" is defined in the subclass
         dx_e = obj.StateSpaceEqu(obj, x_e, u_e, 1);
         y_e  = obj.StateSpaceEqu(obj, x_e, u_e, 2);
 
@@ -217,7 +229,7 @@ methods(Static)
         end 
     end   
     
-    %% virtual functions to be overloaded
+    %% virtual functions to be overloaded in subclass
     % State space equation for the system
     function rtn = StateSpaceEqu(obj, x, u, flag)
         error('The StateSpaceEqu method should be overloaded in subclasses.');

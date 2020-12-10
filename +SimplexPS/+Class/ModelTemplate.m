@@ -12,10 +12,11 @@
 %% Class
 
 classdef ModelTemplate < SimplexPS.Class.ModelAdvance
+    
     methods(Static)
         
         % Set the strings of state, input, output
-        function SetString(obj)
+        function SignalList(obj)
         	obj.StateString  = {''};        % x
             obj.InputString  = {''};        % u
             obj.OutputString = {''};        % y

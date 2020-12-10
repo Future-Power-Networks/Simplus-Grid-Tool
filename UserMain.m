@@ -1,31 +1,37 @@
-% To customer:
-% Please use and only use this file to run toolbox.
+% To users:
+% Please use and ONLY use this file to run toolbox.
 
 %% Tips
 
-% Please ensure that the toolbox is installed (by using "InstallSimplexPS.m") the
-% first time.
-
-% For changing default data, please use "CustomerData.xlsx". (More examples
-% can be found in the "Examples" folder)
+% Please ensure that the toolbox is installed， by running
+% "InstallSimplexPS.m" the first time.
 
 % The toolbox defaultly prints the results in Matlab command window, saves
 % the results into Matlab workspace, and prints figures.
+
+% For changing default data, please change "UserData.xlsx". More examples
+% can be found in the "Examples" folder.
 
 %% Clear matlab
 clear all;  % Clear matlab workspace
 clc;        % Clear matlab command window
 close all;  % Close all figures, etc
 
+%% Set the data
+% Default
+Name_Netlist = 'UserData.xlsx';
+% "UserData.xlsx" defaultly contains the data of a 4-bus
+% generator-inverter-composite power system. Please feel free to change it.
+
+% Other example systems are:
+% Name_Netlist = 'SingleSGInfiniteBus.xlsx';        % Single-generator-infinite-bus system
+% Name_Netlist = 'SingleVSIInfiniteBus.xlsx';       % Single-inverter-infinite-bus system
+% Name_Netlist = '14Bus.xlsx';                      % 14 bus system
+
 %% Run toolbox
-Name_Netlist = 'CustomerData.xlsx';
-% Name_Netlist = 'SingleSGInfiniteBus.xlsx';
-% Name_Netlist = 'SingleVSIInfiniteBus.xlsx';
-% Name_Netlist = '14Bus.xlsx';
+SimplexPS.Toolbox.Main();
 
-SimplexPS.Toolbox.Main(); 	% This function runs toolbox.
-
-%% Custormer available results
+%% Results available to users
 % GsysDSS;          % Whole-system model (descriptor state space form)
                     % Note: The elements of state, input, and output
                     % vectors are printed in the command window.
@@ -47,6 +53,6 @@ SimplexPS.Toolbox.Main(); 	% This function runs toolbox.
 % mymodel_v1;       % This is the simulink model generated automatically 
                     % based on "CustomerData.xlsx".
 
-%% Customer function and plot
-% Custormer can write their functions here to further deal with the data
+%% User function and plot
+% Users can write their own functions here to further deal with the data
 % mentioned above.

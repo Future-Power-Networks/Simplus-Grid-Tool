@@ -23,15 +23,18 @@ classdef ModelAdvance < SimplexPS.Class.ModelBase ...
 % =================================================
 % Properties
 % =================================================
-% ### Public properties % Public can be set to []
+% ### Public properties 
+% Public can be set to []
 properties
     Ts = 1e-4;          % Sampling period (s)
     Para = [];          % Device parameters            
 end
 
+% ### Nontunable publica properties
+% Will be read first during construction   
 properties(Nontunable)
-% Note: Nontunable properties will be read first during construction    
-    
+ 
+    DeviceType = 0;    % Device type
     PowerFlow = [];     % Power flow parameters
     x0 = [];            % Initial state
     
@@ -54,8 +57,6 @@ properties(Nontunable)
     
     % Initialize to steady-state  
     EquiInitial = true;
-    
-    DeviceType = 0;    % Device type
     
 end
 
@@ -145,6 +146,11 @@ end
 % ### Static methods
 methods(Static)
 
+    %% Equilibrium
+  	function SetEquilibrium(obj)
+        [obj.x_e,obj.u_e,obj.xi] = obj.Equilibrium(obj);
+    end
+    
   	function [read1,read2,read3,read4] = GetEquilibrium(obj)
         if (isempty(obj.u_e) || isempty(obj.xi))
             % Only check u_e and xi, cause x_e can be empty for certain
@@ -159,10 +165,6 @@ methods(Static)
         end
     end
     
-    function SetEquilibrium(obj)
-        [obj.x_e,obj.u_e,obj.xi] = obj.Equilibrium(obj);
-    end
-    
     % calc equilibrium x_e and u_e from power flow
     function [x_e, u_e, xi] = Equilibrium(obj)
         error('The Equilibrium method should be overloaded in subclasses.');
@@ -170,6 +172,7 @@ methods(Static)
         % x_e and u_e are column vectors with the same dimention as x and u
     end
         
+    %% Dynamic SS
     function SetDynamicSS(obj,xk,uk)
         [Ak,Bk,Ck,Dk,Wk,Qk,Gk,Fk] = obj.CalcDynamicSS(obj,xk,uk);
         
@@ -237,9 +240,10 @@ methods(Static)
         end
     end
     
+    %% Virtual resistor
     % get the virtual resistor from property obj.Gk
     function Rv = GetVirtualResistor(obj)
-        Rv = 1/obj.Gk(1,1)/1.002; 
+        Rv = 1/obj.Gk(1,1)/1.002;
     end
     
     % calculate the virtual resistor from parameter
@@ -380,6 +384,8 @@ methods(Access = protected)
         switch obj.DiscreMethod
             
             % ### Case 1: Forward Euler
+            % Notes: Can we also seperate the virtual resistor for forward
+            % Euler method?
           	case 1
                 if obj.DirectFeedthrough
                     y = obj.StateSpaceEqu(obj,obj.x,u,2);

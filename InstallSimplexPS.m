@@ -38,12 +38,12 @@ clc
 % fprintf('Do you want to run "CustomerMain.m" now to start using the toolbox?\n')
 
 DlgTitle    = 'Congratulations!';
-DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run "CustomerMain.m" now to experience the toolbox?';
+DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run "UserMain.m" now to experience the toolbox?';
 choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
 
 if strcmp(choice,'Yes')
    open('CustomerMain.m');
    run('CustomerMain.m');
 else
-    msgbox('The installation of SimplexPowerSystem is completed. Please run "CustomerMain.m" later in the root path when you want to experience the toolbox!');
+    msgbox('The installation of SimplexPowerSystem is completed. Please run "UserMain.m" later in the root path when you want to experience the toolbox!');
 end
