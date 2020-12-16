@@ -14,7 +14,7 @@ Tips for Developers
 
 2- The toolbox structure will be introduced briefly below. After that, you can also view the codes and comments in each ".m" file for more details.
 
-3- There are three set of naming conventions: 
+3- There are three sets of naming conventions: 
     1) microsoft, like PlotFigure EpwmConfig
     2) gnu-linux, like plot_figure pwm_config
     3) free style, like ss2tf
@@ -36,11 +36,11 @@ Root path
 		-> +Simulink (sub name space, simulink functions)
 		-> Generic functions (such as "dss2ss".)
 	-> Debug (functions used by developers for debug.)
-	-> Documentations
+	-> Documentations (manuals for users and developers)
 	-> Examples
-	-> Library (Simulink library)
-		-> slblocks.m (loads SimplexPS lib to Simulink broswer)
-		-> SimplexPS.slx (library file.)
+	-> Library (library for Simulink blocks)
+		-> slblocks.m (load SimplexPS lib to Simulink broswer)
+		-> SimplexPS.slx (library file)
 		-> SimplexPS_2015a.xls (library file for matlab 2015a)
 	-> InstallSimplexPS.m
 	-> UnstallSimplexPS.m
@@ -123,5 +123,5 @@ This folder contains functions for power flow analysis. "PowerFlowGS.m" and "Pow
 
 ### "+Modal" Sub-folder
 
-This folder contains functions for participation analysis.
+This folder contains functions for modal analysis (such as participation analysis, sensitivity analysis).
 

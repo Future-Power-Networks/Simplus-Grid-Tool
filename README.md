@@ -1,6 +1,7 @@
-# SimplexPowerSystem (Version: v2020-DEC-10)
+# SimplexPowerSystem (Version: v2020-DEC-16)
 
-An open-source toolbox for dynamic analysis and simulation of large-scale power systems.
+An open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, PEC-SG-composite).
+
 The toolbox is based on Matlab/Simulink but is going to be extended to Python. To be continued.
 
 Copyright. 2019-2020 Simplex Co. Ltd.
@@ -11,7 +12,7 @@ Matlab 2015a or later, with Simulink, Simscape/PowerSystem.
 
 ## Quick Start
 
-Copy the repository (download all codes) into your PC, and run "InstallSimplexPS.m". That's all!
+Copy the repository (download all codes) into your PC, and run "InstallSimplexPS.m" by Matlab. That's all!
 
 ## Contact
 

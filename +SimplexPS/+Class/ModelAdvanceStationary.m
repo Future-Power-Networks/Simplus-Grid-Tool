@@ -5,7 +5,8 @@
 
 %% Notes
 %
-% The models in this class is in stationary frame.
+% The models in this class achieves the transformation between dq and abc
+% in functions "updateImpl" and "outputImpl".
 %
 % This class makes the model fit in both simulation (simulink) and
 % theoratical analysis (script).
@@ -33,7 +34,7 @@ methods(Access = protected)
                 obj.x = delta_x + obj.x;
                 
             % ### Case 2 : Hybrid Euler-Trapezoidal (Yunjie's Method)
-            % ### Case 2': General virtual dissipation (Yitong's Method)
+            % ### Case 2' : General virtual dissipation (Yitong's Method)
             case 2               
                 if obj.LinearizationTimes == 2    
                     obj.SetDynamicSS(obj,obj.x,obj.u);
@@ -67,8 +68,8 @@ methods(Access = protected)
                     end
                 end
                 
-            % ### Case 2  : Hybrid Euler-Trapezoidal (Yunjie's Method)
-            % ### Case 2' : Hybrid Euler-Trapezoidal (Yunjie's Method)
+            % ### Case 2 : Hybrid Euler-Trapezoidal (Yunjie's Method)
+            % ### Case 2' : General virtual dissipation (Yitong's Method)
             case 2
                 
                 if obj.DirectFeedthrough

@@ -60,16 +60,18 @@ end
 % Only the functions begin with "Set" can set/write properties.
 % Only the functions begin with "Get" can get/read properties.
 
-% methods
-%     % constructor
-%     function obj = ModelBase(varargin)
-%         
-%         % Support name-value pair arguments when constructing object
-%         setProperties(obj,nargin,varargin{:});
-%         
-%     end
-% end
+methods
+    % constructor
+    function obj = ModelBase(varargin)
+        
+        % Support name-value pair arguments when constructing object
+        setProperties(obj,nargin,varargin{:});
+        
+    end
+end
 
+% Static methods
+% Can be called/invoked without defining a specific instance.
 methods(Static)    
   	%% Set/write properties
     function SetString(obj,varargin)
