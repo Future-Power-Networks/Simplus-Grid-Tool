@@ -1,4 +1,4 @@
-# SimplexPowerSystem (Version: v2020-DEC-16)
+# SimplexPowerSystem (Version: v2020-DEC-22)
 
 An open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, PEC-SG-composite).
 
