@@ -55,7 +55,7 @@ while ((tolerance>tolerance_max) && (iteration<iteration_max))
             end
         
             if list_type(i) == 2             % Computing Qi for PV bus
-                Q(i) = -imag(conj(V(i))*(sum_yv + Ybus(i,i)*V(i)));
+                Q(i) = -imag(conj(V(i))*(sum_yv + Ybus(i,i)*V(i)));     % Equation (6.91) in Kunder's book
                 if (Q(i) > Qmax(i)) || (Q(i) < Qmin(i))  % Checking for Qi violation
                     if Q(i) < Qmin(i)
                         Q(i) = Qmin(i); % Set Qi to lower limit
@@ -66,7 +66,8 @@ while ((tolerance>tolerance_max) && (iteration<iteration_max))
                 end
             end
         
-            V(i) = (1/Ybus(i,i))*((P(i)-1j*Q(i))/conj(V(i)) - sum_yv); % Compute bus boltage
+            V(i) = (1/Ybus(i,i))*((P(i)-1j*Q(i))/conj(V(i)) - sum_yv);  % Compute bus boltage
+                                                                        % Equation (6.90) in Kunder's book
             
             if list_type(i) == 2 
                 V(i) = SimplexPS.pol2rect(abs(Vprev(i)), angle(V(i))); % For PV bus, voltage magnitude remains same, but angle changes.

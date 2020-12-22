@@ -16,7 +16,7 @@ classdef InfiniteBus < SimplexPS.Class.ModelAdvance
         end
         
         % Calculate the equilibrium
-        function Equilibrium(obj)
+        function [x_e,u_e,xi] = Equilibrium(obj)
          	% Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
             Q	= obj.PowerFlow(2);
@@ -30,9 +30,9 @@ classdef InfiniteBus < SimplexPS.Class.ModelAdvance
             i_d = P/V;
             i_q = -Q/V;
             
-            obj.u_e = [i_d; i_q];
-            obj.x_e = [];
-            obj.xi = [xi];
+            u_e = [i_d; i_q];
+            x_e = [];
+            xi  = [xi];
         end
         
         % State space model

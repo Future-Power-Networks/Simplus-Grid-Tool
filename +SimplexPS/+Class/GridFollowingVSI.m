@@ -5,8 +5,8 @@
 %% Notes
 %
 % The model is in 
-% ac-side load convention, admittance form.
-% dc-side generator convention, impedance form.
+% ac-side: load convention, admittance form.
+% dc-side: source convention, impedance form.
 
 %% Class
 
@@ -95,6 +95,13 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
         end
 
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
+            % Get the power PowerFlow values
+            P 	= obj.PowerFlow(1);
+            Q	= obj.PowerFlow(2);
+            V	= obj.PowerFlow(3);
+            xi	= obj.PowerFlow(4);
+            w   = obj.PowerFlow(5);
+            
            	% Get parameters
             C_dc    = obj.Para(1);
             v_dc_r  = obj.Para(2);
@@ -153,9 +160,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     % DC-link control
                     i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
                 elseif obj.DeviceType == 11
-                    
-                    % Power control                                           
-                    i_d_r = P_dc/v_d;
+                    % Active power control                                           
+                    i_d_r = P/V;
                 else
                    error('Invalid DeviceType.');
                 end
@@ -214,6 +220,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     i_dc = P_dc/v_dc_r;
                   	dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
+                elseif obj.DeviceType == 11
+                    % No dc link control
                 else
                     error('Invalid DeviceType.');
                 end

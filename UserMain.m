@@ -27,6 +27,7 @@ Name_Netlist = 'UserData.xlsx';
 % Name_Netlist = 'SingleSGInfiniteBus.xlsx';        % Single-generator-infinite-bus system
 % Name_Netlist = 'SingleVSIInfiniteBus.xlsx';       % Single-inverter-infinite-bus system
 % Name_Netlist = '14Bus.xlsx';                      % 14 bus system
+% Name_Netlist = 'GridFollowingVSI.xlsx';                      % 14 bus system
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

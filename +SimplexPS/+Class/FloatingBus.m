@@ -1,4 +1,5 @@
-% This class defines the model of a floating bus, i.e., open circuit bus.
+% This class defines the model of a floating bus, i.e., open circuit bus or
+% no device connected to this bus.
 
 % Author(s): Yitong Li
 
