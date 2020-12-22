@@ -1,6 +1,6 @@
 # SimplexPowerSystem (Version: v2020-DEC-22)
 
-An open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, PEC-SG-composite).
+An open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, generator-converter-composite).
 
 The toolbox is based on Matlab/Simulink but is going to be extended to Python. To be continued.
 
