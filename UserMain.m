@@ -24,10 +24,9 @@ Name_Netlist = 'UserData.xlsx';
 % generator-inverter-composite power system. Please feel free to change it.
 
 % Other example systems are:
-% Name_Netlist = 'SingleSGInfiniteBus.xlsx';        % Single-generator-infinite-bus system
-% Name_Netlist = 'SingleVSIInfiniteBus.xlsx';       % Single-inverter-infinite-bus system
-% Name_Netlist = '14Bus.xlsx';                      % 14 bus system
-% Name_Netlist = 'GridFollowingVSI.xlsx';         	% Grid following VSI
+% Name_Netlist = 'PortCoupling_SingleSGInfiniteBus.xlsx';  	% Single-generator-infinite-bus system
+% Name_Netlist = 'PortCoupling_SingleVSIInfiniteBus.xlsx';	% Single-inverter-infinite-bus system
+% Name_Netlist = 'PortCoupling_IEEE14Bus.xlsx';            	% 14 bus system
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();
