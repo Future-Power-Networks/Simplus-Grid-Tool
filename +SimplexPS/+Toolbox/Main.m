@@ -182,7 +182,7 @@ figure_n = 1000;
 fprintf('Calculatting pole/zero.\n')
 pole_sys = pole(GsysDSS)/2/pi;
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-20, 1))
+if isempty(find(real(pole_sys)>1e-9, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')

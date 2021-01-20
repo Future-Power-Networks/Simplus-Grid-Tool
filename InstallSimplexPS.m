@@ -1,9 +1,9 @@
 % This function installs the SimplexPowerSystem toolbox into the customer
 % PC.
 
-%% Note
-%
-% Run this file just ONCE.
+%% Notes
+
+% Please run this file just ONCE.
 
 %%
 clear all
@@ -26,11 +26,11 @@ if str2double(MatlabVersionYear)<2015
 end
 
 fprintf('Converting the toolbox library to the required Matlab version, please wait a second...\n')
-warning('off','all')
+warning('off','all')    % Turn off all warnings
 open_system('SimplexPS_2015a.slx');
 save_system('SimplexPS_2015a.slx','Library\SimplexPS.slx');
 close_system('SimplexPS.slx');
-warning('on','all')
+warning('on','all')     % Turn on all warnings
 clc
 
 %%

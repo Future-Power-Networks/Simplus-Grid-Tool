@@ -15,6 +15,9 @@
 % sbd      - frequency range
 % wbase    - base angular frequency
 % varargin - Variable length input argument list, for advanced settings
+%
+% The vertical axis is not in dB, instead, it is the actual magnitude, but
+% shown in log-scaled axis.
 
 %%
 function Xw = bode_c(X,sbd,wbase,varargin)
