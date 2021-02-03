@@ -42,8 +42,8 @@ DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run 
 choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
 
 if strcmp(choice,'Yes')
-   open('CustomerMain.m');
-   run('CustomerMain.m');
+    open('UserMain.m');
+    run('UserMain.m');
 else
-    msgbox('The installation of SimplexPowerSystem is completed. Please run "UserMain.m" later in the root path when you want to experience the toolbox!');
+ 	msgbox('The installation of SimplexPowerSystem is completed. Please run "UserMain.m" later in the root path for using the toolbox!');
 end

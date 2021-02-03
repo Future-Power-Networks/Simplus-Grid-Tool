@@ -69,7 +69,7 @@ switch floor(Type/10)
                         Para.R;
                         Para.w0];       % (5)
                     
-    % ### Grid-Following VSI
+    % ### Grid-following inverter
     case 1      % Type 10-19
         Device = SimplexPS.Class.GridFollowingVSI('DeviceType',Type);
         Device.Para = [Para.C_dc;
@@ -87,34 +87,22 @@ switch floor(Type/10)
                        Para.w0;
                        Para.Gi_cd]; 	% (14)
                    
-    % ### Grid-Forming VSI
+    % ### Grid-forming inverter
     case 2  % Type 20-29
         Device = SimplexPS.Class.GridFormingVSI('DeviceType',Type);
         Device.Para = [Para.Lf;
                        Para.Rf;
                        Para.Cf;
                        Para.Lc;
-                       Para.Rc;         % (5)
+                       Para.Rc;
+                       Para.Xov
                        Para.Dw;
-                       Para.Dv;
-                       Para.Tf;
-                       Para.P0;
-                       Para.Q0;         % (10)
-                       Para.w0;
-                       Para.v_od0;
-                       Para.v_oq0;
-                       Para.kp_i_ldq;
-                       Para.ki_i_ldq;   % (15)
-                       Para.kp_v_odq;
-                       Para.ki_v_odq;
-                       Para.Gi_cd;
-                       Para.Gv_cd;
-                       Para.Fv;         % (20)
-                       Para.Fi;
-                       Para.Rov;
-                       Para.Xov];       % (23)
+                       Para.wf;
+                       Para.w_v_odq;
+                       Para.w_i_ldq;
+                       Para.w0];
                    
-    % ### Infinite Bus
+    % ### Infinite bus
     case 9 % Type 90-99
         Device = SimplexPS.Class.InfiniteBus;
         Device.Para  = [];
@@ -122,7 +110,7 @@ switch floor(Type/10)
         % they need to be switched finally.
         Flag_SwitchInOut = 1;   
    
-    % ### Floating Bus
+    % ### Floating bus
     case 10
         Device = SimplexPS.Class.FloatingBus;
         Device.Para = [];

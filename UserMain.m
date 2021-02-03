@@ -27,6 +27,8 @@ Name_Netlist = 'UserData.xlsx';
 % Name_Netlist = 'PortCoupling_SingleSGInfiniteBus.xlsx';  	% Single-generator-infinite-bus system
 % Name_Netlist = 'PortCoupling_SingleVSIInfiniteBus.xlsx';	% Single-inverter-infinite-bus system
 % Name_Netlist = 'PortCoupling_IEEE14Bus.xlsx';            	% 14 bus system
+% Name_Netlist = 'Duality_SingleInverterInfiniteBus';
+% Name_Netlist = 'TestGridForming';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

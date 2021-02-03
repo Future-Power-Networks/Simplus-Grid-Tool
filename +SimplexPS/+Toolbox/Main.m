@@ -17,7 +17,7 @@ fprintf('==================================\n')
 % ==================================================
 % Load customized data
 % ==================================================
-fprintf('Loading data from "CustomerData.xlsx", please wait a second...\n')
+fprintf('Loading data from "UserData.xlsx", please wait a second...\n')
 
 % ### Load the customized data
 % Other available function: readmatrix, csvread ...

@@ -78,17 +78,10 @@ if ListLineIEEE(1,1) == 1
                 % current source) will be connected in sereis to the line
                 % inductor, which causes errors.
                 
-                % This small value has been increased from 1e-5 to 1e-4,
-                % for the stability of the updated discretization method
-                
-                % It looks like adding small B is better than adding small
-                % G, why? Maybe it is because the PLL VSI requires an
-                % output capacitor.
-                
                 %G(i) = 1e-4;
                 %UpdateLine(i,6) = 1e-4;
                 B(i) = 1e-5;    
-                UpdateLine(i,5) = 1e-5;
+                UpdateLine(i,5) = B(i);
             else
                 % If this open-circuit branch is a mutual branch, delete it
                 % later.
@@ -113,8 +106,7 @@ if ListLineIEEE(1,1) == 1
     UpdateLine = UpdateLine_;
     
 else
-    % Use the toolbox form
-    EnableFlag = 0;
+    % Use the toolbox line form
     UpdateLine = ListLine;
 end
 

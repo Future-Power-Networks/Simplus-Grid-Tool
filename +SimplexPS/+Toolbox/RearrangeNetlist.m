@@ -48,7 +48,7 @@ end
 
 % Check number of bus
 N_Bus_FT = max(max(FB), max(TB) );
-if (N_Bus_FT ~= N_Bus); 
+if (N_Bus_FT ~= N_Bus)
     error(['Error: Numbers of buses derived from "PowerFlow" and "NetworkLine" are different.'])
 end   
 

@@ -12,6 +12,7 @@
 
 classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
     
+    % For temporary use
     properties(Access = protected)
         i_q_r;
     end
@@ -19,10 +20,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
     methods
         % constructor
         function obj = GridFollowingVSI(varargin)
-
             % Support name-value pair arguments when constructing object
             setProperties(obj,nargin,varargin{:});
-
         end
     end
 
@@ -199,9 +198,12 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 e_q = max(e_q,e_q_limit_L);
 
                 % PLL angle measurement
-                e_ang = atan2(v_q,v_d) - ang_r;
-                        % "- ang_r" gives the reference in "load"
-                        % convention, like the Tw port.
+                if 1
+                    e_ang = atan2(v_q,v_d) - ang_r;     % theta-PLL
+                else
+                    e_ang = v_q - ang_r;                % vq-PLL
+                end
+                % "- ang_r" gives the reference in load convention, like the Tw port.
 
                 % Frequency limit
                 w_limit_H = W0*1.5;
