@@ -6,51 +6,51 @@ Introduction
 
 This is the quick manual for developers who want to contribute to the toolbox developement. If you have any inquires, please feel free to contact leading developers: Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yg934@bath.ac.uk), and Yue Zhu (yue.zhu18@imperial.ac.uk).
 
-============
-Tips for Developers
-============
+============  
+Tips for Developers  
+============  
 
 1- The toolbox development is managed by GitHub. For getting involved, you should register a GitHub account first (which is free), and "fork" the respository.
 
 2- The toolbox structure will be introduced briefly below. After that, you can also view the codes and comments in each ".m" file for more details.
 
-3- There are three sets of naming conventions: 
-    1) microsoft, like PlotFigure EpwmConfig
-    2) gnu-linux, like plot_figure pwm_config
-    3) free style, like ss2tf
+3- There are three sets of naming conventions:  
+    1) microsoft, like PlotFigure EpwmConfig  
+    2) gnu-linux, like plot_figure pwm_config  
+    3) free style, like ss2tf  
 Matlab use free style for its common functions, and use microsoft in others. We use microsoft mainly, and use free style when needed.
 
 4- The project is going to be renamed SimplexPowerSystem (SimplexPS, in short), while the project on HIL is called SimplexRealTime (SimplexRT).
 
-============
-File structure
-============
+============  
+File structure  
+============  
 
 The file structure (documentation tree) of the toolbox is shown below. The detailed introduction of each folder will be given later.
 
-Root path
-	-> +SimplexPS (root name space)
-		-> +Class (sub name sapce, class of matlab system object)
-		-> +PowerFlow (sub name space, power flow analysis)
-		-> +Toolbox (sub name space, toolbox basic functions)
-		-> +Simulink (sub name space, simulink functions)
-		-> Generic functions (such as "dss2ss".)
-	-> Debug (functions used by developers for debug.)
-	-> Documentations (manuals for users and developers)
-	-> Examples
-	-> Library (library for Simulink blocks)
-		-> slblocks.m (load SimplexPS lib to Simulink broswer)
-		-> SimplexPS.slx (library file)
-		-> SimplexPS_2015a.xls (library file for matlab 2015a)
-	-> InstallSimplexPS.m
-	-> UnstallSimplexPS.m
-	-> UserMain.m
-	-> UserData.xlsx
+Root path  
+	-> +SimplexPS (root name space)  
+		-> +Class (sub name sapce, class of matlab system object)  
+		-> +PowerFlow (sub name space, power flow analysis)  
+		-> +Toolbox (sub name space, toolbox basic functions)  
+		-> +Simulink (sub name space, simulink functions)  
+		-> Generic functions (such as "dss2ss".)  
+	-> Debug (functions used by developers for debug.)  
+	-> Documentations (manuals for users and developers)  
+	-> Examples  
+	-> Library (library for Simulink blocks)  
+		-> slblocks.m (load SimplexPS lib to Simulink broswer)  
+		-> SimplexPS.slx (library file)  
+		-> SimplexPS_2015a.xls (library file for matlab 2015a)  
+	-> InstallSimplexPS.m  
+	-> UnstallSimplexPS.m  
+	-> UserMain.m  
+	-> UserData.xlsx  
 	-> README.md
 
-============
-Root Path
-============
+============  
+Root Path  
+============  
 
 Root path contains the main folders for toolbox and the files for users.
 
@@ -74,9 +74,9 @@ Root path contains the main folders for toolbox and the files for users.
 
 "Library" folder contains the library files for Simulink blocks used by the toolbox. "SimplexPS_2015a.xls" is the library file in Matlab version 2015a. Runing "InstallSimplexPS.m" will automatically convert this lib file to the version of users' Maltab.
 
-============
-Root Name Space: "+SimplexPS" Folder
-============
+============  
+Root Name Space: "+SimplexPS" Folder  
+============  
 
 This is the root name space folder of the toolbox, and contains all functions used by the toolbox (expect for functions available for users directly such as "UserMain.m"). Generic functions (used for generic purpose such as mathmatical calculations, bode plot, etc) are saved in this root name space folder directly. Other advanced functions are saved in corresponding sub name space folders ("+Toolbox", "+Simulink", etc), as introduced next.
 
@@ -94,18 +94,18 @@ This folder contains the class functions of Matlab system object, which defines 
 
 The class tree is shown here:
 
-matlab.System
-	-> ModelBase
-		& matlab.system.mixin.Nondirect
-		& matlab.system.mixin.Propagates
-		-> ModelAdvance
-			-> ModelTemplate
-			-> SynchronousMachine
-			-> GridFollowingVSI
-			-> GridFormingVSI
-			-> InfiniteBus
-			-> FloatingBus
-			-> Inductor
+matlab.System  
+	-> ModelBase  
+		& matlab.system.mixin.Nondirect  
+		& matlab.system.mixin.Propagates  
+		-> ModelAdvance  
+			-> ModelTemplate  
+			-> SynchronousMachine  
+			-> GridFollowingVSI  
+			-> GridFormingVSI  
+			-> InfiniteBus  
+			-> FloatingBus  
+			-> Inductor  
 
 "matlab.System" is the base class of Matlab itself. "matlab.system.mixin.Nondirect" and "matlab.system.mixin.Propagates" are also classes of Matlab, which are included for using system objects in Simulink.
 
@@ -124,4 +124,3 @@ This folder contains functions for power flow analysis. "PowerFlowGS.m" and "Pow
 ### "+Modal" Sub-folder
 
 This folder contains functions for modal analysis (such as participation analysis, sensitivity analysis).
-
