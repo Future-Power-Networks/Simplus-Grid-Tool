@@ -28,6 +28,7 @@ File structure
 
 The file structure (documentation tree) of the toolbox is shown below. The detailed introduction of each folder will be given later.
 
+<pre>
 Root path  
 	-> +SimplexPS (root name space)  
 		-> +Class (sub name sapce, class of matlab system object)  
@@ -47,6 +48,7 @@ Root path
 	-> UserMain.m  
 	-> UserData.xlsx  
 	-> README.md
+</pre>
 
 ============  
 Root Path  
@@ -94,6 +96,7 @@ This folder contains the class functions of Matlab system object, which defines 
 
 The class tree is shown here:
 
+<pre>
 matlab.System  
 	-> ModelBase  
 		& matlab.system.mixin.Nondirect  
@@ -106,6 +109,7 @@ matlab.System
 			-> InfiniteBus  
 			-> FloatingBus  
 			-> Inductor  
+</pre>
 
 "matlab.System" is the base class of Matlab itself. "matlab.system.mixin.Nondirect" and "matlab.system.mixin.Propagates" are also classes of Matlab, which are included for using system objects in Simulink.
 
