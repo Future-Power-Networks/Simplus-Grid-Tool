@@ -1,23 +1,17 @@
-% This function installs the SimplexPowerSystem toolbox into the customer
-% PC.
+% This file installs the SimplexPowerSystem toolbox on the users' PC. Users
+% do not need to read or understand the codes in this file. Please just run
+% it directly and run it only ONCE.
 
-%% Notes
-
-% Please run this file just ONCE.
+% Author(s): Yitong Li, Yunjie Gu
 
 %%
 clear all
 clc
 close all
 
-fprintf('Installing SimplexPowerSystem...\n')
-
-%% Add folder to path
-addpath(genpath(pwd));  % Add path
-savepath;               % Save path
-
-%% Save lib to the corresponding matlab version
-%MatlabVersion = ver('MATLAB').Release;
+%%
+% Check the matlab version
+fprintf('Checking the Matlab version...\n')
 MatlabVersion = version('-release');
 MatlabVersion = MatlabVersion(1:(end-1));
 MatlabVersionYear = MatlabVersion;
@@ -25,6 +19,18 @@ if str2double(MatlabVersionYear)<2015
     error(['Error: Please use Matlab version 2015a or later!']);
 end
 
+% Check if a previous version of SimplexPS has been installed
+fprintf('Checking if the SimplexPS has been installed before...\n')
+if exist('SimplexPS')~=0
+    error(['Error: SimplexPowerSystem has been installed on this PC/laptop before. Please unstall the old version of SimplexPowerSystem first!']);
+end
+
+% Add folder to path
+fprintf('Installing SimplexPowerSystem...\n')
+addpath(genpath(pwd));  % Add path
+savepath;
+
+% Convert the toolbox lib to the required version
 fprintf('Converting the toolbox library to the required Matlab version, please wait a second...\n')
 warning('off','all')    % Turn off all warnings
 open_system('SimplexPS_2015a.slx');
@@ -34,11 +40,9 @@ warning('on','all')     % Turn on all warnings
 clc
 
 %%
-% fprintf('SimplexPowerSystem is installed successfully! \n')
-% fprintf('Do you want to run "CustomerMain.m" now to start using the toolbox?\n')
-
+% Installation is completed
 DlgTitle    = 'Congratulations!';
-DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run "UserMain.m" now to experience the toolbox?';
+DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run "UserMain.m" now to use the toolbox?';
 choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
 
 if strcmp(choice,'Yes')

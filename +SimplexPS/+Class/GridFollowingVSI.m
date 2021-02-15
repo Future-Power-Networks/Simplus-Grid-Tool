@@ -159,7 +159,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     % DC-link control
                     i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
                 elseif obj.DeviceType == 11
-                    % Active power control                                           
+                    % % Active power control                                           
                     i_d_r = P/V;
                 else
                    error('Invalid DeviceType.');
@@ -167,13 +167,16 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 
               	% i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
                 i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
-                % i_q_r = 0;
+                
+                EnableSaturation = 0;
                 
                 % Current saturation
+                if EnableSaturation
                 i_d_r = min(i_d_r,i_d_limit);
                 i_d_r = max(i_d_r,-i_d_limit);
                 i_q_r = min(i_q_r,i_q_limit);
                 i_q_r = max(i_q_r,-i_q_limit);
+                end
                 
                 % Ac voltage limit
              	e_d_limit_H = 1.5;
@@ -182,23 +185,27 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 e_q_limit_L = -1.5;
                 
                 % Current controller anti-windup
+                if EnableSaturation
              	i_d_i = min(i_d_i,e_d_limit_H);
                 i_d_i = max(i_d_i,e_d_limit_L);
              	i_q_i = min(i_q_i,e_q_limit_H);
                 i_q_i = max(i_q_i,e_q_limit_L);
+                end
                 
                 % Ac voltage (duty cycle*v_dc)
                 e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i - Gi_cd*W0*L*(-i_q);
                 e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i + Gi_cd*W0*L*(-i_q);
                 
                 % Ac voltage (duty cycle) saturation
+                if EnableSaturation
                 e_d = min(e_d,e_d_limit_H);
                 e_d = max(e_d,e_d_limit_L);
                 e_q = min(e_q,e_q_limit_H);
                 e_q = max(e_q,e_q_limit_L);
-
+                end
+                
                 % PLL angle measurement
-                if 1
+                if 0
                     e_ang = atan2(v_q,v_d) - ang_r;     % theta-PLL
                 else
                     e_ang = v_q - ang_r;                % vq-PLL

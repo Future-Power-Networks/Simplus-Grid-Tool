@@ -109,7 +109,7 @@ UpdateDevice = ListDevice;
 
 % Error check
 [N_Device,ColumnMax_Device] = size(ListDevice);
-if (ColumnMax_Device>9)
+if (ColumnMax_Device>12)
     error(['Error: Device data overflow.']); 
 end
 if (N_Device ~= N_Bus)

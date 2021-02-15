@@ -23,11 +23,16 @@ Name_Netlist = 'UserData.xlsx';
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
 
-% Other example systems are:
+% Other example systems:
+% Name_Netlist = 'IEEE_14Bus';
+
 % Name_Netlist = 'PortCoupling_SingleSGInfiniteBus.xlsx';  	% Single-generator-infinite-bus system
 % Name_Netlist = 'PortCoupling_SingleVSIInfiniteBus.xlsx';	% Single-inverter-infinite-bus system
 % Name_Netlist = 'PortCoupling_IEEE14Bus.xlsx';            	% 14 bus system
-% Name_Netlist = 'Duality_SingleInverterInfiniteBus';
+% Name_Netlist = 'Duality_GridFormingInverter';
+% Name_Netlist = 'Duality_GridFollowingInverter';
+% Name_Netlist = 'Duality_14Bus';
+
 % Name_Netlist = 'TestGridForming';
 
 %% Run toolbox
