@@ -5,27 +5,26 @@
 classdef Inductor < SimplexPS.Class.ModelAdvance
     
     methods
+        % Constructor
         function obj = Inductor(varargin)
-            obj.VoidJacobStates = [];
-            obj.VoidFeedthrough = [];
-            obj.ElecPortIOs = [1];
             setProperties(obj,nargin,varargin{:});
         end
     end
     
     methods(Static)
         % Set the strings of input, output, state
-        function SetString(obj)
-            obj.StateString  = {'i'};        % x
-            obj.InputString  = {'v'};        % u
-            obj.OutputString = {'i'};        % y
+        function [State,Input,Output] = SignalList(obj)
+            StateString  = {'i'};        % x
+            InputString  = {'v'};        % u
+            OutputString = {'i'};        % y
         end
         
         % Calculate the equilibrium
-        function Equilibrium(obj)
-            obj.x_e = 0;
-            obj.u_e = 0;
-            obj.xi = 0;
+        function [x_e,u_e,xi] = Equilibrium(obj)
+            % Calculate the equilibrium
+            x_e = 0;
+            u_e = 0;
+            xi = 0;
         end
         
         % State space model
@@ -36,14 +35,18 @@ classdef Inductor < SimplexPS.Class.ModelAdvance
             i = x(1);
             % Get parameter
             L = obj.Para;
+            
             % State space equations
+         	% dx/dt = f(x,u)
+            % y     = g(x,u)
             if CallFlag == 1
-                % State equations: dx/dt = f(x,u)
+                % ### Call state equation: dx/dt = f(x,u)
                 di = v/L; 
                 f_xu = [di]; 
                 Output = f_xu;
+                
             elseif CallFlag == 2
-                % Output equations: y = g(x,u)
+                % ### Call output equation: y = g(x,u)
                 g_xu = [i]; 
                 Output = g_xu;              
             end

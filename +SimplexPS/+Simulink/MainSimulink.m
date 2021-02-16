@@ -13,7 +13,7 @@ function MainSimulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow)
 
 %% Common variables
 SimplexPS.Simulink.NewSimulinkModel('ModelName',Name_Model);
-Name_Lib = 'Simplex Power Systems';
+Name_Lib = 'Simplex Power System';
 Name_LibFile = 'SimplexPS';
 % load_system(Name_LibFile);
 

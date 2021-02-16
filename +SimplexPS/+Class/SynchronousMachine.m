@@ -17,10 +17,8 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
     methods
         % constructor
         function obj = SynchronousMachine(varargin)
-
             % Support name-value pair arguments when constructing object
             setProperties(obj,nargin,varargin{:});
-
         end
     end
     
@@ -98,7 +96,10 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             psi_f = obj.psi_f;
 
             % State space equations
-            if CallFlag == 1        % State equation
+          	% dx/dt = f(x,u)
+            % y     = g(x,u)
+            if CallFlag == 1        
+            % ### Call state equation: dx/dt = f(x,u)
                 % Auxiliary equation
                 psi_d = L*i_d;
                 psi_q = L*i_q - psi_f;
@@ -112,14 +113,9 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
 
                 f_xu = [di_d; di_q; dw; dtheta];
                 Output = f_xu;
-            elseif CallFlag == 2    % Output equation
+            elseif CallFlag == 2    
+            % ### Call output equation: y = g(x,u)
                 i_ex = 0;           % ??? i_ex = f(v_ex,omega,i_d,i_q) will be added later
-                
-%              	  e_d = w*psi_f;
-%                 e_q = 0;
-%                 e_dq = e_d+1i*e_q;
-%                 v_dq = e_dq + (i_d+1i*i_q)*(R+1i*w*L);
-%                 theta = angle(v_dq)+theta;
                 
                 g_xu = [i_d; i_q; w; i_ex; theta];
                 Output = g_xu;

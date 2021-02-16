@@ -143,7 +143,9 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             % State space equations
          	% dx/dt = f(x,u)
             % y     = g(x,u)
-            if CallFlag == 1    % Call state equation: dx/dt = f(x,u)
+            if CallFlag == 1    
+            % ### Call state equation: dx/dt = f(x,u)
+            
                 % Power measurement
                 p = (v_od*i_od + v_oq*i_oq)*(-1);   % (-1) appears because the model is in load convention
                 q = (-v_od*i_oq + v_oq*i_od)*(-1);
@@ -204,7 +206,8 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
                 f_xu = [di_ld; di_lq; di_ld_i; di_lq_i; dv_od; dv_oq; dv_od_i; dv_oq_i; di_od; di_oq; dw; dtheta];
                 Output = f_xu;
                 
-            elseif CallFlag == 2     % Call output equations: y = g(x,u)
+            elseif CallFlag == 2     
+            % ### Call output equations: y = g(x,u)
                 g_xu = [i_od; i_oq; w; theta];
                 Output = g_xu;
             end

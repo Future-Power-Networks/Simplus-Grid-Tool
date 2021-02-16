@@ -144,7 +144,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             % State space equations
             % dx/dt = f(x,u)
             % y     = g(x,u)
-            if CallFlag == 1    % Call state equations
+            if CallFlag == 1    
+            % ### Call state equation: dx/dt = f(x,u)
                 
               	% Current limit
                 i_d_limit = 1.5;
@@ -220,8 +221,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 w = min(w,w_limit_H);
                 w = max(w,w_limit_L);
                         
-                % ###
-                % State equations: dx/dt = f(x,u)
+                % State equations
                 if obj.DeviceType == 10
                     dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc; 	% C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
@@ -254,7 +254,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 Output = f_xu;
                 
             elseif CallFlag == 2
-                % Output equations: y = g(x,u)
+          	% ### Call output equation: y = g(x,u)
                 g_xu = [i_d; i_q; w; v_dc; theta];
                 Output = g_xu;
             end
