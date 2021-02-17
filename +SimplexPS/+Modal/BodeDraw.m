@@ -22,8 +22,8 @@ for i=1:AxisNum
         title='Admittance Bode Diagram: q-q axis';
     else
     end  
-close(figure(10+i));
-figure(10+AxisSel(i));
+close(figure(2000+i));
+figure(2000+AxisSel(i));
 pin = 1;   %pointer to input
 pout = 1;  %pointer to output
 CountLegend = 0;
@@ -48,7 +48,7 @@ for k = 1:N_Bus
         end
 end
 legend(VecLegend);
-mtit(title);
+SimplexPS.mtit(title);
 end
 
 end

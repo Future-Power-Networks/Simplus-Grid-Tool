@@ -10,6 +10,12 @@ clc
 close all
 
 %%
+% Change the current folder
+fprintf('Changing the current folder to the toolbox folder...\n')
+mfile_name = mfilename('fullpath');
+[pathstr,~,~]  = fileparts(mfile_name);
+cd(pathstr);
+
 % Check the matlab version
 fprintf('Checking the Matlab version...\n')
 MatlabVersion = version('-release');
@@ -41,7 +47,7 @@ clc
 
 %%
 % Installation is completed
-DlgTitle    = 'Congratulations!';
+DlgTitle = 'Congratulations!';
 DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run "UserMain.m" now to use the toolbox?';
 choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
 

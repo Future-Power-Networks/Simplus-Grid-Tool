@@ -22,8 +22,8 @@ end
 
 %%
 %%diagrams drawing
-close(figure(14+modei));
-h=figure(14+modei);
+close(figure(2010+modei));
+h=figure(2010+modei);
 set(h,'position',[254.6,151.4,976.8,556]);
 Count=0;
 Layer2RealSum=0;
@@ -76,6 +76,6 @@ title ('Impedance Participation Level-2 Imag (Normalized)');
 % end
 
 TitStr = ['Mode: ',num2str(ModeSel,'%.2f'), ' Hz'];
-mtit(TitStr, 'color',[1 0 0], 'xoff', -0.3);
+SimplexPS.mtit(TitStr, 'color',[1 0 0], 'xoff', -0.3);
 
 end

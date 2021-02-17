@@ -36,11 +36,7 @@ Enable_PlotPole                 = ListAdvance(7);
 Enable_PlotAdmittance           = ListAdvance(8);
 Enable_PrintOutput              = ListAdvance(9);
 Enable_PlotSwing                = ListAdvance(10);
-if length(ListAdvance) ==10
-    Enable_Participation = 0;
-else
-    Enable_Participation = ListAdvance(11);
-end
+Enable_Participation            = ListAdvance(11);
 
 % ### Re-arrange the simulation data
 Fs = ListBasic(1);
@@ -62,11 +58,11 @@ Wbase = Fbase*2*pi;     % (rad/s), base angular frequency
 
 %%
 % ==================================================
-% Power flow analysis
+% Descriptor state space model
 % ==================================================
 
 % ### Power flow analysis
-fprintf('Doing the power flow analysis...\n')
+fprintf('Doing the power flow analysis.\n')
 switch Flag_PowerFlowAlgorithm
     case 1  % Gauss-Seidel 
         [PowerFlow,~,~,~,~,~,~,~] = SimplexPS.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
@@ -75,20 +71,10 @@ switch Flag_PowerFlowAlgorithm
     otherwise
         error(['Error: Wrong setting for power flow algorithm.']);
 end
-
-% For printing later
 ListPowerFlow = SimplexPS.PowerFlow.Rearrange(PowerFlow);
-
-% Move load flow (PLi and QLi) to bus admittance matrix
+% Move load flow to bus admittance matrix
 [ListBus,ListLine,PowerFlow] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
-
-% For printting later
 ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlow);
-
-%%
-% ==================================================
-% Descriptor state space model
-% ==================================================
 
 % ### Get the model of lines
 fprintf('Getting the descriptor state space model of network lines...\n')
@@ -120,7 +106,7 @@ GmObj = SimplexPS.Toolbox.DeviceModelLink(GmObj_Cell);
 % ### Chech if the system is proper
 fprintf('Checking if the whole system is proper:\n')
 if isproper(GsysDSS)
-    fprintf('Proper!\n');
+    fprintf('Proper.\n');
     fprintf('Calculating the minimum realization of the system model for later use...\n')
     % GminSS = minreal(GsysDSS);
     GminSS = SimplexPS.dss2ss(GsysDSS);
@@ -134,11 +120,6 @@ end
 if SimplexPS.is_dss(GminSS)
     error(['Error: Minimum realization is in descriptor state space (dss) form.']);
 end
-
-%%
-% ==================================================
-% Print results
-% ==================================================
 
 % ### Output the System
 fprintf('\n')
@@ -193,7 +174,7 @@ end
 
 fprintf('\n')
 fprintf('==================================\n')
-fprintf('Check Stability\n')
+fprintf('Checking Stability\n')
 fprintf('==================================\n')
 
 fprintf('Calculatting pole/zero...\n')
@@ -220,7 +201,7 @@ figure_n = 1000;
 
 % Plot pole/zero map
 if Enable_PlotPole
-    fprintf('Plotting pole map...\n')
+    fprintf('Plotting pole map.\n')
     figure_n = figure_n+1;
     figure(figure_n);
     subplot(1,2,1)
@@ -246,7 +227,7 @@ omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
 if Enable_PlotAdmittance
-    fprintf('Plotting admittance spectrum...\n')
+    fprintf('Plotting admittance spectrum.\n')
     Tj = [1 1j;     % real to complex transform
           1 -1j];  
     for k = 1:N_Bus
@@ -275,7 +256,7 @@ end
 
 % Plot w related
 if Enable_PlotSwing
-    fprintf('Plotting frequency-port dynamics...\n')
+    fprintf('Plotting frequency-port dynamics.\n')
     for k = 1:N_Bus
         if floor(DeviceType{k}/10) == 0
             Gt_ss{k} = GminSS(Port_w(k),Port_T_m(k));
@@ -313,7 +294,7 @@ if Enable_Participation == 1
     SimplexPS.Modal.ModalAnalysis;
     fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 else
-    fprintf('Warning: The modal (participation) analysis is disabled.');
+    fprintf('Warning: The modal and participation analysis is disabled.');
 end
 
 
@@ -329,3 +310,8 @@ fprintf('==================================\n')
 % - The power flow calculation assumes the frequency is Wbase
 % - Initialization of network lines, such as the current of line inductor
 % and the voltage of line capacitor.
+
+%%
+% save results to GreyBox.xlsx, for users to config the GreyBox approach.
+% SimplexPS.GreyBox.GreyBoxExcelGenerate(N_Device,DeviceType,DeviceStateStr,...
+%     DeviceInputStr,DeviceOutputStr,ZbusStateStr,GsysDSS);

@@ -9,12 +9,12 @@
 % ModalConfig.xlsx, which should be located in the toolbox root folder.
 % Note1: device numbering keeps the same as bus numbering. For example: the device
 % on bus7 will always be named as Device7.
-% Note2: The final results will be saved in GbLayer1, GbLayer2, GbLayer3,
-% GbMode and GbResidue.
+% Note2: The final results will be saved in MdLayer1, MdLayer2, MdLayer3,
+% MdMode, MdStatePF.
 
 %% Basic
 %Basic infomation acquirement.
-FileModal=[cd '\ModalConfig.xlsx'];
+FileModal=[cd '/Examples/paper_participation/ModalConfig.xlsx'];
 clear MdLayer1;
 clear MdLayer2;
 clear MdLayer3;

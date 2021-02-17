@@ -1,10 +1,11 @@
-% this .m file is used to prepare an excel file for user to config 
-% Participation / Sensitivity analysis. If the file existed, this program will clear the
-% original contents. The excel file is built based on the running results
-% of the toolbox.
+% this .m file is used to prepare an excel file for user to config
+% Participation / Sensitivity analysis. If the file existed, this program
+% will clear the original contents. The excel file is built based on the
+% running results of the toolbox.
+
 % Author: Yue Zhu
 
-FileModal=[cd '\ModalConfig.xlsx'];
+FileModal=[cd '/Examples/paper_participation/ModalConfig.xlsx'];
 %filename = 'ModalConfig.xlsx';
 SimplexPS.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old contents.
 % write contents in the excel file.

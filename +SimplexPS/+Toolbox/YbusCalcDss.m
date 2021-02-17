@@ -45,7 +45,7 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
     if ( isinf(R) || isinf(X) || ( (G==0) && (B==0) && isinf(XL) ) )     % open circuit
         A_op = []; B_op = []; E_op = [];
         C_op = []; D_op = [0,0;0,0];
-        Ybranch{n} = dss(A_op,B_op,C_op,D_op,E_op); 
+        Ybranch{n} = dss(A_op,B_op,C_op,D_op,E_op);
     elseif ( (R==0) && (X==0) && ( isinf(G) || isinf(B) || (XL==0) ) )
         error(['Error: short circuit, branch from ' num2str(FB(n)) ' to ' num2str(TB(n))]);
     else

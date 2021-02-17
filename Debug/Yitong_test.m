@@ -2,14 +2,9 @@ clear all
 clc
 close all
 
-a1 = sym('a1','real');
-b1 = sym('b1','real');
+A = [2,5,6,5,2,1,4,3,6,5,7];
 
-a2 = sym('a2','real');
-b2 = sym('b2','real');
+n = [3,5];
 
-t1 = a1 + 1i*b1;
-t2 = a2 + 1i*b2;
+B = SimplexPS.DeleteArrayElement(A,n)
 
-t3 = imag(t1/t2)
-t4 = imag(t1)/imag(t2)

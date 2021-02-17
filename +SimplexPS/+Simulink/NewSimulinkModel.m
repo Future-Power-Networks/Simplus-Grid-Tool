@@ -48,7 +48,7 @@ end
 try
     StopTime;
 catch
-    StopTime = '1';
+    StopTime = '5';
 end
 
 try

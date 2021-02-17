@@ -1,5 +1,5 @@
 function ZmVal = DeviceImpedanceCal(GmDSS_Cell, FreqSel, DeviceSel)
-GmSS = minreal(GmDSS_Cell);
+GmSS = minreal(GmDSS_Cell,[],false);
 GmTf.dd=tf(GmSS(1,1));
 GmTf.dq=tf(GmSS(1,2));
 GmTf.qd=tf(GmSS(2,1));

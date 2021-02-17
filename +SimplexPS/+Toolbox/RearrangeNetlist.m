@@ -9,7 +9,7 @@ function [UpdateBus,UpdateLine,UpdateDevice,N_Bus,N_Branch,N_Device] = Rearrange
 % Bus data for power flow analysis
 [N_Bus,ColumnMax_Bus] = size(ListBus);
 
-% Re-arrange the bus data
+% Re-order the bus sequence
 ListBus = sortrows(ListBus,1);
 
 % Output
@@ -101,7 +101,7 @@ ListLine = sortrows(ListLine,1);
 UpdateLine = ListLine;
 
 %% Re-arrange netlist device
-% Re-arrange
+% Re-order the device sequence
 ListDevice = sortrows(ListDevice,1);
 
 % Output

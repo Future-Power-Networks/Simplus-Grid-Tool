@@ -4,32 +4,23 @@
 
 function [UpdateListBus,UpdateListLine,UpdatePowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow)
 
-%% Initialize Output
-UpdateListBus = ListBus;
-UpdateListLine = ListLine;
-UpdatePowerFlow = PowerFlow;
-
-%% Organize data
-IndBus  = ListBus(:,1);
-TypeBus = ListBus(:,2);
+%% Update "ListBus"
+BusIndex  = ListBus(:,1);
+BusType = ListBus(:,2);
 PG      = ListBus(:,5);
 QG      = ListBus(:,6);
 PL      = ListBus(:,7);
 QL      = ListBus(:,8);
-N_Bus = max(IndBus);
+N_Bus = max(BusIndex);
 
-% Update "ListBus"
+UpdateListBus = ListBus;
+
+% Set PL and QL to zero
 UpdateListBus(:,7) = zeros(size(ListBus(:,7)));
 UpdateListBus(:,7) = zeros(size(ListBus(:,7)));
 
-FB  = ListLine(:,1);   % From bus
-TB  = ListLine(:,2);   % To bus
-Rbr = ListLine(:,3);
-Xbr = ListLine(:,4);
-Bbr = ListLine(:,5);
-Gbr = ListLine(:,6);
-N_Branch = length(FB);
-
+%% Update "PowerFlow"
+UpdatePowerFlow = PowerFlow;
 for i = 1:N_Bus
     % P and Q are in load convention
     P(i) = PowerFlow{i}(1);
@@ -37,13 +28,14 @@ for i = 1:N_Bus
     V(i) = PowerFlow{i}(3);
     
     % Update "PowerFlow"
+    % Remove PL and QL from the power flow
     UpdatePowerFlow{i}(1) = P(i) - PL(i);
     UpdatePowerFlow{i}(2) = Q(i) - QL(i);
 end
 
 %% Error check
 for i = 1:N_Bus
-    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (TypeBus(i)~=1)
+    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (BusType(i)~=1)
         error(['Error: Bus ' num2str(i) ' should be a slack bus (power flow) or floating bus (device) because PGi=0 and QGi=0.']);
     end
     if PL(i) < 0
@@ -51,10 +43,17 @@ for i = 1:N_Bus
     end
 end
 
-%% Calculate the load value
+%% Update ListLine
+FB  = ListLine(:,1);   % From bus
+TB  = ListLine(:,2);   % To bus
+N_Branch = length(FB);
+
+% Initialize "ListLine" for inductive load
+UpdateListLine = [ListLine,inf([N_Branch,1],'double')]; % Set all XL to inf defaultly
 for i = 1:N_Bus
+    
     % Assume the load is parallel RL or RC
-    RL(i) = V(i)^2/PL(i);
+    GL(i) = PL(i)/V(i)^2;
     if QL(i) > 0
         % RL load
         XL(i) = V(i)^2/QL(i);
@@ -66,19 +65,31 @@ for i = 1:N_Bus
     end
     
     % Error check
-    if (RL(i) == 0) || (XL(i) == 0) || isinf(BL(i))
+    if isinf(GL(i)) || XL(i)==0 || isinf(BL(i))
         error(['Error: The passive load at bus ' num2str(i) 'is short-circuit.']);
+    end
+    
+    if GL(i)~=0 || ~isinf(XL(i)) || BL(i)~=0
+        % if the branch is not open-circuit
+        n = SimplexPS.Toolbox.FindBranch(UpdateListLine,i,i);
+        if ~isempty(n)
+            % n is NOT empty, which means ListLine has this branch
+            UpdateListLine(n,5) = UpdateListLine(n,5) + BL(i);
+            UpdateListLine(n,6) = UpdateListLine(n,6) + GL(i);
+            UpdateListLine(n,8) = XL(i);
+        else
+            % n is empty, which means ListLine does not have this branch.
+            % In this case, a new branch should be added
+            UpdateListLine = [UpdateListLine;
+                              i,i,0,0,BL(i),GL(i),1,XL(i)];
+        end
+    else
+        % Do not need to care about the open-circuit
     end
 end
 
-% Update "ListLine"
-UpdateListLine = [ListLine,inf([N_Branch,1],'double')]; % Set XL to inf defaultly
-for i = 1:N_Branch
-    if FB(i) == TB(i)
-        UpdateListLine(i,5) = UpdateListLine(i,5)+BL(FB(i));    % Combine capacitive part to self branch
-        UpdateListLine(i,6) = UpdateListLine(i,6)+1/RL(FB(i));  % Combine resistive part to self branch
-        UpdateListLine(i,8) = XL(FB(i));                        % Update the inductive part
-    end
-end
+% Re-order the branch sequence
+UpdateListLine = sortrows(UpdateListLine,2);
+UpdateListLine = sortrows(UpdateListLine,1);
 
 end

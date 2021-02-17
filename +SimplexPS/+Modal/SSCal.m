@@ -38,7 +38,7 @@ for modei=1:ModeSelNum
             ResidueAll{modei}(k).qq=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);           
             
             %Device impedance calculation 
-            GmSS_Cell = minreal(GmDSS_Cell{k});
+            GmSS_Cell = minreal(GmDSS_Cell{k},[],false);
             GmTf.dd=tf(GmSS_Cell(1,1));
             GmTf.dq=tf(GmSS_Cell(1,2));
             GmTf.qd=tf(GmSS_Cell(2,1));
