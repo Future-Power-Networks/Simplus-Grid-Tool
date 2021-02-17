@@ -4,14 +4,9 @@
 
 %% Notes
 %
-% This is just a template, for more detailed examples, please see
+% This is just a template. For practical examples, please see
 % "Inductor.m", which is a single-phase inductor, and see
 % "SynchronousMachine.m", which is a three-phase synchronous machine.
-%
-% Double check the index consistency between strings and equations.
-%
-% Double check the index consistency when getting inputs, states,
-% paramters, etc.
 
 %% Class
 
@@ -30,13 +25,17 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
     methods(Static)
         
         % Set the strings of state, input, output
+        % These strings are mainly for printing output and facilitate the
+        % users.
         function [State,Input,Output] = SignalList(obj)
-        	StateString  = {'x1','x2'};        % x
-            InputString  = {'v'};        % u
-            OutputString = {'i'};        % y
+        	State  = {'x1','x2'}; 	% x, state
+            Input  = {'v'};        	% u, input
+            Output = {'i'};        	% y, output
         end
         
         % Calculate the equilibrium
+        % The equilibrium is determined by the power flow data and device's
+        % own paramters.
         function [x_e,u_e,xi] = Equilibrium(obj)
          	% Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
@@ -53,10 +52,17 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
             % Set equilibrium
             x_e = [];
             u_e = [];
-            xi  = [];
+            xi  = xi;
         end
         
     	% State space model
+        % This function defines the state space model of this device,
+        % and is the core part for capturing the dynamics of this device.
+        %
+        % The state space model should be a large-signal model rather than
+        % a small-signal model. The linearized model will be calculated by
+        % functions in the parent class and the linearization point (i.e.
+        % equilibrium) is calculated above.
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
           	% Get parameter
             obj.Para(1);
@@ -71,12 +77,12 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
           	% dx/dt = f(x,u)
             % y     = g(x,u)
             if CallFlag == 1
-                % ### State equation
+                % ### Call state equation: dx/dt = f(x,u)
                 
                 f_xu = [];
                 Output = f_xu;
             elseif CallFlag == 2
-                % ### Output equation
+                % ### Call output equation: y = g(x,u)
                 
                 g_xu = [];
                 Output = g_xu;

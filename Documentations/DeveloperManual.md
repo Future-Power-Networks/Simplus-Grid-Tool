@@ -44,7 +44,7 @@ Root path
 		-> SimplexPS.slx (library file)  
 		-> SimplexPS_2015a.xls (library file for matlab 2015a)  
 	-> InstallSimplexPS.m  
-	-> UnstallSimplexPS.m  
+	-> UninstallSimplexPS.m  
 	-> UserMain.m  
 	-> UserData.xlsx  
 	-> README.md
@@ -56,7 +56,7 @@ Root Path
 
 Root path contains the main folders for toolbox and the files for users.
 
-### Files (for both users and developers):
+### Files for both users and developers:
 
 "README.m" is a quick introduction of the toolbox. It should be changed by leading developers only.
 
@@ -64,15 +64,15 @@ Root path contains the main folders for toolbox and the files for users.
 
 "UserMain.m" is the main file for users, which runs the toolbox. "UserDate.xlsx" is file containing all data of the users' power systems. Default data of a 4-bus power system is saved in this excel file, so that users can run "UserMain.m" directly the first time without the requirement of any further actions or inputting their own data.
 
-### Folders (for developers only):
+"Examples" folder contains the examples which can be used by users. For example, "IEEE_14Bus.xlsx" contains the data for a standard IEEE 14 bus power system.
 
-"+SimplexPS" is the root name space folder, which contains all the functions (except for functions available for users such as "UserMain.m") used in the toolbox. For Matlab, "+" implies a name space (or equivalently package). These functions are further classfied into different groups and saved in different sub name spaces, as introduced in detail later.
+### Folders for developers only:
+
+"+SimplexPS" is the root name space folder, which contains all the functions (except for functions available for users such as "UserMain.m") used in the toolbox. For Matlab, "+" implies [a name space (or equivalently a package)](https://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html). The use of name space is mainly for avoiding the unexpected duplication of function names and errors. Functions are further classfied into different groups and saved in different sub name spaces, as introduced in detail later.
 
 "Debug" folder contains the backup files used by different developers for debugging the toolbox. These files are for debug only and should NOT be used/called when users run the toolbox.
 
 "Documentations" folder contains documentations which introduce the toolbox, such as "DeveloperManual.md" and "UserManual.md".
-
-"Examples" folder contains the examples which can be used by users. For example, "SingleSGInfiniteBus.xlsx" contains the data for a single-generator-infinite-bus system.
 
 "Library" folder contains the library files for Simulink blocks used by the toolbox. "SimplexPS_2015a.xls" is the library file in Matlab version 2015a. Runing "InstallSimplexPS.m" will automatically convert this lib file to the version of users' Maltab.
 
@@ -80,7 +80,7 @@ Root path contains the main folders for toolbox and the files for users.
 Root Name Space: "+SimplexPS" Folder  
 ============  
 
-This is the root name space folder of the toolbox, and contains all functions used by the toolbox (expect for functions available for users directly such as "UserMain.m"). Generic functions (used for generic purpose such as mathmatical calculations, bode plot, etc) are saved in this root name space folder directly. Other advanced functions are saved in corresponding sub name space folders ("+Toolbox", "+Simulink", etc), as introduced next.
+This is the root name space folder of the toolbox, and contains all functions used by the toolbox (except for functions available for users directly such as "UserMain.m"). Generic functions (used for generic purpose such as mathmatical calculations, bode plot, etc) are saved in this root name space folder directly. Other advanced functions are saved in corresponding sub name space folders ("+Toolbox", "+Simulink", etc), as introduced next.
 
 ### "+Toolbox" Sub-folder
 

@@ -2,6 +2,9 @@
 
 % Author(s): Yitong Li
 
+
+%% Class
+
 classdef Inductor < SimplexPS.Class.ModelAdvance
     
     methods
@@ -13,13 +16,18 @@ classdef Inductor < SimplexPS.Class.ModelAdvance
     
     methods(Static)
         % Set the strings of input, output, state
+        % For an inductor, voltage v is input, current i is output, current
+        % i is state.
         function [State,Input,Output] = SignalList(obj)
-            StateString  = {'i'};        % x
-            InputString  = {'v'};        % u
-            OutputString = {'i'};        % y
+            State  = {'i'};        % x
+            Input  = {'v'};        % u
+            Output = {'i'};        % y
         end
         
         % Calculate the equilibrium
+        % For simplicity, we set the initial v and i of this inductor to i.
+        % xi is the initial phase angle for three-phase device and
+        % calculated by power flow, which is not useful here.
         function [x_e,u_e,xi] = Equilibrium(obj)
             % Calculate the equilibrium
             x_e = 0;
@@ -41,7 +49,8 @@ classdef Inductor < SimplexPS.Class.ModelAdvance
             % y     = g(x,u)
             if CallFlag == 1
                 % ### Call state equation: dx/dt = f(x,u)
-                di = v/L; 
+                di = v/L;       % di means di/dt
+                                % The inductor is in load convention.
                 f_xu = [di]; 
                 Output = f_xu;
                 
