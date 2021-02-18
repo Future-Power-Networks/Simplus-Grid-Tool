@@ -12,7 +12,7 @@ Tips for Developers
 
 1- The toolbox development is managed by GitHub. For getting involved, the developers should register a GitHub account first and [fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) this toolbox respository. [GitHub Desktop](https://desktop.github.com/) is also recommended, which helps to manage/update the respository. Only the leading developers have the access to this toolbox master respository. But everyone can change their forked respository (which is essentially a cloned version under your own account), and can raise a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests). Leading developers will then receive a notification for reviewing the modified codes in the pull request, and decide to accept it (i.e., merge your modified codes to the master respository) or reject it. This is the formal way of collaboration in GitHub.
 
-2- The toolbox structure will be introduced briefly below. After that, you can also view the advanced manual in "Materials for Developers" subfolder, and/or view the codes and comments in each ".m" file for more details.
+2- The toolbox structure will be introduced briefly below. After that, you can also view the advanced manual in "Files for Developers" subfolder, and/or view the codes and comments in each ".m" file for more details.
 
 3- There are three sets of naming conventions:  
     1) microsoft, like PlotFigure, EpwmConfig  
