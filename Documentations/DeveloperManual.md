@@ -10,7 +10,7 @@ This is the quick manual for developers who want to contribute to the toolbox de
 Tips for Developers  
 ============  
 
-1- The toolbox development is managed by GitHub. For getting involved, you should register a GitHub account first (which is free), and "fork" the respository.
+1- The toolbox development is managed by GitHub. For getting involved, you should register a GitHub account first (which is free), and "fork" the respository. I would also suggest you download [GitHub Desktop](https://desktop.github.com/), which helps you to manage/update your respository. You do not have the authorithy to change the master toolbox respository. But you can change your forked respository (which is essentially a copied version in your own account), and can raise a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) to me. I will then receive a review request of your modified codes, and choose to accept or reject this modification on the master respository. This is the formal way of collaboration in GitHub.
 
 2- The toolbox structure will be introduced briefly below. After that, you can also view the codes and comments in each ".m" file for more details.
 

@@ -17,7 +17,7 @@ for i = 1:N_Branch
 end
 
 if Count >= 2
-    error(['Error: The target branch appears multiple times.'])
+    error(['Error: The branch' num2str(FB) '-' num2str(TB) ' appears multiple times.'])
 end
 
 end

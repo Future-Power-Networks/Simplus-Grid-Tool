@@ -17,9 +17,12 @@ Name_Lib = 'Simplex Power System';
 Name_LibFile = 'SimplexPS';
 % load_system(Name_LibFile);
 
+%%
+Shift_Base = [-20000,-20000];
+
 %% Add powergui
 % Parameters
-Pos_powergui = [0,0];       %
+Pos_powergui = [0,0] + Shift_Base;       %
 Size_powergui = [70,30];
 
 % Add power gui
@@ -28,7 +31,7 @@ SimplexPS.Simulink.SimAddPowerGUI(Name_Model,Size_powergui,Pos_powergui);
 %% Add buses
 % Parameter
 Size_Bus = [30,65];
-Pos_Bus{1} = [100,200];
+Pos_Bus{1} = [100,200] + Shift_Base;
 
 % Increase x_distance when the number of mutual branches in creases
 [~,MaxCount_ToBus,~] = mode(ListLine(:,2));
