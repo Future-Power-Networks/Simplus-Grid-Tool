@@ -18,8 +18,16 @@ for i = 1:N_Branch
         if Tbr(i) ~= 1
             Pos_Trans{i} = [Pos_Bus{tb(i)}(1),Pos_Bus{fb(i)}(2)];
 
-            Name_Trans{i} = ['Transformer' num2str(fb(i)) num2str(tb(i))];
+            % Get the block name
+            Name_Trans{i} = ['Transformer' num2str(fb(i)) '-' num2str(tb(i))];
+            for j = 1:(length(Name_Trans)-1)
+                if fb(i)==fb(j) && tb(i)==tb(j)
+                    Name_Trans{i} = [Name_Trans{i},'_'];    % Avoid the name duplication
+                end
+            end
             FullName_Trans{i} = [Name_Model '/' Name_Trans{i}];
+            
+            % Add block
             add_block(['powerlib/Elements/Three-Phase Transformer (Two Windings)'],FullName_Trans{i});
 
             % Set position

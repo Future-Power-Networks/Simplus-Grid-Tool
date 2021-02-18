@@ -36,7 +36,7 @@ Name_Netlist = 'UserData.xlsx';
 % Name_Netlist = 'Duality_GridFollowingInverter';
 % Name_Netlist = 'Duality_14Bus';
 
-% Name_Netlist = 'TestGridForming';
+% Name_Netlist = 'IEEE57Bus_test.xlsx';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

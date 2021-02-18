@@ -33,7 +33,6 @@ if ListLineIEEE(1,1) == 1
     
 	% Check self branch error
     for i = 1:N_Br_orig
-        SimplexPS.Toolbox.FindBranch(ListLineIEEE,FB_orig(i),TB_orig(i));
         if FB_orig(i) == TB_orig(i)
             if ~( isinf(R_orig(i)) && isinf(X_orig(i)) )
                 error(['Error: Branch ' num2str(i) ' is a self branch. Its R and X should be inf.']);
@@ -41,10 +40,11 @@ if ListLineIEEE(1,1) == 1
                 error(['Error: Branch ' num2str(i) ' is a self branch. Its turn ratio should be 1.']);
             end
         end
-        % IEEE form can also have the self-branch. The self-branch will
-        % also be treated as a mutual-branch next. The original self-branch
-        % will be deleted later because it will become open-circuit, which
-        % avoids the mutiple appearance of this branch.
+        % For adding shunt B and G, the self-branch for IEEE form might
+        % appear in its original data. But this self-branch will also be
+        % treated as a pi-circuit mutual-branch next to calculate the new
+        % self branch. The original self-branch will be deleted later,
+        % which avoids the mutiple appearance of this self branch.
     end
     
   	% Set B, G for original branch

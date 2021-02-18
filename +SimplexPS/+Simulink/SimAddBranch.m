@@ -32,7 +32,16 @@ for i = 1:N_Branch
     
     % Initialize the postion of branch
     Pos_Branch{i} = [Pos_Bus{tb(i)}(1),Pos_Bus{fb(i)}(2)];
-    Name_Branch{i} = ['Branch' num2str(fb(i)) num2str(tb(i))];
+    Name_Branch{i} = ['Branch' num2str(fb(i)) '-' num2str(tb(i))];
+    
+    % Avoid the name duplication when multiple branches are connected in parallel between same two buses.
+    for j = 1:(length(Name_Branch)-1)
+        if fb(i)==fb(j) && tb(i)==tb(j)
+            Name_Branch{i} = [Name_Branch{i},'_'];
+        end
+    end
+    
+    % Get the full name of the branch
     FullName_Branch{i} = [Name_Model '/' Name_Branch{i}];
     
     % ### Add self branch and load
@@ -85,10 +94,10 @@ for i = 1:N_Branch
     % ### Add mutual branch
     else
         % Check if transformer is added
-        if Tbr(i)== 1
-            Count_Trans = 0;
+        if Tbr(i) == 1
+            Count_Trans = 0;    % No transformer
         else
-            Count_Trans = 1;
+            Count_Trans = 1;    % With transferomer
         end
         
         % Add mutual branch

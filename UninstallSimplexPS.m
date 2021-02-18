@@ -22,4 +22,4 @@ clc;
 
 fprintf('SimplexPowerSystem is uninstalled! \n')
 fprintf('Many thanks for using SimplexPowerSystem! \n')
-fprintf('Please delete the files manually for fully removing this toolbox from your PC. \n')
+fprintf('Please delete the files manually if you want to fully remove this toolbox from your PC. \n')
