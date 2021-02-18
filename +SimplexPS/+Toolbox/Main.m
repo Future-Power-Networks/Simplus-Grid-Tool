@@ -117,6 +117,9 @@ GmObj = SimplexPS.Toolbox.DeviceModelLink(GmObj_Cell);
 [GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ...
     SimplexPS.Toolbox.ConnectGmZbus(GmObj,ZbusObj);
 
+% Whole-system admittance model
+YsysDSS = GsysDSS(Port_i,Port_v);   
+
 % ### Chech if the system is proper
 fprintf('Checking if the whole system is proper:\n')
 if isproper(GsysDSS)
@@ -147,7 +150,6 @@ fprintf('Print results\n')
 fprintf('==================================\n')
 fprintf('Model (system object form): GsysObj\n')
 fprintf('Model (descriptor state space form): GsysDSS\n')
-fprintf('Model (state space form): GminSS\n')
 if Enable_PrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
@@ -156,6 +158,10 @@ if Enable_PrintOutput
     fprintf('| bus | P | Q | V | angle | omega |')
     ListPowerFlow
 end
+
+fprintf('Other models: \n')
+fprintf('Model (state space form): GminSS\n')
+fprintf('Model (descriptor state space form): YsysDSS\n')
     
 %%
 % ==================================================
