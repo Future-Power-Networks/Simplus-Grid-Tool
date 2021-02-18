@@ -10,15 +10,15 @@ This is the quick manual for developers who want to contribute to the toolbox de
 Tips for Developers  
 ============  
 
-1- The toolbox development is managed by GitHub. For getting involved, you should register a GitHub account first (which is free), and "fork" the respository. I would also suggest you download [GitHub Desktop](https://desktop.github.com/), which helps you to manage/update your respository. You do not have the authorithy to change the master toolbox respository. But you can change your forked respository (which is essentially a copied version in your own account), and can raise a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) to me. I will then receive a review request of your modified codes, and choose to accept or reject this modification on the master respository. This is the formal way of collaboration in GitHub.
+1- The toolbox development is managed by GitHub. For getting involved, the developers should register a GitHub account first and [fork](https://docs.github.com/en/github/getting-started-with-github/fork-a-repo) this toolbox respository. [GitHub Desktop](https://desktop.github.com/) is also recommended, which helps to manage/update the respository. Only the leading developers have the access to this toolbox master respository. But everyone can change their forked respository (which is essentially a cloned version under your own account), and can raise a [pull request](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests). Leading developers will then receive a notification for reviewing the modified codes in the pull request, and decide to accept it (i.e., merge your modified codes to the master respository) or reject it. This is the formal way of collaboration in GitHub.
 
-2- The toolbox structure will be introduced briefly below. After that, you can also view the codes and comments in each ".m" file for more details.
+2- The toolbox structure will be introduced briefly below. After that, you can also view the advanced manual in "Materials for Developers" subfolder, and/or view the codes and comments in each ".m" file for more details.
 
 3- There are three sets of naming conventions:  
-    1) microsoft, like PlotFigure EpwmConfig  
-    2) gnu-linux, like plot_figure pwm_config  
+    1) microsoft, like PlotFigure, EpwmConfig  
+    2) gnu-linux, like plot_figure, pwm_config  
     3) free style, like ss2tf  
-Matlab use free style for its common functions, and use microsoft in others. We use microsoft mainly, and use free style when needed.
+Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly in this project, and use free style when needed.
 
 4- The project is going to be renamed SimplexPowerSystem (SimplexPS, in short), while the project on HIL is called SimplexRealTime (SimplexRT).
 
@@ -26,7 +26,7 @@ Matlab use free style for its common functions, and use microsoft in others. We 
 File structure  
 ============  
 
-The file structure (documentation tree) of the toolbox is shown below. The detailed introduction of each folder will be given later.
+The file structure (documentation tree) of the toolbox is shown below. The detailed introduction of each folder will be given next.
 
 <pre>
 Root path  
