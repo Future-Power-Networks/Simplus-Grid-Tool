@@ -36,7 +36,7 @@ if ListLineIEEE(1,1) == 1
         if FB_orig(i) == TB_orig(i)
             if ~( isinf(R_orig(i)) && isinf(X_orig(i)) )
                 error(['Error: Branch ' num2str(i) ' is a self branch. Its R and X should be inf.']);
-            elseif TB_orig~= 1
+            elseif T_orig(i)~= 1
                 error(['Error: Branch ' num2str(i) ' is a self branch. Its turn ratio should be 1.']);
             end
         end

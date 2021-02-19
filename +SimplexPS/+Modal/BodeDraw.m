@@ -32,6 +32,8 @@ P=bodeoptions;
 P.Grid='on';
 P.XLim={[0.1 1e4]};
 P.FreqUnits='Hz';
+P.PhaseWrapping='on';
+P.PhaseWrappingBranch=-90;
 for k = 1:N_Bus
         if DeviceType{k} <= 89 %devices
             if (ismember(k,DeviceSel)) %if selected
