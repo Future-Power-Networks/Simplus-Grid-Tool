@@ -17,8 +17,11 @@ Name_Lib = 'Simplex Power System';
 Name_LibFile = 'SimplexPS';
 % load_system(Name_LibFile);
 
-%%
-Shift_Base = [-20000,-20000];
+%% Shift Base
+% The limit when setting position by set_param() is [-32768,32768]. Hence,
+% we shift the starting point from [0,0] to a negative coordinate, to give
+% more spaces.
+Shift_Base = [-30000,-30000];
 
 %% Add powergui
 % Parameters
