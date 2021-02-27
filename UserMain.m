@@ -23,19 +23,14 @@ Name_Netlist = 'UserData.xlsx';
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
 
-% Other standard example systems ("Examples" folder):
+% Other example systems (in "Examples" folder):
+% Name_Netlist = 'SingleSGInfiniteBus';     % Single synchronous generator and infinite bus
+% Name_Netlist = 'SingleGFLInfiniteBus';    % Single grid-following inverter and infinite bus
+% Name_Netlist = 'SingleGFMInfiniteBus';    % Single grid-forming inverter and infinite bus
 % Name_Netlist = 'IEEE_14Bus';
-% Name_Netlist = 'IEEE_30Bus';      % To be added
-% Name_Netlist = 'IEEE_57Bus';     	% To be added
-% Name_Netlist = 'IEEE_118Bus';     % To be added
-
-% Examples used in papers (subfolers in "Examples" folder):
-% Name_Netlist = 'PortCoupling_SingleSGInfiniteBus.xlsx';  	% Single-generator-infinite-bus system
-% Name_Netlist = 'PortCoupling_SingleVSIInfiniteBus.xlsx';	% Single-inverter-infinite-bus system
-% Name_Netlist = 'PortCoupling_IEEE14Bus.xlsx';            	% 14 bus system
-% Name_Netlist = 'Duality_GridFormingInverter';
-% Name_Netlist = 'Duality_GridFollowingInverter';
-% Name_Netlist = 'Duality_14Bus';
+% Name_Netlist = 'IEEE_30Bus';
+% Name_Netlist = 'IEEE_57Bus';
+% Name_Netlist = 'NETS_NYPS_68Bus';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();
