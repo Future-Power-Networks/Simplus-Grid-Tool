@@ -30,6 +30,9 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
         function [State,Input,Output] = SignalList(obj)
           	% Notes:
             % P_dc is the output power to dc side.
+            % The "_i" in "i_d_i", "i_q_i", "v_dc_i" means integral. These
+            % states appear because PI controllers are used
+            % correspondingly.
             if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
             elseif obj.DeviceType == 11

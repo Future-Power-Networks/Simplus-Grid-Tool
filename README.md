@@ -1,6 +1,6 @@
-# SimplexPowerSystem (Version: v2021-FEB-18)
+# SimplexPowerSystem (Version: v2021-FEB-27)
 
-An open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, generator-converter-composite).
+SimplexPowerSystem (SimplexPS, in short) is an open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, generator-converter-composite).
 
 The toolbox is based on Matlab/Simulink but is going to be extended to Python. To be continued.
 
@@ -12,14 +12,14 @@ Matlab 2015a or later, with Simulink, Simscape/PowerSystem.
 
 ## Quick Start
 
-Copy the repository (download all codes) into your PC, and run "InstallSimplexPS.m" by Matlab. That's all!
+Copy the repository (download all codes) into your PC, and run "InstallSimplexPS.m" by Matlab. That's all! The toolbox will automatically run and get results of an example 4-bus power system saved in "UserData.xlsx". More examples can be found in "Examples" folder.
+
+## Documentations
+
+Manuals are in "Documentations" folder.
 
 ## Contact
 
 If you have any inquiries or would like to join us, please feel free to contact:
 
-Yitong Li, yitong.li15@imperial.ac.uk
-
-Yunjie Gu, yg934@bath.ac.uk
-
-Yue Zhu, yue.zhu18@imperial.ac.uk
+Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yg934@bath.ac.uk), and Yue Zhu (yue.zhu18@imperial.ac.uk).

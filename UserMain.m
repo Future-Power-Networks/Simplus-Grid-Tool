@@ -44,6 +44,9 @@ SimplexPS.Toolbox.Main();
 % GsysDSS;          % Whole-system port model (descriptor state space
                     % form). Notes: The elements of state, input, and
                     % output vectors are printed in the command window.
+                    %
+                    % A quick introduction of DSS modeling method:
+                    % https://uk.mathworks.com/help/simulink/slref/descriptorstatespace.html
                     
 % GminSS;           % Whole-system port model (state space form).
                     % Notes: This model is the minimum realization of

@@ -1,14 +1,10 @@
 # Advanced Manual for Developers
 
-============  
-Introduction  
-============  
+## Introduction
 
 This is the manual will introduce more details of developing this toolbox. Please read "DeveloperManual.md" first before reading this one.
 
-============  
-Adding New Device  
-============
+## Adding New Device
 
 There are two different types of devices in the toolbox:    
 1- Simulink block;    
