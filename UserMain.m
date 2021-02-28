@@ -32,6 +32,9 @@ Name_Netlist = 'UserData.xlsx';
 % Name_Netlist = 'IEEE_57Bus';
 % Name_Netlist = 'NETS_NYPS_68Bus';
 
+% For debug
+% Name_Netlist = 'UserData_test.xlsx';
+
 %% Run toolbox
 SimplexPS.Toolbox.Main();
 

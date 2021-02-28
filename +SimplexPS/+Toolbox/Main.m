@@ -105,7 +105,7 @@ for i = 1:N_Device
         SimplexPS.Toolbox.DeviceModelCreate('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i},'Ts',Ts);
     
     % The following data is not used in the script, but will be used in
-    % simulations, please do not delete.
+    % simulations. Do not delete!
     x_e{i} = DeviceEqui{i}{1};
     u_e{i} = DeviceEqui{i}{2};
     OtherInputs{i} = u_e{i}(3:end,:);

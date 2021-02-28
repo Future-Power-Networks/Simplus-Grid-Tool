@@ -1,5 +1,5 @@
 % This function calculate the descriptor (implicit) state space model of
-% nodal admittance matrix.
+% dynamic nodal admittance matrix for ac networks.
 
 % Author(s): Yitong Li, Yunjie Gu
 
@@ -10,12 +10,30 @@
 % Self-branch: branches with from = to, connecting the bus and ground
 % Mutual-branch: branches with from ~= to, connecting two difference buses
 %
-% FrameFlag: 1-abc, 2-alpha/beta, 3-dq
+% The obtained nodal admittance matrix is in Laplace s domain, i.e., a
+% dynamic model, which is quite different from the steady nodal admittance
+% matrix used in power flow analysis.
+%
+% This function can deal with both AC and DC grids. The default is AC. For
+% AC grids, the dynamic nodal admittance matrix is in dq frame, i.e., a
+% two-input-two-output (TITO) transfer function or state space for each
+% branch; For DC grids, single-input-single-output (SISO) transfer function
+% or state space for each branch.
 
 %% Function
 
-function [YbusObj,YbusDSS,YbusCell] = YbusCalcDss(ListLine,w) 
+function [YbusObj,YbusDSS,YbusCell] = YbusCalcDss(ListLine,w,varargin) 
 
+%%
+% Check grid type
+GridType = 'AC';    % Default is AC
+for n = 1:length(varargin)
+    if(strcmpi(varargin{n},'GridType'))
+        GridType = varargin{n+1};   % 1-AC, 2-DC
+    end
+end
+
+%%
 % Load the data
 FB    = ListLine(:,1);              % From bus number...
 TB    = ListLine(:,2);              % To bus number...
@@ -42,98 +60,192 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
     T = Tlist(n);
     XL = XLlist(n);
 
-    if ( isinf(R) || isinf(X) || ( (G==0) && (B==0) && isinf(XL) ) )     % open circuit
-        A_op = []; B_op = []; E_op = [];
-        C_op = []; D_op = [0,0;0,0];
-        Ybranch{n} = dss(A_op,B_op,C_op,D_op,E_op);
-    elseif ( (R==0) && (X==0) && ( isinf(G) || isinf(B) || (XL==0) ) )
-        error(['Error: short circuit, branch from ' num2str(FB(n)) ' to ' num2str(TB(n))]);
-    else
-    
-        % ### Mutual branch
-        if FB(n)~=TB(n)
-            if ~( isinf(G) || isinf(B) )
-                error(['Error: Mutual branch ' num2str(FB(n)) num2str(TB(n)) ' contains G or B']);
-            end
-            if X == 0                       % R branch
-                A_RL = []; B_RL = []; E_RL = [];
-                C_RL = []; D_RL = inv([R,0;0,R]);
-            else                            % RL or L branch
-                % KVL equations
-                % [vd] = {[R  0] + [sL -wL]}*[id]
-                % [vq]    [0  R]   [wL  sL]  [iq]
-                % State equations
-                % [d_id]/dt = 1/L*[-R  wL]*[id] + 1/L*[1 0]*[vd]
-                % [d_iq]          [-wL -R] [iq]       [0 1] [vq]
-                A_RL = 1/(X/w) * [-R,X;-X,-R];
-                B_RL = 1/(X/w) * [1,0;0,1];
-                E_RL = [1,0;0,1];
-                % Output equations
-                % [id] = [1 0]*[id] + [0 0]*[vd]
-                % [iq] = [0 1] [iq]   [0 0] [vq]
-                C_RL = [1,0;0,1];
-                D_RL = [0,0;0,0];
-            end
-            % Get the branch model
-            Y_RL = dss(A_RL,B_RL,C_RL,D_RL,E_RL); 
-            Ybranch{n} = Y_RL;
-
-        % ### Self branch
+    if strcmpi(GridType,'AC')
+        % ===========================
+        % For AC grid
+        % ============================
+        if ( isinf(R) || isinf(X) || ( (G==0) && (B==0) && isinf(XL) ) )     % open circuit
+            A_op = []; B_op = []; E_op = [];
+            C_op = []; D_op = [0,0;0,0];
+            Ybranch{n} = dss(A_op,B_op,C_op,D_op,E_op);
+        elseif ( (R==0) && (X==0) && ( isinf(G) || isinf(B) || (XL==0) ) )
+            error(['Error: short circuit, branch from ' num2str(FB(n)) ' to ' num2str(TB(n))]);
         else
-            % Error check
-            if ~( (R==0) && (X==0) )         % GC branch, normally for self branch
-                error(['Error: Self branch ' num2str(FB(n)) num2str(TB(n)) ' contains R or X.']);
-            end
-            if B == 0                           % G branch
-                A_GC = []; B_GC = []; E_GC = [];
-                C_GC = []; D_GC = inv([G,0;0,G]);
-            else                                % GC or C branch
-                % KCL equations
-                % [id] = {[G 0] + [sC -wC]}*[vd]
-                % [iq]    [0 G]   [wC  sC]  [vq]
-                % State equation
-                % [d_vd] = 1/C*[-G  wC]*[vd] + 1/C*[1 0]*[id]
-                % [d_vq]       [-wC -G] [vq]       [0 1] [iq]
-                A_GC = 1/(B/w)*[-G,B;-B,-G];
-                B_GC = 1/(B/w)*[1,0;0,1];
-                E_GC = [1,0;0,1];
-                % Output equation
-                % [vd] = [1 0]*[vd] + [0 0]*[id]
-                % [vq]   [0 1] [vq]   [0 0] [iq]
-                C_GC = [1,0;0,1];
-                D_GC = [0,0;0,0];
-            end
-            % Get the branch model
-            Z_GC = dss(A_GC,B_GC,C_GC,D_GC,E_GC);
-            Y_GC= SimplexPS.DssSwitchInOut(Z_GC,2);
-            Ybranch{n} = Y_GC;
-
-            % For self branch, connect load to it
-            if isinf(XL)
-                Ybranch{n} = Ybranch{n};
-            elseif (XL)==0
-                error(['Error: The inductive load is short-circuit. Please check QLi settings.']);
+            % ### Mutual branch
+            if FB(n)~=TB(n)
+                if ~( isinf(G) || isinf(B) )
+                    error(['Error: Mutual branch ' num2str(FB(n)) num2str(TB(n)) ' contains G or B']);
+                end
+                if X == 0                       % R branch
+                    A_RL = []; B_RL = []; E_RL = [];
+                    C_RL = []; D_RL = inv([R,0;0,R]);
+                else                            % RL or L branch
+                    % KVL equations
+                    % [vd] = {[R  0] + [sL -wL]}*[id]
+                    % [vq]    [0  R]   [wL  sL]  [iq]
+                    % State equations
+                    % [d_id]/dt = 1/L*[-R  wL]*[id] + 1/L*[1 0]*[vd]
+                    % [d_iq]          [-wL -R] [iq]       [0 1] [vq]
+                    A_RL = 1/(X/w) * [-R,X;-X,-R];
+                    B_RL = 1/(X/w) * [1,0;0,1];
+                    E_RL = [1,0;0,1];
+                    % Output equations
+                    % [id] = [1 0]*[id] + [0 0]*[vd]
+                    % [iq] = [0 1] [iq]   [0 0] [vq]
+                    C_RL = [1,0;0,1];
+                    D_RL = [0,0;0,0];
+                end
+                % Get the branch model
+                Y_RL = dss(A_RL,B_RL,C_RL,D_RL,E_RL); 
+                Ybranch{n} = Y_RL;
+            % ### Self branch
             else
-                % KVL equation for XL
-                % [vd] = {[sL -wL]}*[id]
-                % [vq]    [wL  sL]  [iq]
-                % => State equation
-                % did/dt = -1/L*[0 -wL] + 1/L*[1 0]*[vd] 
-                % diq/dt        [wL  0]       [0 1] [vq]
-                A_XL = -1/(XL/w)*[0,-XL;XL,0];
-                B_XL = 1/(XL/w)*[1,0;0,1];
-                E_XL = [1,0;0,1];
-                % => Output equation
-                % [id] = [1 0]*[id] + [0 0]*[vd]
-                % [iq]   [0 1] [iq]   [0 0] [vq]
-                C_XL = [1,0;0,1];
-                D_XL = [0,0;0,0];
+                % Error check
+                if ~( (R==0) && (X==0) )         % GC branch, normally for self branch
+                    error(['Error: Self branch ' num2str(FB(n)) num2str(TB(n)) ' contains R or X.']);
+                end
+                if B == 0                           % G branch
+                    A_GC = []; B_GC = []; E_GC = [];
+                    C_GC = []; D_GC = inv([G,0;0,G]);
+                else                                % GC or C branch
+                    % KCL equations
+                    % [id] = {[G 0] + [sC -wC]}*[vd]
+                    % [iq]    [0 G]   [wC  sC]  [vq]
+                    % State equation
+                    % [d_vd]/dt = 1/C*[-G  wC]*[vd] + 1/C*[1 0]*[id]
+                    % [d_vq]          [-wC -G] [vq]       [0 1] [iq]
+                    A_GC = 1/(B/w)*[-G,B;-B,-G];
+                    B_GC = 1/(B/w)*[1,0;0,1];
+                    E_GC = [1,0;0,1];
+                    % Output equation
+                    % [vd] = [1 0]*[vd] + [0 0]*[id]
+                    % [vq]   [0 1] [vq]   [0 0] [iq]
+                    C_GC = [1,0;0,1];
+                    D_GC = [0,0;0,0];
+                end
+                % Get the branch model
+                Z_GC = dss(A_GC,B_GC,C_GC,D_GC,E_GC);
+                Y_GC= SimplexPS.DssSwitchInOut(Z_GC,2);
+                Ybranch{n} = Y_GC;
+                % For self branch, connect load to it
+                if isinf(XL)
+                    Ybranch{n} = Ybranch{n};
+                elseif (XL)==0
+                    error(['Error: The inductive load is short-circuit. Please check QLi settings.']);
+                else
+                    % KVL equation for XL
+                    % [vd] = {[sL -wL]}*[id]
+                    % [vq]    [wL  sL]  [iq]
+                    % => State equation
+                    % [d_id]/dt = -1/L*[0 -wL]*[id] + 1/L*[1 0]*[vd] 
+                    % [d_iq]           [wL  0] [iq]       [0 1] [vq]
+                    A_XL = -1/(XL/w)*[0,-XL;XL,0];
+                    B_XL = 1/(XL/w)*[1,0;0,1];
+                    E_XL = [1,0;0,1];
+                    % => Output equation
+                    % [id] = [1 0]*[id] + [0 0]*[vd]
+                    % [iq]   [0 1] [iq]   [0 0] [vq]
+                    C_XL = [1,0;0,1];
+                    D_XL = [0,0;0,0];
 
-                Y_XL = dss(A_XL,B_XL,C_XL,D_XL,E_XL);
-                Ybranch{n} = SimplexPS.DssSum(Ybranch{n},Y_XL);
+                    Y_XL = dss(A_XL,B_XL,C_XL,D_XL,E_XL);
+                    Ybranch{n} = SimplexPS.DssSum(Ybranch{n},Y_XL);
+                end
             end
         end
         
+    elseif strcmpi(GridType,'DC')
+      	% ===========================
+        % For DC grid
+        % ============================
+        if ( isinf(R) || isinf(X) || ( (G==0) && (B==0) && isinf(XL) ) )     % open circuit
+            A_op = []; B_op = []; E_op = [];
+            C_op = []; D_op = [0];
+            Ybranch{n} = dss(A_op,B_op,C_op,D_op,E_op);
+        elseif ( (R==0) && (X==0) && ( isinf(G) || isinf(B) || (XL==0) ) )
+            error(['Error: short circuit, branch from ' num2str(FB(n)) ' to ' num2str(TB(n))]);
+        else
+            % ### Mutual branch
+            if FB(n)~=TB(n)
+                if ~( isinf(G) || isinf(B) )
+                    error(['Error: Mutual branch ' num2str(FB(n)) num2str(TB(n)) ' contains G or B']);
+                end
+                if X == 0                       % R branch
+                    A_RL = []; B_RL = []; E_RL = [];
+                    C_RL = []; D_RL = inv([R]);
+                else                            % RL or L branch
+                    % KVL equations
+                    % v = (R + sL)*i
+                    % State equations
+                    % [d_i]/dt = 1/L*(-R)*[i] + 1/L*[v]
+                    A_RL = 1/(X/w)*(-R);
+                    B_RL = 1/(X/w);
+                    E_RL = 1;
+                    % Output equations
+                    % [i] = 1*[i] + 0*[v]
+                    C_RL = 1;
+                    D_RL = 0;
+                end
+                % Get the branch model
+                Y_RL = dss(A_RL,B_RL,C_RL,D_RL,E_RL); 
+                Ybranch{n} = Y_RL;
+
+            % ### Self branch
+            else
+                % Error check
+                if ~( (R==0) && (X==0) )         % GC branch, normally for self branch
+                    error(['Error: Self branch ' num2str(FB(n)) num2str(TB(n)) ' contains R or X.']);
+                end
+                if B == 0                           % G branch
+                    A_GC = []; B_GC = []; E_GC = [];
+                    C_GC = []; D_GC = inv([G]);
+                else                                % GC or C branch
+                    % KCL equations
+                    % [i] = (G + sC)*[v]
+                    % State equation
+                    % [d_v]/dt = 1/C*[-G]*[v] + 1/C*[i]
+                    A_GC = 1/(B/w)*(-G);
+                    B_GC = 1/(B/w);
+                    E_GC = 1;
+                    % Output equation
+                    % [v] = [1]*[v] + [0]*[i]
+                    C_GC = 1;
+                    D_GC = 0;
+                end
+                % Get the branch model
+                Z_GC = dss(A_GC,B_GC,C_GC,D_GC,E_GC);
+                Y_GC= SimplexPS.DssSwitchInOut(Z_GC,1);
+                Ybranch{n} = Y_GC;
+
+                % For self branch, connect load to it
+                if isinf(XL)
+                    Ybranch{n} = Ybranch{n};
+                elseif (XL)==0
+                    error(['Error: The inductive load is short-circuit. Please check QLi settings.']);
+                else
+                    % KVL equation for XL
+                    % [v] = [sL]*[i]
+                    % => State equation
+                    % d_i/dt = 0*[i] + 1/L*[v] 
+                    A_XL = 0;
+                    B_XL = 1/(XL/w);
+                    E_XL = 1;
+                    % => Output equation
+                    % [i] = [1]*[i] + [0]*[v]
+                    C_XL = 1;
+                    D_XL = 0;
+
+                    Y_XL = dss(A_XL,B_XL,C_XL,D_XL,E_XL);
+                    Ybranch{n} = SimplexPS.DssSum(Ybranch{n},Y_XL);
+                end
+            end
+        end
+    
+    else
+        % ===========================
+        % For error check
+        % ============================
+        error(['Error: GridType.']);
     end
 
     % Get the state string of each branch
@@ -149,8 +261,14 @@ end
 
 %%
 % Initialize the state-space-form nodal addmitance matrix Ybus
-Ass0 = []; Bss0 = []; Ess0 = [];
-Css0 = []; Dss0 = [0,0;0,0];       % Defines a TITO static system 
+Ass0 = []; Bss0 = []; Ess0 = []; Css0 = [];
+if strcmpi(GridType,'AC')
+    Dss0 = [0,0;0,0];       % Defines a TITO static system for dq frame ac system.
+elseif strcmpi(GridType,'DC')
+    Dss0 = 0;               % Defines a SISO static system for dc system.
+else
+    error(['Error: GridType.']);
+end
 Ybranch0 = dss(Ass0,Bss0,Css0,Dss0,Ess0);
 for i = 1:N_Bus
     for j = 1:N_Bus
@@ -198,10 +316,17 @@ YbusObj.SetDSS(YbusObj,YbusDSS);
 
 % Get the string
 for k = 1:N_Bus
-    InputStr{2*k-1}  = strcat('v_d',num2str(k));
-    InputStr{2*k}    = strcat('v_q',num2str(k));
-    OutputStr{2*k-1} = strcat('i_d',num2str(k));
-    OutputStr{2*k}   = strcat('i_q',num2str(k));
+    if strcmpi(GridType,'AC')
+        InputStr{2*k-1}  = strcat('v_d',num2str(k));
+        InputStr{2*k}    = strcat('v_q',num2str(k));
+        OutputStr{2*k-1} = strcat('i_d',num2str(k));
+        OutputStr{2*k}   = strcat('i_q',num2str(k));
+    elseif strcmpi(GridType,'DC')
+        InputStr{k}  = strcat('v',num2str(k));
+        OutputStr{k}   = strcat('i',num2str(k));
+    else
+        error(['Error: GridType.'])
+    end
 end
 StateStr = {};
 for i = 1:N_Bus

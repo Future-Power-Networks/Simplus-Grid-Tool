@@ -39,10 +39,10 @@ Vprev = V;
 tolerance = 1;           	% Initialize tolerence
 iteration = 0;              % Initialize interaction count
 
-tolerance_max  = 1e-9;
+tolerance_max  = 1e-8;
 iteration_max  = 1e4;
 
-while ((tolerance>tolerance_max) && (iteration<iteration_max))
+while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     
     for i = 1:n_bus
         if i ~= number_slack    % Check if slack bus
@@ -77,6 +77,9 @@ while ((tolerance>tolerance_max) && (iteration<iteration_max))
     end
     
     iteration = iteration + 1;                  % Increment iteration count.
+    if iteration == iteration_max               % Check the convergence of power flow.
+        error(['Error: The PowerFlow does not converge or needs more steps to converge!']);
+    end
     
     I = Ybus*V;
     S = I.*conj(V);

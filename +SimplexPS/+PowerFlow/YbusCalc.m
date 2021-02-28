@@ -9,7 +9,7 @@
 % FromBus ---|a:1|---R---L---|       |--- ToBus
 %             ---             ---G---
 % where (a:1) is the turn ratio of transformer 
-
+%
 % Format of input:
 % netlist:   |  From |  To   |   R   |  wL   |  wC   |   G   |
 %            |  Bus  |  Bus  |       |       |       |       |
@@ -17,15 +17,28 @@
 %               1       1        0       0       B       G;
 %               2       2        0       0       0       0];
 %
-% "Steady" means the obtained matrix does not contain Laplace operator "s".
-% The matrix is in abc frame.
+% The obtained nodal admittance matrix is "steady", which means the
+% obtained matrix does NOT contain Laplace operator "s".
+%
+% The matrix is in phasor frame.
+%
+% This function supports both ac and dc grid calculation. For dc grids,
+% only resistance is considerred, because jX=0 and jB=0 when w=0. 
 
 %% References:
 % P. Kunder, "power system stability and control", 1994.
 
 %% 
-function Ybus = YbusCalc(ListLine) 
+function Ybus = YbusCalc(ListLine,varargin) 
 
+GridType = 'AC';        % Default is AC
+for n = 1:length(varargin)
+    if(strcmpi(varargin{n},'GridType'))
+        GridType = varargin{n+1};   % 1-AC, 2-DC
+    end
+end
+
+% Get the data
 fb = ListLine(:,1);             % From bus number
 tb = ListLine(:,2);             % To bus number
 
@@ -36,15 +49,24 @@ g = ListLine(:,6);              % Conductance, G
 
 T = ListLine(:,7);              % Turns ratio, T
 
-zs= r + 1j*x;                   
-yp= g + 1j*b;                   % g and b can be "inf" without causing problems
-z = zs + 1./yp;                 % Total impedance of that branch
-y = 1./z;                       % Total admittance of that branch
+% Calculate y
+if strcmpi(GridType,'AC')
+zs = r + 1j*x;                   
+yp = g + 1j*b;       	% g and b can be "inf" without causing problems
+z  = zs + 1./yp;      	% Total impedance of that branch
+y  = 1./z;           	% Total admittance of that branch
+elseif strcmpi(GridType,'DC')
+    y = 1./r;           % For DC grid power flow, only the resistance is considerred, as w0 is 0 which means jX=0 and jB=0.
+else
+    error(['Error: GridType.'])
+end
 
+% Get the number
 n_bus = max(max(fb),max(tb));    % Number of buses
 n_branch = length(fb);           % Number of branches, including self branches
 
-Ybus = zeros(n_bus,n_bus);        % Initialise YBus
+% Initialise YBus
+Ybus = zeros(n_bus,n_bus);        
 
 for k=1:n_branch     
     if(fb(k) ~= tb(k))    
