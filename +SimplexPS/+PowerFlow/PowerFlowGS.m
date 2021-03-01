@@ -3,20 +3,20 @@
 function [PowerFlow,Ybus,V,I,Ang0,P,Q,Vm]=PowerFlowGS(ListBus,ListLine,w0)
 
 Ybus = SimplexPS.PowerFlow.YbusCalc(ListLine);      % Get nodal admittance matrix
-list_number = ListBus(:,1);     % Bus number
-n_bus = max(list_number);       % Total number of buses
-list_type = ListBus(:,2);      	% Bus type: 1-Slack, 2-PV, 3-PQ
 
-index_slack = find(list_type == 1);      % Index of slack bus
+ListNumber = ListBus(:,1);     % Bus number
+N_Bus = max(ListNumber);       % Total number of buses
+ListType = ListBus(:,2);      	% Bus type: 1-Slack, 2-PV, 3-PQ
 
-if (isempty(index_slack))
-    error(['Error: no slack bus']);
-elseif (length(index_slack) > 1)
-    error(['Error: more than one slack bus']);
-elseif (index_slack ~= 1)
-    error(['Error: bus 1 is not slack bus']);
-end
-number_slack = list_number(index_slack);
+% IndexSlack = find(ListType == 1);      % Index of slack bus
+% if (isempty(IndexSlack))
+%     error(['Error: no slack bus']);
+% elseif (length(IndexSlack) > 1)
+%     error(['Error: more than one slack bus']);
+% elseif (IndexSlack ~= 1)
+%     error(['Error: bus 1 is not slack bus']);
+% end
+% number_slack = ListNumber(IndexSlack);
 
 V0   = ListBus(:,3);         % Initial bus voltages.
 th0  = ListBus(:,4);         % Initial bus voltage angles.
@@ -44,17 +44,17 @@ iteration_max  = 1e4;
 
 while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     
-    for i = 1:n_bus
-        if i ~= number_slack    % Check if slack bus
+    for i = 1:N_Bus
+        if ListType(i) ~= 1
             
             sum_yv = 0;     
-            for k = 1:n_bus
+            for k = 1:N_Bus
                 if i ~= k
                     sum_yv = sum_yv + Ybus(i,k)* V(k);  % Vk * Yik
                 end
             end
         
-            if list_type(i) == 2             % Computing Qi for PV bus
+            if ListType(i) == 2             % Computing Qi for PV bus
                 Q(i) = -imag(conj(V(i))*(sum_yv + Ybus(i,i)*V(i)));     % Equation (6.91) in Kunder's book
                 if (Q(i) > Qmax(i)) || (Q(i) < Qmin(i))  % Checking for Qi violation
                     if Q(i) < Qmin(i)
@@ -62,15 +62,15 @@ while ((tolerance>tolerance_max) && (iteration<=iteration_max))
                     else          
                         Q(i) = Qmax(i); % Set Qi to upper limit
                     end
-                    list_type(i) = 3;        % If violated, change bus type from PV to PQ
+                    ListType(i) = 3;        % If violated, change bus type from PV to PQ
                 end
             end
         
             V(i) = (1/Ybus(i,i))*((P(i)-1j*Q(i))/conj(V(i)) - sum_yv);  % Compute bus boltage
                                                                         % Equation (6.90) in Kunder's book
             
-            if list_type(i) == 2 
-                V(i) = SimplexPS.pol2rect(abs(Vprev(i)), angle(V(i))); % For PV bus, voltage magnitude remains same, but angle changes.
+            if ListType(i) == 2 
+                V(i) = SimplexPS.pol2rect(abs(Vprev(i)), angle(V(i)));  % For PV bus, voltage magnitude remains same, but angle changes.
             end
         
         end
@@ -99,7 +99,7 @@ S = V.*conj(I); % Final Appearant Power, Generator Convention.
 P = real(S);    % Final Active Power, Generator Convention.
 Q = imag(S);    % Final Reactive Power, Generator Convention.
 
-for i = 1:n_bus
+for i = 1:N_Bus
     % The negative signs make P and Q in load convention
     PowerFlow{i} = [-P(i) -Q(i) Vm(i) Ang0(i) w0];
 end

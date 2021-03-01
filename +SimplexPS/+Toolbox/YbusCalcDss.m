@@ -15,23 +15,22 @@
 % matrix used in power flow analysis.
 %
 % This function can deal with both AC and DC grids. The default is AC. For
-% AC grids, the dynamic nodal admittance matrix is in dq frame, i.e., a
-% two-input-two-output (TITO) transfer function or state space for each
-% branch; For DC grids, single-input-single-output (SISO) transfer function
-% or state space for each branch.
+% AC grids, a two-input-two-output (TITO) transfer function or state space
+% in dq frame for each branch; For DC grids, a single-input-single-output
+% (SISO) transfer function or state space for each branch.
 
 %% Function
 
-function [YbusObj,YbusDSS,YbusCell] = YbusCalcDss(ListLine,w,varargin) 
+function [YbusObj,YbusDSS,YbusCell] = YbusCalcDss(ListBus,ListLine,w) 
 
-%%
-% Check grid type
-GridType = 'AC';    % Default is AC
-for n = 1:length(varargin)
-    if(strcmpi(varargin{n},'GridType'))
-        GridType = varargin{n+1};   % 1-AC, 2-DC
-    end
-end
+% %%
+% % Check grid type
+% GridType = 'AC';    % Default is AC
+% for n = 1:length(varargin)
+%     if(strcmpi(varargin{n},'GridType'))
+%         GridType = varargin{n+1};   % 1-AC, 2-DC
+%     end
+% end
 
 %%
 % Load the data
@@ -48,6 +47,8 @@ N_Branch = length(FB);                  % Number of branches, including self bra
       
 % Inductive load effect
 XLlist = ListLine(:,8);
+AreaTypeLine = ListLine(:,9);
+AreaTypeBus = ListBus(:,12);
 
 %%
 % Calculate the state space model of each branch
@@ -60,10 +61,10 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
     T = Tlist(n);
     XL = XLlist(n);
 
-    if strcmpi(GridType,'AC')
-        % ===========================
-        % For AC grid
-        % ============================
+    if AreaTypeLine(n) == 1
+    % ===========================
+    % For AC grid
+    % ============================
         if ( isinf(R) || isinf(X) || ( (G==0) && (B==0) && isinf(XL) ) )     % open circuit
             A_op = []; B_op = []; E_op = [];
             C_op = []; D_op = [0,0;0,0];
@@ -154,10 +155,10 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
             end
         end
         
-    elseif strcmpi(GridType,'DC')
-      	% ===========================
-        % For DC grid
-        % ============================
+    elseif AreaTypeLine(n) == 2
+  	% ===========================
+    % For DC grid
+    % ============================
         if ( isinf(R) || isinf(X) || ( (G==0) && (B==0) && isinf(XL) ) )     % open circuit
             A_op = []; B_op = []; E_op = [];
             C_op = []; D_op = [0];
@@ -241,11 +242,6 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
             end
         end
     
-    else
-        % ===========================
-        % For error check
-        % ============================
-        error(['Error: GridType.']);
     end
 
     % Get the state string of each branch
@@ -262,17 +258,19 @@ end
 %%
 % Initialize the state-space-form nodal addmitance matrix Ybus
 Ass0 = []; Bss0 = []; Ess0 = []; Css0 = [];
-if strcmpi(GridType,'AC')
-    Dss0 = [0,0;0,0];       % Defines a TITO static system for dq frame ac system.
-elseif strcmpi(GridType,'DC')
-    Dss0 = 0;               % Defines a SISO static system for dc system.
-else
-    error(['Error: GridType.']);
-end
-Ybranch0 = dss(Ass0,Bss0,Css0,Dss0,Ess0);
+Dss0_ac = [0,0;0,0];       % Defines a TITO static system for dq frame ac system.
+Dss0_dc = 0;               % Defines a SISO static system for dc system.
+
+Ybranch0_ac = dss(Ass0,Bss0,Css0,Dss0_ac,Ess0);
+Ybranch0_dc = dss(Ass0,Bss0,Css0,Dss0_dc,Ess0);
+
 for i = 1:N_Bus
     for j = 1:N_Bus
-        YbusCell{i,j} = Ybranch0;
+        if AreaTypeBus(i) == 1
+            YbusCell{i,j} = Ybranch0_ac;
+        elseif AreaTypeBus(i) == 2
+            YbusCell{i,j} = Ybranch0_dc;
+        end
         YbusCell_StateStr{i,j} = {};
     end
 end
@@ -315,17 +313,18 @@ YbusObj = SimplexPS.Class.ModelBase;
 YbusObj.SetDSS(YbusObj,YbusDSS);
 
 % Get the string
+InOutCount = 1;
 for k = 1:N_Bus
-    if strcmpi(GridType,'AC')
-        InputStr{2*k-1}  = strcat('v_d',num2str(k));
-        InputStr{2*k}    = strcat('v_q',num2str(k));
-        OutputStr{2*k-1} = strcat('i_d',num2str(k));
-        OutputStr{2*k}   = strcat('i_q',num2str(k));
-    elseif strcmpi(GridType,'DC')
-        InputStr{k}  = strcat('v',num2str(k));
-        OutputStr{k}   = strcat('i',num2str(k));
-    else
-        error(['Error: GridType.'])
+    if AreaTypeBus(k) == 1
+        InputStr{InOutCount}    = strcat('v_d',num2str(k));
+        InputStr{InOutCount+1}	= strcat('v_q',num2str(k));
+        OutputStr{InOutCount}   = strcat('i_d',num2str(k));
+        OutputStr{InOutCount+1}	= strcat('i_q',num2str(k));
+        InOutCount = InOutCount + 2;
+    elseif AreaTypeBus(k) == 2
+        InputStr{InOutCount}    = strcat('v',num2str(k));
+        OutputStr{InOutCount}	= strcat('i',num2str(k));
+        InOutCount = InOutCount + 1;
     end
 end
 StateStr = {};

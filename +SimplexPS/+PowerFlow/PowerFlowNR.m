@@ -3,27 +3,27 @@
 function [PowerFlow] = PowerFlowNR(ListBus,ListLine,w0)
 
 Y = SimplexPS.PowerFlow.YbusCalc(ListLine); 	% Calling ybusppg.m to get Y-Bus Matrix..
-busd = ListBus;            	% Calling busdatas..
-Sbase = 1;               	% Base, which is set to 1 currently
-bus = busd(:,1);            % Bus Number..
+busd = ListBus;      	% Calling busdatas..
 
-nbus = length(bus);         % Number of buses
+bus = busd(:,1);      	% Bus Number..
+nbus = length(bus);   	% Number of buses
 
-type = busd(:,2);           % Type of Bus 1-Slack, 2-PV, 3-PQ..
-V = busd(:,3);              % Specified Voltage..
-del = busd(:,4);            % Voltage Angle..
-Pg = busd(:,5)/Sbase;     	% PGi..
-Qg = busd(:,6)/Sbase;     	% QGi..
-Pl = busd(:,7)/Sbase;       % PLi..
-Ql = busd(:,8)/Sbase;       % QLi..
-Qmin = busd(:,9)/Sbase;     % Minimum Reactive Power Limit..
-Qmax = busd(:,10)/Sbase;    % Maximum Reactive Power Limit..
-P = Pg - Pl;                % Pi = PGi - PLi..
-Q = Qg - Ql;                % Qi = QGi - QLi..
-Psp = P;                    % P Specified..
-Qsp = Q;                    % Q Specified..
-G = real(Y);                % Conductance matrix..
-B = imag(Y);                % Susceptance matrix..
+type = busd(:,2);      	% Type of Bus 1-Slack, 2-PV, 3-PQ..
+V = busd(:,3);        	% Specified Voltage..
+del = busd(:,4);     	% Voltage Angle..
+Pg = busd(:,5);     	% PGi..
+Qg = busd(:,6);     	% QGi..
+Pl = busd(:,7);         % PLi..
+Ql = busd(:,8);         % QLi..
+Qmin = busd(:,9);       % Minimum Reactive Power Limit..
+Qmax = busd(:,10);      % Maximum Reactive Power Limit..
+
+P = Pg - Pl;         	% Pi = PGi - PLi..
+Q = Qg - Ql;          	% Qi = QGi - QLi..
+Psp = P;              	% P Specified..
+Qsp = Q;             	% Q Specified..
+G = real(Y);          	% Conductance matrix..
+B = imag(Y);         	% Susceptance matrix..
 
 pv = find(type == 2 | type == 1);   % PV Buses..
 pq = find(type == 3);               % PQ Buses..
@@ -163,6 +163,7 @@ while (Tol > 1e-5)   % Iteration starting..
 end
 
 % [Pi,Qi] = LoadFlow(nbus,V,del,Sbase,Y,ListLine,ListBus);              % Calling Loadflow.m..
+Sbase = 1;               	% Base, which is set to 1 currently
 [Pi,Qi] = SimplexPS.PowerFlow.LoadFlow(nbus,V,del,Sbase,Y,ListLine,ListBus);              % Calling Loadflow.m..
 
 for i = 1:nbus

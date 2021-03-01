@@ -1,10 +1,14 @@
-% This function transfers netlise of lines from IEEE form to toolbox form
-% if required.
+% This function re-arranges the netlist data of network lines.
 
 % Author(s): Yitong Li
 
-function [UpdateLine] = NetlistIEEE2Toolbox(ListLine,ListLineIEEE)
+function [UpdateLine,N_Branch,N_Bus] = RearrangeListLine(UserData,ListBus)
 
+%% Load data
+ListLine     = xlsread(UserData,'NetworkLine');
+ListLineIEEE = xlsread(UserData,'NetworkLine_IEEE');
+
+%% IEEE Form to general form
 if ListLineIEEE(1,1) == 1
     % "ListLineIEEE" is enabled, which converts "ListLineIEEE" to
     % "ListLine",
@@ -108,9 +112,89 @@ if ListLineIEEE(1,1) == 1
     end
     UpdateLine = UpdateLine_AfterDelete;
     
-else
-    % Use the toolbox line form
-    UpdateLine = ListLine;
+    % Use the IEEE form to overwrite the standard form.
+    ListLine = UpdateLine;
 end
+
+%% Re-arrange netlist line
+% Organize data
+[N_Branch,ColumnMax_Line] = size(ListLine); 
+
+FB  = ListLine(:,1);   % From bus
+TB  = ListLine(:,2);   % To bus
+Rbr = ListLine(:,3);
+Xbr = ListLine(:,4);
+Bbr = ListLine(:,5);
+Gbr = ListLine(:,6);
+Tbr = ListLine(:,7);
+
+% Check data overflow
+if (ColumnMax_Line>7)
+    error(['Error: Line data overflow.']); 
+end
+
+% Check number of bus
+N_Bus = max(max(FB), max(TB) );  
+
+% Replace NaN by inf
+netlist_line_NaN = isnan(ListLine);
+[r,c] = find(netlist_line_NaN == 1);  	% Find the index of "inf"
+ListLine(r,c) = inf;
+
+% Check short-circuit and open-circuit
+for i = 1:N_Branch
+    if ( isinf(Rbr(i)) || isinf(Xbr(i)) || ((Bbr(i)==0)&&(Gbr(i)==0)) )
+    	error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is open circuit']);
+    end
+    if ( (Rbr(i)==0) && (Xbr(i)==0) && (isinf(Bbr(i)) || isinf(Gbr(i))) )
+        error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is short circuit']);
+    end
+    if ((Rbr(i)<0) || (Xbr(i)<0) || (Bbr(i)<0) || (Gbr(i)<0) )
+        error(['Error: Negative line paramters']);
+    end
+    if Tbr(i) <= 0
+        error(['Error: Turns ratio can not be less than or equal to 0.']);
+    end
+end
+
+% Add inf inductive load to ListLine for future use
+ ListLine = [ListLine,inf([N_Branch,1],'double')]; % Set all XL to inf defaultly
+
+% Add area type into ListLine
+for i = 1:N_Branch
+    j = find(ListBus(:,1) == FB(i));
+    ListLine(i,9) = ListBus(j,12);
+end
+
+% Re-arrange the data
+% Ensure "From Bus" <= "To Bus" is always valid
+for i = 1:N_Branch
+    if FB(i) > TB(i)
+        % Switch "From" and "To"
+        [TB(i),FB(i)] = deal(FB(i),TB(i));
+        [ListLine(i,2),ListLine(i,1)] = deal(ListLine(i,1),ListLine(i,2));
+        
+        % Switch the positions of line impedance and transformer
+        Rbr(i) = Rbr(i)*Tbr(i)^2;
+        ListLine(i,3) = ListLine(i,3)*ListLine(i,7)^2;
+        Xbr(i) = Xbr(i)*Tbr(i)^2;
+        ListLine(i,4) = ListLine(i,4)*ListLine(i,7)^2;
+        
+        % Change the turns ratio
+        Tbr(i) = 1/Tbr(i);
+        ListLine(i,7) = 1/ListLine(i,7);
+    end
+end
+
+% Re-order the branch sequence
+ListLine = sortrows(ListLine,2);
+ListLine = sortrows(ListLine,1);
+
+% Output
+UpdateLine = ListLine;
+
+% The form of ListLine 
+% 1          2        3   4    5    6   7   8    9
+% From bus | To bus | R | wL | wC | G | T | XL | Area type
 
 end

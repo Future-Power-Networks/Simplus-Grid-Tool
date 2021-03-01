@@ -19,17 +19,20 @@ fprintf('==================================\n')
 % ==================================================
 fprintf('Loading data from "UserData.xlsx", please wait a second...\n')
 
-% ### Load the customized data
-% Other available function: readmatrix, csvread ...
-
-ListBus    	 = xlsread(Name_Netlist,1);     
-ListDevice	 = xlsread(Name_Netlist,2);
-ListBasic    = xlsread(Name_Netlist,3);
-ListLine     = xlsread(Name_Netlist,4);
-ListLineIEEE = xlsread(Name_Netlist,5);
-ListAdvance  = xlsread(Name_Netlist,6);
+% ### Re-arrange basic settings
+ListBasic    = xlsread(UserData,'Basic');
+Fs = ListBasic(1);
+Ts = 1/Fs;              % (s), sampling period
+Fbase = ListBasic(2);   % (Hz), base frequency
+Sbase = ListBasic(3);   % (VA), base power
+Vbase = ListBasic(4);   % (V), base voltage
+Ibase = Sbase/Vbase;    % (A), base current
+Zbase = Sbase/Ibase;    % (Ohm), base impedance
+Ybase = 1/Zbase;        % (S), base admittance
+Wbase = Fbase*2*pi;     % (rad/s), base angular frequency
 
 % ### Re-arrange advanced settings
+ListAdvance  = xlsread(UserData,'Advance');
 Flag_PowerFlowAlgorithm      	= ListAdvance(5);
 Enable_CreateSimulinkModel      = ListAdvance(6);
 Enable_PlotPole                 = ListAdvance(7);
@@ -42,23 +45,14 @@ else
     Enable_Participation = ListAdvance(11);
 end
 
-% ### Re-arrange the simulation data
-Fs = ListBasic(1);
-Ts = 1/Fs;              % (s), sampling period
-Fbase = ListBasic(2);   % (Hz), base frequency
-Sbase = ListBasic(3);   % (VA), base power
-Vbase = ListBasic(4);   % (V), base voltage
-Ibase = Sbase/Vbase;    % (A), base current
-Zbase = Sbase/Ibase;    % (Ohm), base impedance
-Ybase = 1/Zbase;        % (S), base admittance
-Wbase = Fbase*2*pi;     % (rad/s), base angular frequency
+% ### Re-arrange the bus netlist
+[ListBus,N_Bus] = SimplexPS.Toolbox.RearrangeListBus(UserData);
 
-% ### Re-arrange the netlist and check error
-[ListLine] = SimplexPS.Toolbox.NetlistIEEE2Toolbox(ListLine,ListLineIEEE);
-[ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = SimplexPS.Toolbox.RearrangeNetlist(ListBus,ListLine,ListDevice);
+% ### Re-arrange the line netlist
+[ListLine,N_Branch.N_Bus_] = SimplexPS.Toolbox.RearrangeListLine(UserData,ListBus);
 
-% ### Re-arrange the device data
-[DeviceType,Para] = SimplexPS.Toolbox.RearrangeDeviceData(ListDevice,Wbase);
+% ### Re-arrange the device netlist
+[DeviceType,Para,N_Device] = SimplexPS.Toolbox.RearrangeListDevice(UserData,Wbase);
 
 %%
 % ==================================================
@@ -93,7 +87,7 @@ ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlow);
 % ### Get the model of lines
 fprintf('Getting the descriptor state space model of network lines...\n')
 
-[YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListLine,Wbase);
+[YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListBus,ListLine,Wbase);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 [ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.GetString(ZbusObj);

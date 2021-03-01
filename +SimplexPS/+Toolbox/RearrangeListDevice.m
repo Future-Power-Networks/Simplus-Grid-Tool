@@ -1,4 +1,4 @@
-% This function re-arranges the device data
+% This function re-arranges the netlist data of devices.
 
 % Author(s): Yitong Li, Yunjie Gu
 
@@ -6,7 +6,24 @@
 %
 % The device model is in load convention.
 
-function [CellDeviceType,CellPara] = RearrangeDeviceData(NetlistDevice,W0)
+function [CellDeviceType,CellPara,N_Device] = RearrangeListDevice(Name_Netlist,W0)
+
+%% Load data
+ListDevice	 = xlsread(Name_Netlist,'Device');
+
+%% Rearrange data
+% Re-order the device sequence
+ListDevice = sortrows(ListDevice,1);
+
+% Error check
+[N_Device,ColumnMax_Device] = size(ListDevice);
+if (ColumnMax_Device>12)
+    error(['Error: Device data overflow.']); 
+end
+[~,ModeBus] = mode(ListDevice(:,1));
+if ModeBus~=1
+    error(['Error: For each bus, one and only one device has to be connected.']);
+end
 
 %% Default device data
 % ======================================
@@ -97,17 +114,17 @@ Para100 = [];
 
 %% Re-arrange device data
 % Get the size of netlist
-[N_Device,ColumnMax_Device] = size(NetlistDevice);
+[N_Device,ColumnMax_Device] = size(ListDevice);
 
 % Find the index of user-defined data
-netlist_device_NaN = isnan(NetlistDevice(:,3:ColumnMax_Device));
+netlist_device_NaN = isnan(ListDevice(:,3:ColumnMax_Device));
 [row,column] = find(netlist_device_NaN == 0);     
 column = column+2;
 
 % Initialize the device parameters by default parameters
 for i = 1:N_Device
-    bus   = NetlistDevice(i,1);
-    type  = NetlistDevice(i,2);
+    bus   = ListDevice(i,1);
+    type  = ListDevice(i,2);
     CellDeviceType{i} = type;
     switch floor(type/10)
         case 0     
@@ -130,46 +147,46 @@ end
 % This method can reduce the calculation time of "for" loop.
 % The "for" loop runs only when "row" is not empty.
 for i = 1:length(row)
-  	bus         = NetlistDevice(row(i),1);
-	type        = NetlistDevice(row(i),2);
- 	user_value 	= NetlistDevice(row(i),column(i));      % Customized value
-    switch_flag = column(i)-2;                         	% Find the updated parameter
+  	bus         = ListDevice(row(i),1);
+	type        = ListDevice(row(i),2);
+ 	UserValue 	= ListDevice(row(i),column(i));      % Customized value
+    SwitchFlag = column(i)-2;                         	% Find the updated parameter
   	if floor(type/10) == 0
-        switch switch_flag 
-         	case 1; CellPara{row(i)}.J = user_value*2/W0^2;
-            case 2; CellPara{row(i)}.D = user_value/W0^2;
-            case 3; CellPara{row(i)}.L = user_value/W0;
-            case 4; CellPara{row(i)}.R = user_value; 
+        switch SwitchFlag 
+         	case 1; CellPara{row(i)}.J = UserValue*2/W0^2;
+            case 2; CellPara{row(i)}.D = UserValue/W0^2;
+            case 3; CellPara{row(i)}.L = UserValue/W0;
+            case 4; CellPara{row(i)}.R = UserValue; 
             otherwise
                 error(['Error: paramter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
         end
     elseif floor(type/10) == 1
-        switch switch_flag
-            case 1; CellPara{row(i)}.V_dc     = user_value;
-            case 2; CellPara{row(i)}.C_dc     = user_value;
-            case 3; CellPara{row(i)}.L        = user_value/W0;
-            case 4; CellPara{row(i)}.R        = user_value;
-            case 5; CellPara{row(i)}.kp_v_dc  = CellPara{row(i)}.V_dc*CellPara{row(i)}.C_dc*(user_value*2*pi);
-                    CellPara{row(i)}.ki_v_dc  = CellPara{row(i)}.kp_v_dc*(user_value*2*pi)/4;
-            case 6; CellPara{row(i)}.kp_pll   = user_value*2*pi;
-                    CellPara{row(i)}.ki_pll   = CellPara{row(i)}.kp_pll*(user_value*2*pi)/4; 
-            case 7; CellPara{row(i)}.kp_i_dq  = CellPara{row(i)}.L*(user_value*2*pi);
-                    CellPara{row(i)}.ki_i_dq  = CellPara{row(i)}.kp_i_dq *(user_value*2*pi)/4;
+        switch SwitchFlag
+            case 1; CellPara{row(i)}.V_dc     = UserValue;
+            case 2; CellPara{row(i)}.C_dc     = UserValue;
+            case 3; CellPara{row(i)}.L        = UserValue/W0;
+            case 4; CellPara{row(i)}.R        = UserValue;
+            case 5; CellPara{row(i)}.kp_v_dc  = CellPara{row(i)}.V_dc*CellPara{row(i)}.C_dc*(UserValue*2*pi);
+                    CellPara{row(i)}.ki_v_dc  = CellPara{row(i)}.kp_v_dc*(UserValue*2*pi)/4;
+            case 6; CellPara{row(i)}.kp_pll   = UserValue*2*pi;
+                    CellPara{row(i)}.ki_pll   = CellPara{row(i)}.kp_pll*(UserValue*2*pi)/4; 
+            case 7; CellPara{row(i)}.kp_i_dq  = CellPara{row(i)}.L*(UserValue*2*pi);
+                    CellPara{row(i)}.ki_i_dq  = CellPara{row(i)}.kp_i_dq *(UserValue*2*pi)/4;
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
         end
     elseif floor(type/10) == 2
-        switch switch_flag
-            case 1;  CellPara{row(i)}.Lf      = user_value/W0;
-          	case 2;  CellPara{row(i)}.Rf      = user_value;
-          	case 3;  CellPara{row(i)}.Cf      = user_value/W0;
-           	case 4;  CellPara{row(i)}.Lc  	  = user_value/W0;
-         	case 5;  CellPara{row(i)}.Rc  	  = user_value/W0;
-           	case 6;  CellPara{row(i)}.Xov 	  = user_value;
-            case 7;  CellPara{row(i)}.Dw      = user_value*W0;
-            case 8;  CellPara{row(i)}.wf      = user_value*2*pi;
-          	case 9;  CellPara{row(i)}.w_v_odq = user_value*2*pi;
-          	case 10; CellPara{row(i)}.w_i_ldq = user_value*2*pi;
+        switch SwitchFlag
+            case 1;  CellPara{row(i)}.Lf      = UserValue/W0;
+          	case 2;  CellPara{row(i)}.Rf      = UserValue;
+          	case 3;  CellPara{row(i)}.Cf      = UserValue/W0;
+           	case 4;  CellPara{row(i)}.Lc  	  = UserValue/W0;
+         	case 5;  CellPara{row(i)}.Rc  	  = UserValue/W0;
+           	case 6;  CellPara{row(i)}.Xov 	  = UserValue;
+            case 7;  CellPara{row(i)}.Dw      = UserValue*W0;
+            case 8;  CellPara{row(i)}.wf      = UserValue*2*pi;
+          	case 9;  CellPara{row(i)}.w_v_odq = UserValue*2*pi;
+          	case 10; CellPara{row(i)}.w_i_ldq = UserValue*2*pi;
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
         end

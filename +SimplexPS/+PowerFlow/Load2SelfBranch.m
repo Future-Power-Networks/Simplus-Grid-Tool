@@ -49,7 +49,7 @@ TB  = ListLine(:,2);   % To bus
 N_Branch = length(FB);
 
 % Initialize "ListLine" for inductive load
-UpdateListLine = [ListLine,inf([N_Branch,1],'double')]; % Set all XL to inf defaultly
+UpdateListLine = ListLine;
 for i = 1:N_Bus
     
     % Assume the load is parallel RL or RC
