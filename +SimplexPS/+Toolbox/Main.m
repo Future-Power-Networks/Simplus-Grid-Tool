@@ -52,7 +52,9 @@ end
 [ListLine,N_Branch.N_Bus_] = SimplexPS.Toolbox.RearrangeListLine(UserData,ListBus);
 
 % ### Re-arrange the device netlist
-[DeviceType,Para,N_Device] = SimplexPS.Toolbox.RearrangeListDevice(UserData,Wbase);
+[DeviceBus,DeviceType,Para,N_Device] = SimplexPS.Toolbox.RearrangeListDevice(UserData,Wbase);
+% The names of "DeviceType" and "Para" can not be changed, because they
+% will also be used in simulink model.
 
 %%
 % ==================================================
@@ -69,6 +71,7 @@ switch Flag_PowerFlowAlgorithm
     otherwise
         error(['Error: Wrong setting for power flow algorithm.']);
 end
+% For form of PowerFlow{i}: P, Q, V, xi, w
 
 % For printing later
 ListPowerFlow = SimplexPS.PowerFlow.Rearrange(PowerFlow);
@@ -95,8 +98,8 @@ ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 % ### Get the models of bus devices
 fprintf('Getting the descriptor state space model of bus devices...\n')
 for i = 1:N_Device
-    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},DeviceStateStr{i},DeviceInputStr{i},DeviceOutputStr{i}] = ...
-        SimplexPS.Toolbox.DeviceModelCreate('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i},'Ts',Ts);
+    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i}] = ...
+        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},PowerFlow{i},Para{i},Ts,ListBus);
     
     % The following data is not used in the script, but will be used in
     % simulations. Do not delete!
@@ -105,13 +108,16 @@ for i = 1:N_Device
     OtherInputs{i} = u_e{i}(3:end,:);
 end
 
+% ### Get the appended model of all devices
+fprintf('Getting the appended descriptor state space model of all devices...\n')
+GmObj = SimplexPS.Toolbox.DeviceModelLink(GmObj_Cell);
+
 % ### Get the model of whole system
 fprintf('Getting the descriptor state space model of whole system...\n')
-GmObj = SimplexPS.Toolbox.DeviceModelLink(GmObj_Cell);
 [GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ...
-    SimplexPS.Toolbox.ConnectGmZbus(GmObj,ZbusObj);
+    SimplexPS.Toolbox.ConnectGmZbus(GmObj,ZbusObj,N_Bus);
 
-% Whole-system admittance model
+% ### Whole-system admittance model
 YsysDSS = GsysDSS(Port_i,Port_v);   
 
 % ### Chech if the system is proper
@@ -147,7 +153,7 @@ fprintf('Model (descriptor state space form): GsysDSS\n')
 if Enable_PrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
-    SimplexPS.Toolbox.PrintSysString(N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
+    SimplexPS.Toolbox.PrintSysString(DeviceBus,DeviceType,GmObj_Cell,ZbusStateStr);
 	fprintf('Print power flow result:\n')
     fprintf('| bus | P | Q | V | angle | omega |')
     ListPowerFlow
@@ -156,7 +162,7 @@ end
 fprintf('Other models: \n')
 fprintf('Model (state space form): GminSS\n')
 fprintf('Model (descriptor state space form): YsysDSS\n')
-    
+
 %%
 % ==================================================
 % Create Simulink Model
@@ -177,7 +183,7 @@ if Enable_CreateSimulinkModel == 1
     close_system(Name_Model,0);
     
     % Create the simulink model
-    SimplexPS.Simulink.MainSimulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow);
+    SimplexPS.Simulink.MainSimulink(Name_Model,ListBus,ListLine,DeviceType,ListAdvance,PowerFlow);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
@@ -291,7 +297,7 @@ if Enable_PlotSwing
     VecLegend = {};
     for k = 1:N_Bus
         if (floor(DeviceType{k}/10) == 0) || (floor(DeviceType{k}/10) == 1)
-            SimplexPS.bode_c(Gt_sym{k},1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);      
+            SimplexPS.bode_c(Gt_sym{k},1j*omega_pn,2*pi,'PhaseOn',0);      
          	CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)]; 
         end

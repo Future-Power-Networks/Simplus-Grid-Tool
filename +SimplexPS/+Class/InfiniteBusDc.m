@@ -10,9 +10,9 @@ classdef InfiniteBusDc < SimplexPS.Class.ModelAdvance
         
         % Set the strings of state, input, output
         function SetString(obj)
-            obj.StateString  = {};                  % x
-         	obj.InputString  = {'i'};     	% u
-        	obj.OutputString = {'v','w'};  	% y
+            obj.StateString  = {};    	% x
+         	obj.InputString  = {'i'};  	% u
+        	obj.OutputString = {'v'};  	% y
         end
         
         % Calculate the equilibrium
@@ -22,28 +22,26 @@ classdef InfiniteBusDc < SimplexPS.Class.ModelAdvance
             Q	= obj.PowerFlow(2);
             V	= obj.PowerFlow(3);
             xi	= obj.PowerFlow(4);
-            w   = obj.PowerFlow(5);
             
             % Calculate
             v = V;
             i = P/V;
             
-            u_e = [i];
+            % Set equilibrium
+            u_e = i;
             x_e = [];
-            xi  = [xi];
         end
         
         % State space model
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)     
-            w= 0;
             if CallFlag == 1
+                % State equations: dx/dt = f(x,u)
               	f_xu = [];
                 Output = f_xu;
             elseif CallFlag == 2
                 % Output equations: y = g(x,u)
-                V	= obj.PowerFlow(3);
-                v = V;
-                g_xu = [v; w];
+                v = obj.PowerFlow(3);
+                g_xu = v;
                 Output = g_xu;              
             end
         end

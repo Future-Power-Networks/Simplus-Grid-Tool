@@ -9,7 +9,7 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function MainSimulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow)
+function MainSimulink(Name_Model,ListBus,ListLine,DeviceType,ListAdvance,PowerFlow)
 
 %% Common variables
 SimplexPS.Simulink.NewSimulinkModel('ModelName',Name_Model);
@@ -42,7 +42,7 @@ Dist_Bus = [200+100*MaxCount_ToBus,300];
 
 % Add bus
 [Name_Bus,Pos_Bus] = ...
-    SimplexPS.Simulink.SimAddBus(Name_Model,Name_LibFile,Size_Bus,Pos_Bus,ListLine,Dist_Bus);
+    SimplexPS.Simulink.SimAddBus(Name_Model,Name_LibFile,Size_Bus,Pos_Bus,ListBus,Dist_Bus);
 
 %% Add devices
 % Parameter
@@ -51,7 +51,7 @@ Shift_Device = [-150,0];
 
 % Add device
 [FullName_Device,Name_Device,Pos_Device] = ...
-    SimplexPS.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance,PowerFlow);
+    SimplexPS.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance);
 
 % Connect device to bus
 SimplexPS.Simulink.SimConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceType);

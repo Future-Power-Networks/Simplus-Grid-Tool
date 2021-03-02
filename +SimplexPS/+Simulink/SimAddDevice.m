@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-function [FullName_Device,Name_Device,Pos_Device] = SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance,PowerFlow)
+function [FullName_Device,Name_Device,Pos_Device] = SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance)
 
 % Organize data
 DiscreMethod = ListAdvance(1);
@@ -89,8 +89,9 @@ for i = 1:N_Device
         end
         
         % If the device is an "infinite bus"
-        if floor(DeviceType{i}/10) == 9
-            set_param(gcb,'theta0',[num2str(PowerFlow{i}(4))]);
+        if DeviceType{i} == 90
+            set_param(gcb,'vd',['PowerFlow{' num2str(i) '}(3)']);
+            set_param(gcb,'theta0',['PowerFlow{' num2str(i) '}(4)']);
             set_param(gcb,'w','Wbase');
         end
         

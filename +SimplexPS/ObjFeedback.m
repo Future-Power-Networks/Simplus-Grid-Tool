@@ -16,7 +16,7 @@ function Gobj = ObjFeedback(Gobj1,Gobj2,feedin,feedout,sign)
 if nargin == 2
     [ly1,lu1] = size(G1.D);
     feedin = [1:lu1]; 
-    feedout = [1:ly1]
+    feedout = [1:ly1];
 end
 if nargin == 3
     error(['Error: feedout is missing'])

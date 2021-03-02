@@ -1,8 +1,13 @@
 % This function creates the descriptor state space model for devices
-% connected to buses (such as synchronous generators, voltage source
-% inverters, ...)
+% connected to buses.
 
 % Author(s): Yitong Li, Yunjie Gu
+
+%% Notes:
+%
+% Note that frequency in power flow can be different to frequency in
+% parameters. The frequency in power flow is steady-state frequency.
+
 
 %% References:
 
@@ -15,49 +20,11 @@
 % Transctions on Circuit and Systems, 2020.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDampingResistor,StateString,InputString,OutputString] ...
-        = DeviceModelCreate(varargin) 
-
-%% load arguments and common symbols
-for n = 1:length(varargin)
-    if(strcmpi(varargin{n},'Para'))
-        Para = varargin{n+1};
-    elseif(strcmpi(varargin{n},'Flow'))
-        PowerFlow = varargin{n+1};
-    elseif(strcmpi(varargin{n},'Type'))
-        Type = varargin{n+1};
-    elseif(strcmpi(varargin{n},'Freq'))
-        w0 = 2*pi*varargin{n+1};
-    elseif(strcmpi(varargin{n},'Ts'))
-        Ts = varargin{n+1};
-    end
-end
-
-% Set default values
-try
-    w0;
-catch
-    w0 = 2*pi*50;   %default base frequency
-end
-
-try
-    Type;
-catch
-    Type = 0;
-end
-
-try 
-    PowerFlow;
-catch
-    PowerFlow = [-1,0,1,0,w0];  %[P Q V xi omega]
-    % note the frequency in flow can be different to 'freq' in parameter
-    % the frequency in flow is steady-state frequency
-    % 'freq' is the nominal frequency only used for default parameters
-    % 'freq' is useless if 'para' and 'flow' are set by users
-end
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor] ...
+        = DeviceModelCreate(DeviceBus,Type,PowerFlow,Para,Ts,ListBus) 
 
 %% Create an object
-Flag_SwitchInOut = 0;   % Default: do not need to switch input and output
+SwInOutFlag = 0;   % Default: do not need to switch input and output
 switch floor(Type/10)
     
     % =======================================
@@ -111,7 +78,8 @@ switch floor(Type/10)
         Device.Para  = [];
         % Because the infinite bus is defined with "i" input and "v" output,
         % they need to be switched finally.
-        Flag_SwitchInOut = 1;
+        SwInOutFlag = 1;
+        SwInOutLength = 2;
    
     % ### Ac floating bus
     case 10
@@ -131,6 +99,17 @@ switch floor(Type/10)
                        Para.ki_i;
                        Para.L;
                        Para.R];
+     % ### Dc infinite bus
+    case 109
+        Device = SimplexPS.Class.InfiniteBusDc;
+        Device.Para  = [];
+        SwInOutFlag = 1;
+        SwInOutLength = 1;
+   
+    % ### Dc floating bus
+    case 110
+        Device = SimplexPS.Class.FloatingBusDc;
+        Device.Para = [];
     
     % ### Otherwise
     otherwise
@@ -147,8 +126,32 @@ Device.SetEquilibrium(Device);                      % Calculate the equilibrium
 Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
 
 [~,ModelSS] = Device.GetSS(Device);                % Get the ss model
-[StateString,InputString,OutputString] ...
+[StateStr,InputStr,OutputStr] ...
     = Device.GetString(Device);                    % Get the string
+
+% Link the IO ports to bus number
+InputStr = SimplexPS.AddNum2Str(InputStr,DeviceBus);
+OutputStr = SimplexPS.AddNum2Str(OutputStr,DeviceBus);
+
+% For 2-bus device, adjust electrical port strings
+if length(DeviceBus)==2  % A multi-bus device 
+    for n = 1:2
+        [~,~,AreaType(n)] = SimplexPS.Toolbox.CheckBus(DeviceBus(n),ListBus);
+    end
+    PortAc = find(AreaType == 1);
+    PortDc = find(AreaType == 2);
+
+    InputStr{1} = ['v_d',num2str(DeviceBus(PortAc))];
+    InputStr{2} = ['v_q',num2str(DeviceBus(PortAc))];
+   	OutputStr{1} = ['i_d',num2str(DeviceBus(PortAc))];
+    OutputStr{2} = ['i_q',num2str(DeviceBus(PortAc))];
+    
+  	InputStr{3} = ['v',num2str(DeviceBus(PortDc))];
+    OutputStr{3} = ['i',num2str(DeviceBus(PortDc))];
+elseif length(DeviceBus) == 1
+else
+    error(['Error: Each device can only be connected to one or two buses.']);
+end
 
 % Get the swing frame system model
 Gm = ModelSS;   
@@ -158,17 +161,19 @@ DevicePara = Device.Para;
 DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if floor(Type/10) <= 5
+if (Type <= 50) || (1000<=Type && Type<=1050)
     % CalcRv_old();
     Device.SetDynamicSS(Device,x_e,u_e);
-    DeviceDiscreDampingResistor = Device.GetVirtualResistor(Device);
+    DiscreDampingResistor = Device.GetVirtualResistor(Device);
 else
-    DeviceDiscreDampingResistor = -1;
+    DiscreDampingResistor = -1;
 end
 
 %% Check if the device needs to adjust its frame
-if floor(Type/10) >= 9
-    
+if (Type>=90 && Type<1000)
+    % No need for frame dynamics embedding
+elseif (Type>=1000 && Type<2000)
+    % No need for frame dynamics embedding
 else    
     
 %% Frame transformation: local swing frame dq -> local steady frame d'q'
@@ -211,8 +216,10 @@ I0 = [-i_q ; i_d];
 % Notes: New system has one more new output "w/s", which is added to the
 % head of the original output vector. New system also has a new state
 % "epsilon", which is added to the head of the original state vector.
-for i = 1:length(OutputString)
-    if strcmp(OutputString(i),'w')
+for i = 1:length(OutputStr)
+    w_port = SimplexPS.AddNum2Str({'w'},DeviceBus);
+    w_port = w_port{1};
+    if strcmpi(OutputStr(i),w_port)
         ind_w = i;
         break
     end
@@ -224,7 +231,7 @@ Cw = [1;zeros(ly1_w,1)];
 Dw = [zeros(1,ly1_w);eye(ly1_w)];
 Se = ss(Aw,Bw,Cw,Dw);
 Se = series(Gm,Se);
-StateString = [{'epsilon'},StateString];
+StateStr = [{'epsilon'},StateStr];
 
 % Embed the frame dynamics
 Sfb = ss([],[],[],V0);
@@ -293,11 +300,11 @@ GmObj = SimplexPS.Class.ModelBase;
 GmObj.SetDSS(GmObj,GmDSS);
 
 % Get the strings
-GmObj.SetString(GmObj,StateString,InputString,OutputString);
+GmObj.SetString(GmObj,StateStr,InputStr,OutputStr);
 
 % Switch input and output for required device
-if Flag_SwitchInOut == 1
-    GmObj = SimplexPS.ObjSwitchInOut(GmObj,2);
+if SwInOutFlag == 1
+    GmObj = SimplexPS.ObjSwitchInOut(GmObj,SwInOutLength);
 end
 
 % Check dimension mismatch

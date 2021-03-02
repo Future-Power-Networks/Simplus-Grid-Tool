@@ -27,15 +27,15 @@ classdef GridFollowingBuck < SimplexPS.Class.ModelAdvance
     methods(Static)
         
         function [State,Input,Output] = SignalList(obj)
-            if (obj.DeviceType == 10)
-                State = {'i','i_i','v_dc','v_dc_i'};
-            elseif obj.DeviceType == 11
+        	if obj.DeviceType == 1010
                 State = {'i','i_i'};
+            elseif obj.DeviceType == 1011
+                State = {'i','i_i','v_dc','v_dc_i'};
             else
                 error('Error: Invalid DeviceType.');
             end
         	Input = {'v','P_dc'};
-            Output = {'i','v_dc','w','theta'};
+            Output = {'i','v_dc'};
         end
         
         function [x_e,u_e,xi] = Equilibrium(obj)
@@ -59,20 +59,18 @@ classdef GridFollowingBuck < SimplexPS.Class.ModelAdvance
 
             % Get equilibrium
             x_e_1 = [i; i_i];
-            if obj.DeviceType == 1000
+            if obj.DeviceType == 1010
                 x_e = x_e_1;
-            elseif obj.DeviceType == 1001
+            elseif obj.DeviceType == 1011
                 x_e = [x_e_1; v_dc; v_dc_i];
             end
-        	u_e = [v_d; v_q; P_dc];
+        	u_e = [v; P_dc];
         end
 
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
             % Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
             V	= obj.PowerFlow(3);
-            xi	= 0;
-            w   = 0;
             
            	% Get parameters
             C_dc    = obj.Para(1);
@@ -83,7 +81,6 @@ classdef GridFollowingBuck < SimplexPS.Class.ModelAdvance
             ki_i    = obj.Para(6);      % i_dq, I
             L       = obj.Para(7);      % L filter
             R       = obj.Para(8);      % L filter's inner resistance
-            W0      = obj.Para(9);
             
             % Get states
           	i   	= x(1);
@@ -125,7 +122,7 @@ classdef GridFollowingBuck < SimplexPS.Class.ModelAdvance
                 elseif obj.DeviceType == 1010
                     % No dc link control
                 end
-                di_i = -(i_r - i_d)*ki_i;
+                di_i = -(i_r - i)*ki_i;
                 di = (v - R*i - e)/L;
 
                 % Output state
@@ -139,9 +136,7 @@ classdef GridFollowingBuck < SimplexPS.Class.ModelAdvance
                 
             elseif CallFlag == 2
           	% ### Call output equation: y = g(x,u)
-                w = 0;
-                theta = 0;
-                g_xu = [i; v_dc;  w; theta];
+                g_xu = [i; v_dc];
                 Output = g_xu;
             end
         end

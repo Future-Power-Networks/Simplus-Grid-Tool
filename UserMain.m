@@ -33,7 +33,7 @@ UserData = 'UserData.xlsx';
 % UserData = 'NETS_NYPS_68Bus';
 
 % For debug
-% UserData = 'UserData_test.xlsx';
+% UserData = 'UserData_dc.xlsx';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

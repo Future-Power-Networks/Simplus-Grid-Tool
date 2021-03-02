@@ -2,6 +2,6 @@ clear all
 clc
 close all
 
-find([1,1,2,2]==1)
+a = {'b1','c2','d'};
 
-stop
+[e1,e2] = SimplexPS.CellFind(a,['c',num2str(2)])

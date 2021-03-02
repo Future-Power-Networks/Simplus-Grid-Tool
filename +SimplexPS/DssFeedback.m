@@ -3,7 +3,7 @@
 % Author(s): Yitong Li
 
 %% Notes
-
+%
 % Feedback block diagram
 %                      +------+
 %          v --------->|      |---------> z

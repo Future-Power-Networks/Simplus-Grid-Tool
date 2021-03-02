@@ -21,6 +21,12 @@ for i2 = 1:N_Area
     if length(i3)~=1
         error(['Error: In an area, the area type has to be the same for all buses.']);
     end
+    if i3 == 2
+        i4 = find(ListBus(:,2)==2,1);
+        if ~isempty(i4)
+            error(['Error: The bus type in dc network can not be 2!']);
+        end
+    end
 end
 
 % Error check

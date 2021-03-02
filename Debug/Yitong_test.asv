@@ -1,0 +1,5 @@
+clear all
+clc
+close all
+
+AddNum2String('test',[1,2,3])
