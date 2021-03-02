@@ -58,6 +58,17 @@ properties(Nontunable)
     % Initialize to steady-state  
     EquiInitial = true;
     
+  	% Electrical ports
+    % The electical port IOs with direct feedthrough (due to Trapezoidal
+    % method, for example) can take out the feedthrough parts as virtual
+    % resistors to eliminate algebraic loops. 
+    % This property is only effective when DirectFeedthrough == 0 and
+    % VirtualResistor == 1.
+    % For ac devices, ElecPortIOs = [1,2] normally. For dc devices, the
+    % ElecPortIOs = [1] normally. For hybrid ac-dc devices, ElecPortIOs =
+    % [1,2,3] normally.
+    ElecPortIOs = [1,2];
+    
 end
 
 % ### Discrete state
@@ -90,14 +101,6 @@ properties(Access = protected)
     % with Yitong's code
     % This property is only effective when DirectFeedthrough == 0
     VoidFeedthrough = [0];
-    
-    % Electrical ports
-    % The electical port IOs with direct feedthrough (due to Trapezoidal
-    % method, for example) can take out the feedthrough parts as virtual
-    % resistors to eliminate algebraic loops. 
-    % This property is only effective when DirectFeedthrough == 0 and
-    % VirtualResistor == 1.
-    ElecPortIOs = [1,2];
     
     % Steady-state operating points
    	x_e;        % State

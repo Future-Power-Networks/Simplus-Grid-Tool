@@ -13,6 +13,8 @@ PL      = ListBus(:,7);
 QL      = ListBus(:,8);
 N_Bus = max(BusIndex);
 
+AreaTypeBus = ListBus(:,12);
+
 UpdateListBus = ListBus;
 
 % Set PL and QL to zero
@@ -81,7 +83,7 @@ for i = 1:N_Bus
             % n is empty, which means ListLine does not have this branch.
             % In this case, a new branch should be added
             UpdateListLine = [UpdateListLine;
-                              i,i,0,0,BL(i),GL(i),1,XL(i)];
+                              i,i,0,0,BL(i),GL(i),1,XL(i),AreaTypeBus(i)];
         end
     else
         % Do not need to care about the open-circuit

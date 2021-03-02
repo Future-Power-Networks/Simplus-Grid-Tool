@@ -25,15 +25,15 @@ if ModeBus~=1
     error(['Error: For each bus, one and only one device has to be connected.']);
 end
 
-%% Default device data
+%% Default AC device data
 % ======================================
 % Synchronous generator
 % ======================================
-Para00.J  = 3.5*2/W0^2;
-Para00.D  = 1/W0^2;
-Para00.L  = 0.1/W0;
-Para00.R  = 0.01;
-Para00.w0 = W0;
+Para0000.J  = 3.5*2/W0^2;
+Para0000.D  = 1/W0^2;
+Para0000.L  = 0.1/W0;
+Para0000.R  = 0.01;
+Para0000.w0 = W0;
 
 % ======================================
 % Grid-following VSI (PLL-controlled)
@@ -45,52 +45,52 @@ w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
 w_tau_pll = 200*2*pi;   % (rad/s) PLL filter bandwidth
 
 % DC link
-Para10.V_dc   	= 2.5;
-Para10.C_dc 	= 2*0.1*Para10.V_dc^2;
-Para10.kp_v_dc	= Para10.V_dc*Para10.C_dc*w_vdc;
-Para10.ki_v_dc	= Para10.kp_v_dc*w_vdc/4;
+Para0010.V_dc   	= 2.5;
+Para0010.C_dc       = 2*0.1*Para0010.V_dc^2;
+Para0010.kp_v_dc	= Para0010.V_dc*Para0010.C_dc*w_vdc;
+Para0010.ki_v_dc	= Para0010.kp_v_dc*w_vdc/4;
 
 % AC filter
-Para10.L        = 0.03/W0;
-Para10.R        = 0.01;
+Para0010.L        = 0.03/W0;
+Para0010.R        = 0.01;
 
 % PLL
-Para10.kp_pll   = w_pll;
-Para10.ki_pll   = Para10.kp_pll * w_pll/4; 
-Para10.tau_pll  = 1/w_tau_pll;
+Para0010.kp_pll   = w_pll;
+Para0010.ki_pll   = Para0010.kp_pll * w_pll/4; 
+Para0010.tau_pll  = 1/w_tau_pll;
 
 % Current loop
-Para10.k_pf     = 0;
-Para10.kp_i_dq  = Para10.L * w_idq;         % P
-Para10.ki_i_dq  = Para10.L * w_idq^2 /4;    % I
-Para10.w0       = W0;   
-Para10.Gi_cd    = 0;                        % Cross-decoupling gain
+Para0010.k_pf     = 0;
+Para0010.kp_i_dq  = Para0010.L * w_idq;         % P
+Para0010.ki_i_dq  = Para0010.L * w_idq^2 /4;    % I
+Para0010.w0       = W0;   
+Para0010.Gi_cd    = 0;                        % Cross-decoupling gain
 
 % ======================================
 % Grid-forming VSI (Droop-Controlled)
 % ======================================
 % Bandwidth
-Para20.w_i_ldq  = 500*2*pi;     % (rad/s), current loop bandwidth
-Para20.w_v_odq  = 250*2*pi;     % (rad/s), voltage loop bandwidth 
-Para20.wf       = 20*2*pi;      % (rad/s), droop filter bandwidth
+Para0020.w_i_ldq  = 500*2*pi;     % (rad/s), current loop bandwidth
+Para0020.w_v_odq  = 250*2*pi;     % (rad/s), voltage loop bandwidth 
+Para0020.wf       = 20*2*pi;      % (rad/s), droop filter bandwidth
 
 % DC link
 % Para10.V_dc	= 2.5;
 % Para10.C_dc	= 2*0.1*Para10.V_dc^2;
 
 % AC filter
-Para20.Lf = 0.05/W0;
-Para20.Rf = 0.05/5;
-Para20.Cf = 0.02/W0;
-Para20.Lc = 0.01/W0;
-Para20.Rc = 0.01/5;
+Para0020.Lf = 0.05/W0;
+Para0020.Rf = 0.05/5;
+Para0020.Cf = 0.02/W0;
+Para0020.Lc = 0.01/W0;
+Para0020.Rc = 0.01/5;
 
 % Droop loop
-Para20.Dw = 5/100*W0;
+Para0020.Dw = 5/100*W0;
 % Para20.Dv = 5/100;
 % Para20.P0 = 0;
 % Para20.Q0 = 0;
-Para20.w0 = W0;
+Para0020.w0 = W0;
 
 % Voltage and current loop
 % Para20.Gi_cd = 0;
@@ -100,17 +100,52 @@ Para20.w0 = W0;
 
 % Virtual impedance
 % Para20.Rov = 0;
-Para20.Xov = 0;
+Para0020.Xov = 0;
 
 % ======================================
-% Infinite bus (short-circuit in small-signal)
+% AC infinite bus (short-circuit in small-signal)
 % ======================================
-Para90 = [];
+Para0090 = [];
 
 % ======================================
-% Floating bus (open-circuit)
+% AC floating bus (open-circuit)
 % ======================================
-Para100 = [];
+Para0100 = [];
+
+%% Default DC device data
+
+% ======================================
+% Grid-following buck
+% ======================================
+% Bandwidth
+w_vdc	= 10*2*pi; 	% (rad/s) bandwidth, vdc
+w_i     = 500*2*pi;	% (rad/s) bandwidth, i
+
+% Dc link
+Para1010.V_dc   	= 2;
+Para1010.C_dc       = 2*0.1*Para1010.V_dc^2;
+Para1010.kp_v_dc	= Para1010.V_dc*Para1010.C_dc*w_vdc;
+Para1010.ki_v_dc	= Para1010.kp_v_dc*w_vdc/4;
+
+% Dc-grid-side filter
+Para1010.L        = 0.05/W0;
+Para1010.R        = 0.01;
+
+% Current loop
+Para1010.kp_i  = Para0010.L * w_i;         % P
+Para1010.ki_i  = Para0010.L * w_i^2 /4;    % I
+
+% ======================================
+% DC infinite bus (short-circuit in small-signal)
+% ======================================
+Para1090 = [];
+
+% ======================================
+% DC floating bus (open-circuit)
+% ======================================
+Para1100 = [];
+
+%% Default hybrid device data
 
 %% Re-arrange device data
 % Get the size of netlist
@@ -128,15 +163,15 @@ for i = 1:N_Device
     CellDeviceType{i} = type;
     switch floor(type/10)
         case 0     
-            CellPara{i} = Para00;   % Synchronous machine
+            CellPara{i} = Para0000;   % Synchronous machine
         case 1
-            CellPara{i} = Para10;   % Grid-following inverter
+            CellPara{i} = Para0010;   % Grid-following inverter
          case 2
-            CellPara{i} = Para20;   % Grid-forming inverter
+            CellPara{i} = Para0020;   % Grid-forming inverter
         case 9
-            CellPara{i} = Para90;   % Inifnite bus
+            CellPara{i} = Para0090;   % Inifnite bus
         case 10
-            CellPara{i} = Para100;  % Floating bus, i.e., no device
+            CellPara{i} = Para0100;  % Floating bus, i.e., no device
         otherwise
             error(['Error: device type, bus ' num2str(bus) ' type ' num2str(type) '.']);
     end

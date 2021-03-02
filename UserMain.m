@@ -2,13 +2,13 @@
 % Please use and ONLY use this file to run toolbox.
 
 %% Tips
-
+%
 % Please ensure that the toolbox is installed， by running
 % "InstallSimplexPS.m" the first time.
-
+%
 % The toolbox defaultly prints the results in Command Window, saves the
 % results into Workspace, and plots figures.
-
+%
 % For changing default user data, please change "UserData.xlsx". More
 % examples can be found in the "Examples" folder.
 
@@ -24,9 +24,9 @@ UserData = 'UserData.xlsx';
 % generator-inverter-composite power system. Please feel free to change it.
 
 % Other example systems (in "Examples" folder):
-% UserData = 'SingleSGInfiniteBus';     % Single synchronous generator and infinite bus
-% UserData = 'SingleGFLInfiniteBus';    % Single grid-following inverter and infinite bus
-% UserData = 'SingleGFMInfiniteBus';    % Single grid-forming inverter and infinite bus
+% UserData = 'SingleSgInfiniteBus';         % Single synchronous generator and infinite bus
+% UserData = 'SingleGfliInfiniteBus';       % Single grid-following inverter and infinite bus
+% UserData = 'SingleGfmiInfiniteBus';       % Single grid-forming inverter and infinite bus
 % UserData = 'IEEE_14Bus';
 % UserData = 'IEEE_30Bus';
 % UserData = 'IEEE_57Bus';
@@ -68,6 +68,6 @@ SimplexPS.Toolbox.Main();
 % mymodel_v1;       % This is the simulink model generated automatically 
                     % based on the user data.
 
-%% User function and plot
+%% User function
 % Users can write their own functions here to further deal with the data
 % mentioned above.

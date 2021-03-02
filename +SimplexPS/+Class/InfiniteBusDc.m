@@ -1,18 +1,18 @@
-% This class defines the model of an infinite bus.
+% This class defines the model of a dc infinite bus.
 
 % Notes: An infinite bus is short-circuit in small-signal analysis.
 
 % Author(s): Yitong Li
 
-classdef InfiniteBus < SimplexPS.Class.ModelAdvance
+classdef InfiniteBusDc < SimplexPS.Class.ModelAdvance
     
     methods(Static)
         
         % Set the strings of state, input, output
         function SetString(obj)
             obj.StateString  = {};                  % x
-         	obj.InputString  = {'i_d','i_q'};     	% u
-        	obj.OutputString = {'v_d','v_q','w'};  	% y
+         	obj.InputString  = {'i'};     	% u
+        	obj.OutputString = {'v','w'};  	% y
         end
         
         % Calculate the equilibrium
@@ -25,28 +25,25 @@ classdef InfiniteBus < SimplexPS.Class.ModelAdvance
             w   = obj.PowerFlow(5);
             
             % Calculate
-            v_d = V;
-            v_q = 0;
-            i_d = P/V;
-            i_q = -Q/V;
+            v = V;
+            i = P/V;
             
-            u_e = [i_d; i_q];
+            u_e = [i];
             x_e = [];
             xi  = [xi];
         end
         
         % State space model
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)     
-            w	= obj.PowerFlow(5);
+            w= 0;
             if CallFlag == 1
               	f_xu = [];
                 Output = f_xu;
             elseif CallFlag == 2
                 % Output equations: y = g(x,u)
                 V	= obj.PowerFlow(3);
-                v_d = V;
-                v_q = 0;
-                g_xu = [v_d; v_q; w];
+                v = V;
+                g_xu = [v; w];
                 Output = g_xu;              
             end
         end

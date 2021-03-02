@@ -6,16 +6,16 @@
 function [UpdateBus,N_Bus] = RearrangeListBus(UserData)
 
 % Load data
-ListBus = xlsread(UserData,'Bus');   
+ListBus = xlsread(UserData,'Bus');
 
 % Re-order the bus sequence and area
 [i1] = unique(ListBus(:,11));
-N_Area = max(i1);
-if N_Area ~= length(i1)
+N_Area = length(i1);
+if N_Area ~= max(i1)
     error(['Error: The total area number is different from the maximum area index.'])
 end
 for i2 = 1:N_Area
-    UpdateBusArea{i2} = ListBus(find(ListBus(:,10)==i1(i2)),:);
+    UpdateBusArea{i2} = ListBus(find(ListBus(:,11)==i1(i2)),:);
     UpdateBusArea{i2} = sortrows(UpdateBusArea{i2},1);
     i3 = unique(UpdateBusArea{i2}(:,12));
     if length(i3)~=1

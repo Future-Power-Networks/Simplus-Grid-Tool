@@ -60,6 +60,9 @@ end
 Flag_SwitchInOut = 0;   % Default: do not need to switch input and output
 switch floor(Type/10)
     
+    % =======================================
+    % Ac system
+    % =======================================
     % ### Synchronous generator
     case 0      % Type 0-9
         Device = SimplexPS.Class.SynchronousMachine('DeviceType',Type);
@@ -102,19 +105,33 @@ switch floor(Type/10)
                        Para.w_i_ldq;
                        Para.w0];
                    
-    % ### Infinite bus
-    case 9 % Type 90-99
-        Device = SimplexPS.Class.InfiniteBus;
+    % ### Ac infinite bus
+    case 9
+        Device = SimplexPS.Class.InfiniteBusAc;
         Device.Para  = [];
         % Because the infinite bus is defined with "i" input and "v" output,
         % they need to be switched finally.
-        Flag_SwitchInOut = 1;   
+        Flag_SwitchInOut = 1;
    
-    % ### Floating bus
+    % ### Ac floating bus
     case 10
-        Device = SimplexPS.Class.FloatingBus;
+        Device = SimplexPS.Class.FloatingBusAc;
         Device.Para = [];
         
+	% =======================================
+    % Dc system
+    % =======================================
+    case 101
+    	Device = SimplexPS.Class.GridFollowingBuck('DeviceType',Type);
+        Device.Para = [Para.C_dc;
+                       Para.V_dc;
+                       Para.kp_v_dc;
+                       Para.ki_v_dc;
+                       Para.kp_i;
+                       Para.ki_i;
+                       Para.L;
+                       Para.R];
+    
     % ### Otherwise
     otherwise
         error(['Error: device type']);
