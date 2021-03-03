@@ -88,7 +88,7 @@ Shift_B_GND = [-Size_D_GND(1)/2,30];
 
 % Add branch
 [FullName_Branch,Name_Branch,Shift_ToBus] = ...
-    SimplexPS.Simulink.SimAddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine);
+    SimplexPS.Simulink.SimAddBranch(Name_Model,Name_LibFile,Size_Branch,Shift_Branch,Pos_Bus,ListLine);
 
 % Add transformer
 [Name_Trans] = ...
@@ -101,7 +101,6 @@ SimplexPS.Simulink.SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName
 SimplexPS.Simulink.SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
 
 %% Fit the model to view
-% set_param(gcs, 'ZoomFactor','FitSystem')
 set_param(gcs,'Zoomfactor','fit to view')
 
 end

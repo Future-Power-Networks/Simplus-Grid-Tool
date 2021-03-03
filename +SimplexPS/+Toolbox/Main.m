@@ -77,10 +77,10 @@ end
 ListPowerFlow = SimplexPS.PowerFlow.Rearrange(PowerFlow);
 
 % Move load flow (PLi and QLi) to bus admittance matrix
-[ListBus,ListLine,PowerFlow] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
+[ListBus,ListLineNew,PowerFlowNew] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
 
 % For printting later
-ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlow);
+ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlowNew);
 
 %%
 % ==================================================
@@ -90,7 +90,7 @@ ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlow);
 % ### Get the model of lines
 fprintf('Getting the descriptor state space model of network lines...\n')
 
-[YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListBus,ListLine,Wbase);
+[YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListBus,ListLineNew,Wbase);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 [ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.GetString(ZbusObj);
@@ -98,14 +98,13 @@ ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 % ### Get the models of bus devices
 fprintf('Getting the descriptor state space model of bus devices...\n')
 for i = 1:N_Device
-    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i}] = ...
-        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},PowerFlow{i},Para{i},Ts,ListBus);
+    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},OtherInputs{i}] = ...
+        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},PowerFlowNew{i},Para{i},Ts,ListBus);
     
     % The following data is not used in the script, but will be used in
     % simulations. Do not delete!
     x_e{i} = DeviceEqui{i}{1};
     u_e{i} = DeviceEqui{i}{2};
-    OtherInputs{i} = u_e{i}(3:end,:);
 end
 
 % ### Get the appended model of all devices
@@ -183,7 +182,7 @@ if Enable_CreateSimulinkModel == 1
     close_system(Name_Model,0);
     
     % Create the simulink model
-    SimplexPS.Simulink.MainSimulink(Name_Model,ListBus,ListLine,DeviceType,ListAdvance,PowerFlow);
+    SimplexPS.Simulink.MainSimulink(Name_Model,ListBus,ListLineNew,DeviceType,ListAdvance,PowerFlowNew);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
@@ -246,6 +245,12 @@ if Enable_PlotPole
 else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
+
+stop
+
+% ====================================================================
+% The following plot functions have to be re-written!
+% ====================================================================
 
 omega_p = logspace(-2,4,5e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];

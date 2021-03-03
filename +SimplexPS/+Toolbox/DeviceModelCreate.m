@@ -20,7 +20,7 @@
 % Transctions on Circuit and Systems, 2020.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor] ...
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor,OtherInputs] ...
         = DeviceModelCreate(DeviceBus,Type,PowerFlow,Para,Ts,ListBus) 
 
 %% Create an object
@@ -128,6 +128,17 @@ Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
 [~,ModelSS] = Device.GetSS(Device);                % Get the ss model
 [StateStr,InputStr,OutputStr] ...
     = Device.GetString(Device);                    % Get the string
+
+% Get OtherInputs
+if Type<1000
+    OtherInputs = u_e(3:end,:);     % dq frame ac device
+elseif 1000<=Type && Type<2000
+    OtherInputs = u_e(2:end,:);     % dc device
+elseif 2000<=Type && Type<3000
+    OtherInputs = u_e(4:end,:);     % ac-dc device
+else
+    error(['Error']);
+end
 
 % Link the IO ports to bus number
 InputStr = SimplexPS.AddNum2Str(InputStr,DeviceBus);

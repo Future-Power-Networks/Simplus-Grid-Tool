@@ -63,6 +63,9 @@ for i = 1:N_Branch
         Z  = Zs + 1/Yp;      	% Total impedance of that branch
         Y(i)  = 1/Z;           	% Total admittance of that branch
     elseif AreaType(i) == 2
+        if (FB(i) ~= TB(i)) && R(i)==0
+            error(['Error: Branch ' num2str(FB(i)) '-' num2str(TB(i)) ' is a DC branch, whose resistance can NOT be zero.'])
+        end
         Y(i) = 1/(1/G(i) + R(i)); 	% For DC grid power flow, only the resistance is considerred, as w0 is 0 which means jX=0 and jB=0.
     end
 end

@@ -14,27 +14,40 @@ N_Device = length(DeviceType);
 
 % Add device
 for i = 1:N_Device
-    if floor(DeviceType{i}/10) <= 9
+    if DeviceType{i}~=0100 && DeviceType{i}~=0200
         
         switch floor(DeviceType{i}/10)
-            case 0
+            % ### Ac device
+            case 000
                 Name_Device{i} = ['SM' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Synchronous Machine (dq-Frame System Object)'],FullName_Device{i});
-            case 1
+            case 001
                 Name_Device{i} = ['VSI-PLL' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
-            case 2
+            case 002
                 Name_Device{i} = ['VSI-Droop' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Grid-Forming Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
-            case 9
+            case 009
             	Name_Device{i} = ['Inf-Bus' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
-                add_block([Name_LibFile '/Infinite Bus'],FullName_Device{i});
+                add_block([Name_LibFile '/AC Infinite Bus (Voltage Type)'],FullName_Device{i});
+                
+            % ### Dc device
+            case 101
+                Name_Device{i} = ['Buck' num2str(i)];
+                FullName_Device{i} = [Name_Model '/' Name_Device{i}];
+                add_block([Name_LibFile '/Grid-Following Buck Converter (System Object)'],FullName_Device{i});
+        	case 109
+            	Name_Device{i} = ['Inf-Bus' num2str(i)];
+                FullName_Device{i} = [Name_Model '/' Name_Device{i}];
+                add_block([Name_LibFile '/DC Infinite Bus (Voltage Type)'],FullName_Device{i});
+                
+          	% ### Error check
             otherwise
-                error(['Error']);
+                error(['Error: DeviceType ' num2str(DeviceType{i}) '.']);
         end
         
         % Set position
@@ -46,11 +59,16 @@ for i = 1:N_Device
         % Set common variables
       	set_param(gcb,'Sbase','Sbase');
         set_param(gcb,'Vbase','Vbase');
-        set_param(gcb,'Wbase','Wbase');
         set_param(gcb,'Ts','Ts');
         
-        % If the device is an "active device"
-        if floor(DeviceType{i}/10) <= 5
+        % For ac device only
+        if DeviceType{i} < 1000
+            set_param(gcb,'Wbase','Wbase');
+        end
+        
+        % For active device only
+        if (0<=DeviceType{i} && DeviceType{i}<90) || ...
+           (1000<=DeviceType{i} && DeviceType{i}<1090)
             
             % Set system object parameters
             set_param(gcb,'DeviceType',['DeviceType{' num2str(i) '}']);
@@ -88,11 +106,13 @@ for i = 1:N_Device
             
         end
         
-        % If the device is an "infinite bus"
-        if DeviceType{i} == 90
+        % If the device is an infinite bus
+        if DeviceType{i} == 0090        % Ac infinite bus
             set_param(gcb,'vd',['PowerFlow{' num2str(i) '}(3)']);
             set_param(gcb,'theta0',['PowerFlow{' num2str(i) '}(4)']);
             set_param(gcb,'w','Wbase');
+        elseif DeviceType{i} == 1090    % Dc infinite bus
+            set_param(gcb,'v',['PowerFlow{' num2str(i) '}(3)']);
         end
         
     end
