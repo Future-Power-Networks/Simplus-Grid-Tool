@@ -90,7 +90,7 @@ switch floor(Type/10)
     % Dc system
     % =======================================
     case 101
-    	Device = SimplexPS.Class.GridFollowingBuck('DeviceType',Type);
+    	Device = SimplexPS.Class.GridFeedingBuck('DeviceType',Type);
         Device.Para = [Para.C_dc;
                        Para.V_dc;
                        Para.kp_v_dc;

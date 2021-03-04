@@ -39,7 +39,7 @@ for i = 1:N_Device
             case 101
                 Name_Device{i} = ['Buck' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
-                add_block([Name_LibFile '/Grid-Following Buck Converter (System Object)'],FullName_Device{i});
+                add_block([Name_LibFile '/Grid-Feeding Buck (System Object)'],FullName_Device{i});
         	case 109
             	Name_Device{i} = ['Inf-Bus' num2str(i)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];

@@ -98,8 +98,19 @@ ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 % ### Get the models of bus devices
 fprintf('Getting the descriptor state space model of bus devices...\n')
 for i = 1:N_Device
+    if length(DeviceBus{i}) == 1
+            PowerFlowDevice = PowerFlowNew{DeviceBus{i}};
+    elseif length(DeviceBus{i}) == 2
+        for i1 = 1:length(DeviceBus{i})
+            [~,~,i2(i1)] = SimplexPS.Toolbox.CheckBus(DeviceBus{i}(1),ListBus);
+            PowerFlowDevice{1} = PowerFlowNew{DeviceBus{find(i2==1)}};
+            PowerFlowDevice{2} = PowerFlowNew{DeviceBus{find(i2==2)}};
+        end
+    else
+        error(['Error']);
+    end
     [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},OtherInputs{i}] = ...
-        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},PowerFlowNew{i},Para{i},Ts,ListBus);
+        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},PowerFlowDevice,Para{i},Ts,ListBus);
     
     % The following data is not used in the script, but will be used in
     % simulations. Do not delete!

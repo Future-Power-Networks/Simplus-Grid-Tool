@@ -14,11 +14,11 @@
 
 %% Class
 
-classdef GridFollowingBuck < SimplexPS.Class.ModelAdvance
+classdef GridFeedingBuck < SimplexPS.Class.ModelAdvance
 
     methods
         % constructor
-        function obj = GridFollowingBuck(varargin)
+        function obj = GridFeedingBuck(varargin)
             % Support name-value pair arguments when constructing object
             setProperties(obj,nargin,varargin{:});
         end
