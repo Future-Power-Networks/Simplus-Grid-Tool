@@ -20,7 +20,7 @@
 % Transctions on Circuit and Systems, 2020.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor,OtherInputs] ...
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor,OtherInputs,StateStr,InputStr,OutputStr] ...
         = DeviceModelCreate(DeviceBus,Type,PowerFlow,Para,Ts,ListBus) 
 
 %% Create an object
@@ -343,5 +343,6 @@ end
 
 % Check dimension mismatch
 SimplexPS.ObjCheckDim(GmObj);
+[StateStr,InputStr,OutputStr] = GmObj.GetString(GmObj);
 
 end

@@ -18,7 +18,7 @@ for r = 1:r_Cell
                 c_Out = [c_Out,c];
             end
         elseif isnumeric(a_) && isnumeric(a)
-            if a_ == a
+            if ~isempty(find(a_==a, 1))
               	r_Out = [r_Out,r];
                 c_Out = [c_Out,c];
             end
