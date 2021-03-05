@@ -142,7 +142,7 @@ Para0100 = [];
 %% Default DC device data
 
 % ======================================
-% Grid-following buck
+% Grid-feeding buck
 % ======================================
 % Bandwidth
 w_vdc	= 10*2*pi; 	% (rad/s) bandwidth, vdc
@@ -190,7 +190,7 @@ Para2000.kp_v_dc = V_dc*Para0010.C_dc*w_vdc;
 Para2000.ki_v_dc = Para2000.kp_v_dc*w_vdc/4;
 
 % Dc filter
-Para2000.C_dc 	= 2*0.1*V_dc^2;
+Para2000.C_dc 	= 2*0.1*V_dc^2 * 8;
 Para2000.L_dc 	= 0.01/W0;
 Para2000.R_dc	= 0.01/5;
 
