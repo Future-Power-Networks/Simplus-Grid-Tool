@@ -2,13 +2,13 @@
 % Please use and ONLY use this file to run toolbox.
 
 %% Tips
-
+%
 % Please ensure that the toolbox is installed， by running
 % "InstallSimplexPS.m" the first time.
-
+%
 % The toolbox defaultly prints the results in Command Window, saves the
 % results into Workspace, and plots figures.
-
+%
 % For changing default user data, please change "UserData.xlsx". More
 % examples can be found in the "Examples" folder.
 
@@ -19,21 +19,26 @@ close all;  % Close all figures, etc
 
 %% Set user data
 % Default
-Name_Netlist = 'UserData.xlsx';
+UserData = 'UserData.xlsx';
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
 
 % Other example systems (in "Examples" folder):
-% Name_Netlist = 'SingleSGInfiniteBus';     % Single synchronous generator and infinite bus
-% Name_Netlist = 'SingleGFLInfiniteBus';    % Single grid-following inverter and infinite bus
-% Name_Netlist = 'SingleGFMInfiniteBus';    % Single grid-forming inverter and infinite bus
-% Name_Netlist = 'IEEE_14Bus';
-% Name_Netlist = 'IEEE_30Bus';
-% Name_Netlist = 'IEEE_57Bus';
-% Name_Netlist = 'NETS_NYPS_68Bus';
+% Pure ac power system examples:
+% UserData = 'SgInfiniteBus.xlsx';              % Single synchronous generator and infinite bus
+% UserData = 'GflInverterInfiniteBus.xlsx';   	% Single grid-following inverter and infinite bus
+% UserData = 'GfmInverterInfiniteBus.xlsx';   	% Single grid-forming inverter and infinite bus
+% UserData = 'IEEE_14Bus.xlsx';
+% UserData = 'IEEE_30Bus.xlsx';
+% UserData = 'IEEE_57Bus.xlsx';
+% UserData = 'NETS_NYPS_68Bus.xlsx';
 
-% For debug
-% Name_Netlist = 'UserData_test.xlsx';
+% Pure dc power system examples:
+% UserData = 'GfdBuckInfiniteBus.xlsx';          % Single grid-feeding buck converter and infinite bus
+
+% Hybrid ac-dc power system examples:
+% UserData = 'Hybrid_test_v1.xlsx';
+% UserData = 'Hybrid_test_v2.xlsx';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();
@@ -68,6 +73,6 @@ SimplexPS.Toolbox.Main();
 % mymodel_v1;       % This is the simulink model generated automatically 
                     % based on the user data.
 
-%% User function and plot
+%% User function
 % Users can write their own functions here to further deal with the data
 % mentioned above.

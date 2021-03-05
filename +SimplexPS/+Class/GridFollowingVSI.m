@@ -198,7 +198,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 
                 % Ac voltage (duty cycle*v_dc)
                 e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i - Gi_cd*W0*L*(-i_q);
-                e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i + Gi_cd*W0*L*(-i_q);
+                e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i + Gi_cd*W0*L*(-i_d);
                 
                 % Ac voltage (duty cycle) saturation
                 if EnableSaturation

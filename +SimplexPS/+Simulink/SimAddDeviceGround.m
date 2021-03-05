@@ -10,8 +10,8 @@ N_Device = length(DeviceType);
 % Add blocks
 for i = 1:N_Device
 
-  	% If the device is NOT "floating bus"
-    if (floor(DeviceType{i}/10) <= 9)
+  	% If the device is an active device and an ac device
+    if DeviceType{i} <= 90
         
         % Add device ground
         Name_D_GND{i} = ['D-GND' num2str(i)];

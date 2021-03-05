@@ -1,10 +1,10 @@
-% This class defines the model of an infinite bus.
+% This class defines the model of an AC infinite bus.
 
 % Notes: An infinite bus is short-circuit in small-signal analysis.
 
 % Author(s): Yitong Li
 
-classdef InfiniteBus < SimplexPS.Class.ModelAdvance
+classdef InfiniteBusAc < SimplexPS.Class.ModelAdvance
     
     methods(Static)
         
@@ -22,11 +22,8 @@ classdef InfiniteBus < SimplexPS.Class.ModelAdvance
             Q	= obj.PowerFlow(2);
             V	= obj.PowerFlow(3);
             xi	= obj.PowerFlow(4);
-            w   = obj.PowerFlow(5);
             
             % Calculate
-            v_d = V;
-            v_q = 0;
             i_d = P/V;
             i_q = -Q/V;
             
@@ -39,10 +36,11 @@ classdef InfiniteBus < SimplexPS.Class.ModelAdvance
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)     
             w	= obj.PowerFlow(5);
             if CallFlag == 1
+                % State equation: dx/dt = f(x,u)
               	f_xu = [];
                 Output = f_xu;
             elseif CallFlag == 2
-                % Output equations: y = g(x,u)
+                % Output equation: y = g(x,u)
                 V	= obj.PowerFlow(3);
                 v_d = V;
                 v_q = 0;

@@ -1,8 +1,13 @@
 % This function creates the descriptor state space model for devices
-% connected to buses (such as synchronous generators, voltage source
-% inverters, ...)
+% connected to buses.
 
 % Author(s): Yitong Li, Yunjie Gu
+
+%% Notes:
+%
+% Note that frequency in power flow can be different to frequency in
+% parameters. The frequency in power flow is steady-state frequency.
+
 
 %% References:
 
@@ -15,55 +20,26 @@
 % Transctions on Circuit and Systems, 2020.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DeviceDiscreDampingResistor,StateString,InputString,OutputString] ...
-        = DeviceModelCreate(varargin) 
-
-%% load arguments and common symbols
-for n = 1:length(varargin)
-    if(strcmpi(varargin{n},'Para'))
-        Para = varargin{n+1};
-    elseif(strcmpi(varargin{n},'Flow'))
-        PowerFlow = varargin{n+1};
-    elseif(strcmpi(varargin{n},'Type'))
-        Type = varargin{n+1};
-    elseif(strcmpi(varargin{n},'Freq'))
-        w0 = 2*pi*varargin{n+1};
-    elseif(strcmpi(varargin{n},'Ts'))
-        Ts = varargin{n+1};
-    end
-end
-
-% Set default values
-try
-    w0;
-catch
-    w0 = 2*pi*50;   %default base frequency
-end
-
-try
-    Type;
-catch
-    Type = 0;
-end
-
-try 
-    PowerFlow;
-catch
-    PowerFlow = [-1,0,1,0,w0];  %[P Q V xi omega]
-    % note the frequency in flow can be different to 'freq' in parameter
-    % the frequency in flow is steady-state frequency
-    % 'freq' is the nominal frequency only used for default parameters
-    % 'freq' is useless if 'para' and 'flow' are set by users
-end
+function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor,OtherInputs,StateStr,InputStr,OutputStr] ...
+        = DeviceModelCreate(DeviceBus,Type,PowerFlow,Para,Ts,ListBus) 
 
 %% Create an object
-Flag_SwitchInOut = 0;   % Default: do not need to switch input and output
+SwInOutFlag = 0;   % Default: do not need to switch input and output
 switch floor(Type/10)
     
+    % Notes:
+    %
+    % The parameter order listed below will also influence the parameter
+    % order in the system object, but will not influence the input order
+    % from the user data.
+    
+    % =======================================
+    % Ac devices
+    % =======================================
     % ### Synchronous generator
     case 0      % Type 0-9
         Device = SimplexPS.Class.SynchronousMachine('DeviceType',Type);
-        Device.Para  = [Para.J;
+        Device.Para = [ Para.J;
                         Para.D;
                         Para.L;
                         Para.R;
@@ -72,49 +48,94 @@ switch floor(Type/10)
     % ### Grid-following inverter
     case 1      % Type 10-19
         Device = SimplexPS.Class.GridFollowingVSI('DeviceType',Type);
-        Device.Para = [Para.C_dc;
-                       Para.V_dc;
-                       Para.kp_v_dc;
-                       Para.ki_v_dc;
-                       Para.kp_pll; 	% (5)
-                       Para.ki_pll;
-                       Para.tau_pll;
-                       Para.kp_i_dq;
-                       Para.ki_i_dq;
-                       Para.k_pf;    	% (10)
-                       Para.L;
-                       Para.R;
-                       Para.w0;
-                       Para.Gi_cd]; 	% (14)
+        Device.Para = [ Para.C_dc;
+                        Para.V_dc;
+                        Para.kp_v_dc;
+                        Para.ki_v_dc;
+                        Para.kp_pll; 	% (5)
+                        Para.ki_pll;
+                        Para.tau_pll;
+                        Para.kp_i_dq;
+                        Para.ki_i_dq;
+                        Para.k_pf;    	% (10)
+                        Para.L;
+                        Para.R;
+                        Para.w0;
+                        Para.Gi_cd]; 	% (14)
                    
     % ### Grid-forming inverter
     case 2  % Type 20-29
         Device = SimplexPS.Class.GridFormingVSI('DeviceType',Type);
-        Device.Para = [Para.Lf;
-                       Para.Rf;
-                       Para.Cf;
-                       Para.Lc;
-                       Para.Rc;
-                       Para.Xov
-                       Para.Dw;
-                       Para.wf;
-                       Para.w_v_odq;
-                       Para.w_i_ldq;
-                       Para.w0];
+        Device.Para = [ Para.Lf;
+                        Para.Rf;
+                        Para.Cf;
+                        Para.Lc;
+                        Para.Rc;
+                        Para.Xov
+                        Para.Dw;
+                        Para.wf;
+                        Para.w_v_odq;
+                        Para.w_i_ldq;
+                        Para.w0];
                    
-    % ### Infinite bus
-    case 9 % Type 90-99
-        Device = SimplexPS.Class.InfiniteBus;
+    % ### Ac infinite bus
+    case 9
+        Device = SimplexPS.Class.InfiniteBusAc;
         Device.Para  = [];
         % Because the infinite bus is defined with "i" input and "v" output,
         % they need to be switched finally.
-        Flag_SwitchInOut = 1;   
+        SwInOutFlag = 1;
+        SwInOutLength = 2;
    
-    % ### Floating bus
+    % ### Ac floating bus
     case 10
-        Device = SimplexPS.Class.FloatingBus;
+        Device = SimplexPS.Class.FloatingBusAc;
         Device.Para = [];
         
+	% =======================================
+    % Dc devices
+    % =======================================
+    case 101
+    	Device = SimplexPS.Class.GridFeedingBuck('DeviceType',Type);
+        Device.Para = [ Para.C_dc;
+                        Para.V_dc;
+                        Para.kp_v_dc;
+                        Para.ki_v_dc;
+                        Para.kp_i;
+                        Para.ki_i;
+                        Para.L;
+                        Para.R];
+     % ### Dc infinite bus
+    case 109
+        Device = SimplexPS.Class.InfiniteBusDc;
+        Device.Para  = [];
+        SwInOutFlag = 1;
+        SwInOutLength = 1;
+   
+    % ### Dc floating bus
+    case 110
+        Device = SimplexPS.Class.FloatingBusDc;
+        Device.Para = [];
+        
+   	% =======================================
+    % Interlinking devices
+    % =======================================
+    case 200
+        Device = SimplexPS.Class.InterlinkAcDc('DeviceType',Type);
+        Device.Para = [ Para.L_ac;
+                        Para.R_ac;
+                        Para.L_dc;
+                        Para.R_dc;
+                        Para.C_dc;
+                        Para.kp_i_dq;
+                        Para.ki_i_dq;
+                        Para.kp_pll;
+                        Para.ki_pll;
+                        Para.tau_pll;
+                        Para.kp_v_dc;
+                        Para.ki_v_dc;
+                        Para.w0];
+    
     % ### Otherwise
     otherwise
         error(['Error: device type']);
@@ -130,8 +151,40 @@ Device.SetEquilibrium(Device);                      % Calculate the equilibrium
 Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
 
 [~,ModelSS] = Device.GetSS(Device);                % Get the ss model
-[StateString,InputString,OutputString] ...
+[StateStr,InputStr,OutputStr] ...
     = Device.GetString(Device);                    % Get the string
+
+% Set ElecPortIOs and OtherInputs
+if Type<1000
+    Device.ElecPortIOs = [1,2];
+    OtherInputs = u_e(3:end,:);     % dq frame ac device
+elseif 1000<=Type && Type<2000
+    Device.ElecPortIOs = [1];
+    OtherInputs = u_e(2:end,:);     % dc device
+elseif 2000<=Type && Type<3000
+    Device.ElecPortIOs = [1,2,3];
+    OtherInputs = u_e(4:end,:);     % ac-dc device
+else
+    error(['Error']);
+end
+
+% Link the IO ports to bus number
+InputStr = SimplexPS.AddNum2Str(InputStr,DeviceBus);
+OutputStr = SimplexPS.AddNum2Str(OutputStr,DeviceBus);
+
+% For 2-bus device, adjust electrical port strings
+if length(DeviceBus)==2  % A multi-bus device 
+    InputStr{1} = ['v_d',num2str(DeviceBus(1))];
+    InputStr{2} = ['v_q',num2str(DeviceBus(1))];
+   	OutputStr{1} = ['i_d',num2str(DeviceBus(1))];
+    OutputStr{2} = ['i_q',num2str(DeviceBus(1))];
+    
+  	InputStr{3} = ['v',num2str(DeviceBus(2))];
+    OutputStr{3} = ['i',num2str(DeviceBus(2))];
+elseif length(DeviceBus) == 1
+else
+    error(['Error: Each device can only be connected to one or two buses.']);
+end
 
 % Get the swing frame system model
 Gm = ModelSS;   
@@ -141,17 +194,20 @@ DevicePara = Device.Para;
 DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if floor(Type/10) <= 5
+if Type<90 || (1000<=Type && Type<1090) || (2000<=Type && Type<2090)
     % CalcRv_old();
+    
     Device.SetDynamicSS(Device,x_e,u_e);
-    DeviceDiscreDampingResistor = Device.GetVirtualResistor(Device);
+    DiscreDampingResistor = Device.GetVirtualResistor(Device);
 else
-    DeviceDiscreDampingResistor = -1;
+    DiscreDampingResistor = -1;
 end
 
 %% Check if the device needs to adjust its frame
-if floor(Type/10) >= 9
-    
+if (Type>=90 && Type<1000)
+    % No need for frame dynamics embedding
+elseif (Type>=1000 && Type<2000)
+    % No need for frame dynamics embedding
 else    
     
 %% Frame transformation: local swing frame dq -> local steady frame d'q'
@@ -194,8 +250,10 @@ I0 = [-i_q ; i_d];
 % Notes: New system has one more new output "w/s", which is added to the
 % head of the original output vector. New system also has a new state
 % "epsilon", which is added to the head of the original state vector.
-for i = 1:length(OutputString)
-    if strcmp(OutputString(i),'w')
+for i = 1:length(OutputStr)
+    w_port = SimplexPS.AddNum2Str({'w'},DeviceBus);
+    w_port = w_port{1};
+    if strcmpi(OutputStr(i),w_port)
         ind_w = i;
         break
     end
@@ -207,7 +265,7 @@ Cw = [1;zeros(ly1_w,1)];
 Dw = [zeros(1,ly1_w);eye(ly1_w)];
 Se = ss(Aw,Bw,Cw,Dw);
 Se = series(Gm,Se);
-StateString = [{'epsilon'},StateString];
+StateStr = [{'epsilon'},StateStr];
 
 % Embed the frame dynamics
 Sfb = ss([],[],[],V0);
@@ -276,14 +334,15 @@ GmObj = SimplexPS.Class.ModelBase;
 GmObj.SetDSS(GmObj,GmDSS);
 
 % Get the strings
-GmObj.SetString(GmObj,StateString,InputString,OutputString);
+GmObj.SetString(GmObj,StateStr,InputStr,OutputStr);
 
 % Switch input and output for required device
-if Flag_SwitchInOut == 1
-    GmObj = SimplexPS.ObjSwitchInOut(GmObj,2);
+if SwInOutFlag == 1
+    GmObj = SimplexPS.ObjSwitchInOut(GmObj,SwInOutLength);
 end
 
 % Check dimension mismatch
 SimplexPS.ObjCheckDim(GmObj);
+[StateStr,InputStr,OutputStr] = GmObj.GetString(GmObj);
 
 end

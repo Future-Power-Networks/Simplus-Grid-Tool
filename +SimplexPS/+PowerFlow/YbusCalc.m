@@ -29,57 +29,62 @@
 % P. Kunder, "power system stability and control", 1994.
 
 %% 
-function Ybus = YbusCalc(ListLine,varargin) 
+function Ybus = YbusCalc(ListLine) 
 
-GridType = 'AC';        % Default is AC
-for n = 1:length(varargin)
-    if(strcmpi(varargin{n},'GridType'))
-        GridType = varargin{n+1};   % 1-AC, 2-DC
-    end
-end
+% GridType = 'AC';        % Default is AC
+% for n = 1:length(varargin)
+%     if(strcmpi(varargin{n},'GridType'))
+%         GridType = varargin{n+1};   % 1-AC, 2-DC
+%     end
+% end
 
 % Get the data
-fb = ListLine(:,1);             % From bus number
-tb = ListLine(:,2);             % To bus number
+FB = ListLine(:,1);             % From bus number
+TB = ListLine(:,2);             % To bus number
 
-r = ListLine(:,3);              % Resistance,  R
-x = ListLine(:,4);              % Inductance,  wL
-b = ListLine(:,5);              % Capacitance, wC
-g = ListLine(:,6);              % Conductance, G
+R = ListLine(:,3);              % Resistance, R
+X = ListLine(:,4);              % Inductance, wL
+B = ListLine(:,5);              % Capacitance, wC
+G = ListLine(:,6);              % Conductance, G
 
 T = ListLine(:,7);              % Turns ratio, T
 
+AreaType = ListLine(:,9);       % AC or DC type
+
+% Get number
+N_Bus = max(max(FB),max(TB));    % Number of buses
+N_Branch = length(FB);
+
 % Calculate y
-if strcmpi(GridType,'AC')
-zs = r + 1j*x;                   
-yp = g + 1j*b;       	% g and b can be "inf" without causing problems
-z  = zs + 1./yp;      	% Total impedance of that branch
-y  = 1./z;           	% Total admittance of that branch
-elseif strcmpi(GridType,'DC')
-    y = 1./r;           % For DC grid power flow, only the resistance is considerred, as w0 is 0 which means jX=0 and jB=0.
-else
-    error(['Error: GridType.'])
+for i = 1:N_Branch
+    if AreaType(i) == 1
+        Zs = R(i) + 1i*X(i);                   
+        Yp = G(i) + 1i*B(i); 	% g and b can be "inf" without causing problems
+        Z  = Zs + 1/Yp;      	% Total impedance of that branch
+        Y(i)  = 1/Z;           	% Total admittance of that branch
+    elseif AreaType(i) == 2
+        if (FB(i) ~= TB(i)) && R(i)==0
+            error(['Error: Branch ' num2str(FB(i)) '-' num2str(TB(i)) ' is a DC branch, whose resistance can NOT be zero.'])
+        end
+        Y(i) = 1/(1/G(i) + R(i)); 	% For DC grid power flow, only the resistance is considerred, as w0 is 0 which means jX=0 and jB=0.
+    end
 end
 
-% Get the number
-n_bus = max(max(fb),max(tb));    % Number of buses
-n_branch = length(fb);           % Number of branches, including self branches
-
 % Initialise YBus
-Ybus = zeros(n_bus,n_bus);        
+Ybus = zeros(N_Bus,N_Bus);        
 
-for k=1:n_branch     
-    if(fb(k) ~= tb(k))    
+for k = 1:N_Branch     
+    if(FB(k) ~= TB(k))    
         % Formation of the Off Diagonal Elements...
-        Ybus(fb(k),tb(k)) = Ybus(fb(k),tb(k)) - y(k)/T(k);      % Mutual admittance is negative
-        Ybus(tb(k),fb(k)) = Ybus(fb(k),tb(k));
+        Ybus(FB(k),TB(k)) = Ybus(FB(k),TB(k)) - Y(k)/T(k);      % Mutual admittance is negative
+        Ybus(TB(k),FB(k)) = Ybus(FB(k),TB(k));
         
         % Formation of the Diagonal Elements...
-        Ybus(fb(k),fb(k)) = Ybus(fb(k),fb(k)) + y(k)/(T(k)^2);  % Self admittance is positive
-        Ybus(tb(k),tb(k)) = Ybus(tb(k),tb(k)) + y(k);
+        Ybus(FB(k),FB(k)) = Ybus(FB(k),FB(k)) + Y(k)/(T(k)^2);  % Self admittance is positive
+        Ybus(TB(k),TB(k)) = Ybus(TB(k),TB(k)) + Y(k);
     else
         % Formation of the Diagonal Elements...
-        Ybus(fb(k),tb(k)) = Ybus(fb(k),tb(k)) + y(k);
+        Ybus(FB(k),TB(k)) = Ybus(FB(k),TB(k)) + Y(k);
     end 
 end
  
