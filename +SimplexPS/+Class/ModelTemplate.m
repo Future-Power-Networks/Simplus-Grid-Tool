@@ -25,12 +25,17 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
     methods(Static)
         
         % Set the strings of state, input, output
+        %
         % These strings are mainly for printing output and searching the
         % corresponding ports.
+        %
         % For ac devices, the first two inputs and outputs should be
         % {'v_d','v_q'} and {'i_d','i_q'}, and {'w'} should be output. For
         % dc devices, the first input and output should be {'v'} and {'i'}.
         % No specific requirementFor other inputs, outputs, and states.
+        %
+        % The dimensions of x, u, y must be coinsistent in following three
+        % functions: SignalList, Equilibrium, and StateSpaceEqu.
         function [State,Input,Output] = SignalList(obj)
         	State  = {'x1','x2'}; 	% x, state
             Input  = {'v'};        	% u, input

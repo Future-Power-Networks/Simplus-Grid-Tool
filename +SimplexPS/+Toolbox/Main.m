@@ -52,9 +52,12 @@ end
 [ListLine,N_Branch.N_Bus_] = SimplexPS.Toolbox.RearrangeListLine(UserData,ListBus);
 
 % ### Re-arrange the device netlist
-[DeviceBus,DeviceType,Para,N_Device] = SimplexPS.Toolbox.RearrangeListDevice(UserData,Wbase);
+[DeviceBus,DeviceType,Para,N_Device] = SimplexPS.Toolbox.RearrangeListDevice(UserData,Wbase,ListBus);
 % The names of "DeviceType" and "Para" can not be changed, because they
 % will also be used in simulink model.
+
+% Notes:
+% No error checking if number of devices is different from number of buses.
 
 %%
 % ==================================================
@@ -71,13 +74,13 @@ switch Flag_PowerFlowAlgorithm
     otherwise
         error(['Error: Wrong setting for power flow algorithm.']);
 end
-% For form of PowerFlow{i}: P, Q, V, xi, w
+% Form of PowerFlow{i}: P, Q, V, xi, w
 
 % For printing later
 ListPowerFlow = SimplexPS.PowerFlow.Rearrange(PowerFlow);
 
 % Move load flow (PLi and QLi) to bus admittance matrix
-[ListBus,ListLineNew,PowerFlowNew] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
+[ListBus,ListLineNew,PowerFlowNew] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,PowerFlow);
 
 % For printting later
 ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlowNew);
@@ -99,18 +102,14 @@ ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 fprintf('Getting the descriptor state space model of bus devices...\n')
 for i = 1:N_Device
     if length(DeviceBus{i}) == 1
-            PowerFlowDevice = PowerFlowNew{DeviceBus{i}};
+     	DevicePowerFlow{i} = PowerFlowNew{DeviceBus{i}};
     elseif length(DeviceBus{i}) == 2
-        for i1 = 1:length(DeviceBus{i})
-            [~,~,i2(i1)] = SimplexPS.Toolbox.CheckBus(DeviceBus{i}(1),ListBus);
-            PowerFlowDevice{1} = PowerFlowNew{DeviceBus{find(i2==1)}};
-            PowerFlowDevice{2} = PowerFlowNew{DeviceBus{find(i2==2)}};
-        end
+        DevicePowerFlow{i} = [PowerFlowNew{DeviceBus{i}(1)},PowerFlowNew{DeviceBus{i}(2)}];
     else
         error(['Error']);
     end
     [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},OtherInputs{i}] = ...
-        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},PowerFlowDevice,Para{i},Ts,ListBus);
+        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},DevicePowerFlow{i},Para{i},Ts,ListBus);
     
     % The following data is not used in the script, but will be used in
     % simulations. Do not delete!
@@ -175,6 +174,25 @@ fprintf('Model (descriptor state space form): YsysDSS\n')
 
 %%
 % ==================================================
+% Check Stability
+% ==================================================
+
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Check Stability\n')
+fprintf('==================================\n')
+
+fprintf('Calculatting pole/zero...\n')
+pole_sys = pole(GsysDSS)/2/pi;
+fprintf('Checking if the system is stable:\n')
+if isempty(find(real(pole_sys)>1e-9, 1))
+    fprintf('Stable!\n');
+else
+    fprintf('Warning: Unstable!\n')
+end
+
+%%
+% ==================================================
 % Create Simulink Model
 % ==================================================
 fprintf('\n')
@@ -193,32 +211,13 @@ if Enable_CreateSimulinkModel == 1
     close_system(Name_Model,0);
     
     % Create the simulink model
-    SimplexPS.Simulink.MainSimulink(Name_Model,ListBus,ListLineNew,DeviceType,ListAdvance,PowerFlowNew);
+    SimplexPS.Simulink.MainSimulink(Name_Model,ListBus,ListLineNew,DeviceBus,DeviceType,ListAdvance,PowerFlowNew);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
 
 else
     fprintf('Warning: The auto creation of simulink model is disabled.\n')
-end
-
-%%
-% ==================================================
-% Check Stability
-% ==================================================
-
-fprintf('\n')
-fprintf('==================================\n')
-fprintf('Check Stability\n')
-fprintf('==================================\n')
-
-fprintf('Calculatting pole/zero...\n')
-pole_sys = pole(GsysDSS)/2/pi;
-fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-9, 1))
-    fprintf('Stable!\n');
-else
-    fprintf('Warning: Unstable!\n')
 end
 
 %%

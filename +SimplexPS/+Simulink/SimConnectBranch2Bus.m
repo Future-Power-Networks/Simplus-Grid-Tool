@@ -20,13 +20,13 @@ for i = 1:N_Branch
         To = tb(i);
         
         % ### Ac branch
-        if AreaType == 1
+        if AreaType(i) == 1
             % Connect branch to "to bus"
             add_line(Name_Model,...
                 {[Name_Bus{To} '/Rconn1'],[Name_Bus{To} '/Rconn2'],[Name_Bus{To} '/Rconn3']},...
                 {[Name_Branch{i} '/Rconn1'],[Name_Branch{i} '/Rconn2'],[Name_Branch{i} '/Rconn3']},...
                 'autorouting','smart');
-
+            
             if Tbr(i) == 1
                 % Connect branch to "from bus"
                 add_line(Name_Model,...
@@ -47,7 +47,7 @@ for i = 1:N_Branch
             end
             
         % ### Dc branch
-        elseif AreaType == 2
+        elseif AreaType(i) == 2
             % Connect branch to "to bus"
             add_line(Name_Model,...
                 {[Name_Bus{To} '/Rconn1'],[Name_Bus{To} '/Rconn2']},...
@@ -58,6 +58,10 @@ for i = 1:N_Branch
                     {[Name_Bus{From} '/Rconn1'],[Name_Bus{From} '/Rconn2']},...
                     {[Name_Branch{i} '/Lconn1'],[Name_Branch{i} '/Lconn2']},...
                     'autorouting','smart');
+                
+        % ### Error
+        else
+            error(['Error.']);
                 
         end
 

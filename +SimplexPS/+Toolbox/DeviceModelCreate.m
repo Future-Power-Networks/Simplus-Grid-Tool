@@ -27,13 +27,19 @@ function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor,OtherInputs] .
 SwInOutFlag = 0;   % Default: do not need to switch input and output
 switch floor(Type/10)
     
+    % Notes:
+    %
+    % The parameter order listed below will also influence the parameter
+    % order in the system object, but will not influence the input order
+    % from the user data.
+    
     % =======================================
-    % Ac system
+    % Ac devices
     % =======================================
     % ### Synchronous generator
     case 0      % Type 0-9
         Device = SimplexPS.Class.SynchronousMachine('DeviceType',Type);
-        Device.Para  = [Para.J;
+        Device.Para = [ Para.J;
                         Para.D;
                         Para.L;
                         Para.R;
@@ -42,35 +48,35 @@ switch floor(Type/10)
     % ### Grid-following inverter
     case 1      % Type 10-19
         Device = SimplexPS.Class.GridFollowingVSI('DeviceType',Type);
-        Device.Para = [Para.C_dc;
-                       Para.V_dc;
-                       Para.kp_v_dc;
-                       Para.ki_v_dc;
-                       Para.kp_pll; 	% (5)
-                       Para.ki_pll;
-                       Para.tau_pll;
-                       Para.kp_i_dq;
-                       Para.ki_i_dq;
-                       Para.k_pf;    	% (10)
-                       Para.L;
-                       Para.R;
-                       Para.w0;
-                       Para.Gi_cd]; 	% (14)
+        Device.Para = [ Para.C_dc;
+                        Para.V_dc;
+                        Para.kp_v_dc;
+                        Para.ki_v_dc;
+                        Para.kp_pll; 	% (5)
+                        Para.ki_pll;
+                        Para.tau_pll;
+                        Para.kp_i_dq;
+                        Para.ki_i_dq;
+                        Para.k_pf;    	% (10)
+                        Para.L;
+                        Para.R;
+                        Para.w0;
+                        Para.Gi_cd]; 	% (14)
                    
     % ### Grid-forming inverter
     case 2  % Type 20-29
         Device = SimplexPS.Class.GridFormingVSI('DeviceType',Type);
-        Device.Para = [Para.Lf;
-                       Para.Rf;
-                       Para.Cf;
-                       Para.Lc;
-                       Para.Rc;
-                       Para.Xov
-                       Para.Dw;
-                       Para.wf;
-                       Para.w_v_odq;
-                       Para.w_i_ldq;
-                       Para.w0];
+        Device.Para = [ Para.Lf;
+                        Para.Rf;
+                        Para.Cf;
+                        Para.Lc;
+                        Para.Rc;
+                        Para.Xov
+                        Para.Dw;
+                        Para.wf;
+                        Para.w_v_odq;
+                        Para.w_i_ldq;
+                        Para.w0];
                    
     % ### Ac infinite bus
     case 9
@@ -87,18 +93,18 @@ switch floor(Type/10)
         Device.Para = [];
         
 	% =======================================
-    % Dc system
+    % Dc devices
     % =======================================
     case 101
     	Device = SimplexPS.Class.GridFeedingBuck('DeviceType',Type);
-        Device.Para = [Para.C_dc;
-                       Para.V_dc;
-                       Para.kp_v_dc;
-                       Para.ki_v_dc;
-                       Para.kp_i;
-                       Para.ki_i;
-                       Para.L;
-                       Para.R];
+        Device.Para = [ Para.C_dc;
+                        Para.V_dc;
+                        Para.kp_v_dc;
+                        Para.ki_v_dc;
+                        Para.kp_i;
+                        Para.ki_i;
+                        Para.L;
+                        Para.R];
      % ### Dc infinite bus
     case 109
         Device = SimplexPS.Class.InfiniteBusDc;
@@ -110,6 +116,25 @@ switch floor(Type/10)
     case 110
         Device = SimplexPS.Class.FloatingBusDc;
         Device.Para = [];
+        
+   	% =======================================
+    % Interlinking devices
+    % =======================================
+    case 200
+        Device = SimplexPS.Class.InterlinkAcDc('DeviceType',Type);
+        Device.Para = [ Para.L_ac;
+                        Para.R_ac;
+                        Para.L_dc;
+                        Para.R_dc;
+                        Para.C_dc;
+                        Para.kp_i_dq;
+                        Para.ki_i_dq;
+                        Para.kp_pll;
+                        Para.ki_pll;
+                        Para.tau_pll;
+                        Para.kp_v_dc;
+                        Para.ki_v_dc;
+                        Para.w0];
     
     % ### Otherwise
     otherwise
@@ -129,12 +154,15 @@ Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
 [StateStr,InputStr,OutputStr] ...
     = Device.GetString(Device);                    % Get the string
 
-% Get OtherInputs
+% Set ElecPortIOs and OtherInputs
 if Type<1000
+    Device.ElecPortIOs = [1,2];
     OtherInputs = u_e(3:end,:);     % dq frame ac device
 elseif 1000<=Type && Type<2000
+    Device.ElecPortIOs = [1];
     OtherInputs = u_e(2:end,:);     % dc device
 elseif 2000<=Type && Type<3000
+    Device.ElecPortIOs = [1,2,3];
     OtherInputs = u_e(4:end,:);     % ac-dc device
 else
     error(['Error']);
@@ -146,19 +174,13 @@ OutputStr = SimplexPS.AddNum2Str(OutputStr,DeviceBus);
 
 % For 2-bus device, adjust electrical port strings
 if length(DeviceBus)==2  % A multi-bus device 
-    for n = 1:2
-        [~,~,AreaType(n)] = SimplexPS.Toolbox.CheckBus(DeviceBus(n),ListBus);
-    end
-    PortAc = find(AreaType == 1);
-    PortDc = find(AreaType == 2);
-
-    InputStr{1} = ['v_d',num2str(DeviceBus(PortAc))];
-    InputStr{2} = ['v_q',num2str(DeviceBus(PortAc))];
-   	OutputStr{1} = ['i_d',num2str(DeviceBus(PortAc))];
-    OutputStr{2} = ['i_q',num2str(DeviceBus(PortAc))];
+    InputStr{1} = ['v_d',num2str(DeviceBus(1))];
+    InputStr{2} = ['v_q',num2str(DeviceBus(1))];
+   	OutputStr{1} = ['i_d',num2str(DeviceBus(1))];
+    OutputStr{2} = ['i_q',num2str(DeviceBus(1))];
     
-  	InputStr{3} = ['v',num2str(DeviceBus(PortDc))];
-    OutputStr{3} = ['i',num2str(DeviceBus(PortDc))];
+  	InputStr{3} = ['v',num2str(DeviceBus(2))];
+    OutputStr{3} = ['i',num2str(DeviceBus(2))];
 elseif length(DeviceBus) == 1
 else
     error(['Error: Each device can only be connected to one or two buses.']);
@@ -172,8 +194,9 @@ DevicePara = Device.Para;
 DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if (Type <= 50) || (1000<=Type && Type<=1050)
+if Type<90 || (1000<=Type && Type<1090) || (2000<=Type && Type<2090)
     % CalcRv_old();
+    
     Device.SetDynamicSS(Device,x_e,u_e);
     DiscreDampingResistor = Device.GetVirtualResistor(Device);
 else

@@ -1,6 +1,8 @@
 % This function checks a bus type, area type, area number, based on
 % ListBus.
 
+% Author(s): Yitong Li
+
 function [BusType,AreaNum,AreaType] = CheckBus(BusNum,ListBus)
 
 Index = find(ListBus(:,1) == BusNum,1);

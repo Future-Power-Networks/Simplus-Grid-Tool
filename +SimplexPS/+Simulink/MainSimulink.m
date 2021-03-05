@@ -9,7 +9,7 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function MainSimulink(Name_Model,ListBus,ListLine,DeviceType,ListAdvance,PowerFlow)
+function MainSimulink(Name_Model,ListBus,ListLine,DeviceBus,DeviceType,ListAdvance,PowerFlow)
 
 %% Common variables
 SimplexPS.Simulink.NewSimulinkModel('ModelName',Name_Model);
@@ -51,10 +51,7 @@ Shift_Device = [-150,0];
 
 % Add device
 [FullName_Device,Name_Device,Pos_Device] = ...
-    SimplexPS.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance);
-
-% Connect device to bus
-SimplexPS.Simulink.SimConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceType);
+    SimplexPS.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceBus,DeviceType,ListAdvance);
 
 %% Add device ground
 % Paramters
@@ -99,6 +96,10 @@ SimplexPS.Simulink.SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName
 
 % Connect branch to bus
 SimplexPS.Simulink.SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
+
+%% Connect device to bus
+% This procedure is done finally to get a cleaner line auto routing.
+SimplexPS.Simulink.SimConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceBus,DeviceType);
 
 %% Fit the model to view
 set_param(gcs,'Zoomfactor','fit to view')

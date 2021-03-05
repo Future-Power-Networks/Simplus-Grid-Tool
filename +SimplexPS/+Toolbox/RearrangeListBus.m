@@ -52,6 +52,13 @@ for i4 = 1:N_Area
         error(['Error: The system has more than one slack bus in area ' num2str(i4) '.']); 
     end
 end
+for i5 = 1:N_Bus
+    if ListBus(i5,12) == 2
+        if ListBus(i5,2) == 2
+            error(['Error: Bus ' num2str(ListBus(i5,1)) ' is a dc bus, whose type can not be 2.'])
+        end
+    end
+end
 
 % Output bus data
 UpdateBus = sortrows(ListBus,1);

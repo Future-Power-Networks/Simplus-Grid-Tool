@@ -31,42 +31,48 @@ classdef InterlinkAcDc < SimplexPS.Class.ModelAdvance
         
         function [State,Input,Output] = SignalList(obj)
           	% Notes:
-            % For the interlink ac-dc converter.
+            %
             % The first three inputs must be v_d, v_q, and v; and the first
             % three outputs must be i_d, i_q, and i.
-            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
-                State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
+            %
+            % v_d, v_q, i_d, i_q are ac-grid electrical port.v, i are the
+            % dc-grid electrical port.
+            %
+            % v_dc is the dc link voltage, there is an inductor between v
+            % and v_dc. This inductor makes the system admittance model
+            % proper seen from the dc side.
+            if obj.DeviceType==2000 || obj.DeviceType==2001
+                State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i','i'};
             else
                 error('Error: Invalid DeviceType.');
             end
-        	Input = {'v_d','v_q','v'};
+        	Input = {'v_d','v_q','v','ang_r'};
             Output = {'i_d','i_q','i','w','v_dc','theta'};
         end
         
         function [x_e,u_e,xi] = Equilibrium(obj)
             % Get the power PowerFlow values
-            P_ac = obj.PowerFlow{1}(1);
-            Q_ac = obj.PowerFlow{1}(2);
-            V_ac = obj.PowerFlow{1}(3);
-            xi   = obj.PowerFlow{1}(4);
-            w    = obj.PowerFlow{1}(5);
+            % The interlink converter has two sets of power flow results
+            % because it is connected to two buses: the first one is ac,
+            % and the second one is dc.
+            P_ac    = obj.PowerFlow(1);
+            Q_ac    = obj.PowerFlow(2);
+            Vg_ac   = obj.PowerFlow(3);
+            xi      = obj.PowerFlow(4);
+            w       = obj.PowerFlow(5);
             
-            P_dc = obj.PowerFlow{2}(1);
-            V_dc = obj.PowerFlow{2}(3);
+            P_dc    = obj.PowerFlow(6);
+            Vg_dc   = obj.PowerFlow(8);
             
             % Get parameters
-            C_dc = obj.Para(1);
-            V_dc = obj.Para(2);
-            L_ac = obj.Para(11);
-            R_ac = obj.Para(12);
-            
-            L_dc =
-            R_dc =
+            L_ac  = obj.Para(1);
+            R_ac  = obj.Para(2);
+            R_dc  = obj.Para(4);
 
             % Calculate paramters
-            i_d = P_ac/V_ac;
-            i_q = -Q_ac/V_ac;     % Because of conjugate "i"
-            v_d = V_ac;
+            i_d = P_ac/Vg_ac;
+            i_q = -Q_ac/Vg_ac;     % Because of conjugate "i"
+            v_d = Vg_ac;
             v_q = 0;
             i_dq = i_d + 1j*i_q;
             v_dq = v_d + 1j*v_q;
@@ -79,43 +85,43 @@ classdef InterlinkAcDc < SimplexPS.Class.ModelAdvance
             i_q_r = i_q;
             w_pll_i = w;
             v_dc_i = i_d_r;
-            v_dc = V_dc;
 
             theta = xi;
             
-            v = V_dc;
-            i = P_dc/V_dc;
+            v = Vg_dc;
+            i = P_dc/Vg_dc;
+            
+            v_dc = Vg_dc + i*R_dc;
+            
+            ang_r = 0;
             
             % ??? Temp
             obj.i_q_r = i_q_r;
 
             % Get equilibrium
-        	x_e = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta; v_dc; v_dc_i];
-        	u_e = [v_d; v_q; v];
+        	x_e = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta; v_dc; v_dc_i; i];
+        	u_e = [v_d; v_q; v; ang_r];
         end
 
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
-            % Get the power PowerFlow values
-            P 	= obj.PowerFlow(1);
-            Q	= obj.PowerFlow(2);
-            V	= obj.PowerFlow(3);
-            xi	= obj.PowerFlow(4);
-            w   = obj.PowerFlow(5);
+            % Get power flow
+            P_ac    = obj.PowerFlow(1);
+            Vg_ac   = obj.PowerFlow(3);
+            Vg_dc   = obj.PowerFlow(8);
             
            	% Get parameters
-            C_dc    = obj.Para(1);
-            v_dc_r  = obj.Para(2);
-            kp_v_dc = obj.Para(3);
-            ki_v_dc = obj.Para(4);
-            kp_pll  = obj.Para(5);
-            ki_pll  = obj.Para(6);
-            tau_pll = obj.Para(7);
-            kp_i_dq = obj.Para(8);
-            ki_i_dq = obj.Para(9);
-            L_ac       = obj.Para(11);
-            R_ac       = obj.Para(12);
-            L_dc
-            R_dc
+            L_ac    = obj.Para(1);
+            R_ac    = obj.Para(2);
+        	L_dc    = obj.Para(3);
+            R_dc    = obj.Para(4);
+            C_dc    = obj.Para(5);
+            kp_i_dq = obj.Para(6);
+            ki_i_dq = obj.Para(7);
+            kp_pll  = obj.Para(8);
+            ki_pll  = obj.Para(9);
+            tau_pll = obj.Para(10);
+            kp_v_dc = obj.Para(11);
+            ki_v_dc = obj.Para(12);
             
             % Get states
           	i_d   	= x(1);
@@ -127,11 +133,13 @@ classdef InterlinkAcDc < SimplexPS.Class.ModelAdvance
             theta   = x(7);
             v_dc  	= x(8);
             v_dc_i 	= x(9);
+            i       = x(10);
 
             % Get input
         	v_d    = u(1);
             v_q    = u(2);
             v      = u(3);
+            ang_r  = u(4);
             
             % State space equations
             % dx/dt = f(x,u)
@@ -139,36 +147,46 @@ classdef InterlinkAcDc < SimplexPS.Class.ModelAdvance
             if CallFlag == 1    
             % ### Call state equation: dx/dt = f(x,u)
                 
-                % Current reference
-                i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
-                i_q_r = obj.i_q_r;    % Constant iq control
-               
-                % Ac voltage (duty cycle*v_dc)
+                % Dc-link voltage control
+                v_dc_r = Vg_dc;
+                if obj.DeviceType==2000
+                    dv_dc_i = 0;
+                elseif obj.DeviceType==2001
+                    dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;
+                end
+                
+                % Ac current control
+                if obj.DeviceType==2000
+                    i_d_r = P_ac/Vg_ac;
+                elseif obj.DeviceType==2001
+                    i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
+                end
+                i_q_r = obj.i_q_r;                  % Constant iq
+                di_d_i = -(i_d_r - i_d)*ki_i_dq;
+                di_q_i = -(i_q_r - i_q)*ki_i_dq;
+                
+              	% Ac voltage (duty cycle*v_dc)
                 e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i;
                 e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i;
                 
-                i_dc = P_dc/v_dc_r;
-                
-                % Dc-side capacitor
-                dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
-                dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
-                
-                % Current controller
-                di_d_i = -(i_d_r - i_d)*ki_i_dq;               	% i_d I
-                di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
-                
                 % Ac-side L filter
-                di_d = (v_d - R_ac*i_d + w*L_ac*i_q - e_d)/L_ac;      	% L
-                di_q = (v_q - R_ac*i_q - w*L_ac*i_d - e_q)/L_ac;      	% L
+                di_d = (v_d - R_ac*i_d + w*L_ac*i_q - e_d)/L_ac;
+                di_q = (v_q - R_ac*i_q - w*L_ac*i_d - e_q)/L_ac;
                 
                 % PLL
-             	e_ang = v_q;   % vq-PLL
-                dw_pll_i = e_ang*ki_pll;                    	% PLL I
-                dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;      % PLL tau
+             	e_ang = v_q - ang_r;
+                dw_pll_i = e_ang*ki_pll;
+                dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;
                 dtheta = w;
                 
+            	% Dc-side inductor
+                d_i = (v - v_dc - R_dc*i)/L_dc;
+                
+                % Dc-side capacitor
+                dv_dc = ((e_d*i_d + e_q*i_q)/v_dc + i)/C_dc;
+                
                 % Output state
-            	f_xu = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta; dv_dc; dv_dc_i];
+            	f_xu = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta; dv_dc; dv_dc_i; d_i];
                 Output = f_xu;
                 
             elseif CallFlag == 2

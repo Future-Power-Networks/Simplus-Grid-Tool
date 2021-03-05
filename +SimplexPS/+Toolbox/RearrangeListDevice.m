@@ -6,7 +6,7 @@
 %
 % The device model is in load convention.
 
-function [DeviceBusCell,DeviceTypeCell,ParaCell,N_Device] = RearrangeListDevice(UserData,W0)
+function [DeviceBusCell,DeviceTypeCell,ParaCell,N_Device] = RearrangeListDevice(UserData,W0,ListBus)
 
 %% Load data
 [ListDevice,ListDeviceChar]	 = xlsread(UserData,'Device');
@@ -24,12 +24,21 @@ for k1 = 1:length(ListDeviceBusChar)
 end
 ListDeviceBusChar = ListDeviceBusChar(k1+1:end);
 
+% Get the device bus in cell form
 for n = 1:N_Device
     if ~isnan(ListDeviceBus(n))
         DeviceBusCell{n} = ListDeviceBus(n);
     else
         DeviceBusCell{n} = str2num(ListDeviceBusChar{n});
+        [~,~,AreaType]= SimplexPS.Toolbox.CheckBus(DeviceBusCell{n}(1),ListBus);
+        if AreaType == 2 % If the first bus is dc bus, then swap
+            [DeviceBusCell{n}(1),DeviceBusCell{n}(2)] = deal(DeviceBusCell{n}(2),DeviceBusCell{n}(1));
+        end
     end
+end
+
+% Get the device type in cell form
+for n = 1:N_Device
     DeviceTypeCell{n} = ListDevice(n,2);
 end
 
@@ -169,6 +178,36 @@ Para1100 = [];
 % Interlink ac-dc converter
 % ======================================
 
+% Bandwidth
+w_vdc     = 10*2*pi; 	% (rad/s) bandwidth, vdc
+w_pll     = 10*2*pi;  	% (rad/s) bandwidth, pll
+w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
+w_tau_pll = 200*2*pi;   % (rad/s) PLL filter bandwidth
+
+% DC link loop
+V_dc = 1;
+Para2000.kp_v_dc = V_dc*Para0010.C_dc*w_vdc;
+Para2000.ki_v_dc = Para2000.kp_v_dc*w_vdc/4;
+
+% Dc filter
+Para2000.C_dc 	= 2*0.1*V_dc^2;
+Para2000.L_dc 	= 0.01/W0;
+Para2000.R_dc	= 0.01/5;
+
+% Ac filter
+Para2000.L_ac 	= 0.05/W0;
+Para2000.R_ac 	= 0.01;
+
+% PLL
+Para2000.kp_pll   = w_pll;
+Para2000.ki_pll   = Para2000.kp_pll * w_pll/4; 
+Para2000.tau_pll  = 1/w_tau_pll;
+
+% Current loop
+Para2000.kp_i_dq  = Para2000.L_ac * w_idq;         % P
+Para2000.ki_i_dq  = Para2000.L_ac * w_idq^2 /4;    % I
+Para2000.w0       = W0;   
+
 %% Re-arrange device data
 % Get the size of netlist
 [N_Device,ColumnMax_Device] = size(ListDevice);
@@ -202,6 +241,10 @@ for i = 1:N_Device
             ParaCell{i} = Para1090;     % Dc infinite bus
         case 110
             ParaCell{i} = Para1100;     % Ac floating bus, i.e., no device
+            
+        % ### Hybrid ac-dc devices
+        case 200
+            ParaCell{i} = Para2000;     % Interlinking ac-dc converter
             
         % ### Error check
         otherwise

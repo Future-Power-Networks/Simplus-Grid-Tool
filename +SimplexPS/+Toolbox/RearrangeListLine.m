@@ -162,8 +162,13 @@ end
 
 % Add area type into ListLine
 for i = 1:N_Branch
-    j = find(ListBus(:,1) == FB(i));
-    ListLine(i,9) = ListBus(j,12);
+    i1 = find(ListBus(:,1) == FB(i));
+    i2 = find(ListBus(:,1) == TB(i));
+    if ListBus(i1,12)~=ListBus(i2,12)
+        error(['Error: The branch ' num2str(i1) '-' num2str(i2) ' is a hybrid branch, which is connected to ac at one side, and dc at the other side.']);
+    else
+        ListLine(i,9) = ListBus(i1,12);
+    end
 end
 
 % Re-arrange the data

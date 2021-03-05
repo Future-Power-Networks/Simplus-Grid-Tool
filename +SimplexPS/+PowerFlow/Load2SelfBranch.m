@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-function [UpdateListBus,UpdateListLine,UpdatePowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow)
+function [UpdateListBus,UpdateListLine,UpdatePowerFlow] = Load2SelfBranch(ListBus,ListLine,PowerFlow)
 
 %% Update "ListBus"
 BusIndex  = ListBus(:,1);
@@ -37,9 +37,9 @@ end
 
 %% Error check
 for i = 1:N_Bus
-    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (BusType(i)~=1)
-        error(['Error: Bus ' num2str(i) ' should be a slack bus (power flow) or floating bus (device) because PGi=0 and QGi=0.']);
-    end
+%     if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (BusType(i)~=1)
+%         error(['Error: Bus ' num2str(i) ' should be a slack bus (power flow) or floating bus (device) because PGi=0 and QGi=0.']);
+%     end
     if PL(i) < 0
         error(['Error: Passive load at bus ' num2str(i) ' can not generate active power, i.e., PLi can not be less than 0.']);
     end

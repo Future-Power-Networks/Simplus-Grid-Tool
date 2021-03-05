@@ -48,7 +48,7 @@ N_Branch = length(FB);                  % Number of branches, including self bra
 % Inductive load effect
 XLlist = ListLine(:,8);
 AreaTypeLine = ListLine(:,9);
-AreaTypeBus = ListBus(:,12);
+AreaType = ListBus(:,12);
 
 %%
 % Calculate the state space model of each branch
@@ -258,18 +258,30 @@ end
 %%
 % Initialize the state-space-form nodal addmitance matrix Ybus
 Ass0 = []; Bss0 = []; Ess0 = []; Css0 = [];
-Dss0_ac = [0,0;0,0];       % Defines a TITO static system for dq frame ac system.
-Dss0_dc = 0;               % Defines a SISO static system for dc system.
+Dss0_ac2ac = [0,0;
+              0,0];       % Defines a TITO static system for dq frame ac system.
+Dss0_dc2dc = 0;               % Defines a SISO static system for dc system.
+Dss0_ac2dc = [0,0];
+Dss0_dc2ac = [0;
+              0];
 
-Ybranch0_ac = dss(Ass0,Bss0,Css0,Dss0_ac,Ess0);
-Ybranch0_dc = dss(Ass0,Bss0,Css0,Dss0_dc,Ess0);
+Ybr0_ac2ac = dss(Ass0,Bss0,Css0,Dss0_ac2ac,Ess0);
+Ybr0_dc2dc = dss(Ass0,Bss0,Css0,Dss0_dc2dc,Ess0);
+Ybr0_ac2dc = dss(Ass0,Bss0,Css0,Dss0_ac2dc,Ess0);
+Ybr0_dc2ac = dss(Ass0,Bss0,Css0,Dss0_dc2ac,Ess0);
 
 for i = 1:N_Bus
     for j = 1:N_Bus
-        if AreaTypeBus(i) == 1
-            YbusCell{i,j} = Ybranch0_ac;
-        elseif AreaTypeBus(i) == 2
-            YbusCell{i,j} = Ybranch0_dc;
+        if (AreaType(i)==1) && (AreaType(j)==1)
+            YbusCell{i,j} = Ybr0_ac2ac;
+        elseif (AreaType(i)==2) && (AreaType(j)==2)
+            YbusCell{i,j} = Ybr0_dc2dc;
+      	elseif (AreaType(i)==1) && (AreaType(j)==2)
+            YbusCell{i,j} = Ybr0_dc2ac;
+        elseif (AreaType(i)==2) && (AreaType(j)==1)
+            YbusCell{i,j} = Ybr0_ac2dc;
+        else
+            error(['Error']);
         end
         YbusCell_StateStr{i,j} = {};
     end
@@ -315,13 +327,13 @@ YbusObj.SetDSS(YbusObj,YbusDSS);
 % Get the string
 InOutCount = 1;
 for k = 1:N_Bus
-    if AreaTypeBus(k) == 1
+    if AreaType(k) == 1
         InputStr{InOutCount}    = strcat('v_d',num2str(k));
         InputStr{InOutCount+1}	= strcat('v_q',num2str(k));
         OutputStr{InOutCount}   = strcat('i_d',num2str(k));
         OutputStr{InOutCount+1}	= strcat('i_q',num2str(k));
         InOutCount = InOutCount + 2;
-    elseif AreaTypeBus(k) == 2
+    elseif AreaType(k) == 2
         InputStr{InOutCount}    = strcat('v',num2str(k));
         OutputStr{InOutCount}	= strcat('i',num2str(k));
         InOutCount = InOutCount + 1;

@@ -25,18 +25,20 @@ UserData = 'UserData.xlsx';
 
 % Other example systems (in "Examples" folder):
 % Pure ac power system examples:
-% UserData = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
-% UserData = 'GflInverterInfiniteBus';     	% Single grid-following inverter and infinite bus
-% UserData = 'GfmInverterInfiniteBus';     	% Single grid-forming inverter and infinite bus
-% UserData = 'IEEE_14Bus';
-% UserData = 'IEEE_30Bus';
-% UserData = 'IEEE_57Bus';
-% UserData = 'NETS_NYPS_68Bus';
+% UserData = 'SgInfiniteBus.slsx';              % Single synchronous generator and infinite bus
+% UserData = 'GflInverterInfiniteBus.slsx';   	% Single grid-following inverter and infinite bus
+% UserData = 'GfmInverterInfiniteBus.slsx';   	% Single grid-forming inverter and infinite bus
+% UserData = 'IEEE_14Bus.slsx';
+% UserData = 'IEEE_30Bus.xlsx';
+% UserData = 'IEEE_57Bus.xlsx';
+% UserData = 'NETS_NYPS_68Bus.xlsx';
 
 % Pure dc power system examples:
-UserData = 'GfdBuckInfiniteBus';          % Single grid-feeding buck converter and infinite bus
+% UserData = 'GfdBuckInfiniteBus.xlsx';          % Single grid-feeding buck converter and infinite bus
 
 % Hybrid ac-dc power system examples:
+UserData = 'Hybrid_test.xlsx';
+UserData = 'Hybrid_test_v1.xlsx';
 
 % For debug
 % UserData = 'UserData_dc.xlsx';

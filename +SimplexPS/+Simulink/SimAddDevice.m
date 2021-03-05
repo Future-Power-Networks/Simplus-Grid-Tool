@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-function [FullName_Device,Name_Device,Pos_Device] = SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance)
+function [FullName_Device,Name_Device,Pos_Device] = SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceBus,DeviceType,ListAdvance)
 
 % Organize data
 DiscreMethod = ListAdvance(1);
@@ -14,36 +14,45 @@ N_Device = length(DeviceType);
 
 % Add device
 for i = 1:N_Device
-    if DeviceType{i}~=0100 && DeviceType{i}~=0200
+    if DeviceType{i}~=0100 && DeviceType{i}~=1100
+        
+        % Get the bus index of device
+        Bus = DeviceBus{i};
         
         switch floor(DeviceType{i}/10)
             % ### Ac device
             case 000
-                Name_Device{i} = ['SM' num2str(i)];
+                Name_Device{i} = ['SM' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Synchronous Machine (dq-Frame System Object)'],FullName_Device{i});
             case 001
-                Name_Device{i} = ['VSI-PLL' num2str(i)];
+                Name_Device{i} = ['VSI-PLL' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
             case 002
-                Name_Device{i} = ['VSI-Droop' num2str(i)];
+                Name_Device{i} = ['VSI-Droop' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Grid-Forming Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
             case 009
-            	Name_Device{i} = ['Inf-Bus' num2str(i)];
+            	Name_Device{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/AC Infinite Bus (Voltage Type)'],FullName_Device{i});
                 
             % ### Dc device
             case 101
-                Name_Device{i} = ['Buck' num2str(i)];
+                Name_Device{i} = ['Buck' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/Grid-Feeding Buck (System Object)'],FullName_Device{i});
         	case 109
-            	Name_Device{i} = ['Inf-Bus' num2str(i)];
+            	Name_Device{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/DC Infinite Bus (Voltage Type)'],FullName_Device{i});
+                
+            % ### Interlink
+            case 200
+              	Name_Device{i} = ['Interlink' num2str(Bus(1)) '-' num2str(Bus(2))];
+                FullName_Device{i} = [Name_Model '/' Name_Device{i}];
+                add_block([Name_LibFile '/Interlink AC-DC (System Object)'],FullName_Device{i});
                 
           	% ### Error check
             otherwise
@@ -52,8 +61,19 @@ for i = 1:N_Device
         
         % Set position
        	% The position of device is set by referring to the position of correpsonding bus
-        Pos_Device{i} = Pos_Bus{i} + Shift_Device;
-        set_param(FullName_Device{i},'position',[Pos_Device{i},Pos_Device{i}+Size_Device]);
+        if 0<=DeviceType{i} && DeviceType{i}<=90    
+            % For ac devices
+            Pos_Device{i} = Pos_Bus{Bus} + Shift_Device;
+            set_param(FullName_Device{i},'position',[Pos_Device{i},Pos_Device{i}+Size_Device]);
+        elseif 1000<=DeviceType{i} && DeviceType{i}<=1090   
+            % For dc devices: smaller
+            Pos_Device{i} = Pos_Bus{Bus} + Shift_Device;
+            set_param(FullName_Device{i},'position',[Pos_Device{i},Pos_Device{i}+Size_Device-[0,20]]);
+        elseif 2000<=DeviceType{i} && DeviceType{i}<=2090
+            % For interlink devices: larger
+            Pos_Device{i} = Pos_Bus{Bus(1)} + Shift_Device;
+            set_param(FullName_Device{i},'position',[Pos_Device{i},Pos_Device{i}+Size_Device+[0,40]]);
+        end
         set_param(FullName_Device{i},'Orientation','left');
         
         % Set common variables
@@ -62,18 +82,19 @@ for i = 1:N_Device
         set_param(gcb,'Ts','Ts');
         
         % For ac device only
-        if DeviceType{i} < 1000
+        if (DeviceType{i}<1000) || (2000<=DeviceType{i} && DeviceType{i}<=2090)
             set_param(gcb,'Wbase','Wbase');
         end
         
         % For active device only
         if (0<=DeviceType{i} && DeviceType{i}<90) || ...
-           (1000<=DeviceType{i} && DeviceType{i}<1090)
+           (1000<=DeviceType{i} && DeviceType{i}<1090) || ...
+           (2000<=DeviceType{i} && DeviceType{i}<2090)
             
             % Set system object parameters
             set_param(gcb,'DeviceType',['DeviceType{' num2str(i) '}']);
             set_param(gcb,'DevicePara',['DevicePara{' num2str(i) '}']);
-            set_param(gcb,'PowerFlow',['PowerFlow{' num2str(i) '}']);
+            set_param(gcb,'PowerFlow',['DevicePowerFlow{' num2str(i) '}']);
             set_param(gcb,'x0',['x_e{' num2str(i) '}']);
             set_param(gcb,'OtherInputs',['OtherInputs{' num2str(i) '}']);
 

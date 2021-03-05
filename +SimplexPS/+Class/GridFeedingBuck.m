@@ -4,6 +4,9 @@
 
 %% Notes
 %
+% Comprehensive comments will be added for this model here with the first
+% priority, so that this model can be a specific example of a dc device.
+%
 % The model is in 
 % dc-grid-side: load convention, admittance form.
 % dc-load/source-side: source convention, impedance form.
