@@ -6,7 +6,8 @@
 %% Notes
 %
 % The models in this class achieves the transformation between dq and abc
-% in functions "updateImpl" and "outputImpl".
+% in functions "updateImpl" and "outputImpl", i.e., reloading these two
+% functions in its parent class ModelAdvance.
 %
 % This class makes the model fit in both simulation (simulink) and
 % theoratical analysis (script).
@@ -14,7 +15,7 @@
 % Subclass of this class contains the specific models of different devices.
 
 %% Class
-classdef ModelAdvanceStationary < SimplexPS.Class.ModelAdvance
+classdef ModelAdvanceTransform < SimplexPS.Class.ModelAdvance
     
 methods(Access = protected)
     

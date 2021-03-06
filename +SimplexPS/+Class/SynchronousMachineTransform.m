@@ -8,7 +8,7 @@
 
 %% Class
 
-classdef SynchronousMachineStationary < SimplexPS.Class.ModelAdvanceStationary
+classdef SynchronousMachineTransform < SimplexPS.Class.ModelAdvanceTransform
     
     properties(Access = protected)
         psi_f;
