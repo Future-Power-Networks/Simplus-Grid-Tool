@@ -28,8 +28,8 @@ classdef SynchronousMachineTransform < SimplexPS.Class.ModelAdvanceTransform
         
         function [State,Input,Output] = SignalList(obj)
             State	 = {'i_d','i_q','w','theta'};            
-            Input	 = {'v_d','v_q','T_m','v_ex'};
-            Output = {'i_d','i_q','w','i_ex','theta'};
+            Input	 = {'v_a','v_b','v_c','T_m','v_ex'};
+            Output = {'v_d','v_q','i_a','i_b','i_c','i_d','i_q','w','i_ex','theta'};
         end
         
         function [x_e,u_e,xi] = Equilibrium(obj)

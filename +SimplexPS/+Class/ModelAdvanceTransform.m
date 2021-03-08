@@ -89,13 +89,13 @@ methods(Access = protected)
         
         % Convert electrical y_dq to y_abc
         y_abc = SimplexPS.dq2abc(y_(1:2),theta);
-        y = [y_abc;y_(3:end)];
+        y = [u_dq;y_abc;y_];
                             
     end
     
  	function [size] = getOutputSizeImpl(obj)
         [~,~,Output] = obj.SignalList(obj);
-        size = length(Output)+1;
+        size = length(Output);
     end
     
 end
