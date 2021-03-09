@@ -93,18 +93,18 @@ matlab.System
 		& matlab.system.mixin.Propagates  
 		-> ModelAdvance  
 			-> ModelTemplate  
-			-> SynchronousMachine  
-			-> GridFollowingVSI  
-			-> GridFormingVSI  
-			-> InfiniteBusAc  
-			-> InfiniteBusDc  
-			-> FloatingBusAc  
-			-> FloatingBusDc  
-			-> InterlinkAcDc  
-			-> GridFeedingBuck  
-			-> Inductor  
-		-> ModelAdvanceTransform  
-			-> SynchronousMachineTransform  
+			-> SynchronousMachine  -------|  
+			-> GridFollowingVSI           |
+			-> GridFormingVSI             |
+			-> InfiniteBusAc              | 
+			-> InfiniteBusDc              |
+			-> FloatingBusAc              | 
+			-> FloatingBusDc              |
+			-> InterlinkAcDc              | 
+			-> GridFeedingBuck            |
+			-> Inductor                   |
+			-> ModelAdvanceTransform     \/
+				-> SynchronousMachineTransform  
 </pre>
 
 "matlab.System" is the base class of Matlab itself. "matlab.system.mixin.Nondirect" and "matlab.system.mixin.Propagates" are also classes of Matlab, which are included for using system objects in Simulink.
