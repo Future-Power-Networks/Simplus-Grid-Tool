@@ -60,8 +60,8 @@ end
 % ======================================
 % Synchronous generator
 % ======================================
-Para0000.J  = 3.5*2/W0^2;
-Para0000.D  = 1/W0^2;
+Para0000.J  = 3.5*2/W0^2;   % Jpu=J/Pb=[1/2*J*w0^2/Pb]*2/w0^2, [MWs/MW] 
+Para0000.D  = 1/W0^2;     	% Dpu=dTpu/dw=dPpu/dw/w0=[dP%/dw%]/w0^2, [%/%]
 Para0000.L  = 0.1/W0;
 Para0000.R  = 0.01;
 Para0000.w0 = W0;

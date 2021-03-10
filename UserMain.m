@@ -1,16 +1,16 @@
 % To users:
-% Please use and ONLY use this file to run toolbox.
+% Please use this file to run toolbox.
 
 %% Tips
 %
-% Please ensure that the toolbox is installed， by running
-% "InstallSimplexPS.m" the first time.
+% Please ensure that the toolbox is installed first, by running
+% "InstallSimplexPS.m" once.
 %
-% The toolbox defaultly prints the results in Command Window, saves the
-% results into Workspace, and plots figures.
+% The toolbox defaultly saves the results into Workspace, prints the key
+% results in Command Window, and plots key figures.
 %
-% For changing default user data, please change "UserData.xlsx". More
-% examples can be found in the "Examples" folder.
+% For changing default user data, please use "UserData.xlsx". More examples
+% can be found in "Examples" folder.
 
 %% Clear matlab
 clear all;  % Clear matlab workspace
@@ -19,11 +19,12 @@ close all;  % Close all figures, etc
 
 %% Set user data
 % Default
-UserData = 'UserData.xlsx';
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
+UserData = 'UserData.xlsx';
 
-% Other example systems (in "Examples" folder):
+% Other example power systems (in "Examples" folder):
+%
 % Pure ac power system examples:
 % UserData = 'SgInfiniteBus.xlsx';              % Single synchronous generator and infinite bus
 % UserData = 'GflInverterInfiniteBus.xlsx';   	% Single grid-following inverter and infinite bus
@@ -32,10 +33,10 @@ UserData = 'UserData.xlsx';
 % UserData = 'IEEE_30Bus.xlsx';
 % UserData = 'IEEE_57Bus.xlsx';
 % UserData = 'NETS_NYPS_68Bus.xlsx';
-
+%
 % Pure dc power system examples:
 % UserData = 'GfdBuckInfiniteBus.xlsx';          % Single grid-feeding buck converter and infinite bus
-
+%
 % Hybrid ac-dc power system examples:
 % UserData = 'Hybrid_test_v1.xlsx';
 % UserData = 'Hybrid_test_v2.xlsx';
@@ -43,7 +44,7 @@ UserData = 'UserData.xlsx';
 %% Run toolbox
 SimplexPS.Toolbox.Main();
 
-%% Results available to users
+%% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space
                     % form). Notes: The elements of state, input, and
                     % output vectors are printed in the command window.
@@ -58,15 +59,17 @@ SimplexPS.Toolbox.Main();
 
 % YsysDSS;          % Whole-system admittance model (descriptor state space
                     % form). Notes: This model is derived from GsysDSS by
-                    % keeping the voltage and current ports only and
-                    % removing other inputs and outputs.
+                    % selecting the voltage and current ports only and
+                    % removing other input and output ports.
                     
-% ListPowerFlow;    % Power flow result
+% ListPowerFlow;    % Power flow
                     % Notes: The result is in the form of
                     % | bus | P | Q | V | angle | omega |
+                    % P and Q are in load convention, i.e., the P and Q
+                    % flowing from each bus to the active device connected.
 
-% ListPowerFlow_;   % Power flow result only for active device by combing 
-                    % the load into the nodal admittance matrix.
+% ListPowerFlow_;   % Power flow result for active device only by combing 
+                    % the PQ load into the nodal admittance matrix.
                     
 % pole_sys;         % Whole-system poles, or equivalently eigenvalues.
 

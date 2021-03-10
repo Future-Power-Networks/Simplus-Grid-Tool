@@ -75,6 +75,8 @@ switch Flag_PowerFlowAlgorithm
         error(['Error: Wrong setting for power flow algorithm.']);
 end
 % Form of PowerFlow{i}: P, Q, V, xi, w
+% P and Q are in load convention, i.e., the P and Q flowing from the bus to
+% the device.
 
 % For printing later
 ListPowerFlow = SimplexPS.PowerFlow.Rearrange(PowerFlow);
@@ -318,4 +320,7 @@ fprintf('==================================\n')
 % - The power flow calculation assumes the frequency is Wbase
 % - Initialization of network lines, such as the current of line inductor
 % and the voltage of line capacitor.
+% - The calculation of discrete damping resistor should be double checked,
+% especially for the interlink ac-dc converter which has hybrid ac-dc
+% electrical ports.
 
