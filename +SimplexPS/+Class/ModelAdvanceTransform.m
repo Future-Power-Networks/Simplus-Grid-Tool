@@ -22,13 +22,15 @@ methods(Access = protected)
     % ### Update discreate states
     function updateImpl(obj, u)
         
-        % Convert electrical u_abc to u_dq
+        % % Convert electrical u_abc to u_dq
     	theta = obj.x(end);
-        u_dq = SimplexPS.abc2dq(u(1:3),theta);
-        u_ = [u_dq;u(4:end)];
+        % u_dq = SimplexPS.abc2dq(u(1:3),theta);
+        % u_ = [u_dq;u(4:end)];
 
-        % Update in dq frame
-        updateImpl@SimplexPS.Class.ModelAdvance(obj,u_);
+        % % Update in dq frame
+        % updateImpl@SimplexPS.Class.ModelAdvance(obj,u_);
+        updateImpl@SimplexPS.Class.ModelAdvance(obj,u);
+        
     end
         
     % ### Calculate output y
@@ -36,11 +38,12 @@ methods(Access = protected)
     
         % Convert electrical u_abc to u_dq
         theta = obj.x(end);
-        u_dq = SimplexPS.abc2dq(u(1:3),theta);
-        u_ = [u_dq;u(4:end)];
+        % u_dq = SimplexPS.abc2dq(u(1:3),theta);
+        u_dq = u(1:2);
+        %u_ = [u_dq;u(4:end)];
 
         % Output in dq frame
-        y_ = outputImpl@SimplexPS.Class.ModelAdvance(obj,u_);
+        y_ = outputImpl@SimplexPS.Class.ModelAdvance(obj,u);
         
         % Convert electrical y_dq to y_abc
         y_abc = SimplexPS.dq2abc(y_(1:2),theta);
