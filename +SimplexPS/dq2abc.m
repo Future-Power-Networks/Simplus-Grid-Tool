@@ -3,6 +3,12 @@
 
 % Author(s): Yitong Li
 
+% Notes:
+%
+% theta is the angle that dq axis leads abc axis.
+%
+% q axis leads d axis by 90 degrees.
+
 function u_abc = dq2abc(u_dq,theta,varargin)
 
     % Default settings
