@@ -94,9 +94,9 @@ matlab.System
 		-> ModelAdvance  
 			-> ModelTemplate  
 			-> SynchronousMachine
-                -> SynchronousMachineStationary
-            -> SynchronousMachineFull
-                -> SynchronousMachineFullStationary
+                		-> SynchronousMachineStationary
+            		-> SynchronousMachineFull
+                		-> SynchronousMachineFullStationary
 			-> GridFollowingVSI           
 			-> GridFormingVSI             
 			-> InfiniteBusAc               
