@@ -76,7 +76,7 @@ This is the root name space folder of the toolbox, and contains all functions us
 
 This folder contains the basic functions for toolbox. For example, "Main.m" is the main function for toolbox; "DeviceModelCreate.m" creates the small-signal state space models of devices.
 
-### “+Simulink” Sub-folder
+### "+Simulink" Sub-folder
 
 This folder contains the functions generating the Simulink model from user data programmatically and automatically. "MainSimulinkModel.m" is the main function for this folder.
 
@@ -93,18 +93,19 @@ matlab.System
 		& matlab.system.mixin.Propagates  
 		-> ModelAdvance  
 			-> ModelTemplate  
-			-> SynchronousMachine  -------|  
-			-> GridFollowingVSI           |
-			-> GridFormingVSI             |
-			-> InfiniteBusAc              | 
-			-> InfiniteBusDc              |
-			-> FloatingBusAc              | 
-			-> FloatingBusDc              |
-			-> InterlinkAcDc              | 
-			-> GridFeedingBuck            |
-			-> Inductor                   |
-			-> ModelAdvanceTransform     \/
-				-> SynchronousMachineTransform  
+			-> SynchronousMachine
+                -> SynchronousMachineStationary
+            -> SynchronousMachineFull
+                -> SynchronousMachineFullStationary
+			-> GridFollowingVSI           
+			-> GridFormingVSI             
+			-> InfiniteBusAc               
+			-> InfiniteBusDc              
+			-> FloatingBusAc               
+			-> FloatingBusDc              
+			-> InterlinkAcDc               
+			-> GridFeedingBuck            
+			-> Inductor                     
 </pre>
 
 "matlab.System" is the base class of Matlab itself. "matlab.system.mixin.Nondirect" and "matlab.system.mixin.Propagates" are also classes of Matlab, which are included for using system objects in Simulink.
