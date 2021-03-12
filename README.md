@@ -1,4 +1,4 @@
-# SimplexPowerSystem (Version: v2021-MAR-11)
+# SimplexPowerSystem (Version: v2021-MAR-12)
 
 SimplexPowerSystem (SimplexPS, in short) is an open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, generator-converter-composite, AC or DC or hybrid AC-DC).
 
