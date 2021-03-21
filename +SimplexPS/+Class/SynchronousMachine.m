@@ -61,6 +61,13 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             psi_f = abs_e/w;
             T_m = psi_f * i_d - D*w;
 
+            % Notes:
+            % Noting that w is Wbase rather than 1 at steady state in this
+            % model, i.e., w is not in per unit. This means psi_f, T_m, T_e
+            % (or K_S) is also NOT close to 1. This is different from the
+            % analysis in Kundur's book, where w is also in per unit
+            % value.
+            
             % ??? Temp
             obj.psi_f = psi_f;
             v_ex = 0;

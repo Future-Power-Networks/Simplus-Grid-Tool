@@ -135,7 +135,7 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             kp_i_ldq = w_i_ldq*Lf;
             ki_i_ldq = w_i_ldq^2*Lf/4;
             kp_v_odq = w_v_odq*Cf;
-            ki_v_odq = w_v_odq^2*Cf/4*100;
+            ki_v_odq = w_v_odq^2*Cf/4*50;
                 % This is a different way of setting voltage PI
                 % kp_v_odq = 1/(16*w_i_ldq*Lf);
                 % ki_v_odq = 1/(4*Lf);

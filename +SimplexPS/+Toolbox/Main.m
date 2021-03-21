@@ -189,7 +189,7 @@ fprintf('==================================\n')
 fprintf('Calculatting pole/zero...\n')
 pole_sys = pole(GsysDSS)/2/pi;
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-9, 1))
+if isempty(find(real(pole_sys)>1e-8, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
@@ -282,7 +282,7 @@ if Enable_PlotAdmittance
            (2000<=DeviceType{k2} && DeviceType{k2}<2090)
            	Yss{k}  = GminSS(BusPort_i{k},BusPort_v{k});
             Ysym{k} = SimplexPS.ss2sym(Yss{k});
-            SimplexPS.bode_c(Ysym{k}(1,1),1j*omega_p,2*pi,'PhaseOn',0); 
+            SimplexPS.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)];
         end

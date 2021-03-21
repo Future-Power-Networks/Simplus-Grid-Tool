@@ -20,7 +20,7 @@
 % shown in log-scaled axis.
 
 %%
-function Xw = bode_c(X,sbd,wbase,varargin)
+function Xw = bode_c(X,sbd,varargin)
 
     % Settings
     [Option,~]     = SimplexPS.LoadVar(0,'Option',varargin);    	% Default 0, i.e., plot bode rather than singular value
@@ -89,7 +89,7 @@ function Xw = bode_c(X,sbd,wbase,varargin)
     end
 
     if PlotOn == 1
-        SimplexPS.plot_c(Xw,imag(sbd)/wbase,'PhaseOn',PhaseOn,'PhaseShift',PhaseShift,'LineWidth',LineWidth,'Color',Color,varargin);
+        SimplexPS.plot_c(Xw,imag(sbd)/(2*pi),'PhaseOn',PhaseOn,'PhaseShift',PhaseShift,'LineWidth',LineWidth,'Color',Color,varargin);
     else
         fprintf('Warning: The bode plot is disabled.');
     end

@@ -66,6 +66,18 @@ Para0000.L  = 0.1/W0;
 Para0000.R  = 0.01;
 Para0000.w0 = W0;
 
+% Noting that w is not in per unit system here. So, J and D should be
+% divided by W0^2 rather than W0. In this case, P=T*w0. If P is in per unit
+% and is close to 1, T is close to 1/w0 and is much smaller than 1. For the
+% two forms of swing equations blow:
+% J*dw/dt = Tm - Ks - Kd*w;    (1)
+% J*dw/dt = Pm - Ks - Kd*w;    (2)
+% (1)*w0 is equivalent to (2), which means J, Ks, Kd in (1) are w0 times
+% smaller.
+%
+% This is different from the equations in Kundur's book, where w is also in
+% per unit and P=T.
+
 % ======================================
 % Grid-following VSI (PLL-controlled)
 % ======================================
