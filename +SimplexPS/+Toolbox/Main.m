@@ -260,10 +260,6 @@ else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
-% ====================================================================
-% The following plot functions have to be re-written!
-% ====================================================================
-
 omega_p = logspace(-1,4,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
