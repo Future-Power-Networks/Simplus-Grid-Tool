@@ -47,7 +47,11 @@ switch floor(Type/10)
                     
     % ### Grid-following inverter
     case 1      % Type 10-19
-        Device = SimplexPS.Class.GridFollowingVSI('DeviceType',Type);
+        if Type~=19
+            Device = SimplexPS.Class.GridFollowingVSI('DeviceType',Type);
+        else
+            Device = SimplexPS.Class.GridFollowingStationary('DeviceType',Type);
+        end
         Device.Para = [ Para.C_dc;
                         Para.V_dc;
                         Para.kp_v_dc;
@@ -248,9 +252,11 @@ V0 = [-v_q ; v_d];
 I0 = [-i_q ; i_d];
 
 % Integration for omega and unit gain for others
-% Notes: New system has one more new output "w/s", which is added to the
-% head of the original output vector. New system also has a new state
-% "epsilon", which is added to the head of the original state vector.
+% Notes: 
+% New system has one more new output "w/s", which is added to the head of
+% the original output vector. New system also has a new state "epsilon",
+% which is added to the head of the original state vector. This means that
+% the w has to be one of the outputs of the original model.
 for i = 1:length(OutputStr)
     w_port = SimplexPS.AddNum2Str({'w'},DeviceBus);
     w_port = w_port{1};
@@ -258,6 +264,9 @@ for i = 1:length(OutputStr)
         ind_w = i;
         break
     end
+end
+if isempty(ind_w)
+    error(['Error: w has to be in the output of the original device model.']);
 end
 [~,~,ly1_w] = SimplexPS.SsGetDim(Gm);
 Aw = 0;

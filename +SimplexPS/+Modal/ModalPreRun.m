@@ -5,7 +5,11 @@
 
 % Author: Yue Zhu
 
-FileModal=[cd '/Examples/paper_participation/ModalConfig.xlsx'];
+% Warning added by Yitong:
+% This function may give an error if the path of Matlab is not the toolbox
+% path, this should be improved.
+
+FileModal=[cd '/Examples/Paper_Participation/ModalConfig.xlsx'];
 %filename = 'ModalConfig.xlsx';
 SimplexPS.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old contents.
 % write contents in the excel file.

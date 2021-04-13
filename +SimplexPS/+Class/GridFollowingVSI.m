@@ -209,13 +209,33 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 end
                 
                 % PLL angle measurement
-                if 0
-                    e_ang = atan2(v_q,v_d) - ang_r;     % theta-PLL
-                else
-                    e_ang = v_q - ang_r;                % vq-PLL
+                switch 2                                                                   % ???
+                    case 1
+                        e_ang = atan2(v_q,v_d) - ang_r;     % theta-PLL
+                    case 2
+                        e_ang = v_q - ang_r;                % vq-PLL
+                    case 3
+                        Q = v_q*i_d - v_d*i_q;              % Q-PLL
+                        % Q = e_q*i_d - e_d*i_q;     
+                        if i_d<=0
+                            e_ang = - Q - ang_r;
+                        else
+                            e_ang = Q - ang_r;
+                        end
+                    otherwise
+                        error(['Error']);
                 end
-                % "- ang_r" gives the reference in load convention, like the Tw port.
-
+                % Notes:
+                % "- ang_r" gives the reference in load convention, like
+                % the Tw port.
+                %
+                % Noting that Q is proportional to v_q*i_d, this means the
+                % direction of active power influences the sign of Q or
+                % equivalently the PI controller in the PLL. In order to
+                % make sure case 3 is equivalent to case 1 or 2, the
+                % controller for case 3 is dependent the power flow
+                % direction.
+                
                 % Frequency limit
                 w_limit_H = W0*1.5;
                 w_limit_L = W0*0.5;
@@ -241,8 +261,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
                 di_d = (v_d - R*i_d + w*L*i_q - e_d)/L;      	% L
                 di_q = (v_q - R*i_q - w*L*i_d - e_q)/L;      	% L
-                dw_pll_i = e_ang*ki_pll;                    	% PLL I
-                dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;      % PLL tau
+                dw_pll_i = e_ang*ki_pll;                       	% PLL I
+             	dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;      % PLL tau
                 dtheta = w;
                 
                 % Output state

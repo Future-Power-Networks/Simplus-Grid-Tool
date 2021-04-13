@@ -16,8 +16,6 @@ This is the quick manual for developers who want to contribute to the toolbox de
     3) free style, like ss2tf  
 Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly in this project, and use free style when needed.
 
-4- The project is going to be renamed SimplexPowerSystem (SimplexPS, in short), while the project on HIL is called SimplexRealTime (SimplexRT).
-
 ## File structure
 
 The file structure (documentation tree) of the toolbox is shown below. The detailed introduction of each folder will be given next.

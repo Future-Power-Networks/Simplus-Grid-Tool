@@ -28,7 +28,11 @@ for i = 1:N_Device
             case 001
                 Name_Device{i} = ['VSI-PLL' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
-                add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
+                if DeviceType{i}~=19
+                    add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Device{i});
+                else
+                    add_block([Name_LibFile '/Grid-Following Inverter Stationary (System Object)'],FullName_Device{i});
+                end
             case 002
                 Name_Device{i} = ['VSI-Droop' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];

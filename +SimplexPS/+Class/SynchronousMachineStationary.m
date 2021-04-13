@@ -46,7 +46,7 @@ classdef SynchronousMachineStationary < SimplexPS.Class.SynchronousMachine
             v_a  = v_ab(1);
             v_b  = v_ab(2);
             i_d  = i_dq(1);
-            i_q  = i_dq(2);    
+            i_q  = i_dq(2);   
 
             % State space equations
           	% dx/dt = f(x,u)

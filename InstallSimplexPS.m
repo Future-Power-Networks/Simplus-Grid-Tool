@@ -51,6 +51,10 @@ DlgTitle = 'Congratulations!';
 DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run "UserMain.m" now to use the toolbox?';
 choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
 
+%%
+% Notes: 
+% adding path should be improved.
+
 if strcmp(choice,'Yes')
     open('UserMain.m');
     run('UserMain.m');

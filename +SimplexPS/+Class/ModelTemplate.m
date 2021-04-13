@@ -44,7 +44,8 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
         
         % Calculate the equilibrium
         % The equilibrium is determined by the power flow data and device's
-        % own paramters.
+        % own paramters.This function will be called once, at the
+        % beginneing of simulation.
         function [x_e,u_e,xi] = Equilibrium(obj)
          	% Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
@@ -67,6 +68,9 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
     	% State space model
         % This function defines the state space model of this device,
         % and is the core part for capturing the dynamics of this device.
+        %
+        % This function will be called at each step, i.e., Ts, during the
+        % whole precedure of the discrete simulation.
         %
         % The state space model should be a large-signal model rather than
         % a small-signal model. The linearized model will be calculated by
