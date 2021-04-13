@@ -49,6 +49,9 @@ UserData = 'UserData.xlsx';
 % UserData = 'ExamplePowerSystem_v3_6';
 % UserData = 'Nature_NETS_NYPS_68Bus_original.xlsx';
 % UserData = 'Nature_NETS_NYPS_68Bus_IBR.xlsx';
+%
+% For test PR controller
+UserData = 'UserData_testPR.xlsx';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

@@ -50,7 +50,7 @@ switch floor(Type/10)
         if Type~=19
             Device = SimplexPS.Class.GridFollowingVSI('DeviceType',Type);
         else
-            Device = SimplexPS.Class.GridFollowingStationary('DeviceType',Type);
+            Device = SimplexPS.Class.GridFollowingInverterStationary('DeviceType',Type);
         end
         Device.Para = [ Para.C_dc;
                         Para.V_dc;
