@@ -26,7 +26,7 @@ end
 
 if Layer3Enable == 1
     if DeviceSelL3All == 0
-        error('Please select at least a adevice for Impedance-PF Layer 3 analysis');
+        error('Please select at least a device for Impedance-PF Layer 3 analysis');
     elseif ModeSelAll == 0
         error('Please select at least a mode for for Impedance-PF Layer 3 analysis');
     end
