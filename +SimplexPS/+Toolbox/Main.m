@@ -19,8 +19,30 @@ fprintf('==================================\n')
 % ==================================================
 fprintf('Loading data from "UserData.xlsx", please wait a second...\n')
 
-% ### Re-arrange basic settings
-ListBasic = xlsread(UserData,'Basic');
+% ### Load the customized data
+% Other available function: readmatrix, csvread ...
+
+ListBus    	 = xlsread(Name_Netlist,1);     
+ListDevice	 = xlsread(Name_Netlist,2);
+ListBasic    = xlsread(Name_Netlist,3);
+ListLine     = xlsread(Name_Netlist,4);
+ListLineIEEE = xlsread(Name_Netlist,5);
+ListAdvance  = xlsread(Name_Netlist,6);
+
+% ### Re-arrange advanced settings
+Flag_PowerFlowAlgorithm      	= ListAdvance(5);
+Enable_CreateSimulinkModel      = ListAdvance(6);
+Enable_PlotPole                 = ListAdvance(7);
+Enable_PlotAdmittance           = ListAdvance(8);
+Enable_PrintOutput              = ListAdvance(9);
+Enable_PlotSwing                = ListAdvance(10);
+if length(ListAdvance) ==10
+    Enable_Participation = 0;
+else
+    Enable_Participation = ListAdvance(11);
+end
+
+% ### Re-arrange the simulation data
 Fs = ListBasic(1);
 Ts = 1/Fs;              % (s), sampling period
 Fbase = ListBasic(2);   % (Hz), base frequency
@@ -31,29 +53,12 @@ Zbase = Sbase/Ibase;    % (Ohm), base impedance
 Ybase = 1/Zbase;        % (S), base admittance
 Wbase = Fbase*2*pi;     % (rad/s), base angular frequency
 
-% ### Re-arrange advanced settings
-ListAdvance = xlsread(UserData,'Advance');
-Flag_PowerFlowAlgorithm   	= ListAdvance(5);
-Enable_CreateSimulinkModel	= ListAdvance(6);
-Enable_PlotPole           	= ListAdvance(7);
-Enable_PlotAdmittance     	= ListAdvance(8);
-Enable_PrintOutput       	= ListAdvance(9);
-Enable_Participation        = ListAdvance(10);
+% ### Re-arrange the netlist and check error
+[ListLine] = SimplexPS.Toolbox.NetlistIEEE2Toolbox(ListLine,ListLineIEEE);
+[ListBus,ListLine,ListDevice,N_Bus,N_Branch,N_Device] = SimplexPS.Toolbox.RearrangeNetlist(ListBus,ListLine,ListDevice);
 
-% ### Re-arrange the bus netlist
-[ListBus,N_Bus] = SimplexPS.Toolbox.RearrangeListBus(UserData);
-
-% ### Re-arrange the line netlist
-[ListLine,N_Branch.N_Bus_] = SimplexPS.Toolbox.RearrangeListLine(UserData,ListBus);
-DcAreaFlag = find(ListBus(:,12)==2);
-
-% ### Re-arrange the device netlist
-[DeviceBus,DeviceType,Para,N_Device] = SimplexPS.Toolbox.RearrangeListDevice(UserData,Wbase,ListBus);
-% The names of "DeviceType" and "Para" can not be changed, because they
-% will also be used in simulink model.
-
-% Notes:
-% No error checking if number of devices is different from number of buses.
+% ### Re-arrange the device data
+[DeviceType,Para] = SimplexPS.Toolbox.RearrangeDeviceData(ListDevice,Wbase);
 
 %%
 % ==================================================
@@ -62,30 +67,23 @@ DcAreaFlag = find(ListBus(:,12)==2);
 
 % ### Power flow analysis
 fprintf('Doing the power flow analysis...\n')
-if ~isempty(DcAreaFlag)
-    Flag_PowerFlowAlgorithm = 1;
-    fprintf(['Warning: Because the system has dc area(s), the Gauss-Seidel power flow method is always used.\n']);
-end
 switch Flag_PowerFlowAlgorithm
     case 1  % Gauss-Seidel 
         [PowerFlow,~,~,~,~,~,~,~] = SimplexPS.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
     case 2  % Newton-Raphson
-       	[PowerFlow] = SimplexPS.PowerFlow.PowerFlowNR(ListBus,ListLine,Wbase);
+        [PowerFlow] = SimplexPS.PowerFlow.PowerFlowNR(ListBus,ListLine,Wbase);
     otherwise
         error(['Error: Wrong setting for power flow algorithm.']);
 end
-% Form of PowerFlow{i}: P, Q, V, xi, w
-% P and Q are in load convention, i.e., the P and Q flowing from the bus to
-% the device.
 
 % For printing later
 ListPowerFlow = SimplexPS.PowerFlow.Rearrange(PowerFlow);
 
 % Move load flow (PLi and QLi) to bus admittance matrix
-[ListBus,ListLineNew,PowerFlowNew] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,PowerFlow);
+[ListBus,ListLine,PowerFlow] = SimplexPS.PowerFlow.Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow);
 
 % For printting later
-ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlowNew);
+ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlow);
 
 %%
 % ==================================================
@@ -95,7 +93,7 @@ ListPowerFlow_ = SimplexPS.PowerFlow.Rearrange(PowerFlowNew);
 % ### Get the model of lines
 fprintf('Getting the descriptor state space model of network lines...\n')
 
-[YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListBus,ListLineNew,Wbase);
+[YbusObj,YbusDSS,~] = SimplexPS.Toolbox.YbusCalcDss(ListLine,Wbase);
 [~,lsw] = size(YbusDSS.B);
 ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 [ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.GetString(ZbusObj);
@@ -103,34 +101,24 @@ ZbusObj = SimplexPS.ObjSwitchInOut(YbusObj,lsw);
 % ### Get the models of bus devices
 fprintf('Getting the descriptor state space model of bus devices...\n')
 for i = 1:N_Device
-    if length(DeviceBus{i}) == 1
-     	DevicePowerFlow{i} = PowerFlowNew{DeviceBus{i}};
-    elseif length(DeviceBus{i}) == 2
-        DevicePowerFlow{i} = [PowerFlowNew{DeviceBus{i}(1)},PowerFlowNew{DeviceBus{i}(2)}];
-    else
-        error(['Error']);
-    end
-    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},OtherInputs{i},DeviceStateStr{i},DeviceInputStr{i},DeviceOutputStr{i}] = ...
-        SimplexPS.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},DevicePowerFlow{i},Para{i},Ts,ListBus);
+    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},DeviceStateStr{i},DeviceInputStr{i},DeviceOutputStr{i}] = ...
+        SimplexPS.Toolbox.DeviceModelCreate('Type', DeviceType{i} ,'Flow',PowerFlow{i},'Para',Para{i},'Ts',Ts);
     
     % The following data is not used in the script, but will be used in
-    % simulations. Do not delete!
+    % simulations, please do not delete.
     x_e{i} = DeviceEqui{i}{1};
     u_e{i} = DeviceEqui{i}{2};
+    OtherInputs{i} = u_e{i}(3:end,:);
 end
-
-% ### Get the appended model of all devices
-fprintf('Getting the appended descriptor state space model of all devices...\n')
-GmObj = SimplexPS.Toolbox.DeviceModelLink(GmObj_Cell);
 
 % ### Get the model of whole system
 fprintf('Getting the descriptor state space model of whole system...\n')
-[GsysObj,GsysDSS,Port_v,Port_i,BusPort_v,BusPort_i] = ...
-    SimplexPS.Toolbox.ConnectGmZbus(GmObj,ZbusObj,N_Bus);
+GmObj = SimplexPS.Toolbox.DeviceModelLink(GmObj_Cell);
+[GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ...
+    SimplexPS.Toolbox.ConnectGmZbus(GmObj,ZbusObj);
 
-% ### Whole-system admittance model
-YsysObj = SimplexPS.ObjTruncate(GsysObj,Port_i,Port_v);
-YsysDSS = YsysObj.GetDSS(YsysObj);   
+% Whole-system admittance model
+YsysDSS = GsysDSS(Port_i,Port_v);   
 
 % ### Chech if the system is proper
 fprintf('Checking if the whole system is proper:\n')
@@ -160,41 +148,21 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Print results\n')
 fprintf('==================================\n')
-fprintf('Whole system port model (system object form): GsysObj\n')
-fprintf('Whole system port model (descriptor state space form): GsysDSS\n')
+fprintf('Model (system object form): GsysObj\n')
+fprintf('Model (descriptor state space form): GsysDSS\n')
 if Enable_PrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
-    SimplexPS.Toolbox.PrintSysString(DeviceBus,DeviceType,GmObj_Cell,ZbusStateStr);
+    SimplexPS.Toolbox.PrintSysString(N_Device,DeviceType,DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr);
 	fprintf('Print power flow result:\n')
     fprintf('| bus | P | Q | V | angle | omega |')
     ListPowerFlow
 end
 
 fprintf('Other models: \n')
-fprintf('Whole system port model (state space form): GminSS\n')
-fprintf('Whole system admittance model (system object form): YsysObj\n')
-fprintf('Whole system admittance model (descriptor state space form): YsysDSS\n')
-
-%%
-% ==================================================
-% Check Stability
-% ==================================================
-
-fprintf('\n')
-fprintf('==================================\n')
-fprintf('Check Stability\n')
-fprintf('==================================\n')
-
-fprintf('Calculatting pole/zero...\n')
-pole_sys = pole(GsysDSS)/2/pi;
-fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-8, 1))
-    fprintf('Stable!\n');
-else
-    fprintf('Warning: Unstable!\n')
-end
-
+fprintf('Model (state space form): GminSS\n')
+fprintf('Model (descriptor state space form): YsysDSS\n')
+    
 %%
 % ==================================================
 % Create Simulink Model
@@ -215,13 +183,32 @@ if Enable_CreateSimulinkModel == 1
     close_system(Name_Model,0);
     
     % Create the simulink model
-    SimplexPS.Simulink.MainSimulink(Name_Model,ListBus,ListLineNew,DeviceBus,DeviceType,ListAdvance,PowerFlowNew);
+    SimplexPS.Simulink.MainSimulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
 
 else
     fprintf('Warning: The auto creation of simulink model is disabled.\n')
+end
+
+%%
+% ==================================================
+% Check Stability
+% ==================================================
+
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Check Stability\n')
+fprintf('==================================\n')
+
+fprintf('Calculatting pole/zero...\n')
+pole_sys = pole(GsysDSS)/2/pi;
+fprintf('Checking if the system is stable:\n')
+if isempty(find(real(pole_sys)>1e-9, 1))
+    fprintf('Stable!\n');
+else
+    fprintf('Warning: Unstable!\n')
 end
 
 %%
@@ -260,35 +247,66 @@ else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
-omega_p = logspace(-1,4,1e3)*2*pi;
+omega_p = logspace(-2,4,5e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
 if Enable_PlotAdmittance
-    fprintf('Plotting admittance spectrum...')
-  	figure_n = figure_n+1;
+    fprintf('Plotting admittance spectrum...\n')
+    Tj = [1 1j;     % real to complex transform
+          1 -1j];  
+    for k = 1:N_Bus
+        if DeviceType{k} <= 50
+            Gr_ss{k} = GminSS(Port_i([2*k-1,2*k]),Port_v([2*k-1,2*k]));
+            Gr_sym{k} = SimplexPS.ss2sym(Gr_ss{k});
+            Gr_c{k} = Tj*Gr_sym{k}*Tj^(-1);
+        end
+    end
+ 	figure_n = figure_n+1;
  	figure(figure_n);
     CountLegend = 0;
     VecLegend = {};
     for k = 1:N_Bus
-        [k1,k2] = SimplexPS.CellFind(DeviceBus,k);
-        % Plot the active bus admittance only
-        if (0<=DeviceType{k2} && DeviceType{k2}<90) || ...
-           (1000<=DeviceType{k2} && DeviceType{k2}<1090) || ...
-           (2000<=DeviceType{k2} && DeviceType{k2}<2090)
-           	Yss{k}  = GminSS(BusPort_i{k},BusPort_v{k});
-            Ysym{k} = SimplexPS.ss2sym(Yss{k});
-            SimplexPS.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
+        if DeviceType{k} <= 50
+            SimplexPS.bode_c(Gr_c{k}(1,1),1j*omega_pn,2*pi,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)];
         end
     end
     legend(VecLegend);
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude (pu)');
-    SimplexPS.mtit('Admittance Spectrum');
+    SimplexPS.mtit('Bode diagram: admittance');
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
+end
+
+% Plot w related
+if Enable_PlotSwing
+    fprintf('Plotting frequency-port dynamics...\n')
+    for k = 1:N_Bus
+        if floor(DeviceType{k}/10) == 0
+            Gt_ss{k} = GminSS(Port_w(k),Port_T_m(k));
+            Gt_sym{k} = -SimplexPS.ss2sym(Gt_ss{k});  % The negative sign is because of the load convention.
+        elseif floor(DeviceType{k}/10) == 1
+         	Gt_ss{k} = GminSS(Port_w(k),Port_ang_r(k));
+            Gt_sym{k} = -SimplexPS.ss2sym(Gt_ss{k});
+        end
+    end
+ 	figure_n = figure_n+1;
+ 	figure(figure_n);
+    CountLegend = 0;
+    VecLegend = {};
+    for k = 1:N_Bus
+        if (floor(DeviceType{k}/10) == 0) || (floor(DeviceType{k}/10) == 1)
+            SimplexPS.bode_c(Gt_sym{k},1j*omega_pn,2*pi,'InverseOn',InverseOn,'PhaseOn',0);      
+         	CountLegend = CountLegend + 1;
+            VecLegend{CountLegend} = ['Bus',num2str(k)]; 
+        end
+    end
+    legend(VecLegend);
+    SimplexPS.mtit('Bode diagram: frequency-port transfer function');
+    
+else
+    fprintf('Warning: The default plot of omega-related spectrum is disabled.\n');
 end
 
 %%
@@ -296,12 +314,12 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
-if (Enable_Participation == 1) && (isempty(DcAreaFlag))
+if Enable_Participation == 1
     SimplexPS.Modal.ModalPreRun;
     SimplexPS.Modal.ModalAnalysis;
     fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 else
-    fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
+    fprintf('Warning: The modal (participation) analysis is disabled.');
 end
 
 
@@ -313,10 +331,7 @@ fprintf('==================================\n')
 %%
 % Remained questions:
 % - Advanced power flow, including droop bus, etc
+% - For system object, please make sure the first port is vdq or idq.
 % - The power flow calculation assumes the frequency is Wbase
 % - Initialization of network lines, such as the current of line inductor
 % and the voltage of line capacitor.
-% - The calculation of discrete damping resistor should be double checked,
-% especially for the interlink ac-dc converter which has hybrid ac-dc
-% electrical ports.
-

@@ -24,8 +24,8 @@ function plot_c(Xw,fbd,varargin)
 
     if fbd(1)*fbd(W) < 0
         % seperate positive and negative frequency
-        fbdn = fbd(1:W/2);
-        fbdp = fbd(W/2+1:W);
+        wbdn = fbd(1:W/2);
+        wbdp = fbd(W/2+1:W);
         Xwn  = Xw(:,:,1:W/2);
         Xwp  = Xw(:,:,W/2+1:W);
 
@@ -63,11 +63,11 @@ function plot_c(Xw,fbd,varargin)
                         figure();
                     end
                     subplot(1,2,1);
-                    p(1)= loglog(fbdn,abs(squeeze(Xwn(m,n,:))));
+                    p(1)= loglog(wbdn,abs(squeeze(Xwn(m,n,:))));
                     grid on;  hold on;
 
                     subplot(1,2,2);
-                    p(2)= loglog(fbdp,abs(squeeze(Xwp(m,n,:))));
+                    p(2)= loglog(wbdp,abs(squeeze(Xwp(m,n,:))));
                     grid on;  hold on;
                 end
             end
@@ -78,19 +78,19 @@ function plot_c(Xw,fbd,varargin)
                         figure();
                     end
                     subplot(2,2,1);
-                    p(1)= loglog(fbdn,abs(squeeze(Xwn(m,n,:))));
+                    p(1)= loglog(wbdn,abs(squeeze(Xwn(m,n,:))));
                     grid on;  hold on;
 
                     subplot(2,2,3);
-                    p(2)= semilogx(fbdn,squeeze(Arg_wn(m,n,:)-PhaseShift)*180/pi);
+                    p(2)= semilogx(wbdn,squeeze(Arg_wn(m,n,:)-PhaseShift)*180/pi);
                     grid on;  hold on;
 
                     subplot(2,2,2);
-                    p(3)= loglog(fbdp,abs(squeeze(Xwp(m,n,:))));
+                    p(3)= loglog(wbdp,abs(squeeze(Xwp(m,n,:))));
                     grid on;  hold on;
 
                     subplot(2,2,4);
-                    p(4)= semilogx(fbdp,squeeze(Arg_wp(m,n,:)+PhaseShift)*180/pi);
+                    p(4)= semilogx(wbdp,squeeze(Arg_wp(m,n,:)+PhaseShift)*180/pi);
                     grid on;  hold on;
                 end
             end    

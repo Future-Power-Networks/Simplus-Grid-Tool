@@ -3,12 +3,6 @@
 
 % Author(s): Yitong Li
 
-% Notes:
-%
-% theta is the angle that dq axis leads alpha/beta axis.
-%
-% q axis leads d axis by 90 degrees.
-
 function u_dq = alphabeta2dq(u_alphabeta,theta)
     
     % Check the form of input signal

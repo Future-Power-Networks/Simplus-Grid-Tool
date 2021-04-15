@@ -3,69 +3,61 @@
 
 % Author(s): Yitong Li
 
-function [GsysObj,GsysDSS,Port_v_feedin,Port_i_feedout,BusPort_v,BusPort_i] = ConnectGmZbus(GmObj,ZbusObj,N_Bus)
+function [GsysObj,GsysDSS,Port_v_dq,Port_i_dq,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ConnectGmZbus(GmObj,ZbusObj)
 
 % Get the strings
-[~,GmInStr,GmOutStr] = GmObj.GetString(GmObj);
+[~,InputStr,OutputStr] = GmObj.GetString(GmObj);
 
-% Initialize
-Port_v_feedin = [];
-Port_i_feedout = [];
+% Initialize port
+Port_v_dq  = [];
+Port_i_dq  = [];
+Port_w  = [];
+Port_T_m = [];
+Port_ang_r = [];
+Port_P_dc = [];
+Port_v_dc = [];
 
-% Port_w  = zeros(1,N_Bus);
-% Port_T_m = zeros(1,N_Bus);
-% Port_ang_r = zeros(1,N_Bus);
-% Port_P_dc = zeros(1,N_Bus);
-% Port_v_dc = zeros(1,N_Bus);
-
-% Find ports
-for i = 1:N_Bus
-    [~,in1] = SimplexPS.CellFind(GmInStr,['v_d',num2str(i)]);
-    [~,in2] = SimplexPS.CellFind(GmInStr, ['v',num2str(i)]);
-    
-    [~,out1] = SimplexPS.CellFind(GmOutStr,['i_d',num2str(i)]);
-    [~,out2] = SimplexPS.CellFind(GmOutStr,['i',num2str(i)]);
-    if ~isempty(in1)
-        Port_v_feedin = [Port_v_feedin,in1,in1+1];
-        Port_i_feedout = [Port_i_feedout,out1,out1+1];
-        BusPort_v{i} = [in1,in1+1];
-        BusPort_i{i} = [out1,out1+1];
-    elseif ~isempty(in2)
-        Port_v_feedin = [Port_v_feedin,in2];
-        Port_i_feedout = [Port_i_feedout,out2];
-        BusPort_v{i} = in2;
-        BusPort_i{i} = out2;
-    else
-        error(['Error']);
+% Find vdq for feedin, and other port for later use
+CountIn_v = 0;
+for n = 1:length(InputStr)
+    if ( strcmp(InputStr{n},'v_d') || strcmp(InputStr{n},'v_q') ...
+      || strcmp(InputStr{n},'vd') || strcmp(InputStr{n},'vq'))
+        CountIn_v = CountIn_v+1;
+        Port_v_dq(CountIn_v) = n;      % Index of port v
     end
-    
-%  	% Other input ports
-%     [~,p1] = SimplexPS.CellFind(GmInStr,['T_m',num2str(i)]);
-%     if ~isempty(p1) 
-%         Port_T_m(i) = p1;
-%     end
-% 	[~,p2] = SimplexPS.CellFind(GmInStr,['ang_r',num2str(i)]);
-%     if ~isempty(p2) 
-%         Port_ang_r(i) = p2;
-%     end
-%    	[~,p3] = SimplexPS.CellFind(GmInStr,['P_dc',num2str(i)]);
-%     if ~isempty(p3) 
-%         Port_P_dc(i) = p3;
-%     end
-%         
-%     % Output output ports
-%   	[~,p4] = SimplexPS.CellFind(GmOutStr,['w',num2str(i)]);
-%     if ~isempty(p4) 
-%         Port_w(i) = p4;
-%     end
-% 	[~,p5] = SimplexPS.CellFind(GmOutStr,['v_dc',num2str(i)]);
-%     if ~isempty(p5) 
-%         Port_v_dc(i) = p5;
-%     end
+    % Count_v_In/2 can be seen as the index of bus number
+    IndexIn_Bus = CountIn_v/2;
+    if  ( strcmp(InputStr{n},'T_m') || strcmp(InputStr{n},'Tm') )
+        Port_T_m(IndexIn_Bus) = n;   % Index of port Tm
+    end
+    if strcmp(InputStr{n},'ang_r')
+        Port_ang_r(IndexIn_Bus) = n;
+    end
+    if strcmp(InputStr{n},'P_dc')
+        Port_P_dc(IndexIn_Bus) = n;
+    end
+end
+
+% Find idq for feedout, and other output for later use
+CountOut_i = 0;
+for n = 1:length(OutputStr)
+    if ( strcmp(OutputStr{n},'i_d') || strcmp(OutputStr{n},'i_q') ...
+      || strcmp(OutputStr{n},'id') || strcmp(OutputStr{n},'iq'))
+        CountOut_i = CountOut_i+1;
+        Port_i_dq(CountOut_i) = n;     % Index of port i
+    end
+    % Count_i_Out/2 can be seen as the index of bus number
+    IndexOut_Bus = CountOut_i/2;
+    if ( strcmp(OutputStr{n},'w') || strcmp(OutputStr{n},'omega') )
+        Port_w(IndexOut_Bus) = n;   % Index of port omega
+    end
+    if strcmp(OutputStr{n},'v_dc')
+        Port_v_dc(IndexOut_Bus) = n;
+    end
 end
 
 % Connect
-GsysObj = SimplexPS.ObjFeedback(GmObj,ZbusObj,Port_v_feedin,Port_i_feedout);
+GsysObj = SimplexPS.ObjFeedback(GmObj,ZbusObj,Port_v_dq,Port_i_dq);
 SimplexPS.ObjCheckDim(GsysObj);
 
 % Output auxiliary data

@@ -25,17 +25,8 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
     methods(Static)
         
         % Set the strings of state, input, output
-        %
-        % These strings are mainly for printing output and searching the
-        % corresponding ports.
-        %
-        % For ac devices, the first two inputs and outputs should be
-        % {'v_d','v_q'} and {'i_d','i_q'}, and {'w'} should be output. For
-        % dc devices, the first input and output should be {'v'} and {'i'}.
-        % No specific requirementFor other inputs, outputs, and states.
-        %
-        % The dimensions of x, u, y must be coinsistent in following three
-        % functions: SignalList, Equilibrium, and StateSpaceEqu.
+        % These strings are mainly for printing output and facilitate the
+        % users.
         function [State,Input,Output] = SignalList(obj)
         	State  = {'x1','x2'}; 	% x, state
             Input  = {'v'};        	% u, input
@@ -44,8 +35,7 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
         
         % Calculate the equilibrium
         % The equilibrium is determined by the power flow data and device's
-        % own paramters.This function will be called once, at the
-        % beginneing of simulation.
+        % own paramters.
         function [x_e,u_e,xi] = Equilibrium(obj)
          	% Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
@@ -68,9 +58,6 @@ classdef ModelTemplate < SimplexPS.Class.ModelAdvance
     	% State space model
         % This function defines the state space model of this device,
         % and is the core part for capturing the dynamics of this device.
-        %
-        % This function will be called at each step, i.e., Ts, during the
-        % whole precedure of the discrete simulation.
         %
         % The state space model should be a large-signal model rather than
         % a small-signal model. The linearized model will be calculated by

@@ -9,18 +9,15 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function MainSimulink(Name_Model,ListBus,ListLine,DeviceBus,DeviceType,ListAdvance,PowerFlow)
+function MainSimulink(Name_Model,ListLine,DeviceType,ListAdvance,PowerFlow)
 
 %% Common variables
 SimplexPS.Simulink.NewSimulinkModel('ModelName',Name_Model);
-% Name_Lib = 'Simplex Power Systems';
+Name_Lib = 'Simplex Power System';
 Name_LibFile = 'SimplexPS';
 % load_system(Name_LibFile);
 
-%% Shift Base
-% The limit when setting position by set_param() is [-32768,32768]. Hence,
-% we shift the starting point from [0,0] to a negative coordinate, to give
-% more spaces.
+%%
 Shift_Base = [-30000,-30000];
 
 %% Add powergui
@@ -42,7 +39,7 @@ Dist_Bus = [200+100*MaxCount_ToBus,300];
 
 % Add bus
 [Name_Bus,Pos_Bus] = ...
-    SimplexPS.Simulink.SimAddBus(Name_Model,Name_LibFile,Size_Bus,Pos_Bus,ListBus,Dist_Bus);
+    SimplexPS.Simulink.SimAddBus(Name_Model,Name_LibFile,Size_Bus,Pos_Bus,ListLine,Dist_Bus);
 
 %% Add devices
 % Parameter
@@ -51,7 +48,10 @@ Shift_Device = [-150,0];
 
 % Add device
 [FullName_Device,Name_Device,Pos_Device] = ...
-    SimplexPS.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceBus,DeviceType,ListAdvance);
+    SimplexPS.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceType,ListAdvance,PowerFlow);
+
+% Connect device to bus
+SimplexPS.Simulink.SimConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceType);
 
 %% Add device ground
 % Paramters
@@ -85,7 +85,7 @@ Shift_B_GND = [-Size_D_GND(1)/2,30];
 
 % Add branch
 [FullName_Branch,Name_Branch,Shift_ToBus] = ...
-    SimplexPS.Simulink.SimAddBranch(Name_Model,Name_LibFile,Size_Branch,Shift_Branch,Pos_Bus,ListLine);
+    SimplexPS.Simulink.SimAddBranch(Name_Model,Size_Branch,Shift_Branch,Pos_Bus,ListLine);
 
 % Add transformer
 [Name_Trans] = ...
@@ -97,11 +97,8 @@ SimplexPS.Simulink.SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName
 % Connect branch to bus
 SimplexPS.Simulink.SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
 
-%% Connect device to bus
-% This procedure is done finally to get a cleaner line auto routing.
-SimplexPS.Simulink.SimConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceBus,DeviceType);
-
 %% Fit the model to view
+% set_param(gcs, 'ZoomFactor','FitSystem')
 set_param(gcs,'Zoomfactor','fit to view')
 
 end

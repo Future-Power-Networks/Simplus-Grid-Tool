@@ -89,12 +89,14 @@ for i=1:ModeNum
     StateSheet(index,7) = {0};
     index=index+1;
 end
-if IndexSel1~=2 && IndexSel2 ~= 3 % auto select success
+if AutoSel==1 && IndexSel1~=2 && IndexSel2 ~= 3 % auto select success
     AutoSelResult = 1;
     StateSheet(IndexSel1,7) = {1};
     StateSheet(IndexSel2,7) = {1};
-else
+elseif AutoSel==1
     AutoSelResult = 0;
+    error('Mode Auto-Selection failed. Please open ModalConfig.xlsx file to select the mode manually.')
+else
 end
 
 
@@ -126,11 +128,12 @@ for k = 1:N_Bus
         if DeviceType{k} <= 89 %devices)
             DeviceName=strcat('Device',num2str(k));
             ImpedanceSheet(index,1) = {DeviceName};
-            if AutoSel ==1
-                ImpedanceSheet(index,2) = {1};
-            else
-                ImpedanceSheet(index,2) = {0};
-            end
+            ImpedanceSheet(index,2) = {1};
+%             if AutoSel ==1
+%                 ImpedanceSheet(index,2) = {1};
+%             else
+%                 ImpedanceSheet(index,2) = {0};
+%             end
             index=index+1;
         else % floating bus, infinite bus...
         end
@@ -190,12 +193,16 @@ for i=1:ModeNum
     ImpedanceSheet(index,9)={0};
     index=index+1;
 end
-if IndexSel1~=2 && IndexSel2 ~= 3 % auto select success
+if AutoSel==1 && IndexSel1~=2 && IndexSel2 ~= 3 % auto select success
     AutoSelResult = 1;
     ImpedanceSheet(IndexSel1,9) = {1};
     ImpedanceSheet(IndexSel2,9) = {1};
-else
+elseif AutoSel==1
     AutoSelResult = 0;
+    error('Mode Auto-Selection failed. Please open ModalConfig.xlsx file to select the mode manually.')
+else
+    %ImpedanceSheet(IndexSel1,9) = {1};
+    %ImpedanceSheet(IndexSel2,9) = {1};
 end
 
 %***Layer3 device Select
@@ -230,7 +237,8 @@ EnableSheet(7,1) = {'State-PF'};
 EnableSheet(8,1) = {'Bodeplot'};
 EnableSheet(9,1) = {'Impedance-PF Layer 1&2'};
 EnableSheet(10,1) = {'Impedance-PF Layer 3'};
-for i=7:10
+EnableSheet(7,2) = {0};
+for i=8:10
     EnableSheet(i,2) = {1};
 end
 xlswrite(filename,EnableSheet,'Enabling','A1');

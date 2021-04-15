@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-function [UpdateListBus,UpdateListLine,UpdatePowerFlow] = Load2SelfBranch(ListBus,ListLine,PowerFlow)
+function [UpdateListBus,UpdateListLine,UpdatePowerFlow] = Load2SelfBranch(ListBus,ListLine,DeviceType,PowerFlow)
 
 %% Update "ListBus"
 BusIndex  = ListBus(:,1);
@@ -12,8 +12,6 @@ QG      = ListBus(:,6);
 PL      = ListBus(:,7);
 QL      = ListBus(:,8);
 N_Bus = max(BusIndex);
-
-AreaTypeBus = ListBus(:,12);
 
 UpdateListBus = ListBus;
 
@@ -37,9 +35,9 @@ end
 
 %% Error check
 for i = 1:N_Bus
-%     if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (BusType(i)~=1)
-%         error(['Error: Bus ' num2str(i) ' should be a slack bus (power flow) or floating bus (device) because PGi=0 and QGi=0.']);
-%     end
+    if (PG(i)==0) && (QG(i)==0) && (DeviceType{i}~=100) && (BusType(i)~=1)
+        error(['Error: Bus ' num2str(i) ' should be a slack bus (power flow) or floating bus (device) because PGi=0 and QGi=0.']);
+    end
     if PL(i) < 0
         error(['Error: Passive load at bus ' num2str(i) ' can not generate active power, i.e., PLi can not be less than 0.']);
     end
@@ -51,7 +49,7 @@ TB  = ListLine(:,2);   % To bus
 N_Branch = length(FB);
 
 % Initialize "ListLine" for inductive load
-UpdateListLine = ListLine;
+UpdateListLine = [ListLine,inf([N_Branch,1],'double')]; % Set all XL to inf defaultly
 for i = 1:N_Bus
     
     % Assume the load is parallel RL or RC
@@ -83,7 +81,7 @@ for i = 1:N_Bus
             % n is empty, which means ListLine does not have this branch.
             % In this case, a new branch should be added
             UpdateListLine = [UpdateListLine;
-                              i,i,0,0,BL(i),GL(i),1,XL(i),AreaTypeBus(i)];
+                              i,i,0,0,BL(i),GL(i),1,XL(i)];
         end
     else
         % Do not need to care about the open-circuit

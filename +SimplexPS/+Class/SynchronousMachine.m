@@ -5,11 +5,6 @@
 %% Notes
 %
 % The model is in load convention, admittance form.
-%
-% Two very important physical relationships:
-% w * psi = v
-% w * T = P
-% The per unit selection of w will influence the results a lot.
 
 %% Class
 
@@ -56,6 +51,7 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             arg_e = angle(e_DQ);
             abs_e = abs(e_DQ);
             xi = xi + arg_e;
+
             v_dq = V * exp(-1j*arg_e);
             i_dq = i_DQ * exp(-1j*arg_e);
             v_d = real(v_dq);
@@ -65,13 +61,6 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             psi_f = abs_e/w;
             T_m = psi_f * i_d - D*w;
 
-            % Notes:
-            % Noting that w is Wbase rather than 1 at steady state in this
-            % model, i.e., w is not in per unit. This means psi_f, T_m, T_e
-            % (or K_S) is also NOT close to 1. This is different from the
-            % analysis in Kundur's book, where w is also in per unit
-            % value.
-            
             % ??? Temp
             obj.psi_f = psi_f;
             v_ex = 0;
@@ -103,48 +92,24 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             R  = obj.Para(4);
             W0 = obj.Para(5);
 
+            % ??? Temp
+            psi_f = obj.psi_f;
+
             % State space equations
           	% dx/dt = f(x,u)
             % y     = g(x,u)
             if CallFlag == 1        
             % ### Call state equation: dx/dt = f(x,u)
                 % Auxiliary equation
-                psi_f = obj.psi_f;
                 psi_d = L*i_d;
                 psi_q = L*i_q - psi_f;
-                if obj.DeviceType == 0
-                    Te = psi_f * i_d;
-                elseif obj.DeviceType == 1
-                    Pe = psi_f*W0*i_d;
-                else
-                    error(['Error.']);
-                end
+                Te = psi_f * i_d;
                 
                 % State equation
-                if obj.DeviceType == 0
-                di_d   = (v_d - R*i_d + w*psi_q)/L;
-                di_q   = (v_q - R*i_q - w*psi_d)/L;
+                di_d   = (v_d - R*i_d + w * psi_q)/L;
+                di_q   = (v_q - R*i_q - w * psi_d)/L;
                 dw     = (Te - T_m - D*w)/J;
-                elseif obj.DeviceType == 1
-             	di_d   = (v_d - R*i_d + w*L*i_q - psi_f*W0)/L;
-                di_q   = (v_q - R*i_q - w*L*i_d)/L;
-                dw     = (Pe - T_m*W0 - D*w*W0)/(J*W0);
-                % Notes:
-                %
-                % For type 1, we can move the flux inductor outside the SG.
-                % This operation is based on a precondition that the Pe is
-                % measured from the internal EMF rather than the output
-                % electrical terminal.
-                % 
-                % q-axis is aligned to psi_f, rather than d-axis. q-axis is
-                % leading d-axis 90 degrees. These two conventions would be
-                % different from conventional SG models for example in
-                % Kundur's book.
-                end
                 dtheta = w;
-                
-                % Notes:
-                % Type 0 has more dampings than type 1.
 
                 f_xu = [di_d; di_q; dw; dtheta];
                 Output = f_xu;

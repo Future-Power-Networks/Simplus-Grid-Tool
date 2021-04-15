@@ -2,29 +2,9 @@
 
 % Author(s): Yitong Li
 
-function [p1,p2] = nyquist_c(X,sbd,varargin)
+function nyquist_c(X,sbd,varargin)
 
-% Set default values
-Half = 0;
-LineWidth = 1;
-Color1 = 'k';
-Color2 = 'k';
-
-% Update values
-for i = 1:length(varargin)
-    if strcmpi(varargin{i},'Half')
-        Half = varargin{i+1};
-    elseif strcmpi(varargin{i},'LineWidth')
-        LineWidth = varargin{i+1};
-    elseif strcmpi(varargin{i},'Color1')
-        Color1 = varargin{i+1};
- 	elseif strcmpi(varargin{i},'Color2')
-        Color2 = varargin{i+1};
-    elseif strcmpi(varargin{i},'Color')
-        Color1 = varargin{i+1};
-        Color2 = varargin{i+1};
-    end
-end
+[Half,~] = LoadVar(0,'Half',varargin);          % Default 0, i.e., plot bode rather than singular value
 
 funcX = matlabFunction(X);
 
@@ -58,10 +38,10 @@ for n = 1:W/2
     Xwp_y(n) = imag(Xwp(n));
 end
 
-p1 = plot(Xwn_x,Xwn_y,'LineWidth',LineWidth,'Color',Color1); grid on; hold on;
+plot(Xwn_x,Xwn_y); grid on; hold on;
 
 if Half == 0
-    p2 = plot(Xwp_x,Xwp_y,'LineWidth',LineWidth,'Color',Color2); grid on; hold on;
+    plot(Xwp_x,Xwp_y); grid on; hold on;
 end
 
 else
