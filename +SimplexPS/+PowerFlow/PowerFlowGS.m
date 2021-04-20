@@ -43,7 +43,7 @@ tolerance = 1;           	% Initialize tolerence
 iteration = 0;              % Initialize interaction count
 
 tolerance_max  = 1e-8;
-iteration_max  = 1e4;
+iteration_max  = 1e5;
 
 while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     
@@ -89,9 +89,9 @@ while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     N = length(V);
     
     tolerV = max(abs(abs(V) - abs(Vprev)));     % Calculate V tolerance.
-%     tolerP = max(abs(real(S(2:N)) - P(2:N)));     % Calculate P tolerance, exclude the slack terminal
+    tolerP = max(abs(real(S(2:N)) - P(2:N)));     % Calculate P tolerance, exclude the slack terminal
 %     tolerQ = max(abs(imag(S(2:N)) + Q(2:N)));     % Calculate Q tolerance, exclude the slack terminal
-    tolerP = 0;
+%    tolerP = 0;
     tolerQ = 0;
     
     % We use tolerV only here to check the total tolerance

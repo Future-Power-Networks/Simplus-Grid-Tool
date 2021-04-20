@@ -21,7 +21,7 @@ close all;  % Close all figures, etc
 % Default
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
-UserData = 'UserData.xlsx';
+% UserData = 'UserData.xlsx';
 
 % Other example power systems (in "Examples" folder):
 %
@@ -44,14 +44,22 @@ UserData = 'UserData.xlsx';
 % For test
 % UserData = 'SingleSG';
 % UserData = 'SingleIBR';
+% UserData = 'SingleIBR_v1';
 % UserData = 'ExamplePowerSystem_v3';
+% UserData = 'ExamplePowerSystem_v4';
 % UserData = 'ExamplePowerSystem_v3_5';
 % UserData = 'ExamplePowerSystem_v3_6';
-% UserData = 'Nature_NETS_NYPS_68Bus_original.xlsx';
-% UserData = 'Nature_NETS_NYPS_68Bus_IBR.xlsx';
+% UserData = 'Nature_NETS_NYPS_68Bus_original';
+% UserData = 'Nature_NETS_NYPS_68Bus_IBR';
+% UserData = 'Nature_NETS_NYPS_68Bus_IBR_v1';
+% UserData = 'Nature_NETS_NYPS_68Bus_IBR_all';
+% UserData = '68Bus_2SG_OtherIBR';
 %
 % For test PR controller
-UserData = 'UserData_testPR.xlsx';
+% UserData = 'UserData_testPR.xlsx';
+
+% UserData = '3MachineModel';
+UserData = 'Duality_14Bus';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

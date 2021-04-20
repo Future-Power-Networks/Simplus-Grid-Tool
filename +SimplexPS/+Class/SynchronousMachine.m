@@ -115,7 +115,7 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
                 if obj.DeviceType == 0
                     Te = psi_f * i_d;
                 elseif obj.DeviceType == 1
-                    Pe = psi_f*W0*i_d;
+                    Pe = psi_f*W0*i_d;      % Means e_d = psi_f*W0 is constant.
                 else
                     error(['Error.']);
                 end

@@ -4,6 +4,10 @@
 
 % Author(s): Yitong Li, Yunjie Gu
 
+% Notes for developers:
+% The simulink library may need to be updated programmatically here, when
+% adding Simplex Library.
+
 %%
 clear all
 clc

@@ -70,8 +70,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             e_dq = v_dq - i_dq * (R + 1j*L*w);
             e_d = real(e_dq);
             e_q = imag(e_dq);
-            i_d_i = e_d + Gi_cd*W0*L*(-i_q);
-            i_q_i = e_q - Gi_cd*W0*L*(-i_d);
+            i_d_i = e_d;
+            i_q_i = e_q;
             i_d_r = i_d;
             i_q_r = i_q;
             w_pll_i = w;
@@ -98,9 +98,9 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
 
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
             % Get the power PowerFlow values
-            P 	= obj.PowerFlow(1);
-            Q	= obj.PowerFlow(2);
-            V	= obj.PowerFlow(3);
+            P0 	= obj.PowerFlow(1);
+            Q0	= obj.PowerFlow(2);
+            V0	= obj.PowerFlow(3);
             xi	= obj.PowerFlow(4);
             w   = obj.PowerFlow(5);
             
@@ -112,8 +112,9 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             kp_pll  = obj.Para(5);      % PLL, P
             ki_pll  = obj.Para(6);      % PLL, I
             tau_pll = obj.Para(7);
-            kp_i_dq = obj.Para(8);      % i_dq, P
-            ki_i_dq = obj.Para(9);      % i_dq, I
+            kp_i    = obj.Para(8);      % i, P
+            ki_i    = obj.Para(9);      % i, I
+            % ki_i    = 5*ki_i;                                                         % ???????
             k_pf    = obj.Para(10);
             L       = obj.Para(11);     % L filter
             R       = obj.Para(12);     % L filter's inner resistance
@@ -143,14 +144,12 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             v_q    = u(2);
             ang_r  = u(3);
             P_dc   = u(4);
-            
-          	% Current limit
-            i_d_limit = 1.5;
-            i_q_limit = 1.5;
 
             % Get current reference
             if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 % Anti wind-up for vdc control
+               	i_d_limit = 1.5;
+                i_q_limit = 1.5;
                 v_dc_i = min(v_dc_i,i_d_limit);
                 v_dc_i = max(v_dc_i,-i_d_limit);
 
@@ -158,16 +157,73 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
             elseif obj.DeviceType == 11
                 % % Active power control                                           
-                i_d_r = P/V;
+                i_d_r = P0/V0;
             else
                error('Invalid DeviceType.');
             end
-
             % i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
             i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
 
             EnableSaturation = 0;
+            
+            % PLL angle measurement
+            switch 2                                                                    % ?????? 
+                case 1                                  % theta-PLL
+                    e_ang = atan2(v_q,v_d) - ang_r;
+                case 2                                  % vq-PLL
+                    e_ang = v_q - ang_r;
+                case 3                                  % Q-PLL
+                    S = (v_d+1i*v_q)*conj(i_d_r+1i*i_q_r);
+                    % Should not be i reference?                                        % ???????
+                    % S = (e_d+1i*e_q)*conj(i_d+1i*i_q);
+                    Q = imag(S);
+                    % Notes:
+                    % S should be calculated by removing the effects of
+                    % both PIi and Lf. Hence, we use i_dq_r here based on
+                    % the impedance circuit model.
+                    if i_d<=0
+                        e_ang = - Q - ang_r;
+                    else
+                        e_ang = Q - ang_r;
+                    end
+                    e_ang = e_ang/abs(P0);
+                otherwise
+                    error(['Error']);
+            end
+            % Notes:
+            % "- ang_r" gives the reference in load convention, like
+            % the Tw port.
+            %
+            % Noting that Q is proportional to v_q*i_d, this means the
+            % direction of active power influences the sign of Q or
+            % equivalently the PI controller in the PLL. In order to
+            % make sure case 3 is equivalent to case 1 or 2, the
+            % controller for case 3 is dependent the power flow
+            % direction.
+            %
+            % e_ang should be scaled by i_d as well. We scale it by P for
+            % the sake of brevity.
 
+            % Frequency limit and saturation
+            w_limit_H = W0*1.5;
+            w_limit_L = W0*0.5;
+            if EnableSaturation
+            w = min(w,w_limit_H);
+            w = max(w,w_limit_L);
+            end
+           
+            % PLL control
+            dw_pll_i = e_ang*ki_pll;                            % Integral controller
+            if 1                                                                            % ??????
+                dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
+                % Notes:
+                % This introduces an additional state w.
+            else
+                dw = 0;                                         % No LPF
+                w = w_pll_i + e_ang*kp_pll;
+            end
+            dtheta = w;
+            
             % Current saturation
             if EnableSaturation
             i_d_r = min(i_d_r,i_d_limit);
@@ -190,13 +246,30 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             i_q_i = max(i_q_i,e_q_limit_L);
             end
             
-            % Ac current PI
-            di_d_i = -(i_d_r - i_d)*ki_i_dq;               	% i_d I
-            di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
+            % Ac current control
+            if 1                                                                        % ??????
+                % dq-frame PI
+                di_d_i = -(i_d_r - i_d)*ki_i;
+                di_q_i = -(i_q_r - i_q)*ki_i;
+            else
+                % alpha/beta-frame PR control
+                i_dq_r = i_d_r + 1i*i_q_r;
+                i_dq = i_d + 1i*i_q;
+                i_dq_i = i_d_i + 1i*i_q_i;
+                di_dq_i = -(i_dq_r-i_dq)*ki_i - 1i*w*i_dq_i + 1i*W0*i_dq_i;
+                di_d_i = real(di_dq_i);
+                di_q_i = imag(di_dq_i);
+            end
+            % Notes:
+            % For dq-frame PI controller,
+            % e_dq = -(i_dq_r - i_dq)*(kp + ki/s)
+            % For alpha/beta-frame PR controller,
+            % e_dq = -(i_dq_r - i_dq)*(kp + ki/(s+j*w-j*w0))
+            % where w0 is the resonant frequency.
 
             % Ac voltage (duty cycle*v_dc)
-            e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i - Gi_cd*W0*L*(-i_q);
-            e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i + Gi_cd*W0*L*(-i_d);
+            e_d = -(i_d_r - i_d)*kp_i + i_d_i;
+            e_q = -(i_q_r - i_q)*kp_i + i_q_i;
 
             % Ac voltage (duty cycle) saturation
             if EnableSaturation
@@ -208,8 +281,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             
             % Dc link control
           	if obj.DeviceType == 10
-                dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc; 	% C_dc
-                dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
+                dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc;       % C_dc
+                dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
             elseif obj.DeviceType == 12
                 i_dc = P_dc/v_dc_r;
                 dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
@@ -219,67 +292,18 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             else
                 error('Invalid DeviceType.');
             end
-
-            % PLL angle measurement
-            switch 2                                                                   % ???
-                case 1
-                    e_ang = atan2(v_q,v_d) - ang_r;     % theta-PLL
-                case 2
-                    e_ang = v_q - ang_r;                % vq-PLL
-                case 3
-                    % Q = v_q*i_d - v_d*i_q;              % Q-PLL
-                    P = e_d*i_d + e_q*i_q;
-                    Q = e_q*i_d - e_d*i_q;     
-                    if i_d<=0
-                        e_ang = - Q - ang_r;
-                    else
-                        e_ang = Q - ang_r;
-                    end
-                otherwise
-                    error(['Error']);
-            end
-            % Notes:
-            % "- ang_r" gives the reference in load convention, like
-            % the Tw port.
-            %
-            % Noting that Q is proportional to v_q*i_d, this means the
-            % direction of active power influences the sign of Q or
-            % equivalently the PI controller in the PLL. In order to
-            % make sure case 3 is equivalent to case 1 or 2, the
-            % controller for case 3 is dependent the power flow
-            % direction.
-
-            % Frequency limit and saturation
-            w_limit_H = W0*1.5;
-            w_limit_L = W0*0.5;
-            if EnableSaturation
-            w = min(w,w_limit_H);
-            w = max(w,w_limit_L);
-            end
-            
-            % PLL control
-            dw_pll_i = e_ang*ki_pll;                            % Integral controller
-            if 1                                                                % ???
-                dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
-                % Notes:
-                % This introduces an additional state w.
-            else
-                dw = 0;                                         % No LPF
-                w = w_pll_i + e_ang*kp_pll;
-            end
-            dtheta = w;
             
             % Ac filter inductor
           	di_d = (v_d - R*i_d + w*L*i_q - e_d)/L;
             di_q = (v_q - R*i_q - w*L*i_d - e_q)/L;
+%           	di_d = (v_d - R*i_d + W0*L*i_q - e_d)/L;                                    % ?????? 
+%             di_q = (v_q - R*i_q - W0*L*i_d - e_q)/L;
             
             % State space equations
             % dx/dt = f(x,u)
             % y     = g(x,u)
             if CallFlag == 1    
             % ### Call state equation: dx/dt = f(x,u)
-                
-                % Output state
                 f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
                 if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
