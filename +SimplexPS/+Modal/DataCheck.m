@@ -2,9 +2,9 @@ function DataCheck(AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,...
     StateSel_DSS, ModeSel_DSS,BodeEnable,Layer12Enable,Layer3Enable,StatePFEnable)
 if StatePFEnable == 1
     if ModeSel_DSS == 0
-        error('Please select at least a mode for State-PF anallysis');
+        error('Please select at least a mode for State-PF analysis');
     elseif StateSel_DSS == 0
-        error('Please select at least a state for State-PF anallysis');
+        error('Please select at least a state for State-PF analysis');
     end
 end 
 
