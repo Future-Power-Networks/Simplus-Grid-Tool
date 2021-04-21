@@ -9,8 +9,8 @@
 % This function may give an error if the path of Matlab is not the toolbox
 % path, this should be improved.
 
-FileModal=[cd '/Examples/Paper_Participation/ModalConfig.xlsx'];
-%filename = 'ModalConfig.xlsx';
+
+FileModal=[cd '\Examples\ParticipationAnalysis\ModalConfig_' UserData];
 SimplexPS.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old contents.
 % write contents in the excel file.
 
@@ -26,11 +26,16 @@ AutoSel = 1;
 [AutoSelResult] = SimplexPS.Modal.ExcelWrite(N_Bus,N_Device,DeviceType,...
     DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, FileModal);
 
-fprintf('ModalConfig.xlsx is now ready. Plese open the file and select the states and devices you are interested.\n');
+fprintf('%s is now ready. Plese open the file and select the states and devices you are interested.\n',FileModal);
 fprintf('After selection, save the excel file and run Modal Analysis.m.\n');
-
+winopen(UserData);
+if AutoSel == 0
+    winopen(FileModal);
+end
 if AutoSel == 1 && AutoSelResult == 1
     SimplexPS.Modal.ModalAnalysis
 elseif AutoSelResult == 0
+elseif AutoSel ==1 && AutoSelResult == 0
     error('Mode Auto-Selection failed. Please open ModalConfig.xlsx file to select the mode manually.')
+else
 end

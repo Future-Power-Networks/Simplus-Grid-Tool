@@ -14,7 +14,7 @@
 
 %% Basic
 %Basic infomation acquirement.
-FileModal=[cd '/Examples/paper_participation/ModalConfig.xlsx'];
+FileModal=[cd '\Examples\ParticipationAnalysis\ModalConfig_' UserData];
 clear MdLayer1;
 clear MdLayer2;
 clear MdLayer3;
@@ -34,13 +34,13 @@ SimplexPS.Modal.DataCheck(AxisSel, DeviceSelL12, ModeSelAll, DeviceSelL3All,...
 ModeSelNum = length(ModeSelAll);
 %get ResidueAll, ZmValAll.
 [MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
-    SimplexPS.Modal.SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS);
+    SimplexPS.Modal.SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS, DeviceInputStr, DeviceOutputStr);
 
 %% Impedance Participation Factor
 %Analysis.
 if BodeEnable ==1
     fprintf('plotting bode diagram for selected whole-system admittance...\n')
-    SimplexPS.Modal.BodeDraw(DeviceSelL12, AxisSel, GminSS, DeviceType, N_Bus);
+    SimplexPS.Modal.BodeDraw(DeviceSelL12, AxisSel, GminSS, DeviceType, N_Bus, DeviceInputStr, DeviceOutputStr);
 end
 
 for modei=1:ModeSelNum
@@ -59,13 +59,15 @@ for modei=1:ModeSelNum
             MdLayer2(modei).result(count).Device={['Device',num2str(DeviceSelL12(count))]};
             MdLayer2(modei).result(count).DeltaLambdaReal=Layer2.real(count);
             MdLayer2(modei).result(count).DeltaLambdaImag=Layer2.imag(count);
+            MdLayer2(modei).result(count).DeltaLambdaRealpu=Layer2.real_pu(count);
+            MdLayer2(modei).result(count).DeltaLambdaImagpu=Layer2.imag_pu(count);
         end
     end
     if Layer3Enable ==1
         fprintf('Calculating Modal Layer3...\n')
         MdLayer3(modei).mode = [num2str(FreqSel),'~Hz'];
-        MdLayer3(modei).result = SimplexPS.Modal.MdLayer3(Residue,ZmVal,...
-        FreqSel,DeviceType,DeviceSelL3All,Para,PowerFlow,Ts);
+        MdLayer3(modei).result = SimplexPS.Modal.MdLayer3(Residue,ZmVal,FreqSel,DeviceType,...
+                DeviceSelL3All,Para,PowerFlow,Ts,DeviceBus,ListBus);
     end
 end
 

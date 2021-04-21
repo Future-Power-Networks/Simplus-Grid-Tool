@@ -43,7 +43,7 @@ for k = 1:N_Bus
                 hold on;
             end
             pin = pin + length(DeviceInputStr{k});
-            pout = pout + length(DeviceOutputStr{k});
+        pout = pout + length(DeviceOutputStr{k});
         end
 end
 legend(VecLegend);
