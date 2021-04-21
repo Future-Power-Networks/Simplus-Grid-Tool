@@ -312,6 +312,10 @@ methods(Access = protected)
     % ### Update discreate states
     function updateImpl(obj, u)
         
+        % Notes:
+        % We can use u_e here to make u from the electrical u to port u,
+        % and then send it into the StateSpaceEqu function.
+        
         switch obj.DiscreMethod
             
             % ### Case 1: Forward Euler 
@@ -442,7 +446,7 @@ methods(Access = protected)
     
     % Set the size of output
     function [size] = getOutputSizeImpl(obj)
-        [~,~,Output] = obj.SignalList(obj);
+        [~,~,Output] = obj.SignalList(obj);         % If we fixed the output format, we do not need the output detection then.
         size = length(Output);
     end
         
