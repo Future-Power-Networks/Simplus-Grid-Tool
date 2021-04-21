@@ -1,13 +1,18 @@
-% this .m file is used to prepare an excel file for user to config
-% Participation / Sensitivity analysis. If the file existed, this program
+% This .m file is used to prepare an excel file for user to configure
+% participation/sensitivity analysis. If the file existed, this program
 % will clear the original contents. The excel file is built based on the
 % running results of the toolbox.
 
 % Author: Yue Zhu
 
 % Warning added by Yitong:
-% This function may give an error if the path of Matlab is not the toolbox
-% path, this should be improved.
+%
+% This function may give an error if the current path of Matlab is not the
+% toolbox root path, this should be improved.
+%
+% Running this function needs to close all excel forms. Then, the
+% UserData.xlsx will be re-opened. This might influence the unsaved work of
+% users.
 
 
 FileModal=[cd '\Examples\ParticipationAnalysis\ModalConfig_' UserData];
@@ -26,7 +31,7 @@ AutoSel = 1;
 [AutoSelResult] = SimplexPS.Modal.ExcelWrite(N_Bus,N_Device,DeviceType,...
     DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, FileModal);
 
-fprintf('%s is now ready. Plese open the file and select the states and devices you are interested.\n',FileModal);
+fprintf('%s is now ready.\nPlease open the file and select the states and devices you are interested.\n',FileModal);
 fprintf('After selection, save the excel file and run Modal Analysis.m.\n');
 winopen(UserData);
 if AutoSel == 0
@@ -36,6 +41,6 @@ if AutoSel == 1 && AutoSelResult == 1
     SimplexPS.Modal.ModalAnalysis
 elseif AutoSelResult == 0
 elseif AutoSel ==1 && AutoSelResult == 0
-    error('Mode Auto-Selection failed. Please open ModalConfig.xlsx file to select the mode manually.')
+    error(['Error: Mode Auto-Selection failed. Please open ModalConfig.xlsx file to select the mode manually.'])
 else
 end

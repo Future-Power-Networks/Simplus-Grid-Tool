@@ -13,6 +13,16 @@ fprintf('==================================\n')
 fprintf('Start to run SimplexPowerSystem\n')
 fprintf('==================================\n')
 
+%% 
+% ==================================================
+% Change current path of matlab
+% ==================================================
+pathstr = mfilename('fullpath');        % Get the path of main.m
+[pathstr,~,~]  = fileparts(pathstr);    % Get the path of Toolbox namespace
+[pathstr,~,~]  = fileparts(pathstr);    % Get the of root namespace
+[pathstr,~,~]  = fileparts(pathstr);    % Get the path of toolbox
+cd(pathstr);                            % Change the current address
+
 %%
 % ==================================================
 % Load customized data

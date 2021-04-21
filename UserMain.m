@@ -13,8 +13,8 @@
 % can be found in "Examples" folder.
 
 %% Clear matlab
-clear all;  % Clear matlab workspace
-clc;        % Clear matlab command window
+clear all;  % Clear Matlab workspace
+clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Set user data
@@ -42,9 +42,6 @@ UserData = 'UserData.xlsx';
 % UserData = 'Hybrid_test_v2.xlsx';
 
 %% Run toolbox
-mfile_name = mfilename('fullpath');
-[pathstr,~,~]  = fileparts(mfile_name);
-cd(pathstr);
 SimplexPS.Toolbox.Main();
 
 %% Results available to users (saved in Workspace)
@@ -78,7 +75,7 @@ SimplexPS.Toolbox.Main();
 
 % mymodel_v1;       % This is the simulink model generated automatically 
                     % based on the user data.
-
+                    
 %% User function
 % Users can write their own functions here to further deal with the data
 % mentioned above.

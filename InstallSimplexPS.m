@@ -16,9 +16,9 @@ close all
 %%
 % Change the current folder
 fprintf('Changing the current folder to the toolbox folder...\n')
-mfile_name = mfilename('fullpath');
-[pathstr,~,~]  = fileparts(mfile_name);
-cd(pathstr);
+MfilePath = mfilename('fullpath');
+[RootPath,~,~]  = fileparts(MfilePath);
+cd(RootPath);
 
 % Check the matlab version
 fprintf('Checking the Matlab version...\n')
@@ -37,7 +37,11 @@ end
 
 % Add folder to path
 fprintf('Installing SimplexPowerSystem...\n')
-addpath(genpath(pwd));  % Add path
+addpath(genpath([RootPath,'/Examples']));         	% Add "Examples" folder
+addpath(genpath([RootPath,'/Library']));          	% Add "Library" folder
+addpath(genpath([RootPath,'/Debug']));             	% Add "Debug" folder
+addpath(genpath([RootPath,'/Documentations']));   	% Add "Documentations" folder
+addpath(genpath(RootPath));                         % Add root path
 savepath;
 
 % Convert the toolbox lib to the required version
