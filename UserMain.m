@@ -42,6 +42,9 @@ UserData = 'UserData.xlsx';
 % UserData = 'Hybrid_test_v2.xlsx';
 
 %% Run toolbox
+mfile_name = mfilename('fullpath');
+[pathstr,~,~]  = fileparts(mfile_name);
+cd(pathstr);
 SimplexPS.Toolbox.Main();
 
 %% Results available to users (saved in Workspace)
