@@ -53,11 +53,11 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             w   = obj.PowerFlow(5);
 
             % Get parameters
-            V_dc        = obj.Para(2);
-            wL          = obj.Para(7);
-            R           = obj.Para(8);
-            W0          = obj.Para(9);
-            L = wL/W0;
+            V_dc = obj.Para(2);
+            wLf  = obj.Para(7);
+            R    = obj.Para(8);
+            W0   = obj.Para(9);
+            Lf   = wLf/W0;
 
             % Calculate paramters
             i_d = P/V;
@@ -66,7 +66,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             v_q = 0;
             i_dq = i_d + 1j*i_q;
             v_dq = v_d + 1j*v_q;
-            e_dq = v_dq - i_dq * (R + 1j*L*w);
+            e_dq = v_dq - i_dq * (R + 1j*Lf*w);
             e_d = real(e_dq);
             e_q = imag(e_dq);
             i_d_i = e_d;
@@ -110,12 +110,12 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             f_pll       = obj.Para(4);     
             f_tau_pll   = obj.Para(5);
             f_i_dq      = obj.Para(6); 
-            wL          = obj.Para(7);
+            wLf         = obj.Para(7);
             R           = obj.Para(8);
             W0          = obj.Para(9);
             
             % Filter inductor
-            L = wL/W0;
+            Lf = wLf/W0;
             
             % Dc link controller parameter
             w_vdc   = f_v_dc*2*pi;
@@ -131,8 +131,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             
             % Current controller paramter
             w_i_dq  = f_i_dq*2*pi;
-            kp_i_dq = L * w_i_dq;
-            ki_i_dq = L * w_i_dq^2 /4;
+            kp_i_dq = Lf * w_i_dq;
+            ki_i_dq = Lf * w_i_dq^2 /4;
             
             % Notes:
             % kp = w*L, ki = w^2*L/4. These values can ensure the current
@@ -313,10 +313,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             end
             
             % Ac filter inductor
-          	di_d = (v_d - R*i_d + w*L*i_q - e_d)/L;
-            di_q = (v_q - R*i_q - w*L*i_d - e_q)/L;
-%           	di_d = (v_d - R*i_d + W0*L*i_q - e_d)/L;                                    % ?????? 
-%             di_q = (v_q - R*i_q - W0*L*i_d - e_q)/L;
+          	di_d = (v_d - R*i_d + w*Lf*i_q - e_d)/Lf;
+            di_q = (v_q - R*i_q - w*Lf*i_d - e_q)/Lf;
             
             % State space equations
             % dx/dt = f(x,u)

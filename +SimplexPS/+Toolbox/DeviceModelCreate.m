@@ -41,7 +41,7 @@ switch floor(Type/10)
         Device = SimplexPS.Class.SynchronousMachine('DeviceType',Type);
         Device.Para = [ Para.J;
                         Para.D;
-                        Para.L;
+                        Para.wL;
                         Para.R;
                         Para.w0];       % (5)
                     
@@ -58,7 +58,7 @@ switch floor(Type/10)
                         Para.f_pll;
                         Para.f_tau_pll;
                         Para.f_i_dq;
-                        Para.wL;
+                        Para.wLf;
                         Para.R;
                         Para.w0];
                    

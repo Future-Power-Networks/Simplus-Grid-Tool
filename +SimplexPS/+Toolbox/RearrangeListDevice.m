@@ -60,23 +60,11 @@ end
 % ======================================
 % Synchronous generator
 % ======================================
-Para0000.J  = 3.5*2/W0^2;   % Jpu=J/Pb=[1/2*J*w0^2/Pb]*2/w0^2, [MWs/MW] 
-Para0000.D  = 1/W0^2;     	% Dpu=dTpu/dw=dPpu/dw/w0=[dP%/dw%]/w0^2, [%/%]
-Para0000.L  = 0.1/W0;
+Para0000.J  = 3.5;
+Para0000.D  = 1;
+Para0000.L  = 0.1;
 Para0000.R  = 0.01;
 Para0000.w0 = W0;
-
-% Noting that w is not in per unit system here. So, J and D should be
-% divided by W0^2 rather than W0. In this case, P=T*w0. If P is in per unit
-% and is close to 1, T is close to 1/w0 and is much smaller than 1. For the
-% two forms of swing equations blow:
-% J*dw/dt = Tm - Ks - Kd*w;    (1)
-% J*dw/dt = Pm - Ks - Kd*w;    (2)
-% (1)*w0 is equivalent to (2), which means J, Ks, Kd in (1) are w0 times
-% smaller.
-%
-% This is different from the equations in Kundur's book, where w is also in
-% per unit and P=T.
 
 % ======================================
 % Grid-following VSI (PLL-controlled)
@@ -84,18 +72,18 @@ Para0000.w0 = W0;
 % Dc link
 Para0010.V_dc   = 2.5;
 Para0010.C_dc   = 2*0.1*Para0010.V_dc^2;
-Para0010.f_v_dc = 20;       % (Hz) bandwidth, vdc
+Para0010.f_v_dc = 20;           % (Hz) bandwidth, vdc
 
 % Ac filter
-Para0010.wL = 0.03;
-Para0010.R  = 0.01;
+Para0010.wLf = 0.03;
+Para0010.R   = 0.01;
 
 % PLL
-Para0010.f_pll      = 20;      % (Hz) bandwidth, PLL
-Para0010.f_tau_pll  = 200;     % (Hz) bandwidth, PLL low pass filter
+Para0010.f_pll      = 20;       % (Hz) bandwidth, PLL
+Para0010.f_tau_pll  = 200;      % (Hz) bandwidth, PLL low pass filter
 
 % Current loop
-Para0010.f_i_dq = 500;       % (Hz) bandwidth, idq
+Para0010.f_i_dq = 500;      	% (Hz) bandwidth, idq
 Para0010.w0 = W0;   
 
 % ======================================
@@ -269,10 +257,10 @@ for i = 1:length(row)
     SwitchFlag = column(i)-2;                         	% Find the updated parameter
   	if floor(DeviceType/10) == 0
         switch SwitchFlag 
-         	case 1; ParaCell{row(i)}.J = UserValue*2/W0^2;
-            case 2; ParaCell{row(i)}.D = UserValue/W0^2;
-            case 3; ParaCell{row(i)}.L = UserValue/W0;
-            case 4; ParaCell{row(i)}.R = UserValue; 
+         	case 1; ParaCell{row(i)}.J  = UserValue;
+            case 2; ParaCell{row(i)}.D  = UserValue;
+            case 3; ParaCell{row(i)}.wL = UserValue;
+            case 4; ParaCell{row(i)}.R  = UserValue; 
             otherwise
                 error(['Error: paramter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end

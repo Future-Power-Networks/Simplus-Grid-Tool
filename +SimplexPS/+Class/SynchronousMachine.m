@@ -44,10 +44,15 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             w   = obj.PowerFlow(5);
             
             % Get parameters
-        	D = obj.Para(2);
-            L = obj.Para(3);
-            R = obj.Para(4);
-
+        	D  = obj.Para(2);
+            wL = obj.Para(3);
+            R  = obj.Para(4);
+            W0 = obj.Para(5);
+            
+            % Calculate paramters
+            D = D/W0^2;
+            L = wL/W0;
+            
             % Calculate parameters
             i_D = P/V;
             i_Q = -Q/V;     % Use -Q because S = V*conj(I)
@@ -99,10 +104,29 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             % Get parameters
             J  = obj.Para(1);
             D  = obj.Para(2);
-            L  = obj.Para(3);
+            wL = obj.Para(3);
             R  = obj.Para(4);
             W0 = obj.Para(5);
-
+            
+            % Calculate parameters
+            J = J*2/W0^2;   % Jpu=J/Pb=[1/2*J*w0^2/Pb]*2/w0^2, [MWs/MW] 
+            D = D/W0^2;     % Dpu=dTpu/dw=dPpu/dw/w0=[dP%/dw%]/w0^2, [%/%]
+            L = wL/W0;
+            
+            % Notes:
+            % Noting that w is not in per unit system here. So, J and D
+            % should be divided by W0^2 rather than W0. In this case,
+            % P=T*w0. If P is in per unit and is close to 1, T is close to
+            % 1/w0 and is much smaller than 1. For the two forms of swing
+            % equations blow:
+            % J*dw/dt = Tm - Ks - Kd*w;    (1)
+            % J*dw/dt = Pm - Ks - Kd*w;    (2)
+            % (1)*w0 is equivalent to (2), which means J, Ks, Kd in (1) are
+            % w0 times smaller.
+            %
+            % This is different from the equations in Kundur's book, where
+            % w is also in per unit and P=T.
+            
             % State space equations
           	% dx/dt = f(x,u)
             % y     = g(x,u)
@@ -129,7 +153,9 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
              	di_d   = (v_d - R*i_d + w*L*i_q - psi_f*W0)/L;
                 di_q   = (v_q - R*i_q - w*L*i_d)/L;
                 dw     = (Pe - T_m*W0 - D*w*W0)/(J*W0);
-                % Notes:
+                end
+                
+             	% Notes:
                 %
                 % For type 1, we can move the flux inductor outside the SG.
                 % This operation is based on a precondition that the Pe is
@@ -140,7 +166,7 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
                 % leading d-axis 90 degrees. These two conventions would be
                 % different from conventional SG models for example in
                 % Kundur's book.
-                end
+                
                 dtheta = w;
                 
                 % Notes:
