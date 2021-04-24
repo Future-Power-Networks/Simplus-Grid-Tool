@@ -81,38 +81,22 @@ Para0000.w0 = W0;
 % ======================================
 % Grid-following VSI (PLL-controlled)
 % ======================================
-% Bandwidth
-w_vdc     = 20*2*pi; 	% (rad/s) bandwidth, vdc
-w_pll     = 20*2*pi;  	% (rad/s) bandwidth, pll
-w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
-w_tau_pll = 200*2*pi;	% (rad/s) PLL filter bandwidth
-
 % Dc link
-Para0010.V_dc   	= 2.5;
-Para0010.C_dc       = 2*0.1*Para0010.V_dc^2;
-Para0010.kp_v_dc	= Para0010.V_dc*Para0010.C_dc*w_vdc;
-Para0010.ki_v_dc	= Para0010.kp_v_dc*w_vdc/4;
+Para0010.V_dc   = 2.5;
+Para0010.C_dc   = 2*0.1*Para0010.V_dc^2;
+Para0010.f_v_dc = 20;       % (Hz) bandwidth, vdc
 
 % Ac filter
-Para0010.L        = 0.03/W0;
-Para0010.R        = 0.01;
+Para0010.wL = 0.03;
+Para0010.R  = 0.01;
 
 % PLL
-Para0010.kp_pll   = w_pll;
-Para0010.ki_pll   = Para0010.kp_pll * w_pll/4; 
-Para0010.tau_pll  = 1/w_tau_pll;
+Para0010.f_pll      = 20;      % (Hz) bandwidth, PLL
+Para0010.f_tau_pll  = 200;     % (Hz) bandwidth, PLL low pass filter
 
 % Current loop
-Para0010.k_pf     = 0;
-Para0010.kp_i_dq  = Para0010.L * w_idq;         % P
-Para0010.ki_i_dq  = Para0010.L * w_idq^2 /4;    % I
-Para0010.w0       = W0;   
-Para0010.Gi_cd    = 0;                        % Cross-decoupling gain
-
-% Notes:
-% kp = w*L, ki = w^2*L/4. These values can ensure the current loop is
-% approximately a critically damped second order system with a bandwidth w.
-% Other PI controllers can be designed similarly.
+Para0010.f_i_dq = 500;       % (Hz) bandwidth, idq
+Para0010.w0 = W0;   
 
 % ======================================
 % Grid-forming VSI (Droop-Controlled)
@@ -176,8 +160,8 @@ Para1010.L        = 0.05/W0;
 Para1010.R        = 0.01;
 
 % Current loop
-Para1010.kp_i  = Para0010.L * w_i;         % P
-Para1010.ki_i  = Para0010.L * w_i^2 /4;    % I
+Para1010.kp_i  = Para1010.L * w_i;         % P
+Para1010.ki_i  = Para1010.L * w_i^2 /4;    % I
 
 % ======================================
 % Dc infinite bus (short-circuit in small-signal)
@@ -198,7 +182,7 @@ Para1100 = [];
 % Bandwidth
 w_vdc     = 10*2*pi; 	% (rad/s) bandwidth, vdc
 w_pll     = 10*2*pi;  	% (rad/s) bandwidth, pll
-w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
+w_i     = 500*2*pi; 	% (rad/s) bandwidth, idq
 w_tau_pll = 200*2*pi;   % (rad/s) PLL filter bandwidth
 
 % DC link loop
@@ -221,8 +205,8 @@ Para2000.ki_pll   = Para2000.kp_pll * w_pll/4;
 Para2000.tau_pll  = 1/w_tau_pll;
 
 % Current loop
-Para2000.kp_i_dq  = Para2000.L_ac * w_idq;         % P
-Para2000.ki_i_dq  = Para2000.L_ac * w_idq^2 /4;    % I
+Para2000.kp_i_dq  = Para2000.L_ac * w_i;         % P
+Para2000.ki_i_dq  = Para2000.L_ac * w_i^2 /4;    % I
 Para2000.w0       = W0;   
 
 %% Re-arrange device data
@@ -275,6 +259,9 @@ end
 % Notes: 
 % This method can reduce the calculation time of "for" loop.
 % The "for" loop runs only when "row" is not empty.
+%
+% The sequence of cases are determined by the excel form. This also
+% decouples the sequence between the excel form and the system object.
 for i = 1:length(row)
   	DeviceBus   = DeviceBusCell{row(i)};
 	DeviceType	= ListDeviceType(row(i));
@@ -291,16 +278,13 @@ for i = 1:length(row)
         end
     elseif (floor(DeviceType/10) == 1)
         switch SwitchFlag
-            case 1; ParaCell{row(i)}.V_dc     = UserValue;
-            case 2; ParaCell{row(i)}.C_dc     = UserValue;
-            case 3; ParaCell{row(i)}.L        = UserValue/W0;
-            case 4; ParaCell{row(i)}.R        = UserValue;
-            case 5; ParaCell{row(i)}.kp_v_dc  = ParaCell{row(i)}.V_dc*ParaCell{row(i)}.C_dc*(UserValue*2*pi);
-                    ParaCell{row(i)}.ki_v_dc  = ParaCell{row(i)}.kp_v_dc*(UserValue*2*pi)/4;
-            case 6; ParaCell{row(i)}.kp_pll   = UserValue*2*pi;
-                    ParaCell{row(i)}.ki_pll   = ParaCell{row(i)}.kp_pll*(UserValue*2*pi)/4; 
-            case 7; ParaCell{row(i)}.kp_i_dq  = ParaCell{row(i)}.L*(UserValue*2*pi);
-                    ParaCell{row(i)}.ki_i_dq  = ParaCell{row(i)}.kp_i_dq *(UserValue*2*pi)/4;
+            case 1; ParaCell{row(i)}.V_dc   = UserValue;
+            case 2; ParaCell{row(i)}.C_dc   = UserValue;
+            case 3; ParaCell{row(i)}.wL     = UserValue;
+            case 4; ParaCell{row(i)}.R      = UserValue;
+            case 5; ParaCell{row(i)}.f_v_dc = UserValue;
+            case 6; ParaCell{row(i)}.f_pll  = UserValue;
+            case 7; ParaCell{row(i)}.f_i_dq = UserValue;
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end

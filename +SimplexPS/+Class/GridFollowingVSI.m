@@ -53,12 +53,11 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             w   = obj.PowerFlow(5);
 
             % Get parameters
-            C_dc    = obj.Para(1);
-            V_dc    = obj.Para(2);
-            L       = obj.Para(11);
-            R       = obj.Para(12);
-            W0      = obj.Para(13);
-            Gi_cd   = obj.Para(14);
+            V_dc        = obj.Para(2);
+            wL          = obj.Para(7);
+            R           = obj.Para(8);
+            W0          = obj.Para(9);
+            L = wL/W0;
 
             % Calculate paramters
             i_d = P/V;
@@ -105,20 +104,41 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             w   = obj.PowerFlow(5);
             
            	% Get parameters
-            C_dc    = obj.Para(1);
-            v_dc_r  = obj.Para(2);
-            kp_v_dc = obj.Para(3);      % v_dc, P
-            ki_v_dc = obj.Para(4);      % v_dc, I
-            kp_pll  = obj.Para(5);      % PLL, P
-            ki_pll  = obj.Para(6);      % PLL, I
-            tau_pll = obj.Para(7);
-            kp_i    = obj.Para(8);      % i, P
-            ki_i    = obj.Para(9);      % i, I
-            k_pf    = obj.Para(10);
-            L       = obj.Para(11);     % L filter
-            R       = obj.Para(12);     % L filter's inner resistance
-            W0      = obj.Para(13);
-            Gi_cd   = obj.Para(14);     % Current cross-decouping gain
+            C_dc        = obj.Para(1);
+            v_dc_r      = obj.Para(2);
+            f_v_dc      = obj.Para(3);
+            f_pll       = obj.Para(4);     
+            f_tau_pll   = obj.Para(5);
+            f_i_dq      = obj.Para(6); 
+            wL          = obj.Para(7);
+            R           = obj.Para(8);
+            W0          = obj.Para(9);
+            
+            % Filter inductor
+            L = wL/W0;
+            
+            % Dc link controller parameter
+            w_vdc   = f_v_dc*2*pi;
+            kp_v_dc	= v_dc_r*C_dc*w_vdc;
+            ki_v_dc	= kp_v_dc*w_vdc/4;
+            
+            % PLL controller parameter
+            w_pll     = f_pll*2*pi;
+            kp_pll    = w_pll;
+            ki_pll    = kp_pll * w_pll/4;
+            w_tau_pll = f_tau_pll*2*pi;
+            tau_pll   = 1/w_tau_pll;
+            
+            % Current controller paramter
+            w_i_dq  = f_i_dq*2*pi;
+            kp_i_dq = L * w_i_dq;
+            ki_i_dq = L * w_i_dq^2 /4;
+            
+            % Notes:
+            % kp = w*L, ki = w^2*L/4. These values can ensure the current
+            % loop is approximately a critically damped second order system
+            % with a bandwidth w. Other PI controllers can be designed
+            % similarly.
             
             % Get states
           	i_d   	= x(1);
@@ -248,14 +268,14 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             % Ac current control
             if 1                                                                        % ??????
                 % dq-frame PI
-                di_d_i = -(i_d_r - i_d)*ki_i;
-                di_q_i = -(i_q_r - i_q)*ki_i;
+                di_d_i = -(i_d_r - i_d)*ki_i_dq;
+                di_q_i = -(i_q_r - i_q)*ki_i_dq;
             else
                 % alpha/beta-frame PR control
                 i_dq_r = i_d_r + 1i*i_q_r;
                 i_dq = i_d + 1i*i_q;
                 i_dq_i = i_d_i + 1i*i_q_i;
-                di_dq_i = -(i_dq_r-i_dq)*ki_i - 1i*w*i_dq_i + 1i*W0*i_dq_i;
+                di_dq_i = -(i_dq_r-i_dq)*ki_i_dq - 1i*w*i_dq_i + 1i*W0*i_dq_i;
                 di_d_i = real(di_dq_i);
                 di_q_i = imag(di_dq_i);
             end
@@ -267,8 +287,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             % where w0 is the resonant frequency.
 
             % Ac voltage (duty cycle*v_dc)
-            e_d = -(i_d_r - i_d)*kp_i + i_d_i;
-            e_q = -(i_q_r - i_q)*kp_i + i_q_i;
+            e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i;
+            e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i;
 
             % Ac voltage (duty cycle) saturation
             if EnableSaturation

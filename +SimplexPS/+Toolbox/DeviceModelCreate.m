@@ -54,18 +54,13 @@ switch floor(Type/10)
         end
         Device.Para = [ Para.C_dc;
                         Para.V_dc;
-                        Para.kp_v_dc;
-                        Para.ki_v_dc;
-                        Para.kp_pll; 	% (5)
-                        Para.ki_pll;
-                        Para.tau_pll;
-                        Para.kp_i_dq;
-                        Para.ki_i_dq;
-                        Para.k_pf;    	% (10)
-                        Para.L;
+                        Para.f_v_dc;
+                        Para.f_pll;
+                        Para.f_tau_pll;
+                        Para.f_i_dq;
+                        Para.wL;
                         Para.R;
-                        Para.w0;
-                        Para.Gi_cd]; 	% (14)
+                        Para.w0];
                    
     % ### Grid-forming inverter
     case 2  % Type 20-29
