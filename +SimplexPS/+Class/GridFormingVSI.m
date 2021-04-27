@@ -18,6 +18,7 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
     properties(Access = protected)
         v_od_r;
         v_oq_r;
+        W0;
     end
     
     methods
@@ -46,19 +47,32 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             w   = obj.PowerFlow(5);
             
             % Get parameter
-            Lf       = obj.Para(1);
-            Rf       = obj.Para(2);
-            Cf       = obj.Para(3);
-            Lc       = obj.Para(4);
-            Rc       = obj.Para(5);
-            Xov      = obj.Para(6);
-            Dw       = obj.Para(7);
-            wf       = obj.Para(8);
-            w_v_odq  = obj.Para(9);
-            w_i_ldq  = obj.Para(10);
-            W0       = obj.Para(11);
-            
+            xwLf = obj.Para(1);
+            xRf = obj.Para(2);
+            xwCf = obj.Para(3);
+            xwLc = obj.Para(4);
+            xRc = obj.Para(5);
+            xXov = obj.Para(6);
+            xDw = obj.Para(7);
+            xfdroop = obj.Para(8);
+            xfvdc = obj.Para(9);
+            xfidq = obj.Para(10);
+           
+            W0=w;
+            obj.W0=W0;
+           
             % Calculate parameters
+            Lf = xwLf/W0;
+            Rf = xRf;
+            Cf = xwCf/W0;
+            Lc = xwLc/W0;
+            Rc = xRc;
+            Xov= xXov;
+            Dw = xDw*W0;
+            wf = xfdroop*2*pi;
+            w_v_odq = xfvdc*2*pi;
+            w_i_ldq = xfidq*2*pi;
+            
             v_gd = V;
             v_gq = 0;
             i_od = P/V;
@@ -119,18 +133,28 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             theta  = x(12);
             
             % Get parameter
-            Lf       = obj.Para(1);
-            Rf       = obj.Para(2);
-            Cf       = obj.Para(3);
-            Lc       = obj.Para(4);
-            Rc       = obj.Para(5);
-            Xov      = obj.Para(6);
-            Dw       = obj.Para(7);
-            wf       = obj.Para(8);
-            w_v_odq  = obj.Para(9);
-            w_i_ldq  = obj.Para(10);
-            w0       = obj.Para(11);
-            
+            xwLf = obj.Para(1);
+            xRf = obj.Para(2);
+            xwCf = obj.Para(3);
+            xwLc = obj.Para(4);
+            xRc = obj.Para(5);
+            xXov = obj.Para(6);
+            xDw = obj.Para(7);
+            xfdroop = obj.Para(8);
+            xfvdc = obj.Para(9);
+            xfidq = obj.Para(10);
+            w0=obj.W0;
+            W0=obj.W0;
+            Lf = xwLf/W0;
+            Rf = xRf;
+            Cf = xwCf/W0;
+            Lc = xwLc/W0;
+            Rc = xRc;
+            Xov= xXov;
+            Dw = xDw*W0;
+            wf = xfdroop*2*pi;
+            w_v_odq = xfvdc*2*pi;
+            w_i_ldq = xfidq*2*pi;
             Rov      = 0;
             kp_i_ldq = w_i_ldq*Lf;
             ki_i_ldq = w_i_ldq^2*Lf/4;

@@ -65,17 +65,16 @@ switch floor(Type/10)
     % ### Grid-forming inverter
     case 2  % Type 20-29
         Device = SimplexPS.Class.GridFormingVSI('DeviceType',Type);
-        Device.Para = [ Para.Lf;
+        Device.Para = [ Para.wLf;
                         Para.Rf;
-                        Para.Cf;
-                        Para.Lc;
+                        Para.wCf;
+                        Para.wLc;
                         Para.Rc;
-                        Para.Xov
+                        Para.Xov;
                         Para.Dw;
-                        Para.wf;
-                        Para.w_v_odq;
-                        Para.w_i_ldq;
-                        Para.w0];
+                        Para.fdroop;
+                        Para.fvdc;
+                        Para.fidq];
                    
     % ### Ac infinite bus
     case 9

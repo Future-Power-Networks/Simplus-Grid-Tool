@@ -89,34 +89,16 @@ Para0010.w0 = W0;
 % ======================================
 % Grid-forming VSI (Droop-Controlled)
 % ======================================
-% Bandwidth
-Para0020.w_i_ldq  = 500*2*pi;     % (rad/s), current loop bandwidth
-Para0020.w_v_odq  = 250*2*pi;     % (rad/s), voltage loop bandwidth 
-Para0020.wf       = 20*2*pi;      % (rad/s), droop filter bandwidth
-
-% Ac filter
-Para0020.Lf = 0.05/W0;
-Para0020.Rf = 0.05/5;
-Para0020.Cf = 0.02/W0;
-Para0020.Lc = 0.01/W0;
-Para0020.Rc = 0.01/5;
-
-% Droop loop
-Para0020.Dw = 5/100*W0;
-% Para20.Dv = 5/100;
-% Para20.P0 = 0;
-% Para20.Q0 = 0;
-Para0020.w0 = W0;
-
-% Voltage and current loop
-% Para20.Gi_cd = 0;
-% Para20.Gv_cd = 0;
-% Para20.Fv = 0;
-% Para20.Fi = 0;
-
-% Virtual impedance
-% Para20.Rov = 0;
-Para0020.Xov = 0;
+Para0020.wLf=0.05;
+Para0020.Rf=0.01;
+Para0020.wCf=0.02;
+Para0020.wLc=0.01;
+Para0020.Rc=0.002;
+Para0020.Xov=0;
+Para0020.Dw=0.05;
+Para0020.fdroop=20; % droop control bandwidth
+Para0020.fvdc=250;  % vdc bandwidth
+Para0020.fidq=500;  % current control bandwidth
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)
@@ -278,16 +260,16 @@ for i = 1:length(row)
         end
     elseif floor(DeviceType/10) == 2
         switch SwitchFlag
-            case 1;  ParaCell{row(i)}.Lf      = UserValue/W0;
+            case 1;  ParaCell{row(i)}.wLf     = UserValue;
           	case 2;  ParaCell{row(i)}.Rf      = UserValue;
-          	case 3;  ParaCell{row(i)}.Cf      = UserValue/W0;
-           	case 4;  ParaCell{row(i)}.Lc  	  = UserValue/W0;
+          	case 3;  ParaCell{row(i)}.wCf     = UserValue;
+           	case 4;  ParaCell{row(i)}.wLc  	  = UserValue;
          	case 5;  ParaCell{row(i)}.Rc  	  = UserValue;
            	case 6;  ParaCell{row(i)}.Xov 	  = UserValue;
-            case 7;  ParaCell{row(i)}.Dw      = UserValue*W0;
-            case 8;  ParaCell{row(i)}.wf      = UserValue*2*pi;
-          	case 9;  ParaCell{row(i)}.w_v_odq = UserValue*2*pi;
-          	case 10; ParaCell{row(i)}.w_i_ldq = UserValue*2*pi;
+            case 7;  ParaCell{row(i)}.Dw      = UserValue;
+            case 8;  ParaCell{row(i)}.fdroop  = UserValue;
+          	case 9;  ParaCell{row(i)}.fvdc    = UserValue;
+          	case 10; ParaCell{row(i)}.fidq    = UserValue;
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end
