@@ -62,7 +62,7 @@ end
 % ======================================
 Para0000.J  = 3.5;
 Para0000.D  = 1;
-Para0000.L  = 0.1;
+Para0000.wL  = 0.1;
 Para0000.R  = 0.01;
 Para0000.w0 = W0;
 
@@ -99,6 +99,8 @@ Para0020.Dw=0.05;
 Para0020.fdroop=20; % droop control bandwidth
 Para0020.fvdc=250;  % vdc bandwidth
 Para0020.fidq=500;  % current control bandwidth
+Para0020.w0 = W0;
+
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)
@@ -269,7 +271,7 @@ for i = 1:length(row)
             case 7;  ParaCell{row(i)}.Dw      = UserValue;
             case 8;  ParaCell{row(i)}.fdroop  = UserValue;
           	case 9;  ParaCell{row(i)}.fvdc    = UserValue;
-          	case 10; ParaCell{row(i)}.fidq    = UserValue;
+          	case 10; ParaCell{row(i)}.fidq    = UserValue; 
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end

@@ -18,7 +18,6 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
     properties(Access = protected)
         v_od_r;
         v_oq_r;
-        W0;
     end
     
     methods
@@ -57,9 +56,7 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             xfdroop = obj.Para(8);
             xfvdc = obj.Para(9);
             xfidq = obj.Para(10);
-           
-            W0=w;
-            obj.W0=W0;
+            W0 = obj.Para(11);
            
             % Calculate parameters
             Lf = xwLf/W0;
@@ -143,8 +140,7 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             xfdroop = obj.Para(8);
             xfvdc = obj.Para(9);
             xfidq = obj.Para(10);
-            w0=obj.W0;
-            W0=obj.W0;
+            W0 = obj.Para(11);
             Lf = xwLf/W0;
             Rf = xRf;
             Cf = xwCf/W0;
@@ -180,9 +176,9 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
                 % QV droop: v_od_r = v_od_0 + Dv*(Q0 - Q*LPF)
                 %           v_oq_r = v_oq_0
                 if 1
-                    dw = (w0 + Dw*(P0 - p) - w)*wf;         % P-w droop
+                    dw = (W0 + Dw*(P0 - p) - w)*wf;         % P-w droop
                 else
-                    dw = (w0 - Dw*(P0/V - i_od) - w)*wf; 	% id-w droop
+                    dw = (W0 - Dw*(P0/V - i_od) - w)*wf; 	% id-w droop
                 end
                 v_od_r = obj.v_od_r;
                 v_oq_r = obj.v_oq_r;

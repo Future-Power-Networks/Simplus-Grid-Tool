@@ -74,7 +74,8 @@ switch floor(Type/10)
                         Para.Dw;
                         Para.fdroop;
                         Para.fvdc;
-                        Para.fidq];
+                        Para.fidq;
+                        Para.w0];
                    
     % ### Ac infinite bus
     case 9
