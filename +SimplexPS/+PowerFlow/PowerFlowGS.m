@@ -87,12 +87,13 @@ while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     I = Ybus*V;
     S = I.*conj(V);
     N = length(V);
+    Ang = angle(V);
     
     tolerV = max(abs(abs(V) - abs(Vprev)));     % Calculate V tolerance.
     tolerP = max(abs(real(S(2:N)) - P(2:N)));     % Calculate P tolerance, exclude the slack terminal
-%     tolerQ = max(abs(imag(S(2:N)) + Q(2:N)));     % Calculate Q tolerance, exclude the slack terminal
+     tolerQ = max(abs(imag(S(2:N)) + Q(2:N)));     % Calculate Q tolerance, exclude the slack terminal
 %    tolerP = 0;
-    tolerQ = 0;
+%    tolerQ = 0;
     
     % We use tolerV only here to check the total tolerance
     tolerance  = max([tolerV,tolerP,tolerQ]);       % Calculate total tolerance

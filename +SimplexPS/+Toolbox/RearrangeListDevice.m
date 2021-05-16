@@ -85,7 +85,7 @@ Para0000.w0 = W0;
 w_vdc     = 20*2*pi; 	% (rad/s) bandwidth, vdc
 w_pll     = 20*2*pi;  	% (rad/s) bandwidth, pll
 w_idq     = 500*2*pi; 	% (rad/s) bandwidth, idq
-w_tau_pll = 500*2*pi;	% (rad/s) PLL filter bandwidth
+w_tau_pll = 10000*2*pi;	% (rad/s) PLL filter bandwidth
 
 % Dc link
 Para0010.V_dc   	= 2.5;

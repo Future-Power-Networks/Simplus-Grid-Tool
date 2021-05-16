@@ -21,7 +21,7 @@ close all;  % Close all figures, etc
 % Default
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
-UserData = 'UserData.xlsx';
+% UserData = 'UserData.xlsx';
 
 % Other example power systems (in "Examples" folder):
 %
@@ -40,6 +40,11 @@ UserData = 'UserData.xlsx';
 % Hybrid ac-dc power system examples:
 % UserData = 'Hybrid_test_v1.xlsx';
 % UserData = 'Hybrid_test_v2.xlsx';
+
+% UserData = 'Nature_NETS_NYPS_68Bus_original';
+% UserData = 'Nature_NETS_NYPS_68Bus_2SG_OtherIBR';
+UserData = '3MachineModel_test_v3';
+% UserData = '2MachineModel_test';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

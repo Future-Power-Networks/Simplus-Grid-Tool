@@ -128,6 +128,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             w_pll_i = x(5);
             w       = x(6);
             theta   = x(7);
+            
             if (obj.DeviceType == 10) || (obj.DeviceType == 12)
                 v_dc  	= x(8);
                 v_dc_i 	= x(9);
@@ -166,42 +167,50 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             EnableSaturation = 0;
             
             % PLL angle measurement
-            switch 2                                                                    % ?????? 
+          	% Notes:
+            % "- ang_r" gives the reference in load convention, like the Tw
+            % port.
+            switch 3                                                                    % ?????? 
                 case 1                                  % theta-PLL
                     e_ang = atan2(v_q,v_d) - ang_r;
                 case 2                                  % vq-PLL
                     e_ang = v_q - ang_r;
                 case 3                                  % Q-PLL
                     S = (v_d+1i*v_q)*conj(i_d_r+1i*i_q_r);
-                    % Should not be i reference?                                        % ???????
-                    % S = (e_d+1i*e_q)*conj(i_d+1i*i_q);
                     Q = imag(S);
                     % Notes:
                     % S should be calculated by removing the effects of
                     % both PIi and Lf. Hence, we use i_dq_r here based on
                     % the impedance circuit model.
-                    if i_d<=0
-                        e_ang = - Q - ang_r;
-                    else
-                        e_ang = Q - ang_r;
-                    end
-                    e_ang = e_ang/abs(P0);
+%                     if i_d<=0
+%                         e_ang = - (Q - Q0) - ang_r;
+%                     else
+                        e_ang = (Q - Q0) - ang_r;
+%                     end
+%                     e_ang = e_ang/abs(P0);
+                    e_ang = e_ang/abs((P0+1i*Q0)/V0);
+                    % Notes:
+                    %
+                    % Noting that Q is proportional to v_q*i_d, this means
+                    % the direction of active power influences the sign of
+                    % Q or equivalently the PI controller in the PLL. In
+                    % order to make sure case 3 is equivalent to case 1 or
+                    % 2, the controller for case 3 is dependent the power
+                    % flow direction.
+                    %
+                    % e_ang should be scaled by i_d as well. We scale it by
+                    % P for the sake of brevity.
+                    %
+                    % The steady-state operating point is also different
+                    % from case 2. For case 2, the steady-state vq = 0. But
+                    % for case 3, the steady-state Q = 0 if ang_r =0.
+                    % Hence, we treated (Q-Q0) as the actual control
+                    % target, so that Q-Q0=0 at steady state.
                 otherwise
                     error(['Error']);
             end
-            % Notes:
-            % "- ang_r" gives the reference in load convention, like
-            % the Tw port.
-            %
-            % Noting that Q is proportional to v_q*i_d, this means the
-            % direction of active power influences the sign of Q or
-            % equivalently the PI controller in the PLL. In order to
-            % make sure case 3 is equivalent to case 1 or 2, the
-            % controller for case 3 is dependent the power flow
-            % direction.
-            %
-            % e_ang should be scaled by i_d as well. We scale it by P for
-            % the sake of brevity.
+ 
+
 
             % Frequency limit and saturation
             w_limit_H = W0*1.5;
@@ -213,7 +222,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
            
             % PLL control
             dw_pll_i = e_ang*ki_pll;                            % Integral controller
-            if 1                                                                            % ??????
+            if 0                                                                            % ??????
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
                 % Notes:
                 % This introduces an additional state w.
@@ -246,7 +255,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             end
             
             % Ac current control
-            if 1                                                                        % ??????
+            if 0                                                                        % ??????
                 % dq-frame PI
                 di_d_i = -(i_d_r - i_d)*ki_i;
                 di_q_i = -(i_q_r - i_q)*ki_i;
