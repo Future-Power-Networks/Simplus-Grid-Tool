@@ -97,14 +97,13 @@ switch floor(Type/10)
     % ### Grid feeding buck converter
     case 101
     	Device = SimplexPS.Class.GridFeedingBuck('DeviceType',Type);
-        Device.Para = [ Para.C_dc;
-                        Para.V_dc;
-                        Para.kp_v_dc;
-                        Para.ki_v_dc;
-                        Para.kp_i;
-                        Para.ki_i;
-                        Para.L;
-                        Para.R];
+        Device.Para = [ Para.Vdc;
+                        Para.Cdc;
+                        Para.wL;
+                        Para.R;
+                        Para.fi;
+                        Para.fvdc;
+                        Para.w0];
   	% ### Dc infinite bus
     case 109
         Device = SimplexPS.Class.InfiniteBusDc;

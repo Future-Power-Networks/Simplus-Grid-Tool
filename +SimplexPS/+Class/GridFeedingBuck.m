@@ -48,8 +48,9 @@ classdef GridFeedingBuck < SimplexPS.Class.ModelAdvance
             xi	= 0;
 
             % Get parameters
-            V_dc = obj.Para(2);
-            R    = obj.Para(8);
+                                  
+            V_dc = obj.Para(1);
+            R    = obj.Para(4);
 
             % Calculate paramters
             i = P/V;
@@ -76,14 +77,25 @@ classdef GridFeedingBuck < SimplexPS.Class.ModelAdvance
             V	= obj.PowerFlow(3);
             
            	% Get parameters
-            C_dc    = obj.Para(1);
-            v_dc_r  = obj.Para(2);
-            kp_v_dc = obj.Para(3);      % v_dc, P
-            ki_v_dc = obj.Para(4);      % v_dc, I
-            kp_i    = obj.Para(5);      % i_dq, P
-            ki_i    = obj.Para(6);      % i_dq, I
-            L       = obj.Para(7);      % L filter
-            R       = obj.Para(8);      % L filter's inner resistance
+            
+            xVdc  = obj.Para(1);
+            xCdc  = obj.Para(2);
+            xwL   = obj.Para(3);
+            xR    = obj.Para(4);
+            xfi   = obj.Para(5);
+            xfvdc = obj.Para(6);
+            W0    = obj.Para(7);
+            
+            w_vdc	= xfvdc*2*pi; 	% (rad/s) bandwidth, vdc
+            w_i     = xfi*2*pi;	% (rad/s) bandwidth, i
+            L       = xwL/W0; % L filter
+            R       = xR; % L filter's inner resistance
+            C_dc    = xCdc;
+            v_dc_r  = xVdc;
+            kp_v_dc = xVdc*xCdc*w_vdc;      % v_dc, P
+            ki_v_dc = kp_v_dc*w_vdc/4;      % v_dc, I
+            kp_i    = L * w_i;              % i_dq, P
+            ki_i    = L * w_i^2 /4;         % i_dq, I   
             
             % Get states
           	i   	= x(1);
