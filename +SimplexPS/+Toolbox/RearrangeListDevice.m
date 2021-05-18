@@ -71,7 +71,7 @@ Para0000.w0 = W0;
 % ======================================
 % Dc link
 Para0010.V_dc   = 2.5;
-Para0010.C_dc   = 2*0.1*Para0010.V_dc^2;
+Para0010.C_dc   = 1.25; %2*0.1*Para0010.V_dc^2;
 Para0010.f_v_dc = 20;           % (Hz) bandwidth, vdc
 
 % Ac filter
@@ -140,36 +140,15 @@ Para1100 = [];
 % ======================================
 % Interlink ac-dc converter
 % ======================================
-
-% Bandwidth
-w_vdc     = 10*2*pi; 	% (rad/s) bandwidth, vdc
-w_pll     = 10*2*pi;  	% (rad/s) bandwidth, pll
-w_i     = 500*2*pi; 	% (rad/s) bandwidth, idq
-w_tau_pll = 200*2*pi;   % (rad/s) PLL filter bandwidth
-
-
-V_dc = 1;
-% Dc filter
-Para2000.C_dc 	= 2*0.1*V_dc^2 * 8;
-Para2000.L_dc 	= 0.01/W0;
-Para2000.R_dc	= 0.01/5;
-% DC link loop
-Para2000.kp_v_dc = V_dc*Para2000.C_dc*w_vdc;
-Para2000.ki_v_dc = Para2000.kp_v_dc*w_vdc/4;
-
-% Ac filter
-Para2000.L_ac 	= 0.05/W0;
-Para2000.R_ac 	= 0.01;
-
-% PLL
-Para2000.kp_pll   = w_pll;
-Para2000.ki_pll   = Para2000.kp_pll * w_pll/4; 
-Para2000.tau_pll  = 1/w_tau_pll;
-
-% Current loop
-Para2000.kp_i_dq  = Para2000.L_ac * w_i;         % P
-Para2000.ki_i_dq  = Para2000.L_ac * w_i^2 /4;    % I
-Para2000.w0       = W0;   
+Para2000.C_dc = 1.6;
+Para2000.wL_ac = 0.05;
+Para2000.R_ac = 0.01;
+Para2000.wL_dc = 0.01;
+Para2000.R_dc = 0.01/5;
+Para2000.fidq = 500;
+Para2000.fvdc = 10;
+Para2000.fpll = 10;
+Para2000.w0   = W0;   
 
 %% Re-arrange device data
 % Get the size of netlist
@@ -273,6 +252,19 @@ for i = 1:length(row)
            	case 4;  ParaCell{row(i)}.R  	= UserValue;
          	case 5;  ParaCell{row(i)}.fi  	= UserValue;
            	case 6;  ParaCell{row(i)}.fvdc 	= UserValue;
+            otherwise
+                error(['Error: parameter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
+        end
+    elseif floor(DeviceType/10) == 200 % Interlink ac-dc converter
+        switch SwitchFlag
+            case 1;  ParaCell{row(i)}.C_dc  = UserValue;
+            case 2;  ParaCell{row(i)}.wL_ac = UserValue;
+            case 3;  ParaCell{row(i)}.R_ac  = UserValue;
+            case 4;  ParaCell{row(i)}.wL_dc = UserValue;
+            case 5;  ParaCell{row(i)}.R_dc  = UserValue;
+            case 6;  ParaCell{row(i)}.fidq  = UserValue;
+            case 7;  ParaCell{row(i)}.fvdc  = UserValue;
+            case 8;  ParaCell{row(i)}.fpll  = UserValue;
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end

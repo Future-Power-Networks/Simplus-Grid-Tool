@@ -121,18 +121,14 @@ switch floor(Type/10)
     % =======================================
     case 200
         Device = SimplexPS.Class.InterlinkAcDc('DeviceType',Type);
-        Device.Para = [ Para.L_ac;
+        Device.Para = [ Para.C_dc;
+                        Para.wL_ac;
                         Para.R_ac;
-                        Para.L_dc;
+                        Para.wL_dc;
                         Para.R_dc;
-                        Para.C_dc;
-                        Para.kp_i_dq;
-                        Para.ki_i_dq;
-                        Para.kp_pll;
-                        Para.ki_pll;
-                        Para.tau_pll;
-                        Para.kp_v_dc;
-                        Para.ki_v_dc;
+                        Para.fidq;
+                        Para.fvdc;
+                        Para.fpll;
                         Para.w0];
     
     % ### Otherwise
