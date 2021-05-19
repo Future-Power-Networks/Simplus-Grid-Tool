@@ -65,16 +65,16 @@ switch floor(Type/10)
     % ### Grid-forming inverter
     case 2  % Type 20-29
         Device = SimplexPS.Class.GridFormingVSI('DeviceType',Type);
-        Device.Para = [ Para.Lf;
+        Device.Para = [ Para.wLf;
                         Para.Rf;
-                        Para.Cf;
-                        Para.Lc;
+                        Para.wCf;
+                        Para.wLc;
                         Para.Rc;
-                        Para.Xov
+                        Para.Xov;
                         Para.Dw;
-                        Para.wf;
-                        Para.w_v_odq;
-                        Para.w_i_ldq;
+                        Para.fdroop;
+                        Para.fvdc;
+                        Para.fidq;
                         Para.w0];
                    
     % ### Ac infinite bus
@@ -97,14 +97,13 @@ switch floor(Type/10)
     % ### Grid feeding buck converter
     case 101
     	Device = SimplexPS.Class.GridFeedingBuck('DeviceType',Type);
-        Device.Para = [ Para.C_dc;
-                        Para.V_dc;
-                        Para.kp_v_dc;
-                        Para.ki_v_dc;
-                        Para.kp_i;
-                        Para.ki_i;
-                        Para.L;
-                        Para.R];
+        Device.Para = [ Para.Vdc;
+                        Para.Cdc;
+                        Para.wL;
+                        Para.R;
+                        Para.fi;
+                        Para.fvdc;
+                        Para.w0];
   	% ### Dc infinite bus
     case 109
         Device = SimplexPS.Class.InfiniteBusDc;
@@ -122,18 +121,14 @@ switch floor(Type/10)
     % =======================================
     case 200
         Device = SimplexPS.Class.InterlinkAcDc('DeviceType',Type);
-        Device.Para = [ Para.L_ac;
+        Device.Para = [ Para.C_dc;
+                        Para.wL_ac;
                         Para.R_ac;
-                        Para.L_dc;
+                        Para.wL_dc;
                         Para.R_dc;
-                        Para.C_dc;
-                        Para.kp_i_dq;
-                        Para.ki_i_dq;
-                        Para.kp_pll;
-                        Para.ki_pll;
-                        Para.tau_pll;
-                        Para.kp_v_dc;
-                        Para.ki_v_dc;
+                        Para.fidq;
+                        Para.fvdc;
+                        Para.fpll;
                         Para.w0];
     
     % ### Otherwise

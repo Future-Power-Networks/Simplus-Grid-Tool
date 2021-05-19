@@ -65,9 +65,11 @@ classdef InterlinkAcDc < SimplexPS.Class.ModelAdvance
             Vg_dc   = obj.PowerFlow(8);
             
             % Get parameters
-            L_ac  = obj.Para(1);
-            R_ac  = obj.Para(2);
-            R_dc  = obj.Para(4);
+            wL_ac = obj.Para(2);
+            W0 = obj.Para(9);
+            L_ac  = wL_ac/W0;
+            R_ac  = obj.Para(3);
+            R_dc  = obj.Para(5);
 
             % Calculate paramters
             i_d = P_ac/Vg_ac;
@@ -110,18 +112,34 @@ classdef InterlinkAcDc < SimplexPS.Class.ModelAdvance
             Vg_dc   = obj.PowerFlow(8);
             
            	% Get parameters
-            L_ac    = obj.Para(1);
-            R_ac    = obj.Para(2);
-        	L_dc    = obj.Para(3);
-            R_dc    = obj.Para(4);
-            C_dc    = obj.Para(5);
-            kp_i_dq = obj.Para(6);
-            ki_i_dq = obj.Para(7);
-            kp_pll  = obj.Para(8);
-            ki_pll  = obj.Para(9);
-            tau_pll = obj.Para(10);
-            kp_v_dc = obj.Para(11);
-            ki_v_dc = obj.Para(12);
+            xC_dc = obj.Para(1);
+            xwL_ac= obj.Para(2);
+            xR_ac= obj.Para(3);
+            xwL_dc= obj.Para(4);
+            xR_dc= obj.Para(5);
+            xfidq= obj.Para(6);
+            xfvdc= obj.Para(7);
+            xfpll= obj.Para(8);
+            W0= obj.Para(9);
+            
+            V_dc = 1;
+            w_vdc = xfvdc*2*pi; 	% (rad/s) bandwidth, vdc
+            w_pll     = xfpll*2*pi;  	% (rad/s) bandwidth, pll
+            w_i     = xfidq*2*pi; 	% (rad/s) bandwidth, idq
+            w_tau_pll = 200*2*pi;   % (rad/s) PLL filter bandwidth
+            
+            L_ac    = xwL_ac/W0;
+            R_ac    = xR_ac;
+        	L_dc    = xwL_dc/W0;
+            R_dc    = xR_dc;
+            C_dc    = xC_dc;
+            kp_v_dc = V_dc*xC_dc*w_vdc;
+            ki_v_dc = kp_v_dc*w_vdc/4;
+            kp_i_dq = L_ac * w_i;
+            ki_i_dq = L_ac * w_i^2 /4;
+            kp_pll = w_pll;
+            ki_pll = kp_pll * w_pll/4;
+            tau_pll = 1/w_tau_pll;
             
             % Get states
           	i_d   	= x(1);
