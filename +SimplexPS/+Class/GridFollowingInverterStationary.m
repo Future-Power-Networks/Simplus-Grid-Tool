@@ -86,9 +86,6 @@ classdef GridFollowingInverterStationary < SimplexPS.Class.ModelAdvance
             i_al_ii = e_al/(W0*ki_i);
             i_be_ii = e_be/(W0*ki_i);
             
-         
-            
-
             % Get equilibrium
             x_e = [i_al; i_be; i_al_i; i_be_i; i_al_ii; i_be_ii; w_pll_i; w; theta];
         	u_e = [v_d; v_q; ang_r; P_dc];

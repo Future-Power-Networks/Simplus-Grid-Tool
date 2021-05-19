@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is the manual will introduce more details of developing this toolbox. Please read "DeveloperManual.md" first before reading this one.
+This manual will introduce more details of developing this toolbox. Please read "DeveloperManual.md" first before reading this one.
 
 ## Adding New Device
 
@@ -11,7 +11,7 @@ There are two different types of devices in the toolbox:
 2- Matlab system object.
 
 ### Simulink Block   
-The first type of device is simply a conventional Simulink block. Users just need to copy their custom device into "SimplexPS.xlsx". Then, this device can be found in "Simplex Power System" in the Simulink Library Broswer. This procedure is same to the procedure of [creating custom libraries in Simulink](https://uk.mathworks.com/help/simulink/ug/adding-libraries-to-the-library-browser.html).
+The first type of device is simply a conventional Simulink block. Users just need to copy their custom device into "SimplexPS.slx". Then, this device can be found in "Simplex Power System" in the Simulink Library Broswer. This procedure is same to the procedure of [creating custom libraries in Simulink](https://uk.mathworks.com/help/simulink/ug/adding-libraries-to-the-library-browser.html).
 
 ### Matlab System Object    
 The second type of device is called [Matlab system object](https://uk.mathworks.com/help/simulink/ug/system-design-in-simulink-using-system-objects.html). It defines its input and output relationship in a script, and then links it to a Matlab system block in simulink. This type of device has following features:

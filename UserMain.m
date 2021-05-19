@@ -3,6 +3,9 @@
 
 %% Tips
 %
+% Please read manuals in the "Documentations" folder if you want to know
+% more details about this tool.
+%
 % Please ensure that the toolbox is installed first, by running
 % "InstallSimplexPS.m" once.
 %
@@ -38,8 +41,7 @@ UserData = 'UserData.xlsx';
 % UserData = 'GfdBuckInfiniteBus.xlsx';         % Single grid-feeding buck converter and infinite bus
 %
 % Hybrid ac-dc power system examples:
-% UserData = 'Hybrid_test_v1.xlsx';             % A four bus hybrid ac-dc system
-% UserData = 'Hybrid_test_v2.xlsx';
+% UserData = 'Hybrid_test_v1.xlsx';             % A 4-bus hybrid ac-dc system
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

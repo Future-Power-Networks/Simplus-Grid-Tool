@@ -177,7 +177,7 @@ if Enable_PrintOutput
     fprintf('Print ports of GsysDSS:\n')
     SimplexPS.Toolbox.PrintSysString(DeviceBus,DeviceType,GmObj_Cell,ZbusStateStr);
 	fprintf('Print power flow result:\n')
-    fprintf('| bus | P | Q | V | angle | omega |')
+    fprintf('The format below is "| bus | P | Q | V | angle | omega |". P and Q are in load convention.\n')
     ListPowerFlow
 end
 

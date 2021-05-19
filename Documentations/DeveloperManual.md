@@ -16,13 +16,13 @@ This is the quick manual for developers who want to contribute to the toolbox de
     3) free style, like ss2tf  
 Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly in this project, and use free style when needed.
 
-## Toolbox architecture
+## Logic and Architecture
 
-The tool architecture is shown in the figure below. Users only need to prepare a excel form "UserData.xlsx" and run "UserMain.m". Then, the tool will automatically do the static analysis, dynamic analysis, and time-domain simulation of the system saved in the excel form.
+The logic and architecture of this tool are shown in the figure below. Users only need to prepare a excel form "UserData.xlsx" and run "UserMain.m". Then, the tool will automatically do the static analysis, dynamic analysis, and time-domain simulation of the power system saved in the excel form.
 
 ![](https://raw.githubusercontent.com/Future-Power-Networks/Simplex-Power-Systems/master/Documentations/Figures/Architecture.png)
 
-## File architecture
+## File Architecture
 
 The file structure (documentation tree) of the toolbox is shown below. The detailed introduction of each folder will be given next.
 

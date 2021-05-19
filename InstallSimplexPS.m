@@ -1,10 +1,12 @@
-% This file installs the SimplexPowerSystem toolbox on the users' PC. Users
-% do not need to read or understand the codes in this file. Please just run
-% it directly and run it only ONCE.
+% This file installs the toolbox on the users' PC. Users do not need to
+% read or understand the codes in this file. Please just run it directly
+% and run it only ONCE.
 
 % Author(s): Yitong Li, Yunjie Gu
 
+%%
 % Notes for developers:
+%
 % The simulink library may need to be updated programmatically here, when
 % adding Simplex Library.
 
@@ -30,13 +32,13 @@ if str2double(MatlabVersionYear)<2015
 end
 
 % Check if a previous version of SimplexPS has been installed
-fprintf('Checking if the SimplexPS has been installed before...\n')
+fprintf('Checking if the toolbox has been installed before...\n')
 if exist('SimplexPS')~=0
-    error(['Error: SimplexPowerSystem has been installed on this PC/laptop before. Please unstall the old version of SimplexPowerSystem first!']);
+    error(['Error: The toolbox has been installed on this PC/laptop before. Please unstall the old version first!']);
 end
 
 % Add folder to path
-fprintf('Installing SimplexPowerSystem...\n')
+fprintf('Installing...\n')
 addpath(genpath([RootPath,'/Examples']));         	% Add "Examples" folder
 addpath(genpath([RootPath,'/Library']));          	% Add "Library" folder
 addpath(genpath([RootPath,'/Debug']));             	% Add "Debug" folder
@@ -56,7 +58,7 @@ clc
 %%
 % Installation is completed
 DlgTitle = 'Congratulations!';
-DlgQuestion = 'SimplexPowerSystem is installed successfully! Do you want to run "UserMain.m" now to use the toolbox?';
+DlgQuestion = 'The toolbox is installed successfully! Do you want to run "UserMain.m" to experience it NOW?';
 choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
 
 %%
@@ -67,5 +69,10 @@ if strcmp(choice,'Yes')
     open('UserMain.m');
     run('UserMain.m');
 else
- 	msgbox('The installation of SimplexPowerSystem is completed. Please run "UserMain.m" later in the root path for using the toolbox!');
+ 	msgbox('The installation is completed. Please run "UserMain.m" later in the root path for using the toolbox!');
 end
+
+%%
+fprintf('The installation is completed.\n')
+fprintf('Please run "UserMain.m" later in the root path for using the toolbox!\n')
+fprintf('Please read manuals in the "Documentations" folder if you want to know more details.\n')

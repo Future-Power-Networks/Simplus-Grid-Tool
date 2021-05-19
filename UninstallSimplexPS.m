@@ -20,6 +20,6 @@ restoredefaultpath;
 savepath;
 clc;
 
-fprintf('SimplexPowerSystem is uninstalled! \n')
-fprintf('Many thanks for using SimplexPowerSystem! \n')
+fprintf('The toolbox is uninstalled! \n')
+fprintf('Many thanks for using! \n')
 fprintf('Please delete the files manually if you want to fully remove this toolbox from your PC. \n')

@@ -186,6 +186,9 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             EnableSaturation = 0;
             
             % PLL angle measurement
+            % Notes:
+            % "- ang_r" gives the reference in load convention, like
+            % the Tw port.
             switch 2                                                                    % ?????? 
                 case 1                                  % theta-PLL
                     e_ang = atan2(v_q,v_d) - ang_r;
@@ -193,35 +196,36 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     e_ang = v_q - ang_r;
                 case 3                                  % Q-PLL
                     S = (v_d+1i*v_q)*conj(i_d_r+1i*i_q_r);
-                    % Should not be i reference?                                        % ???????
-                    % S = (e_d+1i*e_q)*conj(i_d+1i*i_q);
                     Q = imag(S);
                     % Notes:
                     % S should be calculated by removing the effects of
                     % both PIi and Lf. Hence, we use i_dq_r here based on
                     % the impedance circuit model.
                     if i_d<=0
-                        e_ang = - Q - ang_r;
+                        e_ang = - (Q-Q0) - ang_r;
                     else
-                        e_ang = Q - ang_r;
+                        e_ang = (Q-Q0) - ang_r;
                     end
                     e_ang = e_ang/abs(P0);
+                    % Notes:
+                   	%
+                    % Noting that Q is proportional to v_q*i_d, this means
+                    % the direction of active power influences the sign of
+                    % Q or equivalently the PI controller in the PLL. In
+                    % order to make sure case 3 is equivalent to case 1 or
+                    % 2, the controller for case 3 is dependent the power
+                    % flow direction.
+                    %
+                    % Noting that PLL is a PI controller, so that control
+                    % target should be (Q-Q0) rather than Q, for reaching
+                    % the required equilibria.
+                    %
+                    % e_ang should be scaled by i_d as well, to ensure the
+                    % actual bandwidth of the PLL is right. We scale it by
+                    % P for the sake of brevity.
                 otherwise
                     error(['Error']);
             end
-            % Notes:
-            % "- ang_r" gives the reference in load convention, like
-            % the Tw port.
-            %
-            % Noting that Q is proportional to v_q*i_d, this means the
-            % direction of active power influences the sign of Q or
-            % equivalently the PI controller in the PLL. In order to
-            % make sure case 3 is equivalent to case 1 or 2, the
-            % controller for case 3 is dependent the power flow
-            % direction.
-            %
-            % e_ang should be scaled by i_d as well. We scale it by P for
-            % the sake of brevity.
 
             % Frequency limit and saturation
             w_limit_H = W0*1.5;
