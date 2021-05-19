@@ -11,3 +11,9 @@ Matlab 2015a or later, with Simulink, Simscape/PowerSystem.
 ## Run Toolbox the First Time  
 
 Run "InstallSimplex.m" by Matlab. That's all! The SimplexPS will automatically run and get results of an example power system saved in "UserData.xlsx". More examples can be found in "Examples" folder.
+
+## Toolbox architecture
+
+The tool architecture is shown in the figure below. Users only need to prepare a excel form "UserData.xlsx" and run "UserMain.m". Then, the tool will automatically do the static analysis, dynamic analysis, and time-domain simulation of the system saved in the excel form.
+
+![](https://raw.githubusercontent.com/Future-Power-Networks/Simplex-Power-Systems/master/Documentations/Figures/Architecture.png)

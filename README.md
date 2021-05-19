@@ -1,6 +1,6 @@
 # Simplus GridTool (Version: v2021-May-19)
 
-Simplus GridTool is an open-source tool for dynamic analysis and simulation of power systems (large-scale, multi-apparatus, generator-converter-composite, AC or DC or hybrid AC-DC). The tool is based on Matlab/Simulink.
+Simplus GridTool is an open-source tool for dynamic analysis and time-domain simulation of power systems (large-scale, multi-apparatus, generator-converter-composite, AC or DC or hybrid AC-DC). The tool is based on Matlab/Simulink.
 
 Copyright. 2019-2021 Simplus Co. Ltd.
 
@@ -14,7 +14,7 @@ Copy the repository (download all codes) into your PC, and run "InstallSimplexPS
 
 ## Documentations
 
-Manuals are in "Documentations" folder.
+More details can be found in manuals in "Documentations" folder.
 
 ## Contact
 
