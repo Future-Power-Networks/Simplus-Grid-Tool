@@ -20,7 +20,7 @@ Matlab uses free style for its common functions, and uses microsoft mainly in ot
 
 The tool architecture is shown in the figure below.
 
-![](https://github.com/Future-Power-Networks/Simplex-Power-Systems/tree/master/Documentations/Figures/Archietecture.png)
+![](https://raw.githubusercontent.com/Future-Power-Networks/Simplex-Power-Systems/master/Documentations/Figures/Architecture.png)
 
 ## File architecture
 
