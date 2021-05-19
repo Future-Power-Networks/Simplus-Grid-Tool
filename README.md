@@ -1,10 +1,8 @@
-# SimplexPowerSystems (Version: v2021-May-19)
+# Simplus GridTool (Version: v2021-May-19)
 
-SimplexPowerSystems (SimplexPS, in short) is an open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, generator-converter-composite, AC or DC or hybrid AC-DC).
+Simplus GridTool is an open-source tool for dynamic analysis and simulation of power systems (large-scale, multi-apparatus, generator-converter-composite, AC or DC or hybrid AC-DC). The tool is based on Matlab/Simulink.
 
-The toolbox is based on Matlab/Simulink but is going to be extended to Python. To be continued.
-
-Copyright. 2019-2021 Simplex Co. Ltd.
+Copyright. 2019-2021 Simplus Co. Ltd.
 
 ## System Requirement
 
