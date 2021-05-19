@@ -170,7 +170,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
           	% Notes:
             % "- ang_r" gives the reference in load convention, like the Tw
             % port.
-            switch 3                                                                    % ?????? 
+            switch 2                                                                    % ?????? 
                 case 1                                  % theta-PLL
                     e_ang = atan2(v_q,v_d) - ang_r;
                 case 2                                  % vq-PLL
@@ -206,6 +206,19 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     % for case 3, the steady-state Q = 0 if ang_r =0.
                     % Hence, we treated (Q-Q0) as the actual control
                     % target, so that Q-Q0=0 at steady state.
+                case 4
+                    v_dq = v_d + 1i*v_q;
+                    v_m = abs(v_dq);
+                    theta_v = angle(v_dq);
+                    i_dq_r = i_d_r + 1i*i_q_r;
+                    i_m = abs(i_dq_r);
+                    theta_i = angle(i_dq_r);
+                    S = v_dq*conj(i_dq_r);
+                    W = S*exp(-1i* (pi/2 - theta_i) );
+                    W = real(W);
+                    W = W/i_m;
+                    e_ang = W  - ang_r;
+                    % Notes: This method is equivalent to vq-PLL.
                 otherwise
                     error(['Error']);
             end
