@@ -35,10 +35,10 @@ UserData = 'UserData.xlsx';
 % UserData = 'NETS_NYPS_68Bus.xlsx';
 %
 % Pure dc power system examples:
-% UserData = 'GfdBuckInfiniteBus.xlsx';          % Single grid-feeding buck converter and infinite bus
+% UserData = 'GfdBuckInfiniteBus.xlsx';         % Single grid-feeding buck converter and infinite bus
 %
 % Hybrid ac-dc power system examples:
-% UserData = 'Hybrid_test_v1.xlsx';
+% UserData = 'Hybrid_test_v1.xlsx';             % A four bus hybrid ac-dc system
 % UserData = 'Hybrid_test_v2.xlsx';
 
 %% Run toolbox

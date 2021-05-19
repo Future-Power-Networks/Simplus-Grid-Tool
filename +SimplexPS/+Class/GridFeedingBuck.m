@@ -87,9 +87,9 @@ classdef GridFeedingBuck < SimplexPS.Class.ModelAdvance
             W0    = obj.Para(7);
             
             w_vdc	= xfvdc*2*pi; 	% (rad/s) bandwidth, vdc
-            w_i     = xfi*2*pi;	% (rad/s) bandwidth, i
-            L       = xwL/W0; % L filter
-            R       = xR; % L filter's inner resistance
+            w_i     = xfi*2*pi;     % (rad/s) bandwidth, i
+            L       = xwL/W0;     	% L filter
+            R       = xR;           % L filter's inner resistance
             C_dc    = xCdc;
             v_dc_r  = xVdc;
             kp_v_dc = xVdc*xCdc*w_vdc;      % v_dc, P
@@ -132,8 +132,8 @@ classdef GridFeedingBuck < SimplexPS.Class.ModelAdvance
                         
                 % State equations
                 if obj.DeviceType == 1011
-                    dv_dc = (e*i - P_dc)/v_dc/C_dc; 	% C_dc
-                    dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
+                    dv_dc = (e*i - P_dc)/v_dc/C_dc;         % C_dc
+                    dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;     	% v_dc I
                 elseif obj.DeviceType == 1010
                     % No dc link control
                 end

@@ -9,6 +9,9 @@
 % The model is in 
 % ac-side: load convention, admittance form.
 % dc-side: load convention, admittance form.
+%
+% The model is simply a three phase voltage source inverter, rather than a
+% back-to-back topology.
 
 %% Class
 

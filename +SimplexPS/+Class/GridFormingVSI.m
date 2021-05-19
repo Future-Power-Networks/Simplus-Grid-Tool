@@ -129,29 +129,32 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             w      = x(11);
             theta  = x(12);
             
-            % Get parameter
-            xwLf = obj.Para(1);
-            xRf = obj.Para(2);
-            xwCf = obj.Para(3);
-            xwLc = obj.Para(4);
-            xRc = obj.Para(5);
-            xXov = obj.Para(6);
-            xDw = obj.Para(7);
+            % Get parameters
+            xwLf    = obj.Para(1);
+            xRf     = obj.Para(2);
+            xwCf    = obj.Para(3);
+            xwLc    = obj.Para(4);
+            xRc     = obj.Para(5);
+            xXov    = obj.Para(6);
+            xDw     = obj.Para(7);
             xfdroop = obj.Para(8);
-            xfvdc = obj.Para(9);
-            xfidq = obj.Para(10);
-            W0 = obj.Para(11);
+            xfvdq   = obj.Para(9);
+            xfidq   = obj.Para(10);
+            W0      = obj.Para(11);
+            
+            % Update paramters
             Lf = xwLf/W0;
             Rf = xRf;
             Cf = xwCf/W0;
             Lc = xwLc/W0;
             Rc = xRc;
-            Xov= xXov;
+            Xov = xXov;
+            Rov = 0;
             Dw = xDw*W0;
             wf = xfdroop*2*pi;
-            w_v_odq = xfvdc*2*pi;
+            w_v_odq = xfvdq*2*pi;
             w_i_ldq = xfidq*2*pi;
-            Rov      = 0;
+            
             kp_i_ldq = w_i_ldq*Lf;
             ki_i_ldq = w_i_ldq^2*Lf/4;
             kp_v_odq = w_v_odq*Cf;

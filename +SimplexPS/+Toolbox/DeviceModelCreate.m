@@ -73,7 +73,7 @@ switch floor(Type/10)
                         Para.Xov;
                         Para.Dw;
                         Para.fdroop;
-                        Para.fvdc;
+                        Para.fvdq;
                         Para.fidq;
                         Para.w0];
                    

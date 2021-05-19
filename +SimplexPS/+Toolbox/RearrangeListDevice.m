@@ -62,7 +62,7 @@ end
 % ======================================
 Para0000.J  = 3.5;
 Para0000.D  = 1;
-Para0000.wL  = 0.1;
+Para0000.wL = 0.1;
 Para0000.R  = 0.01;
 Para0000.w0 = W0;
 
@@ -89,18 +89,17 @@ Para0010.w0 = W0;
 % ======================================
 % Grid-forming VSI (Droop-Controlled)
 % ======================================
-Para0020.wLf=0.05;
-Para0020.Rf=0.01;
-Para0020.wCf=0.02;
-Para0020.wLc=0.01;
-Para0020.Rc=0.002;
-Para0020.Xov=0;
-Para0020.Dw=0.05;
-Para0020.fdroop=20; % droop control bandwidth
-Para0020.fvdc=250;  % vdc bandwidth
-Para0020.fidq=500;  % current control bandwidth
-Para0020.w0 = W0;
-
+Para0020.wLf    =0.05;
+Para0020.Rf     =0.05/5;
+Para0020.wCf    =0.02;
+Para0020.wLc    =0.02;
+Para0020.Rc     =0.02/5;
+Para0020.Xov    =0;
+Para0020.Dw     =0.05;
+Para0020.fdroop =20;    % (Hz) droop control bandwidth
+Para0020.fvdq   =250;   % (Hz) vdc bandwidth
+Para0020.fidq   =500;   % current control bandwidth
+Para0020.w0     = W0;
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)
@@ -113,17 +112,16 @@ Para0090 = [];
 Para0100 = [];
 
 %% Default DC device data
-
 % ======================================
 % Grid-feeding buck
 % ======================================
-Para1010.Vdc = 2;
-Para1010.Cdc=0.8;
-Para1010.wL = 0.05;
-Para1010.R = 0.01;
-Para1010.fi=500;
-Para1010.fvdc=10;
-Para1010.w0 = W0;
+Para1010.Vdc  = 2;
+Para1010.Cdc  = 0.8;
+Para1010.wL   = 0.05;
+Para1010.R    = 0.01;
+Para1010.fi   = 500;
+Para1010.fvdc = 10;
+Para1010.w0   = W0;
 
 % ======================================
 % Dc infinite bus (short-circuit in small-signal)
@@ -136,19 +134,18 @@ Para1090 = [];
 Para1100 = [];
 
 %% Default hybrid device data
-
 % ======================================
 % Interlink ac-dc converter
 % ======================================
-Para2000.C_dc = 1.6;
-Para2000.wL_ac = 0.05;
-Para2000.R_ac = 0.01;
-Para2000.wL_dc = 0.01;
-Para2000.R_dc = 0.01/5;
-Para2000.fidq = 500;
-Para2000.fvdc = 10;
-Para2000.fpll = 10;
-Para2000.w0   = W0;   
+Para2000.C_dc   = 1.6;
+Para2000.wL_ac  = 0.05;
+Para2000.R_ac   = 0.01;
+Para2000.wL_dc  = 0.01;
+Para2000.R_dc   = 0.01/5;
+Para2000.fidq   = 500;
+Para2000.fvdc   = 10;
+Para2000.fpll   = 10;
+Para2000.w0     = W0;   
 
 %% Re-arrange device data
 % Get the size of netlist
@@ -206,9 +203,9 @@ end
 for i = 1:length(row)
   	DeviceBus   = DeviceBusCell{row(i)};
 	DeviceType	= ListDeviceType(row(i));
- 	UserValue 	= ListDevice(row(i),column(i));      % Customized value
-    SwitchFlag = column(i)-2;                         	% Find the updated parameter
-  	if floor(DeviceType/10) == 0
+ 	UserValue 	= ListDevice(row(i),column(i));     % Customized value
+    SwitchFlag = column(i)-2;                   	% Find the updated parameter
+  	if floor(DeviceType/10) == 0                    % Synchronous machine
         switch SwitchFlag 
          	case 1; ParaCell{row(i)}.J  = UserValue;
             case 2; ParaCell{row(i)}.D  = UserValue;
@@ -217,7 +214,7 @@ for i = 1:length(row)
             otherwise
                 error(['Error: paramter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end
-    elseif (floor(DeviceType/10) == 1)
+    elseif (floor(DeviceType/10) == 1)              % Grid-following inverter
         switch SwitchFlag
             case 1; ParaCell{row(i)}.V_dc   = UserValue;
             case 2; ParaCell{row(i)}.C_dc   = UserValue;
@@ -229,7 +226,7 @@ for i = 1:length(row)
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end
-    elseif floor(DeviceType/10) == 2
+    elseif floor(DeviceType/10) == 2                % Grid-forming inverter
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.wLf     = UserValue;
           	case 2;  ParaCell{row(i)}.Rf      = UserValue;
@@ -239,12 +236,12 @@ for i = 1:length(row)
            	case 6;  ParaCell{row(i)}.Xov 	  = UserValue;
             case 7;  ParaCell{row(i)}.Dw      = UserValue;
             case 8;  ParaCell{row(i)}.fdroop  = UserValue;
-          	case 9;  ParaCell{row(i)}.fvdc    = UserValue;
+          	case 9;  ParaCell{row(i)}.fvdq    = UserValue;
           	case 10; ParaCell{row(i)}.fidq    = UserValue; 
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(DeviceBus) 'type ' num2str(DeviceType) '.']);
         end
-    elseif floor(DeviceType/10) == 101 % Grid-following buck
+    elseif floor(DeviceType/10) == 101 % Grid-feeding buck
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.Vdc   = UserValue;
           	case 2;  ParaCell{row(i)}.Cdc   = UserValue;
