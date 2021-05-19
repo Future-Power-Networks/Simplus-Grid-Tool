@@ -16,7 +16,7 @@ This is the quick manual for developers who want to contribute to the toolbox de
     3) free style, like ss2tf  
 Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly in this project, and use free style when needed.
 
-### Toolbox architecture
+## Toolbox architecture
 
 The tool architecture is shown in the figure below.
 
