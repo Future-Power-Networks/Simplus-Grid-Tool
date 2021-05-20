@@ -25,8 +25,8 @@ Gdss.C = C;
 Gdss.D = D;
 Gdss.E = E;
 
-Gss = SimplexPS.dss2ss(Gdss)
+Gss = SimplusGT.dss2ss(Gdss)
 
 %% case 2:
-Gdss = SimplexPS.DssSwitchInOut(Gdss,1);
-Gss = SimplexPS.dss2ss(Gdss)
+Gdss = SimplusGT.DssSwitchInOut(Gdss,1);
+Gss = SimplusGT.dss2ss(Gdss)

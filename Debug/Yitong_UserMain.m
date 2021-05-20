@@ -4,7 +4,7 @@
 %% Tips
 %
 % Please ensure that the toolbox is installed first, by running
-% "InstallSimplexPS.m" once.
+% "InstallSimplusGT.m" once.
 %
 % The toolbox defaultly saves the results into Workspace, prints the key
 % results in Command Window, and plots key figures.
@@ -62,7 +62,7 @@ close all;  % Close all figures, etc
 UserData = 'Duality_14Bus';
 
 %% Run toolbox
-SimplexPS.Toolbox.Main();
+SimplusGT.Toolbox.Main();
 
 %% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space

@@ -6,10 +6,10 @@
 function blkStruct = slblocks
 
 % Name of the library file saved in the same path
-Browser.Library = 'SimplexPS';
+Browser.Library = 'SimplusGT';
 
 % Library name shown in the Simulink library browser
-Browser.Name = 'Simplex Power Systems';
+Browser.Name = 'Simplus Grid Tool';
 
 blkStruct.Browser = Browser;
 

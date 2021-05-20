@@ -20,7 +20,7 @@ Matlab uses free style for its common functions, and uses microsoft mainly in ot
 
 The logic and architecture of this tool are shown in the figure below. Users only need to prepare a excel form "UserData.xlsx" and run "UserMain.m". Then, the tool will automatically do the static analysis, dynamic analysis, and time-domain simulation of the power system saved in the excel form.
 
-![](https://raw.githubusercontent.com/Future-Power-Networks/Simplex-Power-Systems/master/Documentations/Figures/Architecture.png)
+![](https://raw.githubusercontent.com/Future-Power-Networks/Simplus-Grid-Tool/master/Documentations/Figures/Architecture.png)
 
 ## File Architecture
 
@@ -28,7 +28,7 @@ The file structure (documentation tree) of the toolbox is shown below. The detai
 
 <pre>
 Root path  
-	-> +SimplexPS (root name space)  
+	-> +SimplusGT (root name space)  
 		-> +Class (sub name sapce, class of matlab system object)  
 		-> +PowerFlow (sub name space, power flow analysis)  
 		-> +Toolbox (sub name space, toolbox basic functions)  
@@ -38,11 +38,11 @@ Root path
 	-> Documentations (manuals for users and developers)  
 	-> Examples  
 	-> Library (library for Simulink blocks)  
-		-> slblocks.m (load SimplexPS lib to Simulink broswer)  
-		-> SimplexPS.slx (library file)  
-		-> SimplexPS_2015a.xls (library file for matlab 2015a)  
-	-> InstallSimplexPS.m  
-	-> UninstallSimplexPS.m  
+		-> slblocks.m (load SimplusGT lib to Simulink broswer)  
+		-> SimplusGT.slx (library file)  
+		-> SimplusGT_2015a.xls (library file for matlab 2015a)  
+	-> InstallSimplusGT.m  
+	-> UninstallSimplusGT.m  
 	-> UserMain.m  
 	-> UserData.xlsx  
 	-> README.md
@@ -56,7 +56,7 @@ Root path contains the main folders for toolbox and the files for users.
 
 "README.m" is a quick introduction of the toolbox. It should be changed by leading developers only.
 
-"InstallSimplexPS.m" and "UninstallSimplexPS.m" are files for the installation and uninstallation of the toolbox.
+"InstallSimplusGT.m" and "UninstallSimplusGT.m" are files for the installation and uninstallation of the toolbox.
 
 "UserMain.m" is the main file for users, which runs the toolbox. "UserDate.xlsx" is a excel form containing all data of users' power systems. The default data of an example 4-bus power system is saved in this file, so that users can run "UserMain.m" the first time without any further actions.
 
@@ -66,13 +66,13 @@ Root path contains the main folders for toolbox and the files for users.
 
 ### Folders for developers only:
 
-"+SimplexPS" is the root name space folder, which contains all the functions (except for functions available for users such as "UserMain.m") used in the toolbox. For Matlab, "+" implies [a name space (or equivalently a package)](https://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html). The use of name space is mainly for avoiding the unexpected duplication of function names and errors. Functions are further classfied into different groups and saved in different sub name spaces, as introduced in detail later.
+"+SimplusGT" is the root name space folder, which contains all the functions (except for functions available for users such as "UserMain.m") used in the toolbox. For Matlab, "+" implies [a name space (or equivalently a package)](https://uk.mathworks.com/help/matlab/matlab_oop/scoping-classes-with-packages.html). The use of name space is mainly for avoiding the unexpected duplication of function names and errors. Functions are further classfied into different groups and saved in different sub name spaces, as introduced in detail later.
 
 "Debug" folder contains the backup files used by different developers for debugging the toolbox. These files are for debug only and should NOT be used/called when users run the toolbox.
 
-"Library" folder contains the library files for Simulink blocks used by the toolbox. "SimplexPS_2015a.xls" is the library file in Matlab version 2015a. Runing "InstallSimplexPS.m" will automatically convert this lib file to the version of users' Maltab.
+"Library" folder contains the library files for Simulink blocks used by the toolbox. "SimplusGT_2015a.xls" is the library file in Matlab version 2015a. Runing "InstallSimplusGT.m" will automatically convert this lib file to the version of users' Maltab.
 
-## Root Name Space: "+SimplexPS" Folder
+## Root Name Space: "+SimplusGT" Folder
 
 This is the root name space folder of the toolbox, and contains all functions used by the toolbox (except for functions available for users directly such as "UserMain.m"). Generic functions (used for generic purpose such as mathmatical calculations, bode plot, etc) are saved in this root name space folder directly. Other advanced functions are saved in corresponding sub name space folders ("+Toolbox", "+Simulink", etc), as introduced next.
 

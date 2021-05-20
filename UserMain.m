@@ -7,7 +7,7 @@
 % more details about this tool.
 %
 % Please ensure that the toolbox is installed first, by running
-% "InstallSimplexPS.m" once.
+% "InstallSimplusGT.m" once.
 %
 % The toolbox defaultly saves the results into Workspace, prints the key
 % results in Command Window, and plots key figures.
@@ -44,7 +44,7 @@ UserData = 'UserData.xlsx';
 % UserData = 'Hybrid_test_v1.xlsx';             % A 4-bus hybrid ac-dc system
 
 %% Run toolbox
-SimplexPS.Toolbox.Main();
+SimplusGT.Toolbox.Main();
 
 %% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space

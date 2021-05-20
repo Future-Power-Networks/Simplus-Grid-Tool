@@ -10,7 +10,7 @@
 
 %% Class
 
-classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
+classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
     
     % For temporary use
     properties(Access = protected)
