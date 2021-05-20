@@ -4,4 +4,4 @@ close all
 
 a = {'b1','c2','d'};
 
-[e1,e2] = SimplexPS.CellFind(a,['c',num2str(2)])
+[e1,e2] = SimplusGT.CellFind(a,['c',num2str(2)])

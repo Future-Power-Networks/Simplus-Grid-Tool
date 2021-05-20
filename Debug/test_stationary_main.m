@@ -4,7 +4,7 @@
 %% Tips
 %
 % Please ensure that the toolbox is installed， by running
-% "InstallSimplexPS.m" the first time.
+% "InstallSimplusGT.m" the first time.
 %
 % The toolbox defaultly prints the results in Command Window, saves the
 % results into Workspace, and plots figures.
@@ -41,7 +41,7 @@ UserData = 'SgInfiniteBus.xlsx';
 % UserData = 'Hybrid_test_v2.xlsx';
 
 %% Run toolbox
-SimplexPS.Toolbox.Main();
+SimplusGT.Toolbox.Main();
 
 %% Results available to users
 % GsysDSS;          % Whole-system port model (descriptor state space
