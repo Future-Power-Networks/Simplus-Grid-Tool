@@ -1,6 +1,8 @@
-% This file installs the toolbox on the users PC. Users do not need to
-% read or understand the codes in this file. Please just run it directly
-% and run it only ONCE.
+% Read me please:
+% This file installs the toolbox on the user PC. Users do not need to read
+% or understand the codes in this file. Please just run it directly and run
+% it only ONCE. Please use "UserMain.m" in the root path to run the toolbox
+% after installation.
 
 % Author(s): Yitong Li, Yunjie Gu
 
