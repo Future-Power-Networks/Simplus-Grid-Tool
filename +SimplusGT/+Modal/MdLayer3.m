@@ -6,49 +6,49 @@
 % Eventhough the change of rho will affect the equibilium of Ak, it will
 % not affect the equilibrium point at other points. Therefore, to calculate
 % the new impedance, we only need to update the parameter, and then call the function
-% SimplusGT.Toolbox.DeviceModelCreate, and take the output GmDSS_Cell.
-function Layer3Result = MdLayer3(Residue,ZmVal,FreqSel,DeviceType,...
-                DeviceSelL3All,Para,PowerFlow,Ts,DeviceBus,ListBus)
+% SimplusGT.Toolbox.ApparatusModelCreate, and take the output GmDSS_Cell.
+function Layer3Result = MdLayer3(Residue,ZmVal,FreqSel,ApparatusType,...
+                ApparatusSelL3All,Para,PowerFlow,Ts,ApparatusBus,ListBus)
 
-DeviceSelNum=length(DeviceSelL3All);
+ApparatusSelNum=length(ApparatusSelL3All);
 
-for DeviceCount = 1:DeviceSelNum
-    DeviceSelL3 = DeviceSelL3All(DeviceCount);
-    ZmValOrig = ZmVal(DeviceSelL3);
-    ParamName = fieldnames(Para{DeviceSelL3});
+for ApparatusCount = 1:ApparatusSelNum
+    ApparatusSelL3 = ApparatusSelL3All(ApparatusCount);
+    ZmValOrig = ZmVal(ApparatusSelL3);
+    ParamName = fieldnames(Para{ApparatusSelL3});
     ParamNum = length(ParamName);
-    Residue_ = Residue(DeviceSelL3);
+    Residue_ = Residue(ApparatusSelL3);
     %perturb the parameters one by one.
     for k=1:ParamNum
         ParaNew = Para;
-        ParaSel = getfield(Para{DeviceSelL3},ParamName{k}); % extract the parameter
+        ParaSel = getfield(Para{ApparatusSelL3},ParamName{k}); % extract the parameter
         delta_para = 1e-5*(1+abs(ParaSel));
         ParaPerturb = ParaSel + delta_para ; % add perturabation
-        ParaNew = setfield(ParaNew{DeviceSelL3}, ParamName{k}, ParaPerturb); % update the parameter  
+        ParaNew = setfield(ParaNew{ApparatusSelL3}, ParamName{k}, ParaPerturb); % update the parameter  
 %         [~,GmDSS_Cell_New,~,~,~,~,~,~] = ...
-%             SimplusGT.Toolbox.DeviceModelCreate_old('Type', DeviceType{DeviceSelL3} ,...
-%             'Flow',PowerFlow{DeviceSelL3},'Para',ParaNew,'Ts',Ts);        
+%             SimplusGT.Toolbox.ApparatusModelCreate_old('Type', ApparatusType{ApparatusSelL3} ,...
+%             'Flow',PowerFlow{ApparatusSelL3},'Para',ParaNew,'Ts',Ts);        
         [~,GmDSS_Cell_New,~,~,~,~,~,~,~] ...
-        = SimplusGT.Toolbox.DeviceModelCreate(DeviceBus{DeviceSelL3},DeviceType{DeviceSelL3},...
-                            PowerFlow{DeviceSelL3},ParaNew,Ts,ListBus);
+        = SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{ApparatusSelL3},ApparatusType{ApparatusSelL3},...
+                            PowerFlow{ApparatusSelL3},ParaNew,Ts,ListBus);
      
-        ZmValNew = SimplusGT.Modal.DeviceImpedanceCal(GmDSS_Cell_New, FreqSel, DeviceSelL3);
+        ZmValNew = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell_New, FreqSel, ApparatusSelL3);
         
-        Layer3Result(DeviceCount).Apparatus={['Apparatus',num2str(DeviceSelL3)]};
-        Layer3Result(DeviceCount).Result(k).ParaName = {ParamName{k}};
-        Layer3Result(DeviceCount).Result(k).DeltaZ.dd = (ZmValNew.dd - ZmValOrig.dd)/(delta_para);
-        Layer3Result(DeviceCount).Result(k).DeltaZ.dq = (ZmValNew.dq - ZmValOrig.dq)/(delta_para);
-        Layer3Result(DeviceCount).Result(k).DeltaZ.qd = (ZmValNew.qd - ZmValOrig.qd)/(delta_para);
-        Layer3Result(DeviceCount).Result(k).DeltaZ.qq = (ZmValNew.qq - ZmValOrig.qq)/(delta_para);
+        Layer3Result(ApparatusCount).Apparatus={['Apparatus',num2str(ApparatusSelL3)]};
+        Layer3Result(ApparatusCount).Result(k).ParaName = {ParamName{k}};
+        Layer3Result(ApparatusCount).Result(k).DeltaZ.dd = (ZmValNew.dd - ZmValOrig.dd)/(delta_para);
+        Layer3Result(ApparatusCount).Result(k).DeltaZ.dq = (ZmValNew.dq - ZmValOrig.dq)/(delta_para);
+        Layer3Result(ApparatusCount).Result(k).DeltaZ.qd = (ZmValNew.qd - ZmValOrig.qd)/(delta_para);
+        Layer3Result(ApparatusCount).Result(k).DeltaZ.qq = (ZmValNew.qq - ZmValOrig.qq)/(delta_para);
         
-          Layer3Result(DeviceCount).Result(k).DLambda_rad = -1*(...
-             Layer3Result(DeviceCount).Result(k).DeltaZ.dd * Residue_.dd...
-            + Layer3Result(DeviceCount).Result(k).DeltaZ.dq * Residue_.qd ...
-            + Layer3Result(DeviceCount).Result(k).DeltaZ.qd * Residue_.dq ...
-            + Layer3Result(DeviceCount).Result(k).DeltaZ.qq * Residue_.qq);
-        DLambda_Hz=Layer3Result(DeviceCount).Result(k).DLambda_rad/(2*pi);
-        Layer3Result(DeviceCount).Result(k).DLambdaRho_Hz=DLambda_Hz;
-        Layer3Result(DeviceCount).Result(k).DLambdaRho_pu_Hz=DLambda_Hz*ParaSel;
+          Layer3Result(ApparatusCount).Result(k).DLambda_rad = -1*(...
+             Layer3Result(ApparatusCount).Result(k).DeltaZ.dd * Residue_.dd...
+            + Layer3Result(ApparatusCount).Result(k).DeltaZ.dq * Residue_.qd ...
+            + Layer3Result(ApparatusCount).Result(k).DeltaZ.qd * Residue_.dq ...
+            + Layer3Result(ApparatusCount).Result(k).DeltaZ.qq * Residue_.qq);
+        DLambda_Hz=Layer3Result(ApparatusCount).Result(k).DLambda_rad/(2*pi);
+        Layer3Result(ApparatusCount).Result(k).DLambdaRho_Hz=DLambda_Hz;
+        Layer3Result(ApparatusCount).Result(k).DLambdaRho_pu_Hz=DLambda_Hz*ParaSel;
     end
 end
 end

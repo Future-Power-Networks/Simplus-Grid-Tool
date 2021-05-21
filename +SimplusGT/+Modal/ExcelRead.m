@@ -1,5 +1,5 @@
-function [AxisSel, DeviceSel12, ModeSel, DeviceSel3,StateSel_DSS, ModeSel_DSS]...
-    = ExcelRead(filename, N_Bus, DeviceType, GminSS)
+function [AxisSel, ApparatusSel12, ModeSel, ApparatusSel3,StateSel_DSS, ModeSel_DSS]...
+    = ExcelRead(filename, N_Bus, ApparatusType, GminSS)
 
 %% State-PF sheet reading
 StateConfig = xlsread(filename,1);
@@ -34,20 +34,20 @@ end
 %     error('None axis is selected for bodeplot.');
 % end
 SelIndex = 1;
-DeviceSel12 = 0;
-DeviceIndex = 1;
+ApparatusSel12 = 0;
+ApparatusIndex = 1;
 for k = 1:N_Bus
-    if DeviceType{k} <= 89 %apparatuses)
-        if Config(DeviceIndex,1) == 1 %the apparatus is selected
-            DeviceSel12(SelIndex) = k;
+    if ApparatusType{k} <= 89 %apparatuses)
+        if Config(ApparatusIndex,1) == 1 %the apparatus is selected
+            ApparatusSel12(SelIndex) = k;
             SelIndex = SelIndex +1;
         else % not selected.
         end
-        DeviceIndex = DeviceIndex +1;
+        ApparatusIndex = ApparatusIndex +1;
     else % floating bus, infinite bus...
     end        
 end
-% if DeviceSel12 == 0
+% if ApparatusSel12 == 0
 %     error('None Apparatus is selected for layer 1&2.');
 % end
 ModeNum = length(GminSS.A);
@@ -63,16 +63,16 @@ end
 %     error('None Mode is selected.');
 % end
 SelIndex = 1;
-DeviceSel3 = 0;
-DeviceIndex = 1;
+ApparatusSel3 = 0;
+ApparatusIndex = 1;
 for k = 1:N_Bus
-    if DeviceType{k} <= 89 %apparatuses)
-        if Config(DeviceIndex,11) == 1 %the apparatus is selected
-            DeviceSel3(SelIndex) = k;
+    if ApparatusType{k} <= 89 %apparatuses)
+        if Config(ApparatusIndex,11) == 1 %the apparatus is selected
+            ApparatusSel3(SelIndex) = k;
             SelIndex = SelIndex +1;
         else % not selected.
         end
-        DeviceIndex = DeviceIndex +1;
+        ApparatusIndex = ApparatusIndex +1;
     else % floating bus, infinite bus...
     end        
 end

@@ -1,4 +1,4 @@
-function BodeDraw(DeviceSel, AxisSel, GminSS, DeviceType, N_Bus, DeviceInputStr, DeviceOutputStr)
+function BodeDraw(ApparatusSel, AxisSel, GminSS, ApparatusType, N_Bus, ApparatusInputStr, ApparatusOutputStr)
 %this function draws the bodeplot of the node admittance you selected
 %Author: Yue Zhu.
 AxisNum=length(AxisSel);
@@ -35,15 +35,15 @@ P.FreqUnits='Hz';
 %P.PhaseWrapping='on';
 %P.PhaseWrappingBranch=-90;
 for k = 1:N_Bus
-        if DeviceType{k} <= 89 %apparatuses
-            if (ismember(k,DeviceSel)) %if selected
+        if ApparatusType{k} <= 89 %apparatuses
+            if (ismember(k,ApparatusSel)) %if selected
                 bode(GminSS(pout+poutBias, pin+pinBias),P)
                 CountLegend = CountLegend + 1;
                 VecLegend{CountLegend} = ['Node',num2str(k)];
                 hold on;
             end
-            pin = pin + length(DeviceInputStr{k});
-            pout = pout + length(DeviceOutputStr{k});
+            pin = pin + length(ApparatusInputStr{k});
+            pout = pout + length(ApparatusOutputStr{k});
         end
 end
 legend(VecLegend);

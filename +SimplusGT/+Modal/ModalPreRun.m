@@ -28,8 +28,8 @@ SimplusGT.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old con
 % Write 1 to enable auto select.
 AutoSel = 1;
 
-[AutoSelResult] = SimplusGT.Modal.ExcelWrite(N_Bus,N_Device,DeviceType,...
-    DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, FileModal);
+[AutoSelResult] = SimplusGT.Modal.ExcelWrite(N_Bus,N_Apparatus,ApparatusType,...
+    ApparatusStateStr,ApparatusInputStr,ApparatusOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, FileModal);
 
 fprintf('%s is now ready.\nPlease open the file and select the states and apparatuses you are interested.\n',FileModal);
 fprintf('After selection, save the excel file and run Modal Analysis.m.\n');

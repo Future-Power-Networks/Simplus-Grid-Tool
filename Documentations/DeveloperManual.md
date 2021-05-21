@@ -78,7 +78,7 @@ This is the root name space folder of the toolbox, and contains all functions us
 
 ### "+Toolbox" Sub-folder
 
-This folder contains the basic functions for toolbox. For example, "Main.m" is the main function for toolbox; "DeviceModelCreate.m" creates the small-signal state space models of apparatuses.
+This folder contains the basic functions for toolbox. For example, "Main.m" is the main function for toolbox; "ApparatusModelCreate.m" creates the small-signal state space models of apparatuses.
 
 ### "+Simulink" Sub-folder
 

@@ -30,12 +30,12 @@ classdef GridFeedingBuck < SimplusGT.Class.ModelAdvance
     methods(Static)
         
         function [State,Input,Output] = SignalList(obj)
-        	if obj.DeviceType == 1010
+        	if obj.ApparatusType == 1010
                 State = {'i','i_i'};
-            elseif obj.DeviceType == 1011
+            elseif obj.ApparatusType == 1011
                 State = {'i','i_i','v_dc','v_dc_i'};
             else
-                error('Error: Invalid DeviceType.');
+                error('Error: Invalid ApparatusType.');
             end
         	Input = {'v','P_dc'};
             Output = {'i','v_dc'};
@@ -63,9 +63,9 @@ classdef GridFeedingBuck < SimplusGT.Class.ModelAdvance
 
             % Get equilibrium
             x_e_1 = [i; i_i];
-            if obj.DeviceType == 1010
+            if obj.ApparatusType == 1010
                 x_e = x_e_1;
-            elseif obj.DeviceType == 1011
+            elseif obj.ApparatusType == 1011
                 x_e = [x_e_1; v_dc; v_dc_i];
             end
         	u_e = [v; P_dc];
@@ -100,10 +100,10 @@ classdef GridFeedingBuck < SimplusGT.Class.ModelAdvance
             % Get states
           	i   	= x(1);
           	i_i  	= x(2);
-            if obj.DeviceType == 1011
+            if obj.ApparatusType == 1011
                 v_dc  	= x(3);
                 v_dc_i 	= x(4);
-            elseif obj.DeviceType == 1010
+            elseif obj.ApparatusType == 1010
                 v_dc    = v_dc_r;
                 v_dc_i  = 0;
             end
@@ -119,10 +119,10 @@ classdef GridFeedingBuck < SimplusGT.Class.ModelAdvance
             % ### Call state equation: dx/dt = f(x,u)
                 
                 % Get current reference
-               	if obj.DeviceType == 1011
+               	if obj.ApparatusType == 1011
                     % DC-link control
                     i_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
-                elseif obj.DeviceType == 1010
+                elseif obj.ApparatusType == 1010
                     % Direct current control                                           
                     i_r = P/V;
                 end
@@ -131,10 +131,10 @@ classdef GridFeedingBuck < SimplusGT.Class.ModelAdvance
                 e = -(i_r - i)*kp_i + i_i;
                         
                 % State equations
-                if obj.DeviceType == 1011
+                if obj.ApparatusType == 1011
                     dv_dc = (e*i - P_dc)/v_dc/C_dc;         % C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;     	% v_dc I
-                elseif obj.DeviceType == 1010
+                elseif obj.ApparatusType == 1010
                     % No dc link control
                 end
                 di_i = -(i_r - i)*ki_i;
@@ -142,9 +142,9 @@ classdef GridFeedingBuck < SimplusGT.Class.ModelAdvance
 
                 % Output state
                 f_xu_1 = [di; di_i];
-                if obj.DeviceType == 1011
+                if obj.ApparatusType == 1011
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
-                elseif obj.DeviceType == 1010
+                elseif obj.ApparatusType == 1010
                     f_xu = f_xu_1;
                 end
                 Output = f_xu;

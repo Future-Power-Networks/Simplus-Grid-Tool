@@ -1,5 +1,5 @@
-function [AutoSelResult] = ExcelWrite(N_Bus,N_Device,DeviceType,DeviceStateStr,DeviceInputStr,...
-    DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, filename)
+function [AutoSelResult] = ExcelWrite(N_Bus,N_Apparatus,ApparatusType,ApparatusStateStr,ApparatusInputStr,...
+    ApparatusOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, filename)
 %this function is to write states, apparatuses, axes to select for
 %further Modal analysis.
 % Author: Yue Zhu
@@ -23,11 +23,11 @@ StateSheet(1,3) = {'Select'};
 index = 2;
 StateCount = 0;
 for k = 1:N_Bus
-    if DeviceType{k} <= 89 %apparatuses)    
-        DeviceName=strcat('Apparatus',num2str(k));
-        StateName = DeviceStateStr{k};
-        StateNum = length(DeviceStateStr{k});
-        StateSheet(index,1) = {DeviceName};
+    if ApparatusType{k} <= 89 %apparatuses)    
+        ApparatusName=strcat('Apparatus',num2str(k));
+        StateName = ApparatusStateStr{k};
+        StateNum = length(ApparatusStateStr{k});
+        StateSheet(index,1) = {ApparatusName};
         for j = 1: StateNum
             StateCount = StateCount +1;
             if ismember(StateCount,IndexSS)
@@ -125,9 +125,9 @@ ImpedanceSheet(2,1) = {'Apparatus'};
 ImpedanceSheet(2,2) = {'Select'};
 index=3;
 for k = 1:N_Bus
-        if DeviceType{k} <= 89 %apparatuses)
-            DeviceName=strcat('Apparatus',num2str(k));
-            ImpedanceSheet(index,1) = {DeviceName};
+        if ApparatusType{k} <= 89 %apparatuses)
+            ApparatusName=strcat('Apparatus',num2str(k));
+            ImpedanceSheet(index,1) = {ApparatusName};
             ImpedanceSheet(index,2) = {1};
             index=index+1;
         else % floating bus, infinite bus...
@@ -206,9 +206,9 @@ ImpedanceSheet(2,12)={'Select'};
 index=3;
 IndexSel=1;
 for k = 1:N_Bus
-        if DeviceType{k} <= 89 %apparatuses)
-            DeviceName=strcat('Apparatus',num2str(k));
-            ImpedanceSheet(index,11)= {DeviceName};
+        if ApparatusType{k} <= 89 %apparatuses)
+            ApparatusName=strcat('Apparatus',num2str(k));
+            ImpedanceSheet(index,11)= {ApparatusName};
             if AutoSel == 1 && IndexSel==1
                 ImpedanceSheet(index,12) = {1};
                 IndexSel = IndexSel+1;

@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li, Yunjie Gu
 
-function Gobj = DeviceModelLink(GmObj)
+function Gobj = ApparatusModelLink(GmObj)
 
     % Create a new obj
     Gobj = SimplusGT.Class.ModelBase;

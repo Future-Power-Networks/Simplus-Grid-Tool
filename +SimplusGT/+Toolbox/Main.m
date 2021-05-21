@@ -58,8 +58,8 @@ Enable_Participation        = ListAdvance(10);
 DcAreaFlag = find(ListBus(:,12)==2);
 
 % ### Re-arrange the apparatus netlist
-[DeviceBus,DeviceType,Para,N_Device] = SimplusGT.Toolbox.RearrangeListDevice(UserData,Wbase,ListBus);
-% The names of "DeviceType" and "Para" can not be changed, because they
+[ApparatusBus,ApparatusType,Para,N_Apparatus] = SimplusGT.Toolbox.RearrangeListApparatus(UserData,Wbase,ListBus);
+% The names of "ApparatusType" and "Para" can not be changed, because they
 % will also be used in simulink model.
 
 % Notes:
@@ -112,26 +112,26 @@ ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,lsw);
 
 % ### Get the models of bus apparatuses
 fprintf('Getting the descriptor state space model of bus apparatuses...\n')
-for i = 1:N_Device
-    if length(DeviceBus{i}) == 1
-     	DevicePowerFlow{i} = PowerFlowNew{DeviceBus{i}};
-    elseif length(DeviceBus{i}) == 2
-        DevicePowerFlow{i} = [PowerFlowNew{DeviceBus{i}(1)},PowerFlowNew{DeviceBus{i}(2)}];
+for i = 1:N_Apparatus
+    if length(ApparatusBus{i}) == 1
+     	ApparatusPowerFlow{i} = PowerFlowNew{ApparatusBus{i}};
+    elseif length(ApparatusBus{i}) == 2
+        ApparatusPowerFlow{i} = [PowerFlowNew{ApparatusBus{i}(1)},PowerFlowNew{ApparatusBus{i}(2)}];
     else
         error(['Error']);
     end
-    [GmObj_Cell{i},GmDSS_Cell{i},DevicePara{i},DeviceEqui{i},DeviceDiscreDamping{i},OtherInputs{i},DeviceStateStr{i},DeviceInputStr{i},DeviceOutputStr{i}] = ...
-        SimplusGT.Toolbox.DeviceModelCreate(DeviceBus{i},DeviceType{i},DevicePowerFlow{i},Para{i},Ts,ListBus);
+    [GmObj_Cell{i},GmDSS_Cell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
+        SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{i},ApparatusType{i},ApparatusPowerFlow{i},Para{i},Ts,ListBus);
     
     % The following data is not used in the script, but will be used in
     % simulations. Do not delete!
-    x_e{i} = DeviceEqui{i}{1};
-    u_e{i} = DeviceEqui{i}{2};
+    x_e{i} = ApparatusEqui{i}{1};
+    u_e{i} = ApparatusEqui{i}{2};
 end
 
 % ### Get the appended model of all apparatuses
 fprintf('Getting the appended descriptor state space model of all apparatuses...\n')
-GmObj = SimplusGT.Toolbox.DeviceModelLink(GmObj_Cell);
+GmObj = SimplusGT.Toolbox.ApparatusModelLink(GmObj_Cell);
 
 % ### Get the model of whole system
 fprintf('Getting the descriptor state space model of whole system...\n')
@@ -175,7 +175,7 @@ fprintf('Whole system port model (descriptor state space form): GsysDSS\n')
 if Enable_PrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
-    SimplusGT.Toolbox.PrintSysString(DeviceBus,DeviceType,GmObj_Cell,ZbusStateStr);
+    SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObj_Cell,ZbusStateStr);
 	fprintf('Print power flow result:\n')
     fprintf('The format below is "| bus | P | Q | V | angle | omega |". P and Q are in load convention.\n')
     ListPowerFlow
@@ -225,7 +225,7 @@ if Enable_CreateSimulinkModel == 1
     close_system(Name_Model,0);
     
     % Create the simulink model
-    SimplusGT.Simulink.MainSimulink(Name_Model,ListBus,ListLineNew,DeviceBus,DeviceType,ListAdvance,PowerFlowNew);
+    SimplusGT.Simulink.MainSimulink(Name_Model,ListBus,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
@@ -281,11 +281,11 @@ if Enable_PlotAdmittance
     CountLegend = 0;
     VecLegend = {};
     for k = 1:N_Bus
-        [k1,k2] = SimplusGT.CellFind(DeviceBus,k);
+        [k1,k2] = SimplusGT.CellFind(ApparatusBus,k);
         % Plot the active bus admittance only
-        if (0<=DeviceType{k2} && DeviceType{k2}<90) || ...
-           (1000<=DeviceType{k2} && DeviceType{k2}<1090) || ...
-           (2000<=DeviceType{k2} && DeviceType{k2}<2090)
+        if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
+           (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
+           (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
            	Yss{k}  = GminSS(BusPort_i{k},BusPort_v{k});
             Ysym{k} = SimplusGT.ss2sym(Yss{k});
             SimplusGT.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 

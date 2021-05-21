@@ -33,10 +33,10 @@ classdef GridFollowingInverterStationary < SimplusGT.Class.ModelAdvance
             % The "_i" in "i_d_i", "i_q_i", "v_dc_i" means integral. These
             % states appear because PI controllers are used
             % correspondingly.
-            if (obj.DeviceType == 19)
+            if (obj.ApparatusType == 19)
                 State = {'i_al','i_be','i_al_i','i_be_i','i_al_ii','i_be_ii','w_pll_i','w','theta'};
             else
-                error('Error: Invalid DeviceType.');
+                error('Error: Invalid ApparatusType.');
             end
         	Input = {'v_d','v_q','ang_r','P_dc'};
             Output = {'i_d','i_q','w','v_dc','theta'};

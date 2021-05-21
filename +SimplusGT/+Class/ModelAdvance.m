@@ -34,7 +34,7 @@ end
 % Will be read first during construction   
 properties(Nontunable)
  
-    DeviceType = 0;    % Apparatus type
+    ApparatusType = 0;    % Apparatus type
     PowerFlow = [];     % Power flow parameters
     x0 = [];            % Initial state
     

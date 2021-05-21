@@ -31,11 +31,11 @@ This is the simulink library of this toolbox. The simulink block of new apparatu
 UserData.xlsx:  
 The data from users is saved in this file. This file also guides the users about how to use this toolbox. Hence, the introduction of the new apparatuses should be added in this file.
 
-RearrangeDeviceData.m:  
+RearrangeApparatusData.m:  
 This file gives the default paramters for a new apparatus, and defines how the data in "UserData.xlsx" is transferred to the codes.
 
-DeviceModelCreate.m:  
+ApparatusModelCreate.m:  
 This file defines the apparatus data transferred from the excel to the class.
 
-SimAddDevice.m:  
+SimAddApparatus.m:  
 This file defines how your apparatus is automatically added when a simulink model is created.

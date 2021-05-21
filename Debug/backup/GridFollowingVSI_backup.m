@@ -33,12 +33,12 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % The "_i" in "i_d_i", "i_q_i", "v_dc_i" means integral. These
             % states appear because PI controllers are used
             % correspondingly.
-            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
+            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
-            elseif obj.DeviceType == 11
+            elseif obj.ApparatusType == 11
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
             else
-                error('Error: Invalid DeviceType.');
+                error('Error: Invalid ApparatusType.');
             end
         	Input = {'v_d','v_q','ang_r','P_dc'};
             Output = {'i_d','i_q','w','v_dc','theta'};
@@ -86,12 +86,12 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
 
             % Get equilibrium
             x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
-            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
+            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                 x_e = [x_e_1; v_dc; v_dc_i];
-            elseif obj.DeviceType == 11
+            elseif obj.ApparatusType == 11
                 x_e = x_e_1;
             else
-                error('Error: Invalid DeviceType.');
+                error('Error: Invalid ApparatusType.');
             end
         	u_e = [v_d; v_q; ang_r; P_dc];
         end
@@ -128,14 +128,14 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             w_pll_i = x(5);
             w       = x(6);
             theta   = x(7);
-            if (obj.DeviceType == 10) || (obj.DeviceType == 12)
+            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                 v_dc  	= x(8);
                 v_dc_i 	= x(9);
-            elseif obj.DeviceType == 11
+            elseif obj.ApparatusType == 11
                 v_dc    = v_dc_r;
                 v_dc_i  = 0;
             else
-                error('Error: Invalid DeviceType.');
+                error('Error: Invalid ApparatusType.');
             end
 
             % Get input
@@ -155,18 +155,18 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 i_q_limit = 1.5;
                 
                 % Get current reference
-               	if (obj.DeviceType == 10) || (obj.DeviceType == 12)
+               	if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                     % Anti wind-up for vdc control
                     v_dc_i = min(v_dc_i,i_d_limit);
                     v_dc_i = max(v_dc_i,-i_d_limit);
                     
                     % DC-link control
                     i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
-                elseif obj.DeviceType == 11
+                elseif obj.ApparatusType == 11
                     % % Active power control                                           
                     i_d_r = P/V;
                 else
-                   error('Invalid DeviceType.');
+                   error('Invalid ApparatusType.');
                 end
                 
               	% i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
@@ -245,17 +245,17 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 w = max(w,w_limit_L);
                         
                 % State equations
-                if obj.DeviceType == 10
+                if obj.ApparatusType == 10
                     dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc; 	% C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;             	% v_dc I
-                elseif obj.DeviceType == 12
+                elseif obj.ApparatusType == 12
                     i_dc = P_dc/v_dc_r;
                   	dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
-                elseif obj.DeviceType == 11
+                elseif obj.ApparatusType == 11
                     % No dc link control
                 else
-                    error('Invalid DeviceType.');
+                    error('Invalid ApparatusType.');
                 end
                 di_d_i = -(i_d_r - i_d)*ki_i_dq;               	% i_d I
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;             	% i_q I
@@ -267,12 +267,12 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 
                 % Output state
                 f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
-                if (obj.DeviceType == 10) || (obj.DeviceType == 12)
+                if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
-                elseif obj.DeviceType == 11
+                elseif obj.ApparatusType == 11
                     f_xu = f_xu_1;
                 else
-                    error('Invalid DeviceType.');
+                    error('Invalid ApparatusType.');
                 end
                 Output = f_xu;
                 
