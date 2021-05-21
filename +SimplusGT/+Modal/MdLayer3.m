@@ -34,7 +34,7 @@ for DeviceCount = 1:DeviceSelNum
      
         ZmValNew = SimplusGT.Modal.DeviceImpedanceCal(GmDSS_Cell_New, FreqSel, DeviceSelL3);
         
-        Layer3Result(DeviceCount).Device={['Device',num2str(DeviceSelL3)]};
+        Layer3Result(DeviceCount).Apparatus={['Apparatus',num2str(DeviceSelL3)]};
         Layer3Result(DeviceCount).Result(k).ParaName = {ParamName{k}};
         Layer3Result(DeviceCount).Result(k).DeltaZ.dd = (ZmValNew.dd - ZmValOrig.dd)/(delta_para);
         Layer3Result(DeviceCount).Result(k).DeltaZ.dq = (ZmValNew.dq - ZmValOrig.dq)/(delta_para);

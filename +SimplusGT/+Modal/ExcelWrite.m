@@ -17,14 +17,14 @@ ModeNum = length(Mode);
 xlswrite(filename,{'Select states for state participation analysis. Only 1 mode should be selected.'},'State-PF','A1');
 xlswrite(filename,{'write "1" for for selection, others for not'},'State-PF','A2');
 StartSpace='A6';
-StateSheet(1,1) = {'Device'};
+StateSheet(1,1) = {'Apparatus'};
 StateSheet(1,2) = {'State'};
 StateSheet(1,3) = {'Select'};
 index = 2;
 StateCount = 0;
 for k = 1:N_Bus
     if DeviceType{k} <= 89 %apparatuses)    
-        DeviceName=strcat('Device',num2str(k));
+        DeviceName=strcat('Apparatus',num2str(k));
         StateName = DeviceStateStr{k};
         StateNum = length(DeviceStateStr{k});
         StateSheet(index,1) = {DeviceName};
@@ -120,13 +120,13 @@ xlswrite(filename,{'Select apparatuses and mode for bode-plot and Modal Layer1&2
 xlswrite(filename,{'write "1" for for selection, others for not'},'Impedance-PF','A2');
 
 %*** Layer1&2 apparatus select
-ImpedanceSheet(1,1) = {'Device selection for Layer1&2'};
-ImpedanceSheet(2,1) = {'Device'};
+ImpedanceSheet(1,1) = {'Apparatus selection for Layer1&2'};
+ImpedanceSheet(2,1) = {'Apparatus'};
 ImpedanceSheet(2,2) = {'Select'};
 index=3;
 for k = 1:N_Bus
         if DeviceType{k} <= 89 %apparatuses)
-            DeviceName=strcat('Device',num2str(k));
+            DeviceName=strcat('Apparatus',num2str(k));
             ImpedanceSheet(index,1) = {DeviceName};
             ImpedanceSheet(index,2) = {1};
             index=index+1;
@@ -200,14 +200,14 @@ end
 
 
 %***Layer3 apparatus Select
-ImpedanceSheet(1,11)={'Device selection for Layer3'};
-ImpedanceSheet(2,11)={'Device'};
+ImpedanceSheet(1,11)={'Apparatus selection for Layer3'};
+ImpedanceSheet(2,11)={'Apparatus'};
 ImpedanceSheet(2,12)={'Select'};
 index=3;
 IndexSel=1;
 for k = 1:N_Bus
         if DeviceType{k} <= 89 %apparatuses)
-            DeviceName=strcat('Device',num2str(k));
+            DeviceName=strcat('Apparatus',num2str(k));
             ImpedanceSheet(index,11)= {DeviceName};
             if AutoSel == 1 && IndexSel==1
                 ImpedanceSheet(index,12) = {1};

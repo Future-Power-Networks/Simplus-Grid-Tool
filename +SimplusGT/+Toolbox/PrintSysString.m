@@ -23,10 +23,10 @@ N_Device = length(DeviceBus);
 fprintf('\n')
 fprintf('  Model state in order:\n');
 CountState = 0;
-% Device
+% Apparatus
 IndexState{1} = 1;
 for i = 1:N_Device
-    fprintf(['    Device ',num2str(i),':\n']);
+    fprintf(['    Apparatus ',num2str(i),':\n']);
     IndexState{i+1} = SimplusGT.PrintIndexCell(DeviceStateStr{i},6,IndexState{i});
     IndexState{i+1} = IndexState{i+1} + 1;
 end

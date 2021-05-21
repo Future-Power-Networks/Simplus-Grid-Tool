@@ -54,9 +54,9 @@ for modei=1:ModeSelNum
         MdLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
         MdLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
         for count = 1: length(DeviceSelL12)
-            MdLayer1(modei).result(count).Device={['Device',num2str(DeviceSelL12(count))]};
+            MdLayer1(modei).result(count).Apparatus={['Apparatus',num2str(DeviceSelL12(count))]};
             MdLayer1(modei).result(count).Abs_Max=Layer1(count);
-            MdLayer2(modei).result(count).Device={['Device',num2str(DeviceSelL12(count))]};
+            MdLayer2(modei).result(count).Apparatus={['Apparatus',num2str(DeviceSelL12(count))]};
             MdLayer2(modei).result(count).DeltaLambdaReal=Layer2.real(count);
             MdLayer2(modei).result(count).DeltaLambdaImag=Layer2.imag(count);
             MdLayer2(modei).result(count).DeltaLambdaRealpu=Layer2.real_pu(count);
@@ -92,14 +92,14 @@ for modei = 1: length(ModeSel_DSS)
                 StateSel_ = StateSel;
                 for Di = 1:N_Device
                     if StateSel_ <= length(DeviceStateStr{Di})
-                        StateName = {['Device',num2str(Di)]};
+                        StateName = {['Apparatus',num2str(Di)]};
                         break;
                     else
                         StateSel_ = StateSel_ - length(DeviceStateStr{Di});
                     end
                 end
             end
-            MdStatePF(modei).result(statei).Device = StateName;
+            MdStatePF(modei).result(statei).Apparatus = StateName;
             MdStatePF(modei).result(statei).State = SysStateString(StateSel);
             % after printing the correct name, change StateSel back to match with GsysSS.
             StateSel = StateSel_DSS(statei); 

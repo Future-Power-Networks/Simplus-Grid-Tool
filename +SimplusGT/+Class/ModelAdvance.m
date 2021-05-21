@@ -27,14 +27,14 @@ classdef ModelAdvance < SimplusGT.Class.ModelBase ...
 % Public can be set to []
 properties
     Ts = 1e-4;          % Sampling period (s)
-    Para = [];          % Device parameters            
+    Para = [];          % Apparatus parameters            
 end
 
 % ### Nontunable publica properties
 % Will be read first during construction   
 properties(Nontunable)
  
-    DeviceType = 0;    % Device type
+    DeviceType = 0;    % Apparatus type
     PowerFlow = [];     % Power flow parameters
     x0 = [];            % Initial state
     

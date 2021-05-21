@@ -9,7 +9,7 @@
 function [DeviceBusCell,DeviceTypeCell,ParaCell,N_Device] = RearrangeListDevice(UserData,W0,ListBus)
 
 %% Load data
-[ListDevice,ListDeviceChar]	 = xlsread(UserData,'Device');
+[ListDevice,ListDeviceChar]	 = xlsread(UserData,'Apparatus');
 
 %% Rearrange data
 [N_Device,ColumnMax_Device] = size(ListDevice);
@@ -48,7 +48,7 @@ end
 
 % Error check
 if (ColumnMax_Device>12)
-    error(['Error: Device data overflow.']); 
+    error(['Error: Apparatus data overflow.']); 
 end
 
 [~,ModeBus] = SimplusGT.CellMode(DeviceBusCell);

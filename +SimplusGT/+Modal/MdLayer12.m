@@ -39,8 +39,8 @@ for k = 1:N_Bus
        Layer2.imag(Count) = imag(Layer2All(k));
        Layer2.real_pu(Count) = real(Layer2All(k))/Layer2RealSum;
        Layer2.imag_pu(Count) = imag(Layer2All(k))/Layer2ImagSum;
-       VecLegend{Count} = ['Device',num2str(k)];
-       c(Count) = categorical({['Device',num2str(k)]});
+       VecLegend{Count} = ['Apparatus',num2str(k)];
+       c(Count) = categorical({['Apparatus',num2str(k)]});
    end
 end
 clear title

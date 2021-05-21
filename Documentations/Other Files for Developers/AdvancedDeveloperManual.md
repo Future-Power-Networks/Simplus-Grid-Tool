@@ -4,7 +4,7 @@
 
 This manual will introduce more details of developing this toolbox. Please read "DeveloperManual.md" first before reading this one.
 
-## Adding New Device
+## Adding New Apparatus
 
 There are two different types of apparatuses in the toolbox:    
 1- Simulink block;    

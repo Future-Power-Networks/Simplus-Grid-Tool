@@ -48,7 +48,7 @@ for k = 1:N_Bus
     end        
 end
 % if DeviceSel12 == 0
-%     error('None Device is selected for layer 1&2.');
+%     error('None Apparatus is selected for layer 1&2.');
 % end
 ModeNum = length(GminSS.A);
 SelIndex = 1;

@@ -38,8 +38,8 @@ switch floor(Type/10)
     % =======================================
     % ### Synchronous generator
     case 0      % Type 0-9
-        Device = SimplusGT.Class.SynchronousMachine('DeviceType',Type);
-        Device.Para = [ Para.J;
+        Apparatus = SimplusGT.Class.SynchronousMachine('DeviceType',Type);
+        Apparatus.Para = [ Para.J;
                         Para.D;
                         Para.wL;
                         Para.R;
@@ -48,11 +48,11 @@ switch floor(Type/10)
     % ### Grid-following inverter
     case 1      % Type 10-19
         if Type~=19
-            Device = SimplusGT.Class.GridFollowingVSI('DeviceType',Type);
+            Apparatus = SimplusGT.Class.GridFollowingVSI('DeviceType',Type);
         else
-            Device = SimplusGT.Class.GridFollowingInverterStationary('DeviceType',Type);
+            Apparatus = SimplusGT.Class.GridFollowingInverterStationary('DeviceType',Type);
         end
-        Device.Para = [ Para.C_dc;
+        Apparatus.Para = [ Para.C_dc;
                         Para.V_dc;
                         Para.f_v_dc;
                         Para.f_pll;
@@ -64,8 +64,8 @@ switch floor(Type/10)
                    
     % ### Grid-forming inverter
     case 2  % Type 20-29
-        Device = SimplusGT.Class.GridFormingVSI('DeviceType',Type);
-        Device.Para = [ Para.wLf;
+        Apparatus = SimplusGT.Class.GridFormingVSI('DeviceType',Type);
+        Apparatus.Para = [ Para.wLf;
                         Para.Rf;
                         Para.wCf;
                         Para.wLc;
@@ -79,8 +79,8 @@ switch floor(Type/10)
                    
     % ### Ac infinite bus
     case 9
-        Device = SimplusGT.Class.InfiniteBusAc;
-        Device.Para  = [];
+        Apparatus = SimplusGT.Class.InfiniteBusAc;
+        Apparatus.Para  = [];
         % Because the infinite bus is defined with "i" input and "v" output,
         % they need to be switched finally.
         SwInOutFlag = 1;
@@ -88,16 +88,16 @@ switch floor(Type/10)
    
     % ### Ac floating bus
     case 10
-        Device = SimplusGT.Class.FloatingBusAc;
-        Device.Para = [];
+        Apparatus = SimplusGT.Class.FloatingBusAc;
+        Apparatus.Para = [];
         
 	% =======================================
     % Dc apparatuses
     % =======================================
     % ### Grid feeding buck converter
     case 101
-    	Device = SimplusGT.Class.GridFeedingBuck('DeviceType',Type);
-        Device.Para = [ Para.Vdc;
+    	Apparatus = SimplusGT.Class.GridFeedingBuck('DeviceType',Type);
+        Apparatus.Para = [ Para.Vdc;
                         Para.Cdc;
                         Para.wL;
                         Para.R;
@@ -106,22 +106,22 @@ switch floor(Type/10)
                         Para.w0];
   	% ### Dc infinite bus
     case 109
-        Device = SimplusGT.Class.InfiniteBusDc;
-        Device.Para  = [];
+        Apparatus = SimplusGT.Class.InfiniteBusDc;
+        Apparatus.Para  = [];
         SwInOutFlag = 1;
         SwInOutLength = 1;
    
     % ### Dc floating bus
     case 110
-        Device = SimplusGT.Class.FloatingBusDc;
-        Device.Para = [];
+        Apparatus = SimplusGT.Class.FloatingBusDc;
+        Apparatus.Para = [];
         
    	% =======================================
     % Interlinking apparatuses
     % =======================================
     case 200
-        Device = SimplusGT.Class.InterlinkAcDc('DeviceType',Type);
-        Device.Para = [ Para.C_dc;
+        Apparatus = SimplusGT.Class.InterlinkAcDc('DeviceType',Type);
+        Apparatus.Para = [ Para.C_dc;
                         Para.wL_ac;
                         Para.R_ac;
                         Para.wL_dc;
@@ -137,27 +137,27 @@ switch floor(Type/10)
 end
 
 %% Calculate the linearized state space model
-Device.DeviceType = Type;                           % Device type
-Device.Ts = Ts;                                     % Samping period
-Device.PowerFlow = PowerFlow;                       % Power flow data
-Device.SetString(Device);                           % Set strings automatically
-Device.SetEquilibrium(Device);                      % Calculate the equilibrium
-[x_e,u_e,y_e,xi] = Device.GetEquilibrium(Device);   % Get the equilibrium
-Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
+Apparatus.DeviceType = Type;                           % Apparatus type
+Apparatus.Ts = Ts;                                     % Samping period
+Apparatus.PowerFlow = PowerFlow;                       % Power flow data
+Apparatus.SetString(Apparatus);                           % Set strings automatically
+Apparatus.SetEquilibrium(Apparatus);                      % Calculate the equilibrium
+[x_e,u_e,y_e,xi] = Apparatus.GetEquilibrium(Apparatus);   % Get the equilibrium
+Apparatus.SetSSLinearized(Apparatus,x_e,u_e);             % Linearize the model
 
-[~,ModelSS] = Device.GetSS(Device);                % Get the ss model
+[~,ModelSS] = Apparatus.GetSS(Apparatus);                % Get the ss model
 [StateStr,InputStr,OutputStr] ...
-    = Device.GetString(Device);                    % Get the string
+    = Apparatus.GetString(Apparatus);                    % Get the string
 
 % Set ElecPortIOs and OtherInputs
 if Type<1000
-    Device.ElecPortIOs = [1,2];
+    Apparatus.ElecPortIOs = [1,2];
     OtherInputs = u_e(3:end,:);     % dq frame ac apparatus
 elseif 1000<=Type && Type<2000
-    Device.ElecPortIOs = [1];
+    Apparatus.ElecPortIOs = [1];
     OtherInputs = u_e(2:end,:);     % dc apparatus
 elseif 2000<=Type && Type<3000
-    Device.ElecPortIOs = [1,2,3];
+    Apparatus.ElecPortIOs = [1,2,3];
     OtherInputs = u_e(4:end,:);     % ac-dc apparatus
 else
     error(['Error']);
@@ -185,15 +185,15 @@ end
 Gm = ModelSS;   
 
 % Output
-DevicePara = Device.Para; 
+DevicePara = Apparatus.Para; 
 DeviceEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
 if Type<90 || (1000<=Type && Type<1090) || (2000<=Type && Type<2090)
     % CalcRv_old();
     
-    Device.SetDynamicSS(Device,x_e,u_e);
-    DiscreDampingResistor = Device.GetVirtualResistor(Device);
+    Apparatus.SetDynamicSS(Apparatus,x_e,u_e);
+    DiscreDampingResistor = Apparatus.GetVirtualResistor(Apparatus);
 else
     DiscreDampingResistor = -1;
 end
