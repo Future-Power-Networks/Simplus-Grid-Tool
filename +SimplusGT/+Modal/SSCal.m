@@ -1,5 +1,5 @@
 %calculate modes, residues from state-space, based on the modes and
-%devicese the user selected.
+%apparatuses the user selected.
 %Author: Yue Zhu
 function [GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
     SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS, DeviceInputStr, DeviceOutputStr)
