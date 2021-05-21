@@ -152,8 +152,8 @@ Para2000.w0     = W0;
 [N_Apparatus,ColumnMax_Apparatus] = size(ListApparatus);
 
 % Find the index of user-defined data
-netlist_device_NaN = isnan(ListApparatus(:,3:ColumnMax_Apparatus));
-[row,column] = find(netlist_device_NaN == 0);     
+netlist_apparatus_NaN = isnan(ListApparatus(:,3:ColumnMax_Apparatus));
+[row,column] = find(netlist_apparatus_NaN == 0);     
 column = column+2;
 
 % Initialize the apparatus parameters by default parameters

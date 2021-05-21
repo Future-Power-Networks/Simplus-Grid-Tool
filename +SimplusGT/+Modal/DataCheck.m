@@ -18,7 +18,7 @@ end
 
 if Layer12Enable == 1
     if ApparatusSelL12 == 0
-        error('Please select at least a adevice for Impedance-PF Layer 1&2 analysis');
+        error('Please select at least a an apparatus for Impedance-PF Layer 1&2 analysis');
     elseif ModeSelAll == 0
         error('Please select at least a mode for for Impedance-PF Layer 1&2 analysis');
     end
@@ -26,7 +26,7 @@ end
 
 if Layer3Enable == 1
     if ApparatusSelL3All == 0
-        error('Please select at least a adevice for Impedance-PF Layer 3 analysis');
+        error('Please select at least a an apparatus for Impedance-PF Layer 3 analysis');
     elseif ModeSelAll == 0
         error('Please select at least a mode for for Impedance-PF Layer 3 analysis');
     end
