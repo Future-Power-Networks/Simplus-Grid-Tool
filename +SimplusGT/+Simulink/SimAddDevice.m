@@ -1,4 +1,4 @@
-% This function adds devices into simulink model.
+% This function adds apparatuses into simulink model.
 
 % Author(s): Yitong Li
 
@@ -66,15 +66,15 @@ for i = 1:N_Device
         % Set position
        	% The position of device is set by referring to the position of correpsonding bus
         if 0<=DeviceType{i} && DeviceType{i}<=90    
-            % For ac devices
+            % For ac apparatuses
             Pos_Device{i} = Pos_Bus{Bus} + Shift_Device;
             set_param(FullName_Device{i},'position',[Pos_Device{i},Pos_Device{i}+Size_Device]);
         elseif 1000<=DeviceType{i} && DeviceType{i}<=1090   
-            % For dc devices: smaller
+            % For dc apparatuses: smaller
             Pos_Device{i} = Pos_Bus{Bus} + Shift_Device;
             set_param(FullName_Device{i},'position',[Pos_Device{i},Pos_Device{i}+Size_Device-[0,20]]);
         elseif 2000<=DeviceType{i} && DeviceType{i}<=2090
-            % For interlink devices: larger
+            % For interlink apparatuses: larger
             Pos_Device{i} = Pos_Bus{Bus(1)} + Shift_Device;
             set_param(FullName_Device{i},'position',[Pos_Device{i},Pos_Device{i}+Size_Device+[0,40]]);
         end

@@ -29,9 +29,9 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
         % These strings are mainly for printing output and searching the
         % corresponding ports.
         %
-        % For ac devices, the first two inputs and outputs should be
+        % For ac apparatuses, the first two inputs and outputs should be
         % {'v_d','v_q'} and {'i_d','i_q'}, and {'w'} should be output. For
-        % dc devices, the first input and output should be {'v'} and {'i'}.
+        % dc apparatuses, the first input and output should be {'v'} and {'i'}.
         % No specific requirementFor other inputs, outputs, and states.
         %
         % The dimensions of x, u, y must be coinsistent in following three

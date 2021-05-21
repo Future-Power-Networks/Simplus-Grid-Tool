@@ -1,4 +1,4 @@
-% This function creates the descriptor state space model for devices
+% This function creates the descriptor state space model for apparatuses
 % connected to buses.
 
 % Author(s): Yitong Li, Yunjie Gu
@@ -34,7 +34,7 @@ switch floor(Type/10)
     % from the user data.
     
     % =======================================
-    % Ac devices
+    % Ac apparatuses
     % =======================================
     % ### Synchronous generator
     case 0      % Type 0-9
@@ -92,7 +92,7 @@ switch floor(Type/10)
         Device.Para = [];
         
 	% =======================================
-    % Dc devices
+    % Dc apparatuses
     % =======================================
     % ### Grid feeding buck converter
     case 101
@@ -117,7 +117,7 @@ switch floor(Type/10)
         Device.Para = [];
         
    	% =======================================
-    % Interlinking devices
+    % Interlinking apparatuses
     % =======================================
     case 200
         Device = SimplusGT.Class.InterlinkAcDc('DeviceType',Type);

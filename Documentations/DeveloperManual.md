@@ -78,7 +78,7 @@ This is the root name space folder of the toolbox, and contains all functions us
 
 ### "+Toolbox" Sub-folder
 
-This folder contains the basic functions for toolbox. For example, "Main.m" is the main function for toolbox; "DeviceModelCreate.m" creates the small-signal state space models of devices.
+This folder contains the basic functions for toolbox. For example, "Main.m" is the main function for toolbox; "DeviceModelCreate.m" creates the small-signal state space models of apparatuses.
 
 ### "+Simulink" Sub-folder
 
@@ -86,7 +86,7 @@ This folder contains the functions generating the Simulink model from user data 
 
 ### "+Class" Sub-folder
 
-This folder contains the class functions of Matlab system object, which defines the models of devices used for both small-signal modeling in Matlab script and time-domain simulation in Simulink.
+This folder contains the class functions of Matlab system object, which defines the models of apparatuses used for both small-signal modeling in Matlab script and time-domain simulation in Simulink.
 
 The class tree is shown here:
 

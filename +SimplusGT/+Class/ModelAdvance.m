@@ -8,7 +8,7 @@
 % This class makes the model fit in both simulation (simulink) and
 % theoratical analysis (script).
 %
-% Subclass of this class contains the specific models of different devices.
+% Subclass of this class contains the specific models of different apparatuses.
 
 %% References
 
@@ -64,8 +64,8 @@ properties(Nontunable)
     % resistors to eliminate algebraic loops. 
     % This property is only effective when DirectFeedthrough == 0 and
     % VirtualResistor == 1.
-    % For ac devices, ElecPortIOs = [1,2] normally. For dc devices, the
-    % ElecPortIOs = [1] normally. For hybrid ac-dc devices, ElecPortIOs =
+    % For ac apparatuses, ElecPortIOs = [1,2] normally. For dc apparatuses, the
+    % ElecPortIOs = [1] normally. For hybrid ac-dc apparatuses, ElecPortIOs =
     % [1,2,3] normally.
     ElecPortIOs = [1,2];
     

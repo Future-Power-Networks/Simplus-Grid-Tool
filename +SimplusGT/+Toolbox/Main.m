@@ -63,7 +63,7 @@ DcAreaFlag = find(ListBus(:,12)==2);
 % will also be used in simulink model.
 
 % Notes:
-% No error checking if number of devices is different from number of buses.
+% No error checking if number of apparatuses is different from number of buses.
 
 %%
 % ==================================================
@@ -110,8 +110,8 @@ fprintf('Getting the descriptor state space model of network lines...\n')
 ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,lsw);
 [ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.GetString(ZbusObj);
 
-% ### Get the models of bus devices
-fprintf('Getting the descriptor state space model of bus devices...\n')
+% ### Get the models of bus apparatuses
+fprintf('Getting the descriptor state space model of bus apparatuses...\n')
 for i = 1:N_Device
     if length(DeviceBus{i}) == 1
      	DevicePowerFlow{i} = PowerFlowNew{DeviceBus{i}};
@@ -129,8 +129,8 @@ for i = 1:N_Device
     u_e{i} = DeviceEqui{i}{2};
 end
 
-% ### Get the appended model of all devices
-fprintf('Getting the appended descriptor state space model of all devices...\n')
+% ### Get the appended model of all apparatuses
+fprintf('Getting the appended descriptor state space model of all apparatuses...\n')
 GmObj = SimplusGT.Toolbox.DeviceModelLink(GmObj_Cell);
 
 % ### Get the model of whole system

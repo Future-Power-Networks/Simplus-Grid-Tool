@@ -1,4 +1,4 @@
-% This function re-arranges the netlist data of devices.
+% This function re-arranges the netlist data of apparatuses.
 
 % Author(s): Yitong Li, Yunjie Gu
 
@@ -161,7 +161,7 @@ for i = 1:N_Device
     DeviceBus   = DeviceBusCell{i};
     DeviceType  = ListDeviceType(i);
     switch floor(DeviceType/10)
-        % ### AC devices
+        % ### AC apparatuses
         case 0     
             ParaCell{i} = Para0000;     % Synchronous machine
         case 1
@@ -175,7 +175,7 @@ for i = 1:N_Device
         case 10
             ParaCell{i} = Para0100;     % Ac floating bus, i.e., no device
         
-        % ### DC devices
+        % ### DC apparatuses
         case 101
             ParaCell{i} = Para1010;     % Grid-following buck
         case 109
@@ -183,7 +183,7 @@ for i = 1:N_Device
         case 110
             ParaCell{i} = Para1100;     % Ac floating bus, i.e., no device
             
-        % ### Hybrid ac-dc devices
+        % ### Hybrid ac-dc apparatuses
         case 200
             ParaCell{i} = Para2000;     % Interlinking ac-dc converter
             

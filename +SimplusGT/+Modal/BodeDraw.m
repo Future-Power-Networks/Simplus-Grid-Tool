@@ -35,7 +35,7 @@ P.FreqUnits='Hz';
 %P.PhaseWrapping='on';
 %P.PhaseWrappingBranch=-90;
 for k = 1:N_Bus
-        if DeviceType{k} <= 89 %devices
+        if DeviceType{k} <= 89 %apparatuses
             if (ismember(k,DeviceSel)) %if selected
                 bode(GminSS(pout+poutBias, pin+pinBias),P)
                 CountLegend = CountLegend + 1;

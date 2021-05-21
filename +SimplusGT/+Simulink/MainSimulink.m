@@ -44,7 +44,7 @@ Dist_Bus = [200+100*MaxCount_ToBus,300];
 [Name_Bus,Pos_Bus] = ...
     SimplusGT.Simulink.SimAddBus(Name_Model,Name_LibFile,Size_Bus,Pos_Bus,ListBus,Dist_Bus);
 
-%% Add devices
+%% Add apparatuses
 % Parameter
 Size_Device = [50,90];
 Shift_Device = [-150,0];

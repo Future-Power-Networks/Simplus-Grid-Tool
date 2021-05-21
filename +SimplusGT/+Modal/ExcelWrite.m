@@ -1,6 +1,6 @@
 function [AutoSelResult] = ExcelWrite(N_Bus,N_Device,DeviceType,DeviceStateStr,DeviceInputStr,...
     DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, filename)
-%this function is to write states, devices, axes to select for
+%this function is to write states, apparatuses, axes to select for
 %further Modal analysis.
 % Author: Yue Zhu
 
@@ -23,7 +23,7 @@ StateSheet(1,3) = {'Select'};
 index = 2;
 StateCount = 0;
 for k = 1:N_Bus
-    if DeviceType{k} <= 89 %devices)    
+    if DeviceType{k} <= 89 %apparatuses)    
         DeviceName=strcat('Device',num2str(k));
         StateName = DeviceStateStr{k};
         StateNum = length(DeviceStateStr{k});
@@ -116,7 +116,7 @@ ModeNum = length(Mode);
 
 StartSpace='A6';
 
-xlswrite(filename,{'Select devices and mode for bode-plot and Modal Layer1&2 analysis'},'Impedance-PF','A1');
+xlswrite(filename,{'Select apparatuses and mode for bode-plot and Modal Layer1&2 analysis'},'Impedance-PF','A1');
 xlswrite(filename,{'write "1" for for selection, others for not'},'Impedance-PF','A2');
 
 %*** Layer1&2 device select
@@ -125,7 +125,7 @@ ImpedanceSheet(2,1) = {'Device'};
 ImpedanceSheet(2,2) = {'Select'};
 index=3;
 for k = 1:N_Bus
-        if DeviceType{k} <= 89 %devices)
+        if DeviceType{k} <= 89 %apparatuses)
             DeviceName=strcat('Device',num2str(k));
             ImpedanceSheet(index,1) = {DeviceName};
             ImpedanceSheet(index,2) = {1};
@@ -206,7 +206,7 @@ ImpedanceSheet(2,12)={'Select'};
 index=3;
 IndexSel=1;
 for k = 1:N_Bus
-        if DeviceType{k} <= 89 %devices)
+        if DeviceType{k} <= 89 %apparatuses)
             DeviceName=strcat('Device',num2str(k));
             ImpedanceSheet(index,11)= {DeviceName};
             if AutoSel == 1 && IndexSel==1

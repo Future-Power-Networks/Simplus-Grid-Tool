@@ -4,7 +4,7 @@
 
 %% Notes
 %
-% This function prints the string based on the order of devices, because
+% This function prints the string based on the order of apparatuses, because
 % GmObj is obtained by appending the device models.
 
 %%

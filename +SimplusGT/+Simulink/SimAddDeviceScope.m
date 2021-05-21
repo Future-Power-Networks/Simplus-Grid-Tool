@@ -1,11 +1,11 @@
-% This function adds scopes for devices.
+% This function adds scopes for apparatuses.
 
 % Author(s): Yitong Li
 
 function SimAddDeviceScope(Name_Model,Size_D_Scope,Shift_D_Scope,Size_DS_Bus,Shift_DS_Bus,Pos_Device,Name_Device,DeviceType)
 
 % Organize data
-N_Device = length(DeviceType);      % Number of devices
+N_Device = length(DeviceType);      % Number of apparatuses
 
 % Add block
 for i = 1:N_Device

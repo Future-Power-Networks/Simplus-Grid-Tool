@@ -6,7 +6,7 @@ This manual will introduce more details of developing this toolbox. Please read 
 
 ## Adding New Device
 
-There are two different types of devices in the toolbox:    
+There are two different types of apparatuses in the toolbox:    
 1- Simulink block;    
 2- Matlab system object.
 
@@ -29,7 +29,7 @@ SimplusGT.slx:
 This is the simulink library of this toolbox. The simulink block of new device, which is based on the [Matlab System Block](https://uk.mathworks.com/help/simulink/slref/matlabsystem.html), should also be added into the library.
 
 UserData.xlsx:  
-The data from users is saved in this file. This file also guides the users about how to use this toolbox. Hence, the introduction of the new devices should be added in this file.
+The data from users is saved in this file. This file also guides the users about how to use this toolbox. Hence, the introduction of the new apparatuses should be added in this file.
 
 RearrangeDeviceData.m:  
 This file gives the default paramters for a new device, and defines how the data in "UserData.xlsx" is transferred to the codes.
