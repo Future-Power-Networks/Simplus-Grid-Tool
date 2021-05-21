@@ -43,7 +43,7 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
         end
         
         % Calculate the equilibrium
-        % The equilibrium is determined by the power flow data and device's
+        % The equilibrium is determined by the power flow data and apparatus's
         % own paramters.This function will be called once, at the
         % beginneing of simulation.
         function [x_e,u_e,xi] = Equilibrium(obj)
@@ -66,8 +66,8 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
         end
         
     	% State space model
-        % This function defines the state space model of this device,
-        % and is the core part for capturing the dynamics of this device.
+        % This function defines the state space model of this apparatus,
+        % and is the core part for capturing the dynamics of this apparatus.
         %
         % This function will be called at each step, i.e., Ts, during the
         % whole precedure of the discrete simulation.

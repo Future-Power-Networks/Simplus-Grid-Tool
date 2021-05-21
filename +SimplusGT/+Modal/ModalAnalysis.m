@@ -7,7 +7,7 @@
 %% Notes
 % Before running this program, you need to config the analysis from
 % ModalConfig.xlsx, which should be located in the toolbox root folder.
-% Note1: device numbering keeps the same as bus numbering. For example: the device
+% Note1: apparatus numbering keeps the same as bus numbering. For example: the apparatus
 % on bus7 will always be named as Device7.
 % Note2: The final results will be saved in MdLayer1, MdLayer2, MdLayer3,
 % MdMode, MdStatePF.
@@ -88,7 +88,7 @@ for modei = 1: length(ModeSel_DSS)
             StateSel = IndexSS(StateSel_DSS(statei)); % this is used to print the correct name
             if StateSel > DeviceStateTotal %belong to line.
                 StateName = {'Line'};
-            else %belong to device
+            else %belong to apparatus
                 StateSel_ = StateSel;
                 for Di = 1:N_Device
                     if StateSel_ <= length(DeviceStateStr{Di})

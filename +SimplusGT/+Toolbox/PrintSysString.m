@@ -5,7 +5,7 @@
 %% Notes
 %
 % This function prints the string based on the order of apparatuses, because
-% GmObj is obtained by appending the device models.
+% GmObj is obtained by appending the apparatus models.
 
 %%
 
@@ -37,7 +37,7 @@ SimplusGT.PrintIndexCell(ZbusStateStr,6,IndexState{N_Device+1});
 %% Print input string
 fprintf('\n')
 fprintf('  Model input in order:\n')
-% Print device input string
+% Print apparatus input string
 IndexInput{1} = 1;
 for i = 1:N_Device
     fprintf(['    Bus ',num2str(DeviceBus{i}),':\n'])
@@ -48,7 +48,7 @@ end
 %% Print output string
 fprintf('\n')
 fprintf('  Model output in order:\n');
-% Print device input string
+% Print apparatus input string
 IndexOutput{1} = 1;
 for i = 1:N_Device
     fprintf(['    Bus ',num2str(DeviceBus{i}),':\n']);

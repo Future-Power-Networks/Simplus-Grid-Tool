@@ -12,15 +12,15 @@ DirectFeedthrough = ListAdvance(4);
 
 N_Device = length(DeviceType);
 
-% Add device
+% Add apparatus
 for i = 1:N_Device
     if DeviceType{i}~=0100 && DeviceType{i}~=1100
         
-        % Get the bus index of device
+        % Get the bus index of apparatus
         Bus = DeviceBus{i};
         
         switch floor(DeviceType{i}/10)
-            % ### Ac device
+            % ### Ac apparatus
             case 000
                 Name_Device{i} = ['SM' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
@@ -42,7 +42,7 @@ for i = 1:N_Device
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
                 add_block([Name_LibFile '/AC Infinite Bus (Voltage Type)'],FullName_Device{i});
                 
-            % ### Dc device
+            % ### Dc apparatus
             case 101
                 Name_Device{i} = ['Buck' num2str(Bus)];
                 FullName_Device{i} = [Name_Model '/' Name_Device{i}];
@@ -64,7 +64,7 @@ for i = 1:N_Device
         end
         
         % Set position
-       	% The position of device is set by referring to the position of correpsonding bus
+       	% The position of apparatus is set by referring to the position of correpsonding bus
         if 0<=DeviceType{i} && DeviceType{i}<=90    
             % For ac apparatuses
             Pos_Device{i} = Pos_Bus{Bus} + Shift_Device;
@@ -85,12 +85,12 @@ for i = 1:N_Device
         set_param(gcb,'Vbase','Vbase');
         set_param(gcb,'Ts','Ts');
         
-        % For ac device only
+        % For ac apparatus only
         if (DeviceType{i}<1000) || (2000<=DeviceType{i} && DeviceType{i}<=2090)
             set_param(gcb,'Wbase','Wbase');
         end
         
-        % For active device only
+        % For active apparatus only
         if (0<=DeviceType{i} && DeviceType{i}<90) || ...
            (1000<=DeviceType{i} && DeviceType{i}<1090) || ...
            (2000<=DeviceType{i} && DeviceType{i}<2090)
@@ -131,7 +131,7 @@ for i = 1:N_Device
             
         end
         
-        % If the device is an infinite bus
+        % If the apparatus is an infinite bus
         if DeviceType{i} == 0090        % Ac infinite bus
             set_param(gcb,'vd',['PowerFlow{' num2str(i) '}(3)']);
             set_param(gcb,'theta0',['PowerFlow{' num2str(i) '}(4)']);

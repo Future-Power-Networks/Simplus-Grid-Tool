@@ -57,7 +57,7 @@ Enable_Participation        = ListAdvance(10);
 [ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLine(UserData,ListBus);
 DcAreaFlag = find(ListBus(:,12)==2);
 
-% ### Re-arrange the device netlist
+% ### Re-arrange the apparatus netlist
 [DeviceBus,DeviceType,Para,N_Device] = SimplusGT.Toolbox.RearrangeListDevice(UserData,Wbase,ListBus);
 % The names of "DeviceType" and "Para" can not be changed, because they
 % will also be used in simulink model.
@@ -86,7 +86,7 @@ switch Flag_PowerFlowAlgorithm
 end
 % Form of PowerFlow{i}: P, Q, V, xi, w
 % P and Q are in load convention, i.e., the P and Q flowing from the bus to
-% the device.
+% the apparatus.
 
 % For printing later
 ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);

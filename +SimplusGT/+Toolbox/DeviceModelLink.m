@@ -1,4 +1,4 @@
-% This function links the device models
+% This function links the apparatus models
 
 % Author(s): Yitong Li, Yunjie Gu
 

@@ -10,10 +10,10 @@ N_Device = length(DeviceType);      % Number of apparatuses
 % Add block
 for i = 1:N_Device
     
-    % If the device is not an floating bus
+    % If the apparatus is not an floating bus
     if DeviceType{i}~=0100 && DeviceType{i}~=1100
 
-        % Add device scope bus
+        % Add apparatus scope bus
         Name_DS_Bus{i} = ['DS-Bus' num2str(i)];
         FullName_DS_Bus{i} = [Name_Model '/' Name_DS_Bus{i}];
         add_block('simulink/Signal Routing/Bus Selector',FullName_DS_Bus{i});
@@ -34,10 +34,10 @@ for i = 1:N_Device
         set_param(gcb,'OutputSignals',Output_DS_Bus);
         Port_DSBus{i} = get_param(gcb,'PortHandles');
 
-        % Conect scope bus to device
+        % Conect scope bus to apparatus
         add_line(Name_Model, {[Name_Device{i} '/1']}, {[Name_DS_Bus{i} '/1']});
 
-        % Add device scope
+        % Add apparatus scope
         Name_D_Scope{i} = ['D-Scope' num2str(i)];
         FullName_D_Scope{i} = [Name_Model '/' Name_D_Scope{i}];
         add_block('simulink/Sinks/Scope',FullName_D_Scope{i});

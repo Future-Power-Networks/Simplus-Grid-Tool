@@ -49,29 +49,29 @@ Dist_Bus = [200+100*MaxCount_ToBus,300];
 Size_Device = [50,90];
 Shift_Device = [-150,0];
 
-% Add device
+% Add apparatus
 [FullName_Device,Name_Device,Pos_Device] = ...
     SimplusGT.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceBus,DeviceType,ListAdvance);
 
-%% Add device ground
+%% Add apparatus ground
 % Paramters
 Size_D_GND = [20,20];
 Shift_D_GND = [20,20];
 
-% Add device ground
+% Add apparatus ground
 Enable_D_GND = 1;
 if Enable_D_GND
     SimplusGT.Simulink.SimAddDeviceGround(Name_Model,Size_D_GND,Shift_D_GND,FullName_Device,Name_Device,DeviceType);
 end
 
-%% Add device scope
+%% Add apparatus scope
 % Parameters
 Size_D_Scope = [30,Size_Device(2)+10];
 Shift_D_Scope = [-100,0];
 Size_DS_Bus = [5,Size_Device(2)+10];
 Shift_DS_Bus = [-30,0];
 
-% Add device scope
+% Add apparatus scope
 SimplusGT.Simulink.SimAddDeviceScope(Name_Model,Size_D_Scope,Shift_D_Scope,Size_DS_Bus,Shift_DS_Bus,Pos_Device,Name_Device,DeviceType);
 
 %% Add branches
@@ -97,7 +97,7 @@ SimplusGT.Simulink.SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName
 % Connect branch to bus
 SimplusGT.Simulink.SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
 
-%% Connect device to bus
+%% Connect apparatus to bus
 % This procedure is done finally to get a cleaner line auto routing.
 SimplusGT.Simulink.SimConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceBus,DeviceType);
 

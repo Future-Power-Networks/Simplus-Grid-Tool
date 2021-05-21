@@ -118,9 +118,9 @@ matlab.System
 
 "ModelAdvance.m" is the sub-class of "ModelBase.m". It is the advanced class used for Matlab system block in Simulink. It defines advanced properties and methods (such as discretization methods).
 
-"SynchronousMachine.m" is the specific device class for synchronous machines, which contains the detailed physical models of synchronous machines (such as signal lists, equilibrium calculations, state equations, etc). Similarly, "GridFollowingVSI.m" is the specific device class for grid following voltage source inverters ...
+"SynchronousMachine.m" is the specific apparatus class for synchronous machines, which contains the detailed physical models of synchronous machines (such as signal lists, equilibrium calculations, state equations, etc). Similarly, "GridFollowingVSI.m" is the specific apparatus class for grid following voltage source inverters ...
 
-"ModelTemplate.m" is the template class for a specific device. Developers can use this file as a starting point to build/customize a new device.
+"ModelTemplate.m" is the template class for a specific apparatus. Developers can use this file as a starting point to build/customize a new apparatus.
 
 ### "+PowerFlow" Sub-folder
 

@@ -133,7 +133,7 @@ switch floor(Type/10)
     
     % ### Otherwise
     otherwise
-        error(['Error: device type']);
+        error(['Error: apparatus type']);
 end
 
 %% Calculate the linearized state space model
@@ -152,13 +152,13 @@ Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
 % Set ElecPortIOs and OtherInputs
 if Type<1000
     Device.ElecPortIOs = [1,2];
-    OtherInputs = u_e(3:end,:);     % dq frame ac device
+    OtherInputs = u_e(3:end,:);     % dq frame ac apparatus
 elseif 1000<=Type && Type<2000
     Device.ElecPortIOs = [1];
-    OtherInputs = u_e(2:end,:);     % dc device
+    OtherInputs = u_e(2:end,:);     % dc apparatus
 elseif 2000<=Type && Type<3000
     Device.ElecPortIOs = [1,2,3];
-    OtherInputs = u_e(4:end,:);     % ac-dc device
+    OtherInputs = u_e(4:end,:);     % ac-dc apparatus
 else
     error(['Error']);
 end
@@ -167,8 +167,8 @@ end
 InputStr = SimplusGT.AddNum2Str(InputStr,DeviceBus);
 OutputStr = SimplusGT.AddNum2Str(OutputStr,DeviceBus);
 
-% For 2-bus device, adjust electrical port strings
-if length(DeviceBus)==2  % A multi-bus device 
+% For 2-bus apparatus, adjust electrical port strings
+if length(DeviceBus)==2  % A multi-bus apparatus 
     InputStr{1} = ['v_d',num2str(DeviceBus(1))];
     InputStr{2} = ['v_q',num2str(DeviceBus(1))];
    	OutputStr{1} = ['i_d',num2str(DeviceBus(1))];
@@ -178,7 +178,7 @@ if length(DeviceBus)==2  % A multi-bus device
     OutputStr{3} = ['i',num2str(DeviceBus(2))];
 elseif length(DeviceBus) == 1
 else
-    error(['Error: Each device can only be connected to one or two buses.']);
+    error(['Error: Each apparatus can only be connected to one or two buses.']);
 end
 
 % Get the swing frame system model
@@ -198,7 +198,7 @@ else
     DiscreDampingResistor = -1;
 end
 
-%% Check if the device needs to adjust its frame
+%% Check if the apparatus needs to adjust its frame
 if (Type>=90 && Type<1000)
     % No need for frame dynamics embedding
 elseif (Type>=1000 && Type<2000)
@@ -256,7 +256,7 @@ for i = 1:length(OutputStr)
     end
 end
 if isempty(ind_w)
-    error(['Error: w has to be in the output of the original device model.']);
+    error(['Error: w has to be in the output of the original apparatus model.']);
 end
 [~,~,ly1_w] = SimplusGT.SsGetDim(Gm);
 Aw = 0;
@@ -336,7 +336,7 @@ GmObj.SetDSS(GmObj,GmDSS);
 % Get the strings
 GmObj.SetString(GmObj,StateStr,InputStr,OutputStr);
 
-% Switch input and output for required device
+% Switch input and output for required apparatus
 if SwInOutFlag == 1
     GmObj = SimplusGT.ObjSwitchInOut(GmObj,SwInOutLength);
 end

@@ -5,7 +5,7 @@
 %% Notes
 %
 % Comprehensive comments will be added for this model here with the first
-% priority, so that this model can be a specific example of a dc device.
+% priority, so that this model can be a specific example of a dc apparatus.
 %
 % The model is in 
 % dc-grid-side: load convention, admittance form.

@@ -4,7 +4,7 @@
 
 %% Notes
 %
-% The device model is in load convention.
+% The apparatus model is in load convention.
 
 function [DeviceBusCell,DeviceTypeCell,ParaCell,N_Device] = RearrangeListDevice(UserData,W0,ListBus)
 
@@ -24,7 +24,7 @@ for k1 = 1:length(ListDeviceBusChar)
 end
 ListDeviceBusChar = ListDeviceBusChar(k1+1:end);
 
-% Get the device bus in cell form
+% Get the apparatus bus in cell form
 for n = 1:N_Device
     if ~isnan(ListDeviceBus(n))
         DeviceBusCell{n} = ListDeviceBus(n);
@@ -37,12 +37,12 @@ for n = 1:N_Device
     end
 end
 
-% Get the device type in cell form
+% Get the apparatus type in cell form
 for n = 1:N_Device
     DeviceTypeCell{n} = ListDevice(n,2);
 end
 
-% Re-order the device sequence
+% Re-order the apparatus sequence
 % ListDevice = sortrows(ListDevice,1);
 % No re-order for now.
 
@@ -53,10 +53,10 @@ end
 
 [~,ModeBus] = SimplusGT.CellMode(DeviceBusCell);
 if ModeBus~=1
-    error(['Error: For each bus, one and only one device has to be connected.']);
+    error(['Error: For each bus, one and only one apparatus has to be connected.']);
 end
 
-%% Default AC device data
+%% Default AC apparatus data
 % ======================================
 % Synchronous generator
 % ======================================
@@ -111,7 +111,7 @@ Para0090 = [];
 % ======================================
 Para0100 = [];
 
-%% Default DC device data
+%% Default DC apparatus data
 % ======================================
 % Grid-feeding buck
 % ======================================
@@ -133,7 +133,7 @@ Para1090 = [];
 % ======================================
 Para1100 = [];
 
-%% Default hybrid device data
+%% Default hybrid apparatus data
 % ======================================
 % Interlink ac-dc converter
 % ======================================
@@ -147,7 +147,7 @@ Para2000.fvdc   = 10;
 Para2000.fpll   = 10;
 Para2000.w0     = W0;   
 
-%% Re-arrange device data
+%% Re-arrange apparatus data
 % Get the size of netlist
 [N_Device,ColumnMax_Device] = size(ListDevice);
 
@@ -156,7 +156,7 @@ netlist_device_NaN = isnan(ListDevice(:,3:ColumnMax_Device));
 [row,column] = find(netlist_device_NaN == 0);     
 column = column+2;
 
-% Initialize the device parameters by default parameters
+% Initialize the apparatus parameters by default parameters
 for i = 1:N_Device
     DeviceBus   = DeviceBusCell{i};
     DeviceType  = ListDeviceType(i);
@@ -173,7 +173,7 @@ for i = 1:N_Device
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
         case 10
-            ParaCell{i} = Para0100;     % Ac floating bus, i.e., no device
+            ParaCell{i} = Para0100;     % Ac floating bus, i.e., no apparatus
         
         % ### DC apparatuses
         case 101
@@ -181,7 +181,7 @@ for i = 1:N_Device
         case 109
             ParaCell{i} = Para1090;     % Dc infinite bus
         case 110
-            ParaCell{i} = Para1100;     % Ac floating bus, i.e., no device
+            ParaCell{i} = Para1100;     % Ac floating bus, i.e., no apparatus
             
         % ### Hybrid ac-dc apparatuses
         case 200
@@ -189,7 +189,7 @@ for i = 1:N_Device
             
         % ### Error check
         otherwise
-            error(['Error: device type, bus ' num2str(DeviceBus) ' type ' num2str(DeviceType) '.']);
+            error(['Error: apparatus type, bus ' num2str(DeviceBus) ' type ' num2str(DeviceType) '.']);
     end
 end
 

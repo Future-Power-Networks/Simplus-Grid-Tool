@@ -12,7 +12,7 @@ if BodeEnable == 1
     if AxisSel == 0
         error('Please select at least an axis for bode plot');
     elseif DeviceSelL12 == 0
-        error('Please select at least a device for bode plot');
+        error('Please select at least a apparatus for bode plot');
     end
 end
 

@@ -38,7 +38,7 @@ DeviceSel12 = 0;
 DeviceIndex = 1;
 for k = 1:N_Bus
     if DeviceType{k} <= 89 %apparatuses)
-        if Config(DeviceIndex,1) == 1 %the device is selected
+        if Config(DeviceIndex,1) == 1 %the apparatus is selected
             DeviceSel12(SelIndex) = k;
             SelIndex = SelIndex +1;
         else % not selected.
@@ -67,7 +67,7 @@ DeviceSel3 = 0;
 DeviceIndex = 1;
 for k = 1:N_Bus
     if DeviceType{k} <= 89 %apparatuses)
-        if Config(DeviceIndex,11) == 1 %the device is selected
+        if Config(DeviceIndex,11) == 1 %the apparatus is selected
             DeviceSel3(SelIndex) = k;
             SelIndex = SelIndex +1;
         else % not selected.

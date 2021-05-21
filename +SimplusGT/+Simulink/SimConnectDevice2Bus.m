@@ -1,4 +1,4 @@
-% This function connects device to bus
+% This function connects apparatus to bus
 
 % Author(s): Yitong Li
 
@@ -10,10 +10,10 @@ N_Device = length(DeviceType);
 % Add block
 for i = 1:N_Device
     
-    % Get the bus index of the device
+    % Get the bus index of the apparatus
     Bus = DeviceBus{i};
     
-    % If the device is NOT a "floating bus"
+    % If the apparatus is NOT a "floating bus"
     if DeviceType{i}<=90
         % For ac apparatuses
         add_line(Name_Model,...

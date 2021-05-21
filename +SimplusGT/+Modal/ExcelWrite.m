@@ -33,7 +33,7 @@ for k = 1:N_Bus
             if ismember(StateCount,IndexSS)
                 StateSheet(index,2) = {StateName{j}};
                 StateSheet(index,3) = {1};
-%                 if (AutoSel==1 && j == 1) || (AutoSel==1 && j == 2) %select 'epsilon', and 'id' for pf analysis for each device.
+%                 if (AutoSel==1 && j == 1) || (AutoSel==1 && j == 2) %select 'epsilon', and 'id' for pf analysis for each apparatus.
 %                     StateSheet(index,3) = {1};
 %                 else
 %                     StateSheet(index,3) = {0};
@@ -119,7 +119,7 @@ StartSpace='A6';
 xlswrite(filename,{'Select apparatuses and mode for bode-plot and Modal Layer1&2 analysis'},'Impedance-PF','A1');
 xlswrite(filename,{'write "1" for for selection, others for not'},'Impedance-PF','A2');
 
-%*** Layer1&2 device select
+%*** Layer1&2 apparatus select
 ImpedanceSheet(1,1) = {'Device selection for Layer1&2'};
 ImpedanceSheet(2,1) = {'Device'};
 ImpedanceSheet(2,2) = {'Select'};
@@ -199,7 +199,7 @@ else
 end
 
 
-%***Layer3 device Select
+%***Layer3 apparatus Select
 ImpedanceSheet(1,11)={'Device selection for Layer3'};
 ImpedanceSheet(2,11)={'Device'};
 ImpedanceSheet(2,12)={'Select'};
