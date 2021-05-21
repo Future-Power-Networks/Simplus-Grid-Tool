@@ -44,10 +44,10 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             % v_dc is the dc link voltage, there is an inductor between v
             % and v_dc. This inductor makes the system admittance model
             % proper seen from the dc side.
-            if obj.DeviceType==2000 || obj.DeviceType==2001
+            if obj.ApparatusType==2000 || obj.ApparatusType==2001
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i','i'};
             else
-                error('Error: Invalid DeviceType.');
+                error('Error: Invalid ApparatusType.');
             end
         	Input = {'v_d','v_q','v','ang_r'};
             Output = {'i_d','i_q','i','w','v_dc','theta'};
@@ -170,16 +170,16 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
                 
                 % Dc-link voltage control
                 v_dc_r = Vg_dc;
-                if obj.DeviceType==2000
+                if obj.ApparatusType==2000
                     dv_dc_i = 0;
-                elseif obj.DeviceType==2001
+                elseif obj.ApparatusType==2001
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;
                 end
                 
                 % Ac current control
-                if obj.DeviceType==2000
+                if obj.ApparatusType==2000
                     i_d_r = P_ac/Vg_ac;
-                elseif obj.DeviceType==2001
+                elseif obj.ApparatusType==2001
                     i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
                 end
                 i_q_r = obj.i_q_r;                  % Constant iq

@@ -136,20 +136,20 @@ classdef SynchronousMachine < SimplusGT.Class.ModelAdvance
                 psi_f = obj.psi_f;
                 psi_d = L*i_d;
                 psi_q = L*i_q - psi_f;
-                if obj.DeviceType == 0
+                if obj.ApparatusType == 0
                     Te = psi_f * i_d;
-                elseif obj.DeviceType == 1
+                elseif obj.ApparatusType == 1
                     Pe = psi_f*W0*i_d;      % Means e_d = psi_f*W0 is constant.
                 else
                     error(['Error.']);
                 end
                 
                 % State equation
-                if obj.DeviceType == 0
+                if obj.ApparatusType == 0
                 di_d   = (v_d - R*i_d + w*psi_q)/L;
                 di_q   = (v_q - R*i_q - w*psi_d)/L;
                 dw     = (Te - T_m - D*w)/J;
-                elseif obj.DeviceType == 1
+                elseif obj.ApparatusType == 1
              	di_d   = (v_d - R*i_d + w*L*i_q - psi_f*W0)/L;
                 di_q   = (v_q - R*i_q - w*L*i_d)/L;
                 dw     = (Pe - T_m*W0 - D*w*W0)/(J*W0);

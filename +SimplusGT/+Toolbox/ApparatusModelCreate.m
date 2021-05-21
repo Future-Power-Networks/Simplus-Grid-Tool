@@ -1,4 +1,4 @@
-% This function creates the descriptor state space model for devices
+% This function creates the descriptor state space model for apparatuses
 % connected to buses.
 
 % Author(s): Yitong Li, Yunjie Gu
@@ -20,8 +20,8 @@
 % Transctions on Circuit and Systems, 2020.
 
 %% function
-function [GmObj,GmDSS,DevicePara,DeviceEqui,DiscreDampingResistor,OtherInputs,StateStr,InputStr,OutputStr] ...
-        = DeviceModelCreate(DeviceBus,Type,PowerFlow,Para,Ts,ListBus) 
+function [GmObj,GmDSS,ApparatusPara,ApparatusEqui,DiscreDampingResistor,OtherInputs,StateStr,InputStr,OutputStr] ...
+        = ApparatusModelCreate(ApparatusBus,Type,PowerFlow,Para,Ts,ListBus) 
 
 %% Create an object
 SwInOutFlag = 0;   % Default: do not need to switch input and output
@@ -34,12 +34,12 @@ switch floor(Type/10)
     % from the user data.
     
     % =======================================
-    % Ac devices
+    % Ac apparatuses
     % =======================================
     % ### Synchronous generator
     case 0      % Type 0-9
-        Device = SimplusGT.Class.SynchronousMachine('DeviceType',Type);
-        Device.Para = [ Para.J;
+        Apparatus = SimplusGT.Class.SynchronousMachine('ApparatusType',Type);
+        Apparatus.Para = [ Para.J;
                         Para.D;
                         Para.wL;
                         Para.R;
@@ -48,11 +48,11 @@ switch floor(Type/10)
     % ### Grid-following inverter
     case 1      % Type 10-19
         if Type~=19
-            Device = SimplusGT.Class.GridFollowingVSI('DeviceType',Type);
+            Apparatus = SimplusGT.Class.GridFollowingVSI('ApparatusType',Type);
         else
-            Device = SimplusGT.Class.GridFollowingInverterStationary('DeviceType',Type);
+            Apparatus = SimplusGT.Class.GridFollowingInverterStationary('ApparatusType',Type);
         end
-        Device.Para = [ Para.C_dc;
+        Apparatus.Para = [ Para.C_dc;
                         Para.V_dc;
                         Para.f_v_dc;
                         Para.f_pll;
@@ -64,8 +64,8 @@ switch floor(Type/10)
                    
     % ### Grid-forming inverter
     case 2  % Type 20-29
-        Device = SimplusGT.Class.GridFormingVSI('DeviceType',Type);
-        Device.Para = [ Para.wLf;
+        Apparatus = SimplusGT.Class.GridFormingVSI('ApparatusType',Type);
+        Apparatus.Para = [ Para.wLf;
                         Para.Rf;
                         Para.wCf;
                         Para.wLc;
@@ -79,8 +79,8 @@ switch floor(Type/10)
                    
     % ### Ac infinite bus
     case 9
-        Device = SimplusGT.Class.InfiniteBusAc;
-        Device.Para  = [];
+        Apparatus = SimplusGT.Class.InfiniteBusAc;
+        Apparatus.Para  = [];
         % Because the infinite bus is defined with "i" input and "v" output,
         % they need to be switched finally.
         SwInOutFlag = 1;
@@ -88,16 +88,16 @@ switch floor(Type/10)
    
     % ### Ac floating bus
     case 10
-        Device = SimplusGT.Class.FloatingBusAc;
-        Device.Para = [];
+        Apparatus = SimplusGT.Class.FloatingBusAc;
+        Apparatus.Para = [];
         
 	% =======================================
-    % Dc devices
+    % Dc apparatuses
     % =======================================
     % ### Grid feeding buck converter
     case 101
-    	Device = SimplusGT.Class.GridFeedingBuck('DeviceType',Type);
-        Device.Para = [ Para.Vdc;
+    	Apparatus = SimplusGT.Class.GridFeedingBuck('ApparatusType',Type);
+        Apparatus.Para = [ Para.Vdc;
                         Para.Cdc;
                         Para.wL;
                         Para.R;
@@ -106,22 +106,22 @@ switch floor(Type/10)
                         Para.w0];
   	% ### Dc infinite bus
     case 109
-        Device = SimplusGT.Class.InfiniteBusDc;
-        Device.Para  = [];
+        Apparatus = SimplusGT.Class.InfiniteBusDc;
+        Apparatus.Para  = [];
         SwInOutFlag = 1;
         SwInOutLength = 1;
    
     % ### Dc floating bus
     case 110
-        Device = SimplusGT.Class.FloatingBusDc;
-        Device.Para = [];
+        Apparatus = SimplusGT.Class.FloatingBusDc;
+        Apparatus.Para = [];
         
    	% =======================================
-    % Interlinking devices
+    % Interlinking apparatuses
     % =======================================
     case 200
-        Device = SimplusGT.Class.InterlinkAcDc('DeviceType',Type);
-        Device.Para = [ Para.C_dc;
+        Apparatus = SimplusGT.Class.InterlinkAcDc('ApparatusType',Type);
+        Apparatus.Para = [ Para.C_dc;
                         Para.wL_ac;
                         Para.R_ac;
                         Para.wL_dc;
@@ -133,72 +133,72 @@ switch floor(Type/10)
     
     % ### Otherwise
     otherwise
-        error(['Error: device type']);
+        error(['Error: apparatus type']);
 end
 
 %% Calculate the linearized state space model
-Device.DeviceType = Type;                           % Device type
-Device.Ts = Ts;                                     % Samping period
-Device.PowerFlow = PowerFlow;                       % Power flow data
-Device.SetString(Device);                           % Set strings automatically
-Device.SetEquilibrium(Device);                      % Calculate the equilibrium
-[x_e,u_e,y_e,xi] = Device.GetEquilibrium(Device);   % Get the equilibrium
-Device.SetSSLinearized(Device,x_e,u_e);             % Linearize the model
+Apparatus.ApparatusType = Type;                           % Apparatus type
+Apparatus.Ts = Ts;                                     % Samping period
+Apparatus.PowerFlow = PowerFlow;                       % Power flow data
+Apparatus.SetString(Apparatus);                           % Set strings automatically
+Apparatus.SetEquilibrium(Apparatus);                      % Calculate the equilibrium
+[x_e,u_e,y_e,xi] = Apparatus.GetEquilibrium(Apparatus);   % Get the equilibrium
+Apparatus.SetSSLinearized(Apparatus,x_e,u_e);             % Linearize the model
 
-[~,ModelSS] = Device.GetSS(Device);                % Get the ss model
+[~,ModelSS] = Apparatus.GetSS(Apparatus);                % Get the ss model
 [StateStr,InputStr,OutputStr] ...
-    = Device.GetString(Device);                    % Get the string
+    = Apparatus.GetString(Apparatus);                    % Get the string
 
 % Set ElecPortIOs and OtherInputs
 if Type<1000
-    Device.ElecPortIOs = [1,2];
-    OtherInputs = u_e(3:end,:);     % dq frame ac device
+    Apparatus.ElecPortIOs = [1,2];
+    OtherInputs = u_e(3:end,:);     % dq frame ac apparatus
 elseif 1000<=Type && Type<2000
-    Device.ElecPortIOs = [1];
-    OtherInputs = u_e(2:end,:);     % dc device
+    Apparatus.ElecPortIOs = [1];
+    OtherInputs = u_e(2:end,:);     % dc apparatus
 elseif 2000<=Type && Type<3000
-    Device.ElecPortIOs = [1,2,3];
-    OtherInputs = u_e(4:end,:);     % ac-dc device
+    Apparatus.ElecPortIOs = [1,2,3];
+    OtherInputs = u_e(4:end,:);     % ac-dc apparatus
 else
     error(['Error']);
 end
 
 % Link the IO ports to bus number
-InputStr = SimplusGT.AddNum2Str(InputStr,DeviceBus);
-OutputStr = SimplusGT.AddNum2Str(OutputStr,DeviceBus);
+InputStr = SimplusGT.AddNum2Str(InputStr,ApparatusBus);
+OutputStr = SimplusGT.AddNum2Str(OutputStr,ApparatusBus);
 
-% For 2-bus device, adjust electrical port strings
-if length(DeviceBus)==2  % A multi-bus device 
-    InputStr{1} = ['v_d',num2str(DeviceBus(1))];
-    InputStr{2} = ['v_q',num2str(DeviceBus(1))];
-   	OutputStr{1} = ['i_d',num2str(DeviceBus(1))];
-    OutputStr{2} = ['i_q',num2str(DeviceBus(1))];
+% For 2-bus apparatus, adjust electrical port strings
+if length(ApparatusBus)==2  % A multi-bus apparatus 
+    InputStr{1} = ['v_d',num2str(ApparatusBus(1))];
+    InputStr{2} = ['v_q',num2str(ApparatusBus(1))];
+   	OutputStr{1} = ['i_d',num2str(ApparatusBus(1))];
+    OutputStr{2} = ['i_q',num2str(ApparatusBus(1))];
     
-  	InputStr{3} = ['v',num2str(DeviceBus(2))];
-    OutputStr{3} = ['i',num2str(DeviceBus(2))];
-elseif length(DeviceBus) == 1
+  	InputStr{3} = ['v',num2str(ApparatusBus(2))];
+    OutputStr{3} = ['i',num2str(ApparatusBus(2))];
+elseif length(ApparatusBus) == 1
 else
-    error(['Error: Each device can only be connected to one or two buses.']);
+    error(['Error: Each apparatus can only be connected to one or two buses.']);
 end
 
 % Get the swing frame system model
 Gm = ModelSS;   
 
 % Output
-DevicePara = Device.Para; 
-DeviceEqui = {x_e,u_e,y_e,xi};
+ApparatusPara = Apparatus.Para; 
+ApparatusEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
 if Type<90 || (1000<=Type && Type<1090) || (2000<=Type && Type<2090)
     % CalcRv_old();
     
-    Device.SetDynamicSS(Device,x_e,u_e);
-    DiscreDampingResistor = Device.GetVirtualResistor(Device);
+    Apparatus.SetDynamicSS(Apparatus,x_e,u_e);
+    DiscreDampingResistor = Apparatus.GetVirtualResistor(Apparatus);
 else
     DiscreDampingResistor = -1;
 end
 
-%% Check if the device needs to adjust its frame
+%% Check if the apparatus needs to adjust its frame
 if (Type>=90 && Type<1000)
     % No need for frame dynamics embedding
 elseif (Type>=1000 && Type<2000)
@@ -248,7 +248,7 @@ I0 = [-i_q ; i_d];
 % which is added to the head of the original state vector. This means that
 % the w has to be one of the outputs of the original model.
 for i = 1:length(OutputStr)
-    w_port = SimplusGT.AddNum2Str({'w'},DeviceBus);
+    w_port = SimplusGT.AddNum2Str({'w'},ApparatusBus);
     w_port = w_port{1};
     if strcmpi(OutputStr(i),w_port)
         ind_w = i;
@@ -256,7 +256,7 @@ for i = 1:length(OutputStr)
     end
 end
 if isempty(ind_w)
-    error(['Error: w has to be in the output of the original device model.']);
+    error(['Error: w has to be in the output of the original apparatus model.']);
 end
 [~,~,ly1_w] = SimplusGT.SsGetDim(Gm);
 Aw = 0;
@@ -336,7 +336,7 @@ GmObj.SetDSS(GmObj,GmDSS);
 % Get the strings
 GmObj.SetString(GmObj,StateStr,InputStr,OutputStr);
 
-% Switch input and output for required device
+% Switch input and output for required apparatus
 if SwInOutFlag == 1
     GmObj = SimplusGT.ObjSwitchInOut(GmObj,SwInOutLength);
 end

@@ -78,7 +78,7 @@ This is the root name space folder of the toolbox, and contains all functions us
 
 ### "+Toolbox" Sub-folder
 
-This folder contains the basic functions for toolbox. For example, "Main.m" is the main function for toolbox; "DeviceModelCreate.m" creates the small-signal state space models of devices.
+This folder contains the basic functions for toolbox. For example, "Main.m" is the main function for toolbox; "ApparatusModelCreate.m" creates the small-signal state space models of apparatuses.
 
 ### "+Simulink" Sub-folder
 
@@ -86,7 +86,7 @@ This folder contains the functions generating the Simulink model from user data 
 
 ### "+Class" Sub-folder
 
-This folder contains the class functions of Matlab system object, which defines the models of devices used for both small-signal modeling in Matlab script and time-domain simulation in Simulink.
+This folder contains the class functions of Matlab system object, which defines the models of apparatuses used for both small-signal modeling in Matlab script and time-domain simulation in Simulink.
 
 The class tree is shown here:
 
@@ -118,9 +118,9 @@ matlab.System
 
 "ModelAdvance.m" is the sub-class of "ModelBase.m". It is the advanced class used for Matlab system block in Simulink. It defines advanced properties and methods (such as discretization methods).
 
-"SynchronousMachine.m" is the specific device class for synchronous machines, which contains the detailed physical models of synchronous machines (such as signal lists, equilibrium calculations, state equations, etc). Similarly, "GridFollowingVSI.m" is the specific device class for grid following voltage source inverters ...
+"SynchronousMachine.m" is the specific apparatus class for synchronous machines, which contains the detailed physical models of synchronous machines (such as signal lists, equilibrium calculations, state equations, etc). Similarly, "GridFollowingVSI.m" is the specific apparatus class for grid following voltage source inverters ...
 
-"ModelTemplate.m" is the template class for a specific device. Developers can use this file as a starting point to build/customize a new device.
+"ModelTemplate.m" is the template class for a specific apparatus. Developers can use this file as a starting point to build/customize a new apparatus.
 
 ### "+PowerFlow" Sub-folder
 

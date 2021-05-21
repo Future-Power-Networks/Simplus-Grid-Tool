@@ -1,4 +1,4 @@
-function DeviceMaskInitialization(EnableInsideModification,DiscreDampingFlag)
+function ApparatusMaskInitialization(EnableInsideModification,DiscreDampingFlag)
     % Check if Rv needs to be commented out
     % Notes: A same block twice not be commented twice. But every time when
     % runing the code or when clicking the "apply" button of the mask, the

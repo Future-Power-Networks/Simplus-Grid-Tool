@@ -8,7 +8,7 @@
 % This class makes the model fit in both simulation (simulink) and
 % theoratical analysis (script).
 %
-% Subclass of this class contains the specific models of different devices.
+% Subclass of this class contains the specific models of different apparatuses.
 
 %% References
 
@@ -27,14 +27,14 @@ classdef ModelAdvance < SimplusGT.Class.ModelBase ...
 % Public can be set to []
 properties
     Ts = 1e-4;          % Sampling period (s)
-    Para = [];          % Device parameters            
+    Para = [];          % Apparatus parameters            
 end
 
 % ### Nontunable publica properties
 % Will be read first during construction   
 properties(Nontunable)
  
-    DeviceType = 0;    % Device type
+    ApparatusType = 0;    % Apparatus type
     PowerFlow = [];     % Power flow parameters
     x0 = [];            % Initial state
     
@@ -64,8 +64,8 @@ properties(Nontunable)
     % resistors to eliminate algebraic loops. 
     % This property is only effective when DirectFeedthrough == 0 and
     % VirtualResistor == 1.
-    % For ac devices, ElecPortIOs = [1,2] normally. For dc devices, the
-    % ElecPortIOs = [1] normally. For hybrid ac-dc devices, ElecPortIOs =
+    % For ac apparatuses, ElecPortIOs = [1,2] normally. For dc apparatuses, the
+    % ElecPortIOs = [1] normally. For hybrid ac-dc apparatuses, ElecPortIOs =
     % [1,2,3] normally.
     ElecPortIOs = [1,2];
     
@@ -157,7 +157,7 @@ methods(Static)
   	function [read1,read2,read3,read4] = GetEquilibrium(obj)
         if (isempty(obj.u_e) || isempty(obj.xi))
             % Only check u_e and xi, cause x_e can be empty for certain
-            % device such as floating bus.
+            % apparatus such as floating bus.
             error(['Error: The equilibrium is null']);
         else
             y_e = obj.StateSpaceEqu(obj,obj.x_e,obj.u_e,2);

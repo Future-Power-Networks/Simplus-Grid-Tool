@@ -5,4 +5,4 @@
      MatrixY = Ts/2*Ck*Wk*Bk;
      MatrixY = MatrixY(1:2,1:2);
      MatrixR = inv(MatrixY);
-     DeviceDiscreDampingResistor = MatrixR(1,1);
+     ApparatusDiscreDampingResistor = MatrixR(1,1);

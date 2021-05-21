@@ -26,7 +26,7 @@ classdef Inductor < SimplusGT.Class.ModelAdvance
         
         % Calculate the equilibrium
         % For simplicity, we set the initial v and i of this inductor to i.
-        % xi is the initial phase angle for three-phase device and
+        % xi is the initial phase angle for three-phase apparatus and
         % calculated by power flow, which is not useful here.
         function [x_e,u_e,xi] = Equilibrium(obj)
             % Calculate the equilibrium

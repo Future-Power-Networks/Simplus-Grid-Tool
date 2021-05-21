@@ -1,8 +1,8 @@
 %calculate modes, residues from state-space, based on the modes and
-%devicese the user selected.
+%apparatuses the user selected.
 %Author: Yue Zhu
 function [GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
-    SSCal(GminSS, N_Bus, DeviceType, ModeSelAll, GmDSS_Cell, GsysDSS, DeviceInputStr, DeviceOutputStr)
+    SSCal(GminSS, N_Bus, ApparatusType, ModeSelAll, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr)
 
 %% for state PF, use GsysDSS
 [GsysSS, IndexSS] = SimplusGT.dss2ss(GsysDSS);
@@ -30,7 +30,7 @@ for modei=1:ModeSelNum
     pin=1;
     pout=1;
     for k =1: N_Bus
-        if DeviceType{k} <= 89  %apparatus
+        if ApparatusType{k} <= 89  %apparatus
             %Residu calculation
             ResidueAll{modei}(k).dd=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
             ResidueAll{modei}(k).dq=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);
@@ -48,14 +48,14 @@ for modei=1:ModeSelNum
             ZmValAll{modei}(k).dq = Zm(1,2);
             ZmValAll{modei}(k).qd = Zm(2,1);
             ZmValAll{modei}(k).qq = Zm(2,2);
-            pin = pin + length(DeviceInputStr{k});    %4 inputs and 5 outputs.
-            pout = pout + length(DeviceOutputStr{k});
+            pin = pin + length(ApparatusInputStr{k});    %4 inputs and 5 outputs.
+            pout = pout + length(ApparatusOutputStr{k});
             
         else %floating bus and passive load: not considered           
             ResidueAll{modei}(k).dd=[];
             ZmValAll{modei}(k).dd=[];
-            pin = pin + length(DeviceInputStr{k});
-            pout = pout + length(DeviceOutputStr{k});
+            pin = pin + length(ApparatusInputStr{k});
+            pout = pout + length(ApparatusOutputStr{k});
         end
     end
 end

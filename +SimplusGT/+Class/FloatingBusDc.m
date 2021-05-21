@@ -1,5 +1,5 @@
 % This class defines the model of a dc floating bus, i.e., open circuit bus
-% or no device connected to this bus.
+% or no apparatus connected to this bus.
 
 % Author(s): Yitong Li
 

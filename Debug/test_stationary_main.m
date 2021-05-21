@@ -65,7 +65,7 @@ SimplusGT.Toolbox.Main();
                     % Notes: The result is in the form of
                     % | bus | P | Q | V | angle | omega |
 
-% ListPowerFlow_;   % Power flow result only for active device by combing 
+% ListPowerFlow_;   % Power flow result only for active apparatus by combing 
                     % the load into the nodal admittance matrix.
                     
 % pole_sys;         % Whole-system poles, or equivalently eigenvalues.

@@ -18,7 +18,7 @@ classdef PassiveLoad < SimplusGT.Class.ModelAdvance
             obj.Connection = obj.Para(2);
             
             % PQ passive load
-            if obj.DeviceType == 90
+            if obj.ApparatusType == 90
                 % Load power flow data
                 % Notes: P and Q are in load convention
                	P 	= obj.PowerFlow(1);
@@ -48,7 +48,7 @@ classdef PassiveLoad < SimplusGT.Class.ModelAdvance
                     obj.L = V^2/Q/w;
                 end
             % RL load    
-            elseif obj.DeviceType == 91
+            elseif obj.ApparatusType == 91
                 obj.R = obj.Para(2);
                 obj.L = obj.Para(3);
             end

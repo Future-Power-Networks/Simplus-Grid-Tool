@@ -9,7 +9,7 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function MainSimulink(Name_Model,ListBus,ListLine,DeviceBus,DeviceType,ListAdvance,PowerFlow)
+function MainSimulink(Name_Model,ListBus,ListLine,ApparatusBus,ApparatusType,ListAdvance,PowerFlow)
 
 %% Common variables
 SimplusGT.Simulink.NewSimulinkModel('ModelName',Name_Model);
@@ -44,35 +44,35 @@ Dist_Bus = [200+100*MaxCount_ToBus,300];
 [Name_Bus,Pos_Bus] = ...
     SimplusGT.Simulink.SimAddBus(Name_Model,Name_LibFile,Size_Bus,Pos_Bus,ListBus,Dist_Bus);
 
-%% Add devices
+%% Add apparatuses
 % Parameter
-Size_Device = [50,90];
-Shift_Device = [-150,0];
+Size_Apparatus = [50,90];
+Shift_Apparatus = [-150,0];
 
-% Add device
-[FullName_Device,Name_Device,Pos_Device] = ...
-    SimplusGT.Simulink.SimAddDevice(Name_Model,Name_LibFile,Size_Device,Shift_Device,Pos_Bus,DeviceBus,DeviceType,ListAdvance);
+% Add apparatus
+[FullName_Apparatus,Name_Apparatus,Pos_Apparatus] = ...
+    SimplusGT.Simulink.SimAddApparatus(Name_Model,Name_LibFile,Size_Apparatus,Shift_Apparatus,Pos_Bus,ApparatusBus,ApparatusType,ListAdvance);
 
-%% Add device ground
+%% Add apparatus ground
 % Paramters
 Size_D_GND = [20,20];
 Shift_D_GND = [20,20];
 
-% Add device ground
+% Add apparatus ground
 Enable_D_GND = 1;
 if Enable_D_GND
-    SimplusGT.Simulink.SimAddDeviceGround(Name_Model,Size_D_GND,Shift_D_GND,FullName_Device,Name_Device,DeviceType);
+    SimplusGT.Simulink.SimAddApparatusGround(Name_Model,Size_D_GND,Shift_D_GND,FullName_Apparatus,Name_Apparatus,ApparatusType);
 end
 
-%% Add device scope
+%% Add apparatus scope
 % Parameters
-Size_D_Scope = [30,Size_Device(2)+10];
+Size_D_Scope = [30,Size_Apparatus(2)+10];
 Shift_D_Scope = [-100,0];
-Size_DS_Bus = [5,Size_Device(2)+10];
+Size_DS_Bus = [5,Size_Apparatus(2)+10];
 Shift_DS_Bus = [-30,0];
 
-% Add device scope
-SimplusGT.Simulink.SimAddDeviceScope(Name_Model,Size_D_Scope,Shift_D_Scope,Size_DS_Bus,Shift_DS_Bus,Pos_Device,Name_Device,DeviceType);
+% Add apparatus scope
+SimplusGT.Simulink.SimAddApparatusScope(Name_Model,Size_D_Scope,Shift_D_Scope,Size_DS_Bus,Shift_DS_Bus,Pos_Apparatus,Name_Apparatus,ApparatusType);
 
 %% Add branches
 % Parameter
@@ -97,9 +97,9 @@ SimplusGT.Simulink.SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName
 % Connect branch to bus
 SimplusGT.Simulink.SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
 
-%% Connect device to bus
+%% Connect apparatus to bus
 % This procedure is done finally to get a cleaner line auto routing.
-SimplusGT.Simulink.SimConnectDevice2Bus(Name_Model,Name_Bus,Name_Device,DeviceBus,DeviceType);
+SimplusGT.Simulink.SimConnectApparatus2Bus(Name_Model,Name_Bus,Name_Apparatus,ApparatusBus,ApparatusType);
 
 %% Fit the model to view
 set_param(gcs,'Zoomfactor','fit to view')

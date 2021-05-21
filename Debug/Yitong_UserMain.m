@@ -86,9 +86,9 @@ SimplusGT.Toolbox.Main();
                     % Notes: The result is in the form of
                     % | bus | P | Q | V | angle | omega |
                     % P and Q are in load convention, i.e., the P and Q
-                    % flowing from each bus to the active device connected.
+                    % flowing from each bus to the active apparatus connected.
 
-% ListPowerFlow_;   % Power flow result for active device only by combing 
+% ListPowerFlow_;   % Power flow result for active apparatus only by combing 
                     % the PQ load into the nodal admittance matrix.
                     
 % pole_sys;         % Whole-system poles, or equivalently eigenvalues.

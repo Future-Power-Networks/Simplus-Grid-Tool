@@ -1,4 +1,4 @@
-% This function connects the admittance model of devices and the impedance
+% This function connects the admittance model of apparatuses and the impedance
 % model of network lines.
 
 % Author(s): Yitong Li

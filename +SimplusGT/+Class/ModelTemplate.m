@@ -29,9 +29,9 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
         % These strings are mainly for printing output and searching the
         % corresponding ports.
         %
-        % For ac devices, the first two inputs and outputs should be
+        % For ac apparatuses, the first two inputs and outputs should be
         % {'v_d','v_q'} and {'i_d','i_q'}, and {'w'} should be output. For
-        % dc devices, the first input and output should be {'v'} and {'i'}.
+        % dc apparatuses, the first input and output should be {'v'} and {'i'}.
         % No specific requirementFor other inputs, outputs, and states.
         %
         % The dimensions of x, u, y must be coinsistent in following three
@@ -43,7 +43,7 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
         end
         
         % Calculate the equilibrium
-        % The equilibrium is determined by the power flow data and device's
+        % The equilibrium is determined by the power flow data and apparatus's
         % own paramters.This function will be called once, at the
         % beginneing of simulation.
         function [x_e,u_e,xi] = Equilibrium(obj)
@@ -66,8 +66,8 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
         end
         
     	% State space model
-        % This function defines the state space model of this device,
-        % and is the core part for capturing the dynamics of this device.
+        % This function defines the state space model of this apparatus,
+        % and is the core part for capturing the dynamics of this apparatus.
         %
         % This function will be called at each step, i.e., Ts, during the
         % whole precedure of the discrete simulation.
