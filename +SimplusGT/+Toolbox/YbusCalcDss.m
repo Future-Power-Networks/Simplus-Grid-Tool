@@ -1,5 +1,5 @@
 % This function calculate the descriptor (implicit) state space model of
-% dynamic nodal admittance matrix for ac networks.
+% the dynamic nodal admittance matrix for ac networks.
 
 % Author(s): Yitong Li, Yunjie Gu
 
@@ -11,8 +11,8 @@
 % Mutual-branch: branches with from ~= to, connecting two difference buses
 %
 % The obtained nodal admittance matrix is in Laplace s domain, i.e., a
-% dynamic model, which is quite different from the steady nodal admittance
-% matrix used in power flow analysis.
+% dynamic model,is different from the steady nodal admittance matrix used
+% in power flow analysis and only holds a similar form.
 %
 % This function can deal with both AC and DC grids. The default is AC. For
 % AC grids, a two-input-two-output (TITO) transfer function or state space

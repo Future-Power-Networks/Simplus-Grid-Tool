@@ -11,13 +11,17 @@
 
 %% References:
 
-% Y. Gu, Y. Li, Y. Zhu, T. C. Green, "Impedance-based whole-system modeling
-% for a composite grid via embedding of frame dynamics." IEEE Transactions
-% on Power Systems, Early Access.
+% Yitong Li, Yunjie Gu, Timothy C. Green, "Mapping of dynamics between
+% mechanical and electrical ports in SG-IBR composite grids" arXiv,
+% preprint.
 
-% Y. Li, Y. Gu, T. C. Green, "Interpreting frame tramsformations in ac
-% systems as diagonolization of harmonic transfer function." IEEE
-% Transctions on Circuit and Systems, 2020.
+% Yunjie Gu, Yitong Li, Yue Zhu, Timothy C. Green, "Impedance-based
+% whole-system modeling for a composite grid via embedding of frame
+% dynamics." IEEE Transactions on Power Systems, 2021.
+
+% Yitong Li, Yunjie Gu, Timothy C. Green, "Interpreting frame
+% tramsformations in ac systems as diagonolization of harmonic transfer
+% function." IEEE Transctions on Circuit and Systems, 2020.
 
 %% function
 function [GmObj,GmDSS,ApparatusPara,ApparatusEqui,DiscreDampingResistor,OtherInputs,StateStr,InputStr,OutputStr] ...

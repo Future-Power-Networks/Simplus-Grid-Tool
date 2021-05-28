@@ -214,6 +214,13 @@ fprintf('=================================\n')
 fprintf('Simulink Model\n')
 fprintf('=================================\n')
 
+if N_Bus>=150
+    Enable_CreateSimulinkModel = 0;
+    fprintf('Warning: The system has more than 150 buses;\n')
+    fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
+    fprintf('         The static and dynamic analysis will not be influenced.\n')
+end
+
 if Enable_CreateSimulinkModel == 1
     
     fprintf('Creating the simulink model automatically, please wait a second...\n')
