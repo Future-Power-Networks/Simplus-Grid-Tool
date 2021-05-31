@@ -63,7 +63,7 @@ classdef GridFormingVSI_Detuned < SimplexPS.Class.ModelAdvance
                         Rf = xRf;
                         Cf = xwCf/W0;
                         Lc = xwLc/W0;
-                        Rc = xRc/W0;
+                        Rc = xRc;
                         Xov= xXov;
                         Dw = xDw*W0;
                         wf = xfdroop*2*pi;

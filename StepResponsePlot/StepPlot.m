@@ -8,7 +8,7 @@ elseif sel == 2
     load('StepR2.mat','out');
 elseif sel == 3
     load('StepR3.mat','out');
-end;
+end
 Ts=1/3e4;
 t_start = 9.5;
 t_end = 16;
