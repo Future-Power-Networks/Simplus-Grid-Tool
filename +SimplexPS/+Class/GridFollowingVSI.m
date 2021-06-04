@@ -235,7 +235,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
            
             % PLL control
             dw_pll_i = e_ang*ki_pll;                            % Integral controller
-            if 0                                                                            % ??????
+            if 1                                                                            % ??????
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
                 % Notes:
                 % This introduces an additional state w.
@@ -268,7 +268,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             end
             
             % Ac current control
-            if 0                                                                        % ??????
+            if 1                                                                       % ??????
                 % dq-frame PI
                 di_d_i = -(i_d_r - i_d)*ki_i;
                 di_q_i = -(i_q_r - i_q)*ki_i;
@@ -317,8 +317,6 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             % Ac filter inductor
           	di_d = (v_d - R*i_d + w*L*i_q - e_d)/L;
             di_q = (v_q - R*i_q - w*L*i_d - e_q)/L;
-%           	di_d = (v_d - R*i_d + W0*L*i_q - e_d)/L;                                    % ?????? 
-%             di_q = (v_q - R*i_q - W0*L*i_d - e_q)/L;
             
             % State space equations
             % dx/dt = f(x,u)
