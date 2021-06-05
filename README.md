@@ -1,7 +1,7 @@
-# Power System Analysis Toolbox (Version: v2021-APR-20)
+# Power System Analysis Toolbox
 
-This is an old version of the toolbox, for getting the simulation results of 14-bus inverter-based power systems.
+This is an old version of the toolbox, for getting the simulation results of a 14-bus inverter-based power system.
 
-The matlab version should be 2020b.
+The version of the Matlab used is 2020b.
 
 Please run "InstallSimplexPS.m" first.
