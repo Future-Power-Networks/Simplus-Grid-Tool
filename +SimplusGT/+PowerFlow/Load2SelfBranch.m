@@ -76,14 +76,20 @@ for i = 1:N_Bus
         n = SimplusGT.Toolbox.FindBranch(UpdateListLine,i,i);
         if ~isempty(n)
             % n is NOT empty, which means ListLine has this branch
+            if UpdateListLine(n,3) ~= 0 && (~isinf(UpdateListLine(n,3)))
+                error(['Error: A self branch can not have R.']);
+            end
+            if ~isinf(XL(i))
+                UpdateListLine(n,3) = 0;
+            end
+            UpdateListLine(n,4) = 1/(1/UpdateListLine(n,4) + 1/XL(i));
             UpdateListLine(n,5) = UpdateListLine(n,5) + BL(i);
             UpdateListLine(n,6) = UpdateListLine(n,6) + GL(i);
-            UpdateListLine(n,8) = XL(i);
         else
             % n is empty, which means ListLine does not have this branch.
             % In this case, a new branch should be added
             UpdateListLine = [UpdateListLine;
-                              i,i,0,0,BL(i),GL(i),1,XL(i),AreaTypeBus(i)];
+                              i,i,0,XL(i),BL(i),GL(i),1,AreaTypeBus(i)];
         end
     else
         % Do not need to care about the open-circuit

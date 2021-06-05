@@ -8,7 +8,7 @@ function [Name_Trans] = SimAddTransformer(Name_Model,Size_Trans,Shift_Trans,Pos_
 FB = ListLine(:,1);         % From bus
 TB = ListLine(:,2);         % To bus
 Tbr  = ListLine(:,7);       % Transformer tap ratio
-AreaType = ListLine(:,9);
+AreaType = ListLine(:,8);
 N_Branch = length(FB);
 
 Name_Trans{1} = [];

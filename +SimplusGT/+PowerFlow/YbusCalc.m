@@ -4,18 +4,20 @@
 
 %% Notes:
 %
-% Format of branch:
-%             ---             ---C---
-% FromBus ---|a:1|---R---L---|       |--- ToBus
-%             ---             ---G---
-% where (a:1) is the turn ratio of transformer 
-%
-% Format of input:
-% netlist:   |  From |  To   |   R   |  wL   |  wC   |   G   |
-%            |  Bus  |  Bus  |       |       |       |       |
-% linedata = [  1       2        0       X       0      inf;
-%               1       1        0       0       B       G;
-%               2       2        0       0       0       0];
+% There are two different forms of branch, and the parallel form is used
+% because it fits better for the power system network line and load
+% structure.
+% Series form:
+%              ---             ---C---
+%   FromBus---|a:1|---R---L---|       |---ToBus
+%              ---             ---G---
+% Parallel form
+%              ---     -----R---L-----
+%   FromBus---|a:1|---|               |---ToBus
+%              ---    |    ---C---    |
+%                      ---|       |---
+%                          ---G---
+% where (a:1) is the turn ratio of transformer.
 %
 % The obtained nodal admittance matrix is "steady", which means the
 % obtained matrix does NOT contain Laplace operator "s".
@@ -31,13 +33,6 @@
 %% 
 function Ybus = YbusCalc(ListLine) 
 
-% GridType = 'AC';        % Default is AC
-% for n = 1:length(varargin)
-%     if(strcmpi(varargin{n},'GridType'))
-%         GridType = varargin{n+1};   % 1-AC, 2-DC
-%     end
-% end
-
 % Get the data
 FB = ListLine(:,1);             % From bus number
 TB = ListLine(:,2);             % To bus number
@@ -49,24 +44,37 @@ G = ListLine(:,6);              % Conductance, G
 
 T = ListLine(:,7);              % Turns ratio, T
 
-AreaType = ListLine(:,9);       % AC or DC type
+AreaTypeLine = ListLine(:,8);       % AC or DC type
 
 % Get number
 N_Bus = max(max(FB),max(TB));    % Number of buses
 N_Branch = length(FB);
 
 % Calculate y
+BranchConnection = 2;      % 1-series; 2-parallel
 for i = 1:N_Branch
-    if AreaType(i) == 1
-        Zs = R(i) + 1i*X(i);                   
-        Yp = G(i) + 1i*B(i); 	% g and b can be "inf" without causing problems
-        Z  = Zs + 1/Yp;      	% Total impedance of that branch
-        Y(i)  = 1/Z;           	% Total admittance of that branch
-    elseif AreaType(i) == 2
-        if (FB(i) ~= TB(i)) && R(i)==0
+    if AreaTypeLine(i) == 1
+        Zs = R(i) + 1i*X(i);           
+        Yp = G(i) + 1i*B(i);
+        if BranchConnection == 1      % Series format
+            Z  = Zs + 1/Yp;
+            Y(i)  = 1/Z;
+        elseif BranchConnection == 2  % Parallel format
+            Y(i) = Yp + 1/Zs;
+        else
+            error(['Error: branch format.']);
+        end
+            
+    elseif AreaTypeLine(i) == 2
+        if R(i)==0 && isinf(G(i))
             error(['Error: Branch ' num2str(FB(i)) '-' num2str(TB(i)) ' is a DC branch, whose resistance can NOT be zero.'])
         end
-        Y(i) = 1/(1/G(i) + R(i)); 	% For DC grid power flow, only the resistance is considerred, as w0 is 0 which means jX=0 and jB=0.
+        % For DC grid power flow, only the resistance is considerred, as w0 is 0 which means jX=0 and jB=0.
+        if BranchConnection == 1
+            Y(i) = 1/(1/G(i) + R(i)); 	
+        elseif BranchConnection == 2
+            Y(i) = G(i) + 1/R(i);
+        end
     end
 end
 
