@@ -48,14 +48,16 @@ if ListLineIEEE(1,1) == 1
         % appear in its original data. But this self-branch will also be
         % treated as a pi-circuit mutual-branch next to calculate the new
         % self branch. The original self-branch will be deleted later,
-        % which avoids the mutiple appearance of this self branch.
+        % which avoids the mutiple appearance of this self branch. This
+        % requires to set the Rorig = Xorig = inf, which is different from
+        % the normal network line form.
     end
     
   	% Set B, G for original branch
     B_orig = zeros(N_Br_orig,1);
     G_orig = inf(N_Br_orig,1);
     
-    % Initialize the index for self-branch
+    % Initialize the index for self-branch: normal order
     FB_self = transpose([1:N_Br_self]);
     TB_self = FB_self;
     
