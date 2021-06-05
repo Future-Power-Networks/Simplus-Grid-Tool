@@ -41,7 +41,7 @@ UserData = 'UserData.xlsx';
 % UserData = 'GfdBuckInfiniteBus.xlsx';         % Single grid-feeding buck converter and infinite bus
 %
 % Hybrid ac-dc power system examples:
-UserData = 'Hybrid_test_v1.xlsx';             % A 4-bus hybrid ac-dc system
+% UserData = 'Hybrid_test_v1.xlsx';             % A 4-bus hybrid ac-dc system
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();
