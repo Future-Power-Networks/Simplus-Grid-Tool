@@ -95,7 +95,7 @@ ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);
 [ListBus,ListLineNew,PowerFlowNew] = SimplusGT.PowerFlow.Load2SelfBranch(ListBus,ListLine,PowerFlow);
 
 % For printting later
-ListPowerFlow_ = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
+ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
 
 %%
 % ==================================================

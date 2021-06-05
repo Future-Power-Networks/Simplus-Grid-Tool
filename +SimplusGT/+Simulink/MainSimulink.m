@@ -97,6 +97,9 @@ SimplusGT.Simulink.SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName
 % Connect branch to bus
 SimplusGT.Simulink.SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLine);
 
+% Notes:
+% Be careful about the settings of ListLine.
+
 %% Connect apparatus to bus
 % This procedure is done finally to get a cleaner line auto routing.
 SimplusGT.Simulink.SimConnectApparatus2Bus(Name_Model,Name_Bus,Name_Apparatus,ApparatusBus,ApparatusType);

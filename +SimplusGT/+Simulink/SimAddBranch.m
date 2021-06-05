@@ -13,11 +13,9 @@ Xbr  = ListLine(:,4);
 Bbr  = ListLine(:,5);
 Gbr  = ListLine(:,6);
 Tbr  = ListLine(:,7);
+AreaType = ListLine(:,8);
 
 N_Branch = length(fb);
-
-XL = ListLine(:,8);
-AreaType = ListLine(:,9);
 
 Count_ToBus = zeros(max(tb),1);
 
@@ -59,8 +57,13 @@ for i = 1:N_Branch
             {[Name_Branch{i} '/Rconn1'],[Name_Branch{i} '/Rconn3']});  
         end
 
+      	% Assume the self-branch is pure CG or LCG
+        if Rbr(i)~=0 && (~isinf(Rbr(i)))
+            error(['Error: the self branch contains R']);
+        end
+        
         % Set branch type
-        if ~isinf(XL(i))
+        if ~isinf(Xbr(i))
             if (Gbr(i)==0) && (Bbr(i)==0)
                 set_param(FullName_Branch{i},'BranchType','L');
             elseif Gbr(i)==0
@@ -70,12 +73,7 @@ for i = 1:N_Branch
             else
                 set_param(FullName_Branch{i},'BranchType','RLC');
             end
-            set_param(FullName_Branch{i},'Inductance',['(' num2str(XL(i)) ')*Zbase/Wbase']);
         else
-            % Assume the self-branch is pure GC
-            if ~((Rbr(i)==0) && (Xbr(i)==0))
-                error(['Error: the self branch contains L or R']);
-            end
             if (Gbr(i)==0) && (Bbr(i)==0)
                 error(['Error: open circuit']);
             elseif Bbr(i)==0        % Pure resistance
@@ -88,6 +86,7 @@ for i = 1:N_Branch
         end
 
         % Set customer data
+        set_param(FullName_Branch{i},'Inductance',['(' num2str(Xbr(i)) ')*Zbase/Wbase']);
         set_param(FullName_Branch{i},'Capacitance',['(' num2str(Bbr(i)) ')*Ybase/Wbase']);
         set_param(FullName_Branch{i},'Resistance',['(' num2str(1/Gbr(i)) ')*Zbase']);
 
@@ -114,10 +113,10 @@ for i = 1:N_Branch
         % set_param(FullName_Branch{i},'Measurements','None');
 
         % Assume the mutual-branch is pure RL
-        if ~(isinf(Gbr(i)) || isinf(Bbr(i)))
+        if ~( Gbr(i)==0 && Bbr(i)==0 )
             error('Error: the mutual branch contains B or G');      
         end
-        if (Rbr(i)==0) && (Xbr(i)==0)
+        if Rbr(i)==0 && Xbr(i)==0
             error('Error: short circuit')
         elseif Xbr(i)==0        % Pure resistance
             set_param(FullName_Branch{i},'BranchType','R');

@@ -8,7 +8,7 @@ function SimConnectBranch2Bus(Name_Model,Name_Bus,Name_Branch,Name_Trans,ListLin
 fb = ListLine(:,1);     % From bus
 tb = ListLine(:,2);     % To bus
 Tbr = ListLine(:,7);    % Transformer tap ratio
-AreaType = ListLine(:,9);
+AreaType = ListLine(:,8);
 
 N_Branch = length(fb);  % Number fo branches
 

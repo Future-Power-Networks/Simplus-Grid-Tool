@@ -55,17 +55,17 @@ if ListLineIEEE(1,1) == 1
     
   	% Set B, G for original branch
     B_orig = zeros(N_Br_orig,1);
-    G_orig = inf(N_Br_orig,1);
+    G_orig = B_orig;
     
     % Initialize the index for self-branch: normal order
     FB_self = transpose([1:N_Br_self]);
     TB_self = FB_self;
     
     % Initialize R, X, B, G by 0 for self branch
-    R_self = zeros(N_Br_self,1);
+    R_self = inf(N_Br_self,1);
     X_self = R_self;
-    B_self = R_self;
-    G_self = R_self;
+    B_self = zeros(N_Br_self,1);
+    G_self = B_self;
     
     % Initialize turn ratio by 1
     T_self = ones(N_Br_self,1);
@@ -103,7 +103,7 @@ if ListLineIEEE(1,1) == 1
     CountIndexDelete = 0;
     for i = 1:N_Branch
         % Find the open-circuit branch and delete it
-        if ( isinf(R(i)) || isinf(X(i)) || ((B(i)==0)&&(G(i)==0)) )
+        if ( isinf(R(i)) || isinf(X(i)) ) && (B(i)==0) && (G(i)==0)
             % The branch is open-circuit, jump this branch, i.e., delete
             % it.
             CountIndexDelete = CountIndexDelete + 1;
@@ -122,6 +122,12 @@ end
 % Organize data
 [N_Branch,ColumnMax_Line] = size(ListLine); 
 
+% Replace NaN by inf
+netlist_line_NaN = isnan(ListLine);
+[r,c] = find(netlist_line_NaN == 1);  	% Find the index of "inf"
+ListLine(r,c) = inf;
+
+% Get data
 FB  = ListLine(:,1);   % From bus
 TB  = ListLine(:,2);   % To bus
 Rbr = ListLine(:,3);
@@ -138,20 +144,15 @@ end
 % Check number of bus
 N_Bus = max(max(FB), max(TB) );  
 
-% Replace NaN by inf
-netlist_line_NaN = isnan(ListLine);
-[r,c] = find(netlist_line_NaN == 1);  	% Find the index of "inf"
-ListLine(r,c) = inf;
-
 % Check short-circuit and open-circuit
 for i = 1:N_Branch
-    if ( isinf(Rbr(i)) || isinf(Xbr(i)) || ((Bbr(i)==0)&&(Gbr(i)==0)) )
+    if ( isinf(Rbr(i)) || isinf(Xbr(i)) ) && ((Bbr(i)==0) && (Gbr(i)==0)) 
     	error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is open circuit']);
     end
-    if ( (Rbr(i)==0) && (Xbr(i)==0) && (isinf(Bbr(i)) || isinf(Gbr(i))) )
+    if ( (Rbr(i)==0) && (Xbr(i)==0) ) || isinf(Bbr(i)) || isinf(Gbr(i)) 
         error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is short circuit']);
     end
-    if ((Rbr(i)<0) || (Xbr(i)<0) || (Bbr(i)<0) || (Gbr(i)<0) )
+    if (Rbr(i)<0) || (Xbr(i)<0) || (Bbr(i)<0) || (Gbr(i)<0)
         error(['Error: Negative line paramters']);
     end
     if Tbr(i) <= 0
@@ -159,8 +160,18 @@ for i = 1:N_Branch
     end
 end
 
+% Check self-branch
+for i = 1:N_Branch
+    if FB(i) == TB(i)
+        if Rbr(i)~=0 && (~isinf(Rbr(i))) 
+            error(['Error: The self branch has to be a LCG parallel branch with R = 0 or a CG parallel branch with R = inf.'])
+        end
+    end
+end
+
 % Add inf inductive load to ListLine for future use
- ListLine = [ListLine,inf([N_Branch,1],'double')]; % Set all XL to inf defaultly
+% ListLine = [ListLine,inf([N_Branch,1],'double')]; % Set all XL to inf defaultly
+% ListLine = [ListLine,zeros([N_Branch,1])];
 
 % Add area type into ListLine
 for i = 1:N_Branch
@@ -169,7 +180,7 @@ for i = 1:N_Branch
     if ListBus(i1,12)~=ListBus(i2,12)
         error(['Error: The branch ' num2str(i1) '-' num2str(i2) ' is a hybrid branch, which is connected to ac at one side, and dc at the other side.']);
     else
-        ListLine(i,9) = ListBus(i1,12);
+        ListLine(i,8) = ListBus(i1,12);
     end
 end
 
@@ -201,7 +212,7 @@ ListLine = sortrows(ListLine,1);
 UpdateLine = ListLine;
 
 % The form of ListLine 
-% 1          2        3   4    5    6   7   8    9
-% From bus | To bus | R | wL | wC | G | T | XL | Area type
+% 1          2        3   4    5    6   7   8
+% From bus | To bus | R | wL | wC | G | T | Area type
 
 end

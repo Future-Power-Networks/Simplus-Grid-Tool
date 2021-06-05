@@ -6,7 +6,7 @@ function SimAddBranchGround(Name_Model,Size_B_GND,Shift_B_GND,FullName_Branch,Na
 
 FB = ListLine(:,1); % From bus
 TB = ListLine(:,2); % To bus
-AreaType = ListLine(:,9);
+AreaType = ListLine(:,8);
 N_Branch = length(FB);
 
 for i = 1:N_Branch

@@ -44,7 +44,7 @@ l=1;
 for m=1:nb
     for n=1:nb
         if n>m
-         if Sij(m,n)~=0;
+         if Sij(m,n)~=0
             Z(k,1)=m;
             Z(k,2)=n;
             Z(k,3)= real(Sij(m,n));
@@ -52,7 +52,7 @@ for m=1:nb
             k=k+1;
          end
         else % m>n ???
-          if Sij(m,n)~=0;
+          if Sij(m,n)~=0
             Z(l,5)=m;
             Z(l,6)=n;
             Z(l,7)= real(Sij(m,n));
