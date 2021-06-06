@@ -1,7 +1,3 @@
 # Power System Analysis Toolbox
 
-This is an old version of the toolbox, for getting the simulation results of a 14-bus inverter-based power system.
-
-The version of the Matlab used is 2020b.
-
-Please add "Library" folder into the Matlab searching path first. Then, run "UserMain.m" for getting the theoratical analysis, and run "Simulation_Duality_14Bus_GFM.slx" for getting the simulation results. Plotting functions and data are saved in "Plot" folder.
+This is an old version of toolbox for getting the simulation results of a 14-bus inverter-based power system in our publication. For using the latest version of the toolbox, please click [here](https://github.com/Future-Power-Networks/Simplus-Grid-Tool). For using this old version, please use Matlab 2020b, add "Library" folder into the Matlab searching path first, and then run "UserMain.m" for getting the theoratical analysis, and run "Simulation_Duality_14Bus_GFM.slx" for getting the simulation results. "Duality_14Bus.xlsx" contains the system paramters.
