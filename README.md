@@ -1,6 +1,6 @@
 # Power-System-Analysis-Toolbox (Version: v2020-OCT-22)
 
-This is an old version of the toolbox to illustrate the results of the article of the port-mapping method. The latest version of the toolbox can be found in the master branch.
+This is an old version of the toolbox to illustrate the results of the article of the port-mapping method. The up-to-date version of the toolbox can be found in the master branch [here](https://github.com/Future-Power-Networks/Simplus-Grid-Tool).
 
 # Notes
 
