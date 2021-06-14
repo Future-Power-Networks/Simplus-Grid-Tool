@@ -15,7 +15,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
     % For temporary use
     properties(Access = protected)
         i_q_r;
-    end
+    end 
     
     methods
         % constructor
@@ -163,15 +163,24 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             v_q    = u(2);
             ang_r  = u(3);
             P_dc   = u(4);
+            
+            %Saturation setting
+            EnableSaturation = 1;
+            % Frequency limit and saturation
+            w_limit_H = W0*1.1;
+            w_limit_L = W0*0.9;
+            %current reference limit
+            i_d_limit = 1.5;
+            i_q_limit = 1.5;
+            % Ac voltage limit
+            e_d_limit_H = 1.5;
+            e_d_limit_L = -1.5;
+            e_q_limit_H = 1.5;
+            e_q_limit_L = -1.5;
+            
 
             % Get current reference
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
-                % Anti wind-up for vdc control
-               	i_d_limit = 1.5;
-                i_q_limit = 1.5;
-                v_dc_i = min(v_dc_i,i_d_limit);
-                v_dc_i = max(v_dc_i,-i_d_limit);
-
                 % DC-link control
                 i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
             elseif obj.ApparatusType == 11
@@ -183,7 +192,8 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
             i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
 
-            EnableSaturation = 0;
+
+            
             
             % PLL angle measurement
             % Notes:
@@ -227,24 +237,37 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                     error(['Error']);
             end
 
-            % Frequency limit and saturation
-            w_limit_H = W0*1.5;
-            w_limit_L = W0*0.5;
+            %PLL Integral controller 
+            dw_pll_i = e_ang*ki_pll;                          
+            % Anti wind-up for PLL control 
             if EnableSaturation
-            w = min(w,w_limit_H);
-            w = max(w,w_limit_L);
-            end
-           
-            % PLL control
-            dw_pll_i = e_ang*ki_pll;                            % Integral controller
-            if 1                                                                            % ??????
+                 if (w_pll_i >= w_limit_H && dw_pll_i >=0 )|| (w_pll_i <= w_limit_L && dw_pll_i <=0 )
+                      dw_pll_i = 0;
+                 end
+            end 
+            
+            
+            if 1                                                                          
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
                 % Notes:
                 % This introduces an additional state w.
+                
+                % Limitation for w
+                if EnableSaturation
+                     if (w >= w_limit_H && dw >=0 ) || (w <= w_limit_L && dw <= 0 )
+                        dw = 0;                  %PLL Integral controller
+                     end
+                end 
             else
                 dw = 0;                                         % No LPF
                 w = w_pll_i + e_ang*kp_pll;
+                %Limitation for w
+                if EnableSaturation
+                w = min(w,w_limit_H);
+                w = max(w,w_limit_L);
+                end  
             end
+            
             dtheta = w;
             
             % Current saturation
@@ -254,23 +277,9 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             i_q_r = min(i_q_r,i_q_limit);
             i_q_r = max(i_q_r,-i_q_limit);
             end
-
-            % Ac voltage limit
-            e_d_limit_H = 1.5;
-            e_d_limit_L = -1.5;
-            e_q_limit_H = 1.5;
-            e_q_limit_L = -1.5;
-
-            % Current controller anti-windup
-            if EnableSaturation
-            i_d_i = min(i_d_i,e_d_limit_H);
-            i_d_i = max(i_d_i,e_d_limit_L);
-            i_q_i = min(i_q_i,e_q_limit_H);
-            i_q_i = max(i_q_i,e_q_limit_L);
-            end
             
             % Ac current control
-            if 1                                                                        % ??????
+            if 1                                                                        
                 % dq-frame PI
                 di_d_i = -(i_d_r - i_d)*ki_i_dq;
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;
@@ -283,6 +292,16 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 di_d_i = real(di_dq_i);
                 di_q_i = imag(di_dq_i);
             end
+            %Current controller anti-windup
+            if EnableSaturation
+                 if (i_d_i >= e_d_limit_H && di_d_i >=0 ) || (i_d_i <= e_d_limit_L && di_d_i <= 0)
+                    di_d_i = 0;                  
+                 end
+                 if (i_q_i >= e_q_limit_H && di_q_i >= 0 ) || (i_q_i <= e_q_limit_L && di_q_i <= 0)
+                    di_q_i = 0;                  
+                 end                    
+            end
+            
             % Notes:
             % For dq-frame PI controller,
             % e_dq = -(i_dq_r - i_dq)*(kp + ki/s)
@@ -306,10 +325,22 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
           	if obj.ApparatusType == 10
                 dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc;       % C_dc
                 dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
+                if EnableSaturation
+                    % Anti wind-up for vdc control
+                    if (v_dc_i >= i_d_limit && dv_dc_i >= 0 )|| (v_dc_i <= -i_d_limit && dv_dc_i <= 0 )
+                        dv_dc_i = 0;  
+                    end
+                end         
             elseif obj.ApparatusType == 12
                 i_dc = P_dc/v_dc_r;
                 dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
                 dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
+                if EnableSaturation
+                    % Anti wind-up for vdc control
+                    if (v_dc_i >= i_d_limit && dv_dc_i >= 0 )|| (v_dc_i <= -i_d_limit && dv_dc_i <= 0 )
+                        dv_dc_i = 0;
+                    end
+                end   
             elseif obj.ApparatusType == 11
                 % No dc link control
             else
