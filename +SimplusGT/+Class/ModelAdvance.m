@@ -422,7 +422,7 @@ methods(Access = protected)
     end
     
   	% Set direct or nondirect feedthrough status of input
-    function flag = isInputDirectFeedthroughImpl(obj)
+    function flag = isInputDirectFeedthroughImpl(obj,u)
         flag = obj.DirectFeedthrough;
     end
     
