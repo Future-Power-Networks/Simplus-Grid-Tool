@@ -70,21 +70,21 @@ Para0000.w0 = W0;
 % Grid-following VSI (PLL-controlled)
 % ======================================
 % Dc link
-Para0010.V_dc   = 2.5;
-Para0010.C_dc   = 1.25; %2*0.1*Para0010.V_dc^2;
-Para0010.f_v_dc = 20;           % (Hz) bandwidth, vdc
+Para0010.V_dc       = 2.5;
+Para0010.C_dc       = 1.25;         % 2*0.1*Para0010.V_dc^2;
+Para0010.f_v_dc     = 20;           % (Hz) bandwidth, vdc
 
 % Ac filter
-Para0010.wLf = 0.03;
-Para0010.R   = 0.01;
+Para0010.wLf        = 0.03;
+Para0010.R          = 0.01;
 
 % PLL
-Para0010.f_pll      = 20;       % (Hz) bandwidth, PLL
-Para0010.f_tau_pll  = 200;      % (Hz) bandwidth, PLL low pass filter
+Para0010.f_pll      = 20;           % (Hz) bandwidth, PLL
+Para0010.f_tau_pll  = 200;          % (Hz) bandwidth, PLL low pass filter
 
 % Current loop
-Para0010.f_i_dq = 500;      	% (Hz) bandwidth, idq
-Para0010.w0 = W0;   
+Para0010.f_i_dq     = 500;      	% (Hz) bandwidth, idq
+Para0010.w0         = W0;   
 
 % ======================================
 % Grid-forming VSI (Droop-Controlled)

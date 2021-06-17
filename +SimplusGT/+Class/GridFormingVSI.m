@@ -18,6 +18,8 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
     properties(Access = protected)
         v_od_r;
         v_oq_r;
+        P0;
+        Q0;
     end
     
     methods
@@ -31,7 +33,7 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
     methods(Static)
         
         function [State,Input,Output] = SignalList(obj)
-         	State  = {'i_ld','i_lq','i_ld_i','i_lq_i','v_od','v_oq','v_od_i','v_oq_i','i_od','i_oq','w','theta'};
+         	State  = {'i_ld','i_lq','i_ld_i','i_lq_i','v_od','v_oq','v_od_i','v_oq_i','i_od','i_oq','v_d_ref','w','theta'};
             Input  = {'v_d','v_q','P0'};
             Output = {'i_d','i_q','w','theta'};
         end
@@ -46,25 +48,24 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             w   = obj.PowerFlow(5);
             
             % Get parameter
-            xwLf = obj.Para(1);
-            xRf = obj.Para(2);
-            xwCf = obj.Para(3);
-            xwLc = obj.Para(4);
-            xRc = obj.Para(5);
-            xXov = obj.Para(6);
-            xDw = obj.Para(7);
+            xwLf    = obj.Para(1);
+            Rf      = obj.Para(2);
+            xwCf    = obj.Para(3);
+            xwLc    = obj.Para(4);
+            Rc      = obj.Para(5);
+            Xov     = obj.Para(6);
+            Rov     = 0;
+            xDw     = obj.Para(7);
+            Dv      = 0.05;
             xfdroop = obj.Para(8);
-            xfvdc = obj.Para(9);
-            xfidq = obj.Para(10);
-            W0 = obj.Para(11);
+            xfvdc   = obj.Para(9);
+            xfidq   = obj.Para(10);
+            W0      = obj.Para(11);
            
             % Calculate parameters
             Lf = xwLf/W0;
-            Rf = xRf;
             Cf = xwCf/W0;
             Lc = xwLc/W0;
-            Rc = xRc;
-            Xov= xXov;
             Dw = xDw*W0;
             wf = xfdroop*2*pi;
             w_v_odq = xfvdc*2*pi;
@@ -80,7 +81,7 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             v_odq = v_gdq - i_odq*(Rc + 1i*w*Lc);
             i_cdq = v_odq*(1i*w*Cf);
             i_ldq = i_odq - i_cdq;
-            e_dq = v_odq - i_ldq*(Rf + 1i*w*Lf);
+            e_dq  = v_odq - i_ldq*(Rf + 1i*w*Lf);
             
             i_ld = real(i_ldq);
             i_lq = imag(i_ldq);
@@ -94,15 +95,25 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             i_oq = imag(i_oq);
             theta = xi;
             
-            P0 = 0;
+            obj.P0 = P*(-1);
+            obj.Q0 = Q*(-1);
             
             % ??? Temp
-            obj.v_od_r = real(v_odq);
-            obj.v_oq_r = imag(v_odq);
+            v_odq_r = v_odq + (Rov + 1i*Xov)*i_odq*(-1);
+            v_od_r = real(v_odq_r);
+            v_oq_r = imag(v_odq_r);
+            obj.v_od_r = v_od_r;
+            obj.v_oq_r = v_oq_r;
+            
+            % Notes:
+            % Ideally, v_oq_r = 0 should be valid. So, this equilibrium
+            % calculation has to be corrected.
+            % The P-F and Q-V droop has not been considerred, which should
+            % also be corrected.
             
             % Get equilibrium
-            x_e = [i_ld; i_lq; i_ld_i; i_lq_i; v_od; v_oq; v_od_i; v_oq_i; i_od; i_oq; w; theta];
-            u_e = [v_gd; v_gq; P0];
+            x_e = [i_ld; i_lq; i_ld_i; i_lq_i; v_od; v_oq; v_od_i; v_oq_i; i_od; i_oq; v_od_r; w; theta];
+            u_e = [v_gd; v_gq; 0];
         end
         
         % State space model
@@ -113,7 +124,6 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             % Get input
             v_gd   = u(1);
             v_gq   = u(2);
-            P0     = u(3);
 
             % Get state
             i_ld   = x(1);
@@ -126,17 +136,20 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             v_oq_i = x(8);
             i_od   = x(9);
             i_oq   = x(10);
-            w      = x(11);
-            theta  = x(12);
+            v_od_r = x(11);
+            w      = x(12);
+            theta  = x(13);
             
             % Get parameters
             xwLf    = obj.Para(1);
-            xRf     = obj.Para(2);
+            Rf      = obj.Para(2);
             xwCf    = obj.Para(3);
             xwLc    = obj.Para(4);
-            xRc     = obj.Para(5);
-            xXov    = obj.Para(6);
+            Rc      = obj.Para(5);
+            Xov     = obj.Para(6);
+            Rov     = 0;
             xDw     = obj.Para(7);
+            Dv      = 0.05;
             xfdroop = obj.Para(8);
             xfvdq   = obj.Para(9);
             xfidq   = obj.Para(10);
@@ -144,12 +157,8 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             
             % Update paramters
             Lf = xwLf/W0;
-            Rf = xRf;
             Cf = xwCf/W0;
             Lc = xwLc/W0;
-            Rc = xRc;
-            Xov = xXov;
-            Rov = 0;
             Dw = xDw*W0;
             wf = xfdroop*2*pi;
             w_v_odq = xfvdq*2*pi;
@@ -158,7 +167,7 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             kp_i_ldq = w_i_ldq*Lf;
             ki_i_ldq = w_i_ldq^2*Lf/4;
             kp_v_odq = w_v_odq*Cf;
-            ki_v_odq = w_v_odq^2*Cf/4*100;
+            ki_v_odq = w_v_odq^2*Cf/4*50;
                 % This is a different way of setting voltage PI
                 % kp_v_odq = 1/(16*w_i_ldq*Lf);
                 % ki_v_odq = 1/(4*Lf);
@@ -178,15 +187,26 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                 % PF droop: w = w0 + Dw*(P0 - P*LPF)
                 % QV droop: v_od_r = v_od_0 + Dv*(Q0 - Q*LPF)
                 %           v_oq_r = v_oq_0
+                P0     = obj.P0;
+                Q0     = obj.Q0;
                 if 1
                     dw = (W0 + Dw*(P0 - p) - w)*wf;         % P-w droop
                 else
                     dw = (W0 - Dw*(P0/V - i_od) - w)*wf; 	% id-w droop
                 end
-                v_od_r = obj.v_od_r;
+                switch 3
+                    case 1
+                        dv_od_r = (obj.v_od_r + Dv*(Q0 - q) - v_od_r)*wf;   % Q-V droop
+                    case 2
+                        v_od_r = obj.v_od_r + Dv*(Q0 - q);                  % Q-V droop without LPF
+                        dv_od_r = 0;
+                    case 3
+                        v_od_r = obj.v_od_r;                                % No Q-V droop
+                        dv_od_r = 0;
+                    otherwise
+                        error(['Error'])
+                end
                 v_oq_r = obj.v_oq_r;
-                  	% dv_od_r = (v_od0 + Dv*(Q0 - p) - v_od_r)/Tf;
-                    % v_oq_r = v_oq0;
                 
                 % AC voltage control
                 error_v_od = v_od_r - v_od - (i_od*Rov-i_oq*Xov)*(-1);
@@ -226,7 +246,7 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                 dtheta = w;
                 
                 % dx
-                f_xu = [di_ld; di_lq; di_ld_i; di_lq_i; dv_od; dv_oq; dv_od_i; dv_oq_i; di_od; di_oq; dw; dtheta];
+                f_xu = [di_ld; di_lq; di_ld_i; di_lq_i; dv_od; dv_oq; dv_od_i; dv_oq_i; di_od; di_oq; dv_od_r; dw; dtheta];
                 Output = f_xu;
                 
             elseif CallFlag == 2     

@@ -3,6 +3,9 @@
 
 %% Tips
 %
+% Please read manuals in the "Documentations" folder if you want to know
+% more details about this tool.
+%
 % Please ensure that the toolbox is installed first, by running
 % "InstallSimplusGT.m" once.
 %
@@ -13,8 +16,8 @@
 % can be found in "Examples" folder.
 
 %% Clear matlab
-clear all;  % Clear matlab workspace
-clc;        % Clear matlab command window
+clear all;  % Clear Matlab workspace
+clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Set user data
@@ -22,6 +25,7 @@ close all;  % Close all figures, etc
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
 % UserData = 'UserData.xlsx';
+UserData = 'GfmInverterInfiniteBus_test.xlsx';
 
 % Other example power systems (in "Examples" folder):
 %
@@ -35,31 +39,10 @@ close all;  % Close all figures, etc
 % UserData = 'NETS_NYPS_68Bus.xlsx';
 %
 % Pure dc power system examples:
-% UserData = 'GfdBuckInfiniteBus.xlsx';          % Single grid-feeding buck converter and infinite bus
+% UserData = 'GfdBuckInfiniteBus.xlsx';         % Single grid-feeding buck converter and infinite bus
 %
 % Hybrid ac-dc power system examples:
-% UserData = 'Hybrid_test_v1.xlsx';
-% UserData = 'Hybrid_test_v2.xlsx';
-%
-% For test
-% UserData = 'SingleSG';
-% UserData = 'SingleIBR';
-% UserData = 'SingleIBR_v1';
-% UserData = 'ExamplePowerSystem_v3';
-% UserData = 'ExamplePowerSystem_v4';
-% UserData = 'ExamplePowerSystem_v3_5';
-% UserData = 'ExamplePowerSystem_v3_6';
-% UserData = 'Nature_NETS_NYPS_68Bus_original';
-% UserData = 'Nature_NETS_NYPS_68Bus_IBR';
-% UserData = 'Nature_NETS_NYPS_68Bus_IBR_v1';
-% UserData = 'Nature_NETS_NYPS_68Bus_IBR_all';
-% UserData = '68Bus_2SG_OtherIBR';
-%
-% For test PR controller
-% UserData = 'UserData_testPR.xlsx';
-
-% UserData = '3MachineModel';
-UserData = 'Duality_14Bus';
+% UserData = 'Hybrid_test_v1.xlsx';             % A 4-bus hybrid ac-dc system
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();
@@ -95,7 +78,7 @@ SimplusGT.Toolbox.Main();
 
 % mymodel_v1;       % This is the simulink model generated automatically 
                     % based on the user data.
-
+                    
 %% User function
 % Users can write their own functions here to further deal with the data
 % mentioned above.
