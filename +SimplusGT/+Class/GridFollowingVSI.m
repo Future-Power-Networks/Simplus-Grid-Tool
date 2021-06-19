@@ -164,12 +164,12 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             ang_r  = u(3);
             P_dc   = u(4);
             
-            %Saturation setting
+            % Saturation setting
             EnableSaturation = 1;
             % Frequency limit and saturation
             w_limit_H = W0*1.1;
             w_limit_L = W0*0.9;
-            %current reference limit
+            % Current reference limit
             i_d_limit = 1.5;
             i_q_limit = 1.5;
             % Ac voltage limit
@@ -237,7 +237,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                     error(['Error']);
             end
 
-            %PLL Integral controller 
+            % PLL Integral controller 
             dw_pll_i = e_ang*ki_pll;                          
             % Anti wind-up for PLL control 
             if EnableSaturation
@@ -261,7 +261,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             else
                 dw = 0;                                         % No LPF
                 w = w_pll_i + e_ang*kp_pll;
-                %Limitation for w
+                % Limitation for w
                 if EnableSaturation
                 w = min(w,w_limit_H);
                 w = max(w,w_limit_L);
@@ -292,7 +292,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 di_d_i = real(di_dq_i);
                 di_q_i = imag(di_dq_i);
             end
-            %Current controller anti-windup
+            % Current controller anti-windup
             if EnableSaturation
                  if (i_d_i >= e_d_limit_H && di_d_i >=0 ) || (i_d_i <= e_d_limit_L && di_d_i <= 0)
                     di_d_i = 0;                  
