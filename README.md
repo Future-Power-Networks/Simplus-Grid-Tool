@@ -1,6 +1,6 @@
 # Power System Analysis Toolbox
 
-This is an old version of toolbox for getting the simulation results of a 14-bus inverter-based power system in our publication. These codes are specially customized for the case study in the article, so do NOT create your own case upon these codes as they may generate unwanted results. If you hope to develop your own project based on our toolbox, please use the up-to-date version in the master branch [here](https://github.com/Future-Power-Networks/Simplus-Grid-Tool).
+This is an old version of toolbox for getting the simulation results in our publication. These codes are specially customized for the case study in the article, so do NOT create your own case upon these codes as they may generate unwanted results. If you hope to develop your own project based on our toolbox, please use the up-to-date version in the master branch [here](https://github.com/Future-Power-Networks/Simplus-Grid-Tool).
 
 # Notes
 
