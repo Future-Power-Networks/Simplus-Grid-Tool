@@ -49,7 +49,7 @@ Fbase = ListBasic(2);   % (Hz), base frequency
 Sbase = ListBasic(3);   % (VA), base power
 Vbase = ListBasic(4);   % (V), base voltage
 Ibase = Sbase/Vbase;    % (A), base current
-Zbase = Sbase/Ibase;    % (Ohm), base impedance
+Zbase = Vbase/Ibase;    % (Ohm), base impedance
 Ybase = 1/Zbase;        % (S), base admittance
 Wbase = Fbase*2*pi;     % (rad/s), base angular frequency
 
