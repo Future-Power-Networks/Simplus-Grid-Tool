@@ -165,7 +165,8 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             P_dc   = u(4);
             
             % Saturation setting
-            EnableSaturation = 1;
+            EnableSaturation = 0;
+            
             % Frequency limit and saturation
             w_limit_H = W0*1.1;
             w_limit_L = W0*0.9;
@@ -178,7 +179,6 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             e_q_limit_H = 1.5;
             e_q_limit_L = -1.5;
             
-
             % Get current reference
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                 % DC-link control
@@ -192,9 +192,14 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
             i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
 
+            % Current saturation
+            if EnableSaturation
+                i_d_r = min(i_d_r,i_d_limit);
+                i_d_r = max(i_d_r,-i_d_limit);
+                i_q_r = min(i_q_r,i_q_limit);
+                i_q_r = max(i_q_r,-i_q_limit);
+            end
 
-            
-            
             % PLL angle measurement
             % Notes:
             % "- ang_r" gives the reference in load convention, like
@@ -263,20 +268,13 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 w = w_pll_i + e_ang*kp_pll;
                 % Limitation for w
                 if EnableSaturation
-                w = min(w,w_limit_H);
-                w = max(w,w_limit_L);
+                    w = min(w,w_limit_H);
+                    w = max(w,w_limit_L);
                 end  
             end
             
             dtheta = w;
             
-            % Current saturation
-            if EnableSaturation
-            i_d_r = min(i_d_r,i_d_limit);
-            i_d_r = max(i_d_r,-i_d_limit);
-            i_q_r = min(i_q_r,i_q_limit);
-            i_q_r = max(i_q_r,-i_q_limit);
-            end
             
             % Ac current control
             if 1                                                                        
@@ -315,10 +313,10 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
 
             % Ac voltage (duty cycle) saturation
             if EnableSaturation
-            e_d = min(e_d,e_d_limit_H);
-            e_d = max(e_d,e_d_limit_L);
-            e_q = min(e_q,e_q_limit_H);
-            e_q = max(e_q,e_q_limit_L);
+                e_d = min(e_d,e_d_limit_H);
+                e_d = max(e_d,e_d_limit_L);
+                e_q = min(e_q,e_q_limit_H);
+                e_q = max(e_q,e_q_limit_L);
             end
             
             % Dc link control
