@@ -10,7 +10,7 @@
 
 %%
 fprintf('==================================\n')
-fprintf('Start to run SimplusGridTool\n')
+fprintf('Start to run Simplus Grid Tool\n')
 fprintf('==================================\n')
 
 %% 

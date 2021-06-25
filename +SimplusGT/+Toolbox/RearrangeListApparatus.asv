@@ -82,21 +82,25 @@ for m = 1:N_Bus
     BusIndex = ListBus(m,1);
     ExistApparatus = SimplusGT.CellFind(ApparatusBusCell,BusIndex);
     if isempty(ExistApparatus)
-        % The bus has no apparatus, i.e., an ac or dc floating bus.
+        % If no apparatus is connected to that bus, that bus is an ac or dc floating bus
         N_Apparatus = N_Apparatus+1;
         ApparatusBusCell{N_Apparatus} = BusIndex;   % Add a new bus index
         [~,~,AreaType] = SimplusGT.Toolbox.CheckBus(BusIndex,ListBus);
         if AreaType == 1
             ApparatusTypeCell{n} = 100;     % Ac floating bus
         elseif AreaType == 2
-            ApparatusTypeCell{n} = 1100;    % Dc floating bus
+            ApparatusTypeCell{n} = 1100;
         else
             error(['Error: Error AreaType.']);
         end
     else
-        % The bus has an apparatus, no need to do anything then.
+        % The bus has an apparatus
     end
 end
+    
+% Re-order the apparatus sequence
+% ListApparatus = sortrows(ListApparatus,1);
+% No re-order for now.
 
 % Error check
 if (ColumnMax_Apparatus>12)
@@ -200,6 +204,8 @@ Para2000.fpll   = 10;
 Para2000.w0     = W0;   
 
 %% Re-arrange apparatus data
+% Get the size of netlist
+[N_Apparatus,ColumnMax_Apparatus] = size(ListApparatus);
 
 % Find the index of user-defined data
 netlist_apparatus_NaN = isnan(ListApparatus(:,3:ColumnMax_Apparatus));
@@ -244,7 +250,6 @@ for i = 1:N_Apparatus
 end
 
 % Replace the default data by customized data
-%
 % Notes: 
 % This method can reduce the calculation time of "for" loop.
 % The "for" loop runs only when "row" is not empty.
@@ -253,7 +258,7 @@ end
 % decouples the sequence between the excel form and the system object.
 for i = 1:length(row)
   	ApparatusBus   = ApparatusBusCell{row(i)};
-	ApparatusType	= ApparatusTypeCell{row(i)};
+	ApparatusType	= ListApparatusType(row(i));
  	UserValue 	= ListApparatus(row(i),column(i));     % Customized value
     SwitchFlag = column(i)-2;                   	% Find the updated parameter
   	if floor(ApparatusType/10) == 0                    % Synchronous machine

@@ -167,20 +167,25 @@ else
     error(['Error']);
 end
 
-% Link the IO ports to bus number
+% Add bus number index to all IO ports
 InputStr = SimplusGT.AddNum2Str(InputStr,ApparatusBus);
 OutputStr = SimplusGT.AddNum2Str(OutputStr,ApparatusBus);
-
-% For 2-bus apparatus, adjust electrical port strings
-if length(ApparatusBus)==2  % A multi-bus apparatus 
+% Notes: 
+% For interlink, the port number would be like vd2-3, w2-3, etc. The
+% connection between Gm and Zbus directly dependents on the IO bus number
+% index, so for interlink, the electrical port number should be adjusted
+% next.
+if length(ApparatusBus) == 1    % A normal apparauts
+elseif length(ApparatusBus)==2  % A multi-bus apparatus, e.g., interlink converter
+    % Ac port
     InputStr{1} = ['v_d',num2str(ApparatusBus(1))];
     InputStr{2} = ['v_q',num2str(ApparatusBus(1))];
    	OutputStr{1} = ['i_d',num2str(ApparatusBus(1))];
     OutputStr{2} = ['i_q',num2str(ApparatusBus(1))];
     
+    % Dc port
   	InputStr{3} = ['v',num2str(ApparatusBus(2))];
     OutputStr{3} = ['i',num2str(ApparatusBus(2))];
-elseif length(ApparatusBus) == 1
 else
     error(['Error: Each apparatus can only be connected to one or two buses.']);
 end
