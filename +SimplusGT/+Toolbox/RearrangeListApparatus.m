@@ -120,7 +120,7 @@ end
 % ======================================
 Para0000.J  = 3.5;
 Para0000.D  = 1;
-Para0000.wL = 0.1;
+Para0000.wL = 0.05;
 Para0000.R  = 0.01;
 Para0000.w0 = W0;
 
@@ -130,18 +130,18 @@ Para0000.w0 = W0;
 % Dc link
 Para0010.V_dc       = 2.5;
 Para0010.C_dc       = 1.25;         % 2*0.1*Para0010.V_dc^2;
-Para0010.f_v_dc     = 20;           % (Hz) bandwidth, vdc
+Para0010.f_v_dc     = 5;            % (Hz) bandwidth, vdc
 
 % Ac filter
 Para0010.wLf        = 0.03;
 Para0010.R          = 0.01;
 
 % PLL
-Para0010.f_pll      = 20;           % (Hz) bandwidth, PLL
-Para0010.f_tau_pll  = 200;          % (Hz) bandwidth, PLL low pass filter
+Para0010.f_pll      = 5;            % (Hz) bandwidth, PLL
+Para0010.f_tau_pll  = 300;          % (Hz) bandwidth, PLL low pass filter
 
 % Current loop
-Para0010.f_i_dq     = 500;      	% (Hz) bandwidth, idq
+Para0010.f_i_dq     = 600;      	% (Hz) bandwidth, idq
 Para0010.w0         = W0;   
 
 % ======================================
@@ -152,11 +152,11 @@ Para0020.Rf     =0.05/5;
 Para0020.wCf    =0.02;
 Para0020.wLc    =0.01;
 Para0020.Rc     =0.01/5;
-Para0020.Xov    =0;
+Para0020.Xov    =0.01;
 Para0020.Dw     =0.05;
-Para0020.fdroop =20;    % (Hz) droop control bandwidth
-Para0020.fvdq   =250;   % (Hz) vdc bandwidth
-Para0020.fidq   =500;   % current control bandwidth
+Para0020.fdroop =5;    % (Hz) droop control bandwidth
+Para0020.fvdq   =300;   % (Hz) vdc bandwidth
+Para0020.fidq   =600;   % current control bandwidth
 Para0020.w0     = W0;
 
 % ======================================
@@ -177,8 +177,8 @@ Para1010.Vdc  = 2;
 Para1010.Cdc  = 0.8;
 Para1010.wL   = 0.05;
 Para1010.R    = 0.05/5;
-Para1010.fi   = 500;
-Para1010.fvdc = 10;
+Para1010.fi   = 600;
+Para1010.fvdc = 5;
 Para1010.w0   = W0;
 
 % ======================================
@@ -200,9 +200,9 @@ Para2000.wL_ac  = 0.05;
 Para2000.R_ac   = 0.01;
 Para2000.wL_dc  = 0.02;
 Para2000.R_dc   = 0.02/5;
-Para2000.fidq   = 500;
-Para2000.fvdc   = 10;
-Para2000.fpll   = 10;
+Para2000.fidq   = 600;
+Para2000.fvdc   = 5;
+Para2000.fpll   = 5;
 Para2000.w0     = W0;   
 
 %% Re-arrange apparatus data

@@ -24,7 +24,7 @@ close all;  % Close all figures, etc
 % Default
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
-UserData = 'UserData.xlsx';
+UserData = 'UserData.xlsm';
 
 % Other example power systems (in "Examples" folder):
 %
