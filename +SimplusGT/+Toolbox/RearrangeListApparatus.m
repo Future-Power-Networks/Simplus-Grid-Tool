@@ -100,7 +100,7 @@ for m = 1:N_Bus
             error(['Error: Error AreaType.']);
         end
     else
-        % The bus has an apparatus, no need to do anything then.
+        % The bus has an apparatus already, no need to do anything then.
     end
 end
 
