@@ -29,9 +29,11 @@ for i = 1:N_Apparatus
     if ApparatusType{i} ~= 100 && ApparatusType{i} ~= 1100
         % Print only when the apparatus is not a floating bus.
         fprintf(['    Apparatus ',num2str(ApparatusBus{i}),':\n']);
+        IndexState{i+1} = SimplusGT.PrintIndexCell(ApparatusStateStr{i},6,IndexState{i});
+        IndexState{i+1} = IndexState{i+1} + 1;
+    else
+        IndexState{i+1} = SimplusGT.PrintIndexCell(ApparatusStateStr{i},6,IndexState{i});
     end
-  	IndexState{i+1} = SimplusGT.PrintIndexCell(ApparatusStateStr{i},6,IndexState{i});
-  	IndexState{i+1} = IndexState{i+1} + 1;
 end
 % Network
 fprintf(['    Network line:\n']);
