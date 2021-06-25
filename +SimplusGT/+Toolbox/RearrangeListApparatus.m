@@ -8,21 +8,44 @@
 
 function [ApparatusBusCell,ApparatusTypeCell,ParaCell,N_Apparatus] = RearrangeListApparatus(UserData,W0,ListBus)
 
+%% New excel in xlsm format
+if strcmp(UserData,'UserData.xlsm')
+    NewExcel = 1;
+else
+    NewExcel = 0;
+end
+
 %% Load data
 [ListApparatus,ListApparatusChar]	 = xlsread(UserData,'Apparatus');
 
-%% Rearrange data
-[N_Apparatus,ColumnMax_Apparatus] = size(ListApparatus);
-ListApparatusBus = ListApparatus(:,1);
-ListApparatusType = ListApparatus(:,2);
+%% Prepare
+if NewExcel == 1
+    ListApparatus = ListApparatus(3:end,:);     % Remove the first two lines
+    ListApparatus = ListApparatus(:,[1:2,4:end]); % Remove the 3rd colomn of subtype
+    [rmax,cmax] = size(ListApparatus);
+    ListApparatusNew = NaN(rmax/2,cmax);
+    for r = 1:(rmax/2)
+        ListApparatusNew(r,1) = ListApparatus(2*r-1,1);         % Move bus number
+        ListApparatusNew(r,2) = ListApparatus(2*r-1,2);         % Move bus number
+        ListApparatusNew(r,3:end) = ListApparatus(2*r,3:end);   % Move others
+    end
+   ListApparatus = ListApparatusNew;            % Update
+end
 ListApparatusBusChar = ListApparatusChar(:,1);
-
 for k1 = 1:length(ListApparatusBusChar)
     if strcmpi(ListApparatusBusChar{k1},'Bus No.')
         break;
     end
 end
 ListApparatusBusChar = ListApparatusBusChar(k1+1:end);
+if NewExcel == 1
+    ListApparatusBusChar = ListApparatusBusChar(1:2:end,:);
+end
+
+%% Rearrange data
+[N_Apparatus,ColumnMax_Apparatus] = size(ListApparatus);
+ListApparatusBus = ListApparatus(:,1);
+ListApparatusType = ListApparatus(:,2);
 
 % Get the apparatus bus in cell form
 for n = 1:N_Apparatus

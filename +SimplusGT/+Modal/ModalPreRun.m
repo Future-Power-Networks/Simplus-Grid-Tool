@@ -14,8 +14,15 @@
 % UserData.xlsx will be re-opened. This might influence the unsaved work of
 % users.
 
+% Change suffix
+UserData_Modal = UserData;
+UserData_Modal = strrep(UserData_Modal,'.xlsm','');
+UserData_Modal = strrep(UserData_Modal,'.xlsx','');
+UserData_Modal = strrep(UserData_Modal,'.xls','');
+UserData_Modal = [UserData_Modal,'.xlsx'];
 
-FileModal=[cd '\Examples\ParticipationAnalysis\ModalConfig_' UserData];
+% Set file name
+FileModal=[cd '\Examples\ParticipationAnalysis\ModalConfig_' UserData_Modal];
 SimplusGT.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old contents.
 % write contents in the excel file.
 

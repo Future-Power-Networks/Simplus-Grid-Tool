@@ -27,7 +27,7 @@ cd(pathstr);                            % Change the current address
 % ==================================================
 % Load customized data
 % ==================================================
-fprintf('Loading data from "UserData.xlsx", please wait a second...\n')
+fprintf('Loading data, please wait a second...\n')
 
 % ### Re-arrange basic settings
 ListBasic = xlsread(UserData,'Basic');

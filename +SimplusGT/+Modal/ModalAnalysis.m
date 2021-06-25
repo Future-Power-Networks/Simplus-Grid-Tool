@@ -13,8 +13,15 @@
 % MdMode, MdStatePF.
 
 %% Basic
+% Change suffix
+UserData_Modal = UserData;
+UserData_Modal = strrep(UserData_Modal,'.xlsm','');
+UserData_Modal = strrep(UserData_Modal,'.xlsx','');
+UserData_Modal = strrep(UserData_Modal,'.xls','');
+UserData_Modal = [UserData_Modal,'.xlsx'];
+
 %Basic infomation acquirement.
-FileModal=[cd '\Examples\ParticipationAnalysis\ModalConfig_' UserData];
+FileModal=[cd '\Examples\ParticipationAnalysis\ModalConfig_' UserData_Modal];
 clear MdLayer1;
 clear MdLayer2;
 clear MdLayer3;
