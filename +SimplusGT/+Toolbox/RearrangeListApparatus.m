@@ -325,6 +325,19 @@ for i = 1:length(row)
     end
 end
 
-%% The re-order can only be done here. 
-
+%% The re-order can only be done here
+% For a single-area pure ac system, we re-order the apparatuses 
+AreaTypeCheck = find(ListBus(:,12) == 2, 1);
+AreaNoCheck = find(ListBus(:,11) == 2, 1);
+if isempty(AreaTypeCheck) && isempty(AreaNoCheck)
+    for j = 1:N_App
+        [~,AppIndex] = SimplusGT.CellFind(AppBusCell,j);
+        AppBusCellNew{j}    = AppBusCell{AppIndex};
+        AppTypeCellNew{j}   = AppTypeCell{AppIndex};
+        ParaCellNew{j}      = ParaCell{AppIndex};
+    end
+    AppBusCell  = AppBusCellNew;
+    AppTypeCell = AppTypeCellNew;
+    ParaCell    = ParaCellNew;
+end
 end

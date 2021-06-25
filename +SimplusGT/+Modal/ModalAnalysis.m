@@ -47,7 +47,7 @@ ModeSelNum = length(ModeSelAll);
 %Analysis.
 if BodeEnable ==1
     fprintf('plotting bode diagram for selected whole-system admittance...\n')
-    SimplusGT.Modal.BodeDraw(ApparatusSelL12, AxisSel, GminSS, ApparatusType, N_Bus, ApparatusInputStr, ApparatusOutputStr);
+    SimplusGT.Modal.BodeDraw(ApparatusSelL12, AxisSel, GminSS, ApparatusType, ApparatusBus, N_Bus, ApparatusInputStr, ApparatusOutputStr);
 end
 
 for modei=1:ModeSelNum
