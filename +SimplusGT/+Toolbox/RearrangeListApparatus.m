@@ -93,9 +93,9 @@ for m = 1:N_Bus
         AppBusCell{N_App} = BusIndex;   % Add a new bus index
         [~,~,AreaType] = SimplusGT.Toolbox.CheckBus(BusIndex,ListBus);  % Check if an ac or dc bus
         if AreaType == 1
-            AppTypeCell{n} = 100;       % Ac floating bus
+            AppTypeCell{N_App} = 100;       % Ac floating bus
         elseif AreaType == 2
-            AppTypeCell{n} = 1100;      % Dc floating bus
+            AppTypeCell{N_App} = 1100;      % Dc floating bus
         else
             error(['Error: Error AreaType.']);
         end
@@ -324,5 +324,7 @@ for i = 1:length(row)
         end
     end
 end
+
+%% The re-order can only be done here. 
 
 end
