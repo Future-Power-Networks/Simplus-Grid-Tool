@@ -11,8 +11,10 @@
 % apparatuses might not be same to the number of buses, when the power
 % system has interlink apparatuses. In this case, the interlink apparatus
 % will have two bus indice.
+%
+% "app" means apparatus.
 
-function [ApparatusBusCell,ApparatusTypeCell,ParaCell,N_Apparatus] = RearrangeListApparatus(UserData,W0,ListBus)
+function [AppBusCell,AppTypeCell,ParaCell,N_App] = RearrangeListApparatus(UserData,W0,ListBus)
 
 %% New excel in xlsm format
 % Check if the xlsm format is used
@@ -23,73 +25,77 @@ else
 end
 
 %% Load data
-[ListApparatus,ListApparatusChar]	 = xlsread(UserData,'Apparatus');
+[ListApp,ListAppChar]	 = xlsread(UserData,'Apparatus');
 
 %% Prepare
 if NewExcel == 1
-    ListApparatus = ListApparatus(3:end,:);       % Remove the first two lines
-    ListApparatus = ListApparatus(:,[1:2,4:end]); % Remove the 3rd colomn of subtype
-    [rmax,cmax] = size(ListApparatus);
-    ListApparatusNew = NaN(rmax/2,cmax);
+    ListApp = ListApp(3:end,:);       % Remove the first two lines
+    ListApp = ListApp(:,[1:2,4:end]); % Remove the 3rd colomn of subtype
+    [rmax,cmax] = size(ListApp);
+    ListAppNew = NaN(rmax/2,cmax);
     for r = 1:(rmax/2)
-        ListApparatusNew(r,1) = ListApparatus(2*r-1,1);         % Move bus number
-        ListApparatusNew(r,2) = ListApparatus(2*r-1,2);         % Move bus number
-        ListApparatusNew(r,3:end) = ListApparatus(2*r,3:end);   % Move others
+        ListAppNew(r,1) = ListApp(2*r-1,1);         % Move bus number
+        ListAppNew(r,2) = ListApp(2*r-1,2);         % Move bus number
+        ListAppNew(r,3:end) = ListApp(2*r,3:end);   % Move others
     end
-   ListApparatus = ListApparatusNew;            % Update
+   ListApp = ListAppNew;            % Update
 end
-ListApparatusBusChar = ListApparatusChar(:,1);
-for k1 = 1:length(ListApparatusBusChar)
-    if strcmpi(ListApparatusBusChar{k1},'Bus No.')
+ListAppBusChar = ListAppChar(:,1);
+for k1 = 1:length(ListAppBusChar)
+    if strcmpi(ListAppBusChar{k1},'Bus No.')
         break;
     end
 end
-ListApparatusBusChar = ListApparatusBusChar(k1+1:end);
+ListAppBusChar = ListAppBusChar(k1+1:end);
 if NewExcel == 1
-    ListApparatusBusChar = ListApparatusBusChar(1:2:end,:);
+    ListAppBusChar = ListAppBusChar(1:2:end,:);
 end
 
 %% Rearrange data
-[N_Apparatus,ColumnMax_Apparatus] = size(ListApparatus);
-ListApparatusBus = ListApparatus(:,1);
-ListApparatusType = ListApparatus(:,2);
+% Notes:
+% This section will convert the ListAppBus and ListAppType to AppBusCell
+% and AppTypeCell, i.e., array type to cell type.
+
+[N_App,ColumnMax_Apparatus] = size(ListApp);
+ListAppBus = ListApp(:,1);
+ListAppType = ListApp(:,2);
 
 % Get the apparatus bus in cell form
-for n = 1:N_Apparatus
-    if ~isnan(ListApparatusBus(n))  % If not NaN, then the bus is a number rather han an array
-        ApparatusBusCell{n} = ListApparatusBus(n);
+for n = 1:N_App
+    if ~isnan(ListAppBus(n))  % If not NaN, then the bus is a scalar rather han an array in char type
+        AppBusCell{n} = ListAppBus(n);
     else
-        ApparatusBusCell{n} = str2num(ListApparatusBusChar{n});
-        [~,~,AreaType]= SimplusGT.Toolbox.CheckBus(ApparatusBusCell{n}(1),ListBus);
+        AppBusCell{n} = str2num(ListAppBusChar{n});
+        [~,~,AreaType]= SimplusGT.Toolbox.CheckBus(AppBusCell{n}(1),ListBus);
         
         % Notes:
         % If the first bus is dc bus, then swap. This ensures the first one
         % is ac bus.
         if AreaType == 2 
-            [ApparatusBusCell{n}(1),ApparatusBusCell{n}(2)] = deal(ApparatusBusCell{n}(2),ApparatusBusCell{n}(1));
+            [AppBusCell{n}(1),AppBusCell{n}(2)] = deal(AppBusCell{n}(2),AppBusCell{n}(1));
         end
     end
 end
 
 % Get the apparatus type in cell form
-for n = 1:N_Apparatus
-    ApparatusTypeCell{n} = ListApparatus(n,2);
+for n = 1:N_App
+    AppTypeCell{n} = ListApp(n,2);
 end
 
 % Add floating bus
 N_Bus = length(ListBus(:,1));
 for m = 1:N_Bus
     BusIndex = ListBus(m,1);
-    ExistApparatus = SimplusGT.CellFind(ApparatusBusCell,BusIndex);
+    ExistApparatus = SimplusGT.CellFind(AppBusCell,BusIndex);
     if isempty(ExistApparatus)
         % The bus has no apparatus, i.e., an ac or dc floating bus.
-        N_Apparatus = N_Apparatus+1;
-        ApparatusBusCell{N_Apparatus} = BusIndex;   % Add a new bus index
-        [~,~,AreaType] = SimplusGT.Toolbox.CheckBus(BusIndex,ListBus);
+        N_App = N_App+1;
+        AppBusCell{N_App} = BusIndex;   % Add a new bus index
+        [~,~,AreaType] = SimplusGT.Toolbox.CheckBus(BusIndex,ListBus);  % Check if an ac or dc bus
         if AreaType == 1
-            ApparatusTypeCell{n} = 100;     % Ac floating bus
+            AppTypeCell{n} = 100;       % Ac floating bus
         elseif AreaType == 2
-            ApparatusTypeCell{n} = 1100;    % Dc floating bus
+            AppTypeCell{n} = 1100;      % Dc floating bus
         else
             error(['Error: Error AreaType.']);
         end
@@ -103,7 +109,7 @@ if (ColumnMax_Apparatus>12)
     error(['Error: Apparatus data overflow.']); 
 end
 
-[~,ModeBus] = SimplusGT.CellMode(ApparatusBusCell);
+[~,ModeBus] = SimplusGT.CellMode(AppBusCell);
 if ModeBus~=1
     error(['Error: For each bus, one and only one apparatus has to be connected.']);
 end
@@ -202,15 +208,15 @@ Para2000.w0     = W0;
 %% Re-arrange apparatus data
 
 % Find the index of user-defined data
-netlist_apparatus_NaN = isnan(ListApparatus(:,3:ColumnMax_Apparatus));
-[row,column] = find(netlist_apparatus_NaN == 0);     
+ListApparatus_NaN = isnan(ListApp(:,3:ColumnMax_Apparatus));    % Find NaN
+[row,column] = find(ListApparatus_NaN == 0);     
 column = column+2;
 
 % Initialize the apparatus parameters by default parameters
-for i = 1:N_Apparatus
-    ApparatusBus   = ApparatusBusCell{i};
-    ApparatusType  = ListApparatusType(i);
-    switch floor(ApparatusType/10)
+for i = 1:N_App
+    AppBus   = AppBusCell{i};
+    AppType  = AppTypeCell{i};
+    switch floor(AppType/10)
         % ### AC apparatuses
         case 0     
             ParaCell{i} = Para0000;     % Synchronous machine
@@ -239,33 +245,33 @@ for i = 1:N_Apparatus
             
         % ### Error check
         otherwise
-            error(['Error: apparatus type, bus ' num2str(ApparatusBus) ' type ' num2str(ApparatusType) '.']);
+            error(['Error: apparatus type, bus ' num2str(AppBus) ' type ' num2str(AppType) '.']);
     end
 end
 
 % Replace the default data by customized data
 %
 % Notes: 
-% This method can reduce the calculation time of "for" loop.
-% The "for" loop runs only when "row" is not empty.
+% This method can reduce the calculation time of "for" loop. The "for" loop
+% runs only when "row" is not empty.
 %
 % The sequence of cases are determined by the excel form. This also
 % decouples the sequence between the excel form and the system object.
 for i = 1:length(row)
-  	ApparatusBus   = ApparatusBusCell{row(i)};
-	ApparatusType	= ApparatusTypeCell{row(i)};
- 	UserValue 	= ListApparatus(row(i),column(i));     % Customized value
+  	AppBus   = AppBusCell{row(i)};
+	AppType	= AppTypeCell{row(i)};
+ 	UserValue 	= ListApp(row(i),column(i));     % Customized value
     SwitchFlag = column(i)-2;                   	% Find the updated parameter
-  	if floor(ApparatusType/10) == 0                    % Synchronous machine
+  	if floor(AppType/10) == 0                    % Synchronous machine
         switch SwitchFlag 
          	case 1; ParaCell{row(i)}.J  = UserValue;
             case 2; ParaCell{row(i)}.D  = UserValue;
             case 3; ParaCell{row(i)}.wL = UserValue;
             case 4; ParaCell{row(i)}.R  = UserValue; 
             otherwise
-                error(['Error: paramter overflow, bus ' num2str(ApparatusBus) 'type ' num2str(ApparatusType) '.']);
+                error(['Error: paramter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
-    elseif (floor(ApparatusType/10) == 1)              % Grid-following inverter
+    elseif (floor(AppType/10) == 1)              % Grid-following inverter
         switch SwitchFlag
             case 1; ParaCell{row(i)}.V_dc   = UserValue;
             case 2; ParaCell{row(i)}.C_dc   = UserValue;
@@ -275,9 +281,9 @@ for i = 1:length(row)
             case 6; ParaCell{row(i)}.f_pll  = UserValue;
             case 7; ParaCell{row(i)}.f_i_dq = UserValue;
             otherwise
-                error(['Error: parameter overflow, bus ' num2str(ApparatusBus) 'type ' num2str(ApparatusType) '.']);
+                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
-    elseif floor(ApparatusType/10) == 2                % Grid-forming inverter
+    elseif floor(AppType/10) == 2                % Grid-forming inverter
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.wLf     = UserValue;
           	case 2;  ParaCell{row(i)}.Rf      = UserValue;
@@ -290,9 +296,9 @@ for i = 1:length(row)
           	case 9;  ParaCell{row(i)}.fvdq    = UserValue;
           	case 10; ParaCell{row(i)}.fidq    = UserValue; 
             otherwise
-                error(['Error: parameter overflow, bus ' num2str(ApparatusBus) 'type ' num2str(ApparatusType) '.']);
+                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
-    elseif floor(ApparatusType/10) == 101 % Grid-feeding buck
+    elseif floor(AppType/10) == 101 % Grid-feeding buck
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.Vdc   = UserValue;
           	case 2;  ParaCell{row(i)}.Cdc   = UserValue;
@@ -301,9 +307,9 @@ for i = 1:length(row)
          	case 5;  ParaCell{row(i)}.fi  	= UserValue;
            	case 6;  ParaCell{row(i)}.fvdc 	= UserValue;
             otherwise
-                error(['Error: parameter overflow, bus ' num2str(ApparatusBus) 'type ' num2str(ApparatusType) '.']);
+                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
-    elseif floor(ApparatusType/10) == 200 % Interlink ac-dc converter
+    elseif floor(AppType/10) == 200 % Interlink ac-dc converter
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.C_dc  = UserValue;
             case 2;  ParaCell{row(i)}.wL_ac = UserValue;
@@ -314,7 +320,7 @@ for i = 1:length(row)
             case 7;  ParaCell{row(i)}.fvdc  = UserValue;
             case 8;  ParaCell{row(i)}.fpll  = UserValue;
             otherwise
-                error(['Error: parameter overflow, bus ' num2str(ApparatusBus) 'type ' num2str(ApparatusType) '.']);
+                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
     end
 end
