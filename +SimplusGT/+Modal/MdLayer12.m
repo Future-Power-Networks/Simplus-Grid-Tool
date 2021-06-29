@@ -1,6 +1,6 @@
-function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Bus,ApparatusType,modei,ApparatusSel,FreqSel,ModeSel)
+function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus, ApparatusType,modei,ApparatusSel,FreqSel,ModeSel)
 
-for k = 1:N_Bus
+for k = 1:N_Apparatus
     if ApparatusType{k} <= 89  %only consider apparatus
         %Modal layer 1
         Layer1All(k) = sqrt( Residue(k).dd*conj(Residue(k).dd) + Residue(k).dq*conj(Residue(k).dq)...
@@ -22,7 +22,7 @@ Count=0;
 Layer2RealSum=0;
 Layer2ImagSum=0;
 
-for k = 1:N_Bus
+for k = 1:N_Apparatus
    if (ismember(k,ApparatusSel)) %if selected 
        Count = Count + 1;
        Layer2RealSum = Layer2RealSum + abs(real(Layer2All(k)));
@@ -31,7 +31,7 @@ for k = 1:N_Bus
 end
 
 Count=0;
-for k = 1:N_Bus
+for k = 1:N_Apparatus
    if (ismember(k,ApparatusSel)) %if selected 
        Count = Count + 1;
        Layer1(Count) = Layer1All(k);
@@ -39,8 +39,8 @@ for k = 1:N_Bus
        Layer2.imag(Count) = imag(Layer2All(k));
        Layer2.real_pu(Count) = real(Layer2All(k))/Layer2RealSum;
        Layer2.imag_pu(Count) = imag(Layer2All(k))/Layer2ImagSum;
-       VecLegend{Count} = ['Apparatus',num2str(k)];
-       c(Count) = categorical({['Apparatus',num2str(k)]});
+       VecLegend{Count} = ['Apparatus',num2str(ApparatusBus{k})];
+       c(Count) = categorical({['Apparatus',num2str(ApparatusBus{k})]});
    end
 end
 clear title

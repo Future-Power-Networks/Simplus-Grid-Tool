@@ -1,5 +1,5 @@
 function [AxisSel, ApparatusSel12, ModeSel, ApparatusSel3,StateSel_DSS, ModeSel_DSS]...
-    = ExcelRead(filename, N_Bus, ApparatusType, GminSS)
+    = ExcelRead(filename, N_Apparatus, ApparatusType, GminSS)
 
 %% State-PF sheet reading
 StateConfig = xlsread(filename,1);
@@ -8,12 +8,12 @@ ModeSel_DSS = 0;
 SelIndex1 = 1;
 SelIndex2 = 1;
 
-for Count = 1: size(StateConfig,1)
-    if StateConfig(Count,1) ==1
+for Count = 1: size(StateConfig,1)      % state number = mode muber
+    if StateConfig(Count,1) ==1         % if a state is selected
         StateSel_DSS(SelIndex1) = Count;
         SelIndex1 = SelIndex1+1;
     end
-    if StateConfig(Count,5) ==1
+    if StateConfig(Count,5) ==1         % if a mode is selected
         ModeSel_DSS(SelIndex2) = Count;
         SelIndex2 = SelIndex2+1;
     end
@@ -36,7 +36,7 @@ end
 SelIndex = 1;
 ApparatusSel12 = 0;
 ApparatusIndex = 1;
-for k = 1:N_Bus
+for k = 1:N_Apparatus
     if ApparatusType{k} <= 89 %apparatuses)
         if Config(ApparatusIndex,1) == 1 %the apparatus is selected
             ApparatusSel12(SelIndex) = k;
@@ -65,7 +65,7 @@ end
 SelIndex = 1;
 ApparatusSel3 = 0;
 ApparatusIndex = 1;
-for k = 1:N_Bus
+for k = 1:N_Apparatus
     if ApparatusType{k} <= 89 %apparatuses)
         if Config(ApparatusIndex,11) == 1 %the apparatus is selected
             ApparatusSel3(SelIndex) = k;

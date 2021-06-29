@@ -2,7 +2,7 @@
 %apparatuses the user selected.
 %Author: Yue Zhu
 function [GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
-    SSCal(GminSS, N_Bus, ApparatusType, ModeSelAll, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr)
+    SSCal(GminSS, N_Apparatus, ApparatusType, ModeSelAll, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr)
 
 %% for state PF, use GsysDSS
 [GsysSS, IndexSS] = SimplusGT.dss2ss(GsysDSS);
@@ -29,7 +29,7 @@ for modei=1:ModeSelNum
     FreqSel = imag(GbMode(ModeSel));
     pin=1;
     pout=1;
-    for k =1: N_Bus
+    for k =1: N_Apparatus
         if ApparatusType{k} <= 89  %apparatus
             %Residu calculation
             ResidueAll{modei}(k).dd=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);

@@ -1,4 +1,4 @@
-function BodeDraw(ApparatusSel, AxisSel, GminSS, ApparatusType, ApparatusBus, N_Bus, ApparatusInputStr, ApparatusOutputStr)
+function BodeDraw(ApparatusSel, AxisSel, GminSS, ApparatusType, ApparatusBus, N_Apparatus, ApparatusInputStr, ApparatusOutputStr)
 %this function draws the bodeplot of the node admittance you selected
 %Author: Yue Zhu.
 AxisNum=length(AxisSel);
@@ -34,13 +34,13 @@ P.XLim={[0.1 1e4]};
 P.FreqUnits='Hz';
 %P.PhaseWrapping='on';
 %P.PhaseWrappingBranch=-90;
-for k = 1:N_Bus
-    [~,AppIndex] = SimplusGT.CellFind(ApparatusBus,k);
-    if ApparatusType{AppIndex} <= 89 %apparatuses
+for k = 1:N_Apparatus
+    %[~,AppIndex] = SimplusGT.CellFind(ApparatusBus,k);
+    if ApparatusType{k} <= 89 %apparatuses
         if (ismember(k,ApparatusSel)) %if selected
             bode(GminSS(pout+poutBias, pin+pinBias),P)
             CountLegend = CountLegend + 1;
-            VecLegend{CountLegend} = ['Node',num2str(k)];
+            VecLegend{CountLegend} = ['Node',num2str(ApparatusBus{k})];
             hold on;
         end
         pin = pin + length(ApparatusInputStr{k});

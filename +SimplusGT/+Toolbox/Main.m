@@ -318,8 +318,8 @@ fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
 if (Enable_Participation == 1) && (isempty(DcAreaFlag))
-    SimplusGT.Modal.ModalPreRun;
-    SimplusGT.Modal.ModalAnalysis;
+    SimplusGT.Modal.ModalInitialise;
+    %SimplusGT.Modal.ModalAnalysis;
     fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 else
     fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');

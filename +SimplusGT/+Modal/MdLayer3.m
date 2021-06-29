@@ -32,10 +32,10 @@ for ApparatusCount = 1:ApparatusSelNum
         = SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{ApparatusSelL3},ApparatusType{ApparatusSelL3},...
                             PowerFlow{ApparatusSelL3},ParaNew,Ts,ListBus);
      
-        ZmValNew = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell_New, FreqSel, ApparatusSelL3);
+        ZmValNew = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell_New, FreqSel);
         
         Layer3Result(ApparatusCount).Apparatus={['Apparatus',num2str(ApparatusSelL3)]};
-        Layer3Result(ApparatusCount).Result(k).ParaName = {ParamName{k}};
+        Layer3Result(ApparatusCount).Result(k).ParaName = ParamName(k);
         Layer3Result(ApparatusCount).Result(k).DeltaZ.dd = (ZmValNew.dd - ZmValOrig.dd)/(delta_para);
         Layer3Result(ApparatusCount).Result(k).DeltaZ.dq = (ZmValNew.dq - ZmValOrig.dq)/(delta_para);
         Layer3Result(ApparatusCount).Result(k).DeltaZ.qd = (ZmValNew.qd - ZmValOrig.qd)/(delta_para);

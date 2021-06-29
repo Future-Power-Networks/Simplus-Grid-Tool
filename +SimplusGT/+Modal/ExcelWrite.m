@@ -1,5 +1,5 @@
-function [AutoSelResult] = ExcelWrite(N_Bus,N_Apparatus,ApparatusType,ApparatusStateStr,ApparatusInputStr,...
-    ApparatusOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, filename)
+function [AutoSelResult] = ExcelWrite(N_Apparatus,ApparatusType,ApparatusBus,ApparatusStateStr,...
+    ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, filename)
 %this function is to write states, apparatuses, axes to select for
 %further Modal analysis.
 % Author: Yue Zhu
@@ -17,21 +17,21 @@ ModeNum = length(Mode);
 xlswrite(filename,{'Select states for state participation analysis. Only 1 mode should be selected.'},'State-PF','A1');
 xlswrite(filename,{'write "1" for for selection, others for not'},'State-PF','A2');
 StartSpace='A6';
-StateSheet(1,1) = {'Apparatus'};
+StateSheet(1,1) = {'Component'};
 StateSheet(1,2) = {'State'};
 StateSheet(1,3) = {'Select'};
 index = 2;
 StateCount = 0;
-for k = 1:N_Bus
+for k = 1:N_Apparatus
     if ApparatusType{k} <= 89 %apparatuses)    
-        ApparatusName=strcat('Apparatus',num2str(k));
+        ApparatusName=strcat('Apparatus',num2str(ApparatusBus{k}));
         StateName = ApparatusStateStr{k};
         StateNum = length(ApparatusStateStr{k});
         StateSheet(index,1) = {ApparatusName};
         for j = 1: StateNum
             StateCount = StateCount +1;
             if ismember(StateCount,IndexSS)
-                StateSheet(index,2) = {StateName{j}};
+                StateSheet(index,2) = StateName(j);
                 StateSheet(index,3) = {1};
 %                 if (AutoSel==1 && j == 1) || (AutoSel==1 && j == 2) %select 'epsilon', and 'id' for pf analysis for each apparatus.
 %                     StateSheet(index,3) = {1};
@@ -99,9 +99,6 @@ elseif AutoSel==1
 else
 end
 
-
-
-
 xlswrite(filename,StateSheet,'State-PF',StartSpace);
 
 %%
@@ -120,13 +117,13 @@ xlswrite(filename,{'Select apparatuses and mode for bode-plot and Modal Layer1&2
 xlswrite(filename,{'write "1" for for selection, others for not'},'Impedance-PF','A2');
 
 %*** Layer1&2 apparatus select
-ImpedanceSheet(1,1) = {'Apparatus selection for Layer1&2'};
-ImpedanceSheet(2,1) = {'Apparatus'};
+ImpedanceSheet(1,1) = {'Component selection for Layer1&2'};
+ImpedanceSheet(2,1) = {'Component'};
 ImpedanceSheet(2,2) = {'Select'};
 index=3;
-for k = 1:N_Bus
+for k = 1:N_Apparatus
         if ApparatusType{k} <= 89 %apparatuses)
-            ApparatusName=strcat('Apparatus',num2str(k));
+            ApparatusName=strcat('Apparatus',num2str(ApparatusBus{k}));
             ImpedanceSheet(index,1) = {ApparatusName};
             ImpedanceSheet(index,2) = {1};
             index=index+1;
@@ -200,14 +197,14 @@ end
 
 
 %***Layer3 apparatus Select
-ImpedanceSheet(1,11)={'Apparatus selection for Layer3'};
-ImpedanceSheet(2,11)={'Apparatus'};
+ImpedanceSheet(1,11)={'Component selection for Layer3'};
+ImpedanceSheet(2,11)={'Component'};
 ImpedanceSheet(2,12)={'Select'};
 index=3;
 IndexSel=1;
-for k = 1:N_Bus
+for k = 1:N_Apparatus
         if ApparatusType{k} <= 89 %apparatuses)
-            ApparatusName=strcat('Apparatus',num2str(k));
+            ApparatusName=strcat('Apparatus',num2str(ApparatusBus{k}));
             ImpedanceSheet(index,11)= {ApparatusName};
             if AutoSel == 1 && IndexSel==1
                 ImpedanceSheet(index,12) = {1};

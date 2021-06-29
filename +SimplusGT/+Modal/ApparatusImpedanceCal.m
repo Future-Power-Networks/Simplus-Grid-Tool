@@ -1,4 +1,4 @@
-function ZmVal = ApparatusImpedanceCal(GmDSS_Cell, FreqSel, ApparatusSel)
+function ZmVal = ApparatusImpedanceCal(GmDSS_Cell, FreqSel)
 
 1i;
 GmTf.dd=evalfr(GmDSS_Cell(1,1),2*pi*FreqSel*1i);
