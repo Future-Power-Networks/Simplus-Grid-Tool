@@ -26,10 +26,6 @@ UserDataPure = strrep(UserDataPure,'.xls','');
 UserdataModal = [UserdataModal 'Examples\ParticipationAnalysis\','ModalConfig_', UserDataPure,'.xlsx'];
 
 %Basic infomation acquirement.
-clear MdLayer1;
-clear MdLayer2;
-clear MdLayer3;
-clear MdStatePF;
-clear MdMode;
 
-[MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode]=SimplusGT.Modal.ModalAnalysisExe(UserdataModal);
+[MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, SensMatrix, SensLayer1, SensLayer2]=SimplusGT.Modal.ModalAnalysisExe(UserdataModal);
+

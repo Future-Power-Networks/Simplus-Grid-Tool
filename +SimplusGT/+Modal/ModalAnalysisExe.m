@@ -1,4 +1,4 @@
-function [MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode]=ModalAnalysisExe(UserdataModal)
+function [MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, SensMatrix, SensLayer1, SensLayer2]=ModalAnalysisExe(UserdataModal)
 
 %% invoke variables from original workspace
 N_Apparatus = evalin('base', 'N_Apparatus');
@@ -16,7 +16,7 @@ PowerFlow = evalin('base', 'PowerFlow');
 Ts = evalin('base', 'Ts');
 ListBus = evalin('base', 'ListBus');
 
-%%read Modal config file.
+%% read Modal config file.
 
 [AxisSel, ApparatusSelL12, ModeSelAll, ApparatusSelL3All,StateSel_DSS, ModeSel_DSS] = ...
     SimplusGT.Modal.ExcelRead(UserdataModal, N_Apparatus, ApparatusType, GminSS);
@@ -58,12 +58,16 @@ for modei=1:ModeSelNum
             MdLayer2(modei).result(count).DeltaLambdaRealpu=Layer2.real_pu(count);
             MdLayer2(modei).result(count).DeltaLambdaImagpu=Layer2.imag_pu(count);
         end
+    else % Layer-1-2 not selected
+        MdLayer2=0;
     end
     if Layer3Enable ==1
         fprintf('Calculating Modal Layer3...\n')
         MdLayer3(modei).mode = [num2str(FreqSel),'~Hz'];
         MdLayer3(modei).result = SimplusGT.Modal.MdLayer3(Residue,ZmVal,FreqSel,ApparatusType,...
                 ApparatusSelL3All,Para,PowerFlow,Ts,ApparatusBus,ListBus);
+    else % Layer3 not Enabled.
+        MdLayer3 = 0;
     end
 end
 
@@ -108,7 +112,35 @@ for modei = 1: length(ModeSel_DSS)
     end
     
 end
+else % State participation not enabled.
+    MdStatePF = 0;
 end
+
+
+%% Admittance Sensitivity Analysis (node + branch) = -Residues matrix
+% Ybus: nodal addmittance matrix without apparatus
+% Ynodal: nodal admittance matrix with apparatus
+% Yre: a rearranged admittance: diagonal---node element admittance;
+%                               off-diagonal------branch element admittance
+for modei=1:ModeSelNum
+    Ek = ModeSelAll(modei);
+    FreqSel = imag(MdMode(Ek));  
+   
+    SensMatrix(modei).mode = [num2str(FreqSel),'~Hz'];
+    Ybus_val(modei).mode = [num2str(FreqSel),'~Hz'];
+    Ynodal_val(modei).mode = [num2str(FreqSel),'~Hz'];
+    Yre_val(modei).mode = [num2str(FreqSel),'~Hz'];
+    [SensMatrix(modei).Val, Ybus_val(modei).Val, Ynodal_val(modei).Val, Yre_val(modei).Val] ...
+        =SimplusGT.Modal.SensitivityCal(Ek);
+    [SensLayer1_val, SensLayer2_val] = SimplusGT.Modal.SensLayer12(SensMatrix(modei).Val,Yre_val(modei).Val);
+    
+    SensLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
+    SensLayer1(modei).Result = SensLayer1_val;
+    SensLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
+    SensLayer2(modei).Result = SensLayer2_val;
+end
+% Sensitivity Layer 1
+
 
 
 end % end of function
