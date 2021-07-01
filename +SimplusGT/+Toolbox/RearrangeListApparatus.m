@@ -105,7 +105,7 @@ for m = 1:N_Bus
 end
 
 % Error check
-if (ColumnMax_Apparatus>12)
+if (ColumnMax_Apparatus>50)
     error(['Error: Apparatus data overflow.']); 
 end
 
@@ -158,6 +158,63 @@ Para0020.fdroop =5;    % (Hz) droop control bandwidth
 Para0020.fvdq   =300;   % (Hz) vdc bandwidth
 Para0020.fidq   =600;   % current control bandwidth
 Para0020.w0     = W0;
+
+
+% ======================================
+% Synchronous generato ----- Full Model ---- Cyprus Model
+% ======================================
+Para0040.Sbase_SM=1;
+Para0040.X=0.0125;
+Para0040.R=0;
+Para0040.Xd=0.1; %synchronous reactance in d axis
+Para0040.Xd1=0.031; %transient reactance
+Para0040.Xd2=0.025; %subtransient reactance
+Para0040.Td1=10.2; %d-axis open circuit transient time constant
+Para0040.Td2=0.05; %d-axis open circuit sub-transient time constant
+Para0040.Xq=0.069;
+Para0040.Xq1=0.0416667;
+Para0040.Xq2=0.025;
+Para0040.Tq1=1.5;
+Para0040.Tq2=0.035;
+Para0040.H=42;
+Para0040.D=0;
+Para0040.Dpu=0;
+Para0040.SG10=1;
+Para0040.SG12=1;
+%AVR
+Para0040.Tr=0;
+Para0040.Ka=50;
+Para0040.Ta=0.06;
+Para0040.Vrmax=1;
+Para0040.Vrmin=-1;
+Para0040.Ke=-0.0465;
+Para0040.Te=0.520;
+Para0040.Kf=0.0832;
+Para0040.Tf=1.0;
+Para0040.E1=3.24;
+Para0040.SEE1=0.072;
+Para0040.E2=4.320;
+Para0040.SEE2=0.2821;
+%PSS
+Para0040.T1=5;
+Para0040.T2=0.6;
+Para0040.T3=3;
+Para0040.T4=0.5;
+Para0040.Tw=10;
+Para0040.Kpss=1;
+Para0040.Vpssmin=-0.2;
+Para0040.Vpssmax=0.2;
+%Governor
+Para0040.Rgov=0.011;
+Para0040.T1gov=0.1;
+Para0040.T2gov=0;
+Para0040.T3gov=0.3;
+Para0040.T4gov=0.05;
+Para0040.T5gov=10;
+Para0040.Fgov=0.25;
+Para0040.Pmax_gov=1;
+Para0040.w0 = W0;
+
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)
@@ -224,7 +281,8 @@ for i = 1:N_App
             ParaCell{i} = Para0010;     % Grid-following inverter
       	case 2
             ParaCell{i} = Para0020;     % Grid-forming inverter
-        case 3
+        case 4
+            ParaCell{i} = Para0040;     % Synchronous Machine full model (Cyprus model)
             % Yue's Full-Order Machine
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
@@ -298,6 +356,64 @@ for i = 1:length(row)
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
+    
+    elseif floor(AppType/10) == 4 %full model Cyprus
+        switch SwitchFlag
+            case 1; ParaCell{row(i)}.Sbase_SM=UserValue;
+            case 2; ParaCell{row(i)}.X=UserValue;
+            case 3; ParaCell{row(i)}.R=UserValue;
+            case 4; ParaCell{row(i)}.Xd=UserValue; %synchronous reactance in d axis
+            case 5; ParaCell{row(i)}.Xd1=UserValue; %transient reactance
+            case 6; ParaCell{row(i)}.Xd2=UserValue; %subtransient reactance
+            case 7; ParaCell{row(i)}.Td1=UserValue; %d-axis open circuit transient time constant
+            case 8; ParaCell{row(i)}.Td2=UserValue; %d-axis open circuit sub-transient time constant
+            case 9; ParaCell{row(i)}.Xq=UserValue;
+            case 10; ParaCell{row(i)}.Xq1=UserValue;
+            case 11; ParaCell{row(i)}.Xq2=UserValue;
+            case 12; ParaCell{row(i)}.Tq1=UserValue;
+            case 13; ParaCell{row(i)}.Tq2=UserValue;
+            case 14; ParaCell{row(i)}.H=UserValue;
+            case 15; ParaCell{row(i)}.D=UserValue;
+            case 16; ParaCell{row(i)}.Dpu=UserValue;
+            case 17; ParaCell{row(i)}.SG10=UserValue;
+            case 18; ParaCell{row(i)}.SG12=UserValue; 
+            %AVR
+            case 19; ParaCell{row(i)}.Tr=UserValue;
+            case 20; ParaCell{row(i)}.Ka=UserValue;
+            case 21; ParaCell{row(i)}.Ta=UserValue;
+            case 22; ParaCell{row(i)}.Vrmax=UserValue;
+            case 23; ParaCell{row(i)}.Vrmin=UserValue;
+            case 24; ParaCell{row(i)}.Ke=UserValue;
+            case 25; ParaCell{row(i)}.Te=UserValue;
+            case 26; ParaCell{row(i)}.Kf=UserValue;
+            case 27; ParaCell{row(i)}.Tf=UserValue;
+            case 28; ParaCell{row(i)}.E1=UserValue;
+            case 29; ParaCell{row(i)}.SEE1=UserValue;
+            case 30; ParaCell{row(i)}.E2=UserValue;
+            case 31; ParaCell{row(i)}.SEE2=UserValue;
+            %PSS
+            case 32; ParaCell{row(i)}.T1=UserValue;
+            case 33; ParaCell{row(i)}.T2=UserValue;
+            case 34; ParaCell{row(i)}.T3=UserValue;
+            case 35; ParaCell{row(i)}.T4=UserValue;
+            case 36; ParaCell{row(i)}.Tw=UserValue;
+            case 37; ParaCell{row(i)}.Kpss=UserValue;
+            case 38; ParaCell{row(i)}.Vpssmin=UserValue;
+            case 39; ParaCell{row(i)}.Vpssmax=UserValue;
+            %Governor
+            case 40; ParaCell{row(i)}.Rgov=UserValue;
+            case 41; ParaCell{row(i)}.T1gov=UserValue;
+            case 42; ParaCell{row(i)}.T2gov=UserValue;
+            case 43; ParaCell{row(i)}.T3gov=UserValue;
+            case 44; ParaCell{row(i)}.T4gov=UserValue;
+            case 45; ParaCell{row(i)}.T5gov=UserValue;
+            case 46; ParaCell{row(i)}.Fgov=UserValue;
+            case 47; ParaCell{row(i)}.Pmax_gov=UserValue;
+            %Vbase    
+            otherwise
+                error(['Error: parameter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
+        end
+        
     elseif floor(AppType/10) == 101 % Grid-feeding buck
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.Vdc   = UserValue;

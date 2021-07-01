@@ -80,6 +80,68 @@ switch floor(Type/10)
                         Para.fvdq;
                         Para.fidq;
                         Para.w0];
+                    
+    case 4 % Cyprus models
+        if Type==40
+            Apparatus = SimplusGT.Class.SynchronousMachineFull_Cyp_SM('ApparatusType',Type);
+        elseif Type==41
+            Apparatus = SimplusGT.Class.SynchronousMachineFull_Cyp_SMAVR('ApparatusType',Type);
+        elseif Type==42
+            Apparatus = SimplusGT.Class.SynchronousMachineFull_Cyp_SMAVRPSSGOV('ApparatusType',Type);
+        end
+                Apparatus.Para = [
+                        Para.Sbase_SM;
+                        Para.X;
+                        Para.R;
+                        Para.Xd; %synchronous reactance in d axis
+                        Para.Xd1; %transient reactance
+                        Para.Xd2; %subtransient reactance
+                        Para.Td1; %d-axis open circuit transient time constant
+                        Para.Td2; %d-axis open circuit sub-transient time constant
+                        Para.Xq;
+                        Para.Xq1;
+                        Para.Xq2;
+                        Para.Tq1;
+                        Para.Tq2;
+                        Para.H;
+                        Para.D;
+                        Para.Dpu;
+                        Para.SG10;
+                        Para.SG12;
+                        %AVR
+                        Para.Tr;
+                        Para.Ka;
+                        Para.Ta;
+                        Para.Vrmax;
+                        Para.Vrmin;
+                        Para.Ke;
+                        Para.Te;
+                        Para.Kf;
+                        Para.Tf;
+                        Para.E1;
+                        Para.SEE1;
+                        Para.E2;
+                        Para.SEE2;
+                        %PSS
+                        Para.T1;
+                        Para.T2;
+                        Para.T3;
+                        Para.T4;
+                        Para.Tw;
+                        Para.Kpss;
+                        Para.Vpssmin;
+                        Para.Vpssmax;
+                        %Governor
+                        Para.Rgov;
+                        Para.T1gov;
+                        Para.T2gov;
+                        Para.T3gov;
+                        Para.T4gov;
+                        Para.T5gov;
+                        Para.Fgov;
+                        Para.Pmax_gov;
+                        Para.w0;
+                        ];
                    
     % ### Ac infinite bus
     case 9

@@ -50,7 +50,7 @@ MdAutoSel = 1;
 
 fprintf('%s is now ready.\nPlease open the file and select the states and apparatuses you are interested.\n',UserdataModal);
 fprintf('After selection, save the excel file and run SimplusGT.Modal.ModalAnalysis.m.\n');
-winopen(UserData);
+%winopen(UserData);
 if MdAutoSel == 0
     winopen(UserdataModal);
 end

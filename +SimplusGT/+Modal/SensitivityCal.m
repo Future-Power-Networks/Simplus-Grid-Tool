@@ -1,7 +1,7 @@
 % Calculate the admittance sensitivity matrix and nodal admittance matrix at the k-th labmda, 
 % Final results will be numerical matrices.
 % Author: Yue Zhu
-function [SensMat,Ybus_val,Ynodal_val,Yre_val] = SensitivityCal(Ek)
+function [SensMat,Ybus_val,Ynodal_val,Yre_val,ZminSS,Mode_Hz] = SensitivityCal(Ek)
 
 GmObj_Cell=evalin('base', 'GmObj_Cell');
 YbusObj=evalin('base', 'YbusObj');
@@ -40,6 +40,7 @@ C=ZminSS.C;
 [Phi,D]=eig(A);
 Psi=inv(Phi); 
 Mode=diag(D);
+Mode_Hz=Mode/2/pi;
 
 %% Trim B and C, keep only i as input and v as output
 for i = 1:N_Bus*2
@@ -60,18 +61,18 @@ for i = 1:N_Bus
 end
 
 %% Node and branch Admittance values
-mode_sel = Mode(Ek);
+lambda = Mode(Ek);
 [~,YbusDSS]=YbusObj.GetDSS(YbusObj);
-Ybus_val_exp = evalfr(YbusDSS, mode_sel); % Nodal admittance matrix Value (only passive part)
+Ybus_val_exp = evalfr(YbusDSS, lambda); % Nodal admittance matrix Value (only passive part)
 
 Ynodal_val_exp = Ybus_val_exp; % Nodal admittance matrix (include apparatus admittance)
 
 for i=1:N_Apparatus
     bus_i = ApparatusBus{i};
-    Ynodal_val_exp(2*bus_i-1,2*bus_i-1) = Ybus_val_exp(2*bus_i-1,2*bus_i-1)+ evalfr(GmDSS_Cell{i}(1,1),mode_sel); %dd
-    Ynodal_val_exp(2*bus_i-1,2*bus_i  ) = Ybus_val_exp(2*bus_i-1,2*bus_i)  + evalfr(GmDSS_Cell{i}(1,2),mode_sel); %dq
-    Ynodal_val_exp(2*bus_i  ,2*bus_i-1) = Ybus_val_exp(2*bus_i,  2*bus_i-1)+ evalfr(GmDSS_Cell{i}(2,1),mode_sel); %qd
-    Ynodal_val_exp(2*bus_i  ,2*bus_i  ) = Ybus_val_exp(2*bus_i,  2*bus_i)  + evalfr(GmDSS_Cell{i}(2,2),mode_sel); %qq    
+    Ynodal_val_exp(2*bus_i-1,2*bus_i-1) = Ybus_val_exp(2*bus_i-1,2*bus_i-1)+ evalfr(GmDSS_Cell{i}(1,1),lambda); %dd
+    Ynodal_val_exp(2*bus_i-1,2*bus_i  ) = Ybus_val_exp(2*bus_i-1,2*bus_i)  + evalfr(GmDSS_Cell{i}(1,2),lambda); %dq
+    Ynodal_val_exp(2*bus_i  ,2*bus_i-1) = Ybus_val_exp(2*bus_i,  2*bus_i-1)+ evalfr(GmDSS_Cell{i}(2,1),lambda); %qd
+    Ynodal_val_exp(2*bus_i  ,2*bus_i  ) = Ybus_val_exp(2*bus_i,  2*bus_i)  + evalfr(GmDSS_Cell{i}(2,2),lambda); %qq    
 end
 
 for i = 1:N_Bus
@@ -102,7 +103,7 @@ for i = 1:N_Bus
                Yre_val(i,i).qd = Yre_val(i,i).qd+Ynodal_val(i,k).qd;
                Yre_val(i,i).qq = Yre_val(i,i).qq+Ynodal_val(i,k).qq;
             end
-        else % branch element
+        else % branch element : inverse of the Ynodal
             Yre_val(i,j).dd = -1*Ynodal_val(i,j).dd;
             Yre_val(i,j).dq = -1*Ynodal_val(i,j).dq;
             Yre_val(i,j).qd = -1*Ynodal_val(i,j).qd;

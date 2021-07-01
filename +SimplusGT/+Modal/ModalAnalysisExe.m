@@ -123,15 +123,35 @@ end
 % Yre: a rearranged admittance: diagonal---node element admittance;
 %                               off-diagonal------branch element admittance
 for modei=1:ModeSelNum
-    Ek = ModeSelAll(modei);
-    FreqSel = imag(MdMode(Ek));  
+    
+    % modes of Zsys are not completely matched with Ysys, so we need to
+    % find the same mode in Zsys.
+    GmObj_Cell=evalin('base', 'GmObj_Cell');
+    YbusObj=evalin('base', 'YbusObj');
+    [~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus);
+    ZminSS = SimplusGT.dss2ss(ZsysDSS);
+    [~,D]=eig(ZminSS.A);
+    ZMode_Hz=diag(D)/2/pi;  
+    lambda_sel = MdMode(ModeSelAll(modei));
+    Ek = 0;
+    for n = 1: length(ZMode_Hz) % Mode calculated from Y may in different order from calculated from Z
+        if abs(lambda_sel-ZMode_Hz(n))<=1e-9
+            Ek = n;
+        end
+        if n == length(ZMode_Hz) && abs(lambda_sel-ZMode_Hz(n))>1e-5 && Ek == 0 % not matched
+            error('eigenvalue mismatch')
+        end
+    end  
+    FreqSel = imag(ZMode_Hz(Ek));  
    
+    [SensMatrix(modei).Val, Ybus_val(modei).Val, Ynodal_val(modei).Val, Yre_val(modei).Val, ZminSS,ZMode_Hz] ...
+        =SimplusGT.Modal.SensitivityCal(Ek); % get the sensitivity matrix and some admittance matrices.        
     SensMatrix(modei).mode = [num2str(FreqSel),'~Hz'];
     Ybus_val(modei).mode = [num2str(FreqSel),'~Hz'];
     Ynodal_val(modei).mode = [num2str(FreqSel),'~Hz'];
     Yre_val(modei).mode = [num2str(FreqSel),'~Hz'];
-    [SensMatrix(modei).Val, Ybus_val(modei).Val, Ynodal_val(modei).Val, Yre_val(modei).Val] ...
-        =SimplusGT.Modal.SensitivityCal(Ek);
+
+    
     [SensLayer1_val, SensLayer2_val] = SimplusGT.Modal.SensLayer12(SensMatrix(modei).Val,Yre_val(modei).Val);
     
     SensLayer1(modei).mode = [num2str(FreqSel),'~Hz'];

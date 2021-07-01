@@ -2,10 +2,17 @@ function [SensLayer1, SensLayer2] = SensLayer12(SensMatrix,Yre_val)
 N_Bus=evalin('base', 'N_Bus');
 for i=1:N_Bus
     for j=1:N_Bus
+        if i == j % node    
             SensLayer1(i,j)= SimplusGT.Frobenius_norm_dq(SensMatrix(i,j)) ...
                 * SimplusGT.Frobenius_norm_dq(Yre_val(i,j));
-            
             SensLayer2(i,j) = SimplusGT.inner_product_dq(SensMatrix(i,j),Yre_val(i,j));
+        else % branch
+            Sens.dd = SensMatrix(i,i).dd + SensMatrix(j,j).dd - SensMatrix(i,j).dd - SensMatrix(j,i).dd;
+            Sens.dq = SensMatrix(i,i).dq + SensMatrix(j,j).dq - SensMatrix(i,j).dq - SensMatrix(j,i).dq;
+            Sens.qd = SensMatrix(i,i).qd + SensMatrix(j,j).qd - SensMatrix(i,j).qd - SensMatrix(j,i).qd;
+            Sens.qq = SensMatrix(i,i).qq + SensMatrix(j,j).qq - SensMatrix(i,j).qq - SensMatrix(j,i).qq;
+            SensLayer1(i,j)= SimplusGT.Frobenius_norm_dq(Sens) * SimplusGT.Frobenius_norm_dq(Yre_val(i,j));
+            SensLayer2(i,j) = SimplusGT.inner_product_dq(Sens,Yre_val(i,j));
     end
 end
 
