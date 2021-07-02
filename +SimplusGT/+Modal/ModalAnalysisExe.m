@@ -152,7 +152,7 @@ for modei=1:ModeSelNum
     Yre_val(modei).mode = [num2str(FreqSel),'~Hz'];
 
     
-    [SensLayer1_val, SensLayer2_val] = SimplusGT.Modal.SensLayer12(SensMatrix(modei).Val,Yre_val(modei).Val);
+    [SensLayer1_val, SensLayer2_val] = SimplusGT.Modal.SensLayer12(SensMatrix(modei).Val,Yre_val(modei).Val,modei,FreqSel);
     
     SensLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
     SensLayer1(modei).Result = SensLayer1_val;

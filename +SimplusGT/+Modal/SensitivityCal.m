@@ -12,6 +12,7 @@ ApparatusBus=evalin('base', 'ApparatusBus');
 
 
 [ZsysObj,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus);
+[~,ZsysDSS] = ZsysObj.GetDSS(ZsysObj);
 ZminSS = SimplusGT.dss2ss(ZsysDSS);
 
 [~,ZmInStr,ZmOutStr] = ZsysObj.GetString(ZsysObj);%get name string
@@ -50,6 +51,16 @@ end
 
 %% Admittance Sensitivity Matrix = -1* residue matrix
 SensMat_exp = -1*Ctrim*Phi(:,Ek)*Psi(Ek,:)*Btrim; % Residue matrix in expansion form
+% for i=1:N_Bus
+%     for j=1:N_Bus
+%         SenMat_exp1(2*i-1,2*j-1)=-1*Ctrim(2*i-1,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j-1);
+%         SenMat_exp1(2*i-1,2*j)=-1*Ctrim(2*i-1,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j);
+%         SenMat_exp1(2*i,2*j-1)=-1*Ctrim(2*i,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j-1);
+%         SenMat_exp1(2*i,2*j)=-1*Ctrim(2*i,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j);
+%     end
+% end
+
+
 % pack up into d-q format
 for i = 1:N_Bus
     for j = 1:N_Bus

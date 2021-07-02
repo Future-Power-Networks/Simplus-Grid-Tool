@@ -65,7 +65,7 @@ set(gca,'YLim',[-1,1])
 set(gca,'YTick',-1:0.5:1);
 b.FaceColor = 'flat';
 b.CData = [1,0.5,0];
-title ('Impedance Participation Level-2 Real (Normalized to 1)');
+title ('Impedance Participation Level-2 Imaginary (Normalized to 1)');
 % for i=1:Count
 %     text(i-0.4,Layer2.imag(i),num2str(Layer2.imag(i)));
 % end
