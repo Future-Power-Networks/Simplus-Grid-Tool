@@ -60,11 +60,14 @@ for k = 1:N_Bus-1
     end
 end
 
+Layer1 = Layer1/sum(Layer1);
+
 clear title
 subplot(2,2,[1,3]);
-pie(Layer1);
+pie(Layer1,VecLegend);
 title ('Admittance Sensitivity Level-1');
 legend(VecLegend,'Location',[0.0486,0.121,0.1038,0.2437]);
+colormap colorcube
 
 subplot(2,2,2);
 b=bar(c, Layer2.real_pu);
