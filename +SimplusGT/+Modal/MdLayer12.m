@@ -34,7 +34,7 @@ Count=0;
 for k = 1:N_Apparatus
    if (ismember(k,ApparatusSel)) %if selected 
        Count = Count + 1;
-       Layer1(Count) = Layer1All(k);
+       Layer1(Count) = Layer1All(k)/sum(Layer1All);
        Layer2.real(Count) = real(Layer2All(k));
        Layer2.imag(Count) = imag(Layer2All(k));
        Layer2.real_pu(Count) = real(Layer2All(k))/Layer2RealSum;

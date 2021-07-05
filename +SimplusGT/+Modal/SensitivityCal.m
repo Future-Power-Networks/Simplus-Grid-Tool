@@ -12,7 +12,7 @@ ApparatusBus=evalin('base', 'ApparatusBus');
 
 
 [ZsysObj,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus);
-[~,ZsysDSS] = ZsysObj.GetDSS(ZsysObj);
+%[~,ZsysDSS] = ZsysObj.GetDSS(ZsysObj);
 ZminSS = SimplusGT.dss2ss(ZsysDSS);
 
 [~,ZmInStr,ZmOutStr] = ZsysObj.GetString(ZsysObj);%get name string
