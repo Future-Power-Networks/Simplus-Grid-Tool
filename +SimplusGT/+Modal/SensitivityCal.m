@@ -11,7 +11,7 @@ GmDSS_Cell=evalin('base', 'GmDSS_Cell');
 ApparatusBus=evalin('base', 'ApparatusBus');
 
 
-[ZsysObj,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus);
+[ZsysObj,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus,N_Bus);
 [~,ZsysDSS] = ZsysObj.GetDSS(ZsysObj);
 ZminSS = SimplusGT.dss2ss(ZsysDSS);
 

@@ -6,7 +6,7 @@
 %Author: Yue Zhu
 
 
-function [ZsysObj,ZsysDSS] = WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus)
+function [ZsysObj,ZsysDSS] = WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus, N_Bus)
 
 % 1) Switch the input v and output i of all apparatus to change into impedance model Zm
 for i = 1: N_Apparatus 
@@ -18,7 +18,7 @@ ZmObj = SimplusGT.Toolbox.ApparatusModelLink(ZmObj_Cell);
 [~,ZmInStr,ZmOutStr] = ZmObj.GetString(ZmObj);%get name string
 Port_i_feedin = []; %declare
 Port_v_feedout = [];
-for i = 1:N_Apparatus
+for i = 1:N_Bus
     [~,in1] = SimplusGT.CellFind(ZmInStr,['i_d',num2str(i)]);
     [~,in2] = SimplusGT.CellFind(ZmInStr, ['i',num2str(i)]);
     

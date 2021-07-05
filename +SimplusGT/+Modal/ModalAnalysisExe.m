@@ -2,6 +2,7 @@ function [MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, SensMatrix, SensLayer
 
 %% invoke variables from original workspace
 N_Apparatus = evalin('base', 'N_Apparatus');
+N_Bus = evalin('base', 'N_Bus');
 ApparatusType = evalin('base', 'ApparatusType');
 ApparatusBus = evalin('base', 'ApparatusBus');
 ApparatusInputStr = evalin('base', 'ApparatusInputStr');
@@ -128,7 +129,7 @@ for modei=1:ModeSelNum
     % find the same mode in Zsys.
     GmObj_Cell=evalin('base', 'GmObj_Cell');
     YbusObj=evalin('base', 'YbusObj');
-    [~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus);
+    [~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus, N_Bus);
     ZminSS = SimplusGT.dss2ss(ZsysDSS);
     [~,D]=eig(ZminSS.A);
     ZMode_Hz=diag(D)/2/pi;  
