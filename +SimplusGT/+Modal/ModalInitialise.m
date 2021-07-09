@@ -45,7 +45,7 @@ SimplusGT.Modal.ExcelPrep(UserdataModal); %create a new excel file, or clear old
 % Write 1 to enable auto select.
 MdAutoSel = 1;
 
-[AutoSelResult] = SimplusGT.Modal.ExcelWrite(N_Apparatus,ApparatusType,ApparatusBus,...
+[AutoSelResult] = SimplusGT.Modal.ExcelWrite(N_Bus, N_Apparatus,ApparatusType,ApparatusBus,...
     ApparatusStateStr,ZbusStateStr, GminSS, GsysDSS, MdAutoSel, Fbase, UserdataModal);
 
 fprintf('%s is now ready.\nPlease open the file and select the states and apparatuses you are interested.\n',UserdataModal);

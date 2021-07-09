@@ -1,4 +1,4 @@
-function [AutoSelResult] = ExcelWrite(N_Apparatus,ApparatusType,ApparatusBus,ApparatusStateStr,...
+function [AutoSelResult] = ExcelWrite(N_Bus, N_Apparatus,ApparatusType,ApparatusBus,ApparatusStateStr,...
     ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, filename)
 %this function is to write states, apparatuses, axes to select for
 %further Modal analysis.
@@ -244,7 +244,7 @@ index=3;
 
 GmObj_Cell=evalin('base', 'GmObj_Cell');
 YbusObj=evalin('base', 'YbusObj');
-[~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus);
+[~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus,N_Bus);
 ZminSS = SimplusGT.dss2ss(ZsysDSS);
 [~,D]=eig(ZminSS.A);
 Mode_Hz=diag(D)/2/pi;
