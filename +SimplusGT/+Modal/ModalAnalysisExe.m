@@ -163,8 +163,7 @@ for modei=1:ModeSelNum
     MdSensResult(modei).Layer1_mat = SensLayer1_val;
     MdSensResult(modei).Layer2_mat = SensLayer2_val;
     MdSensResult(modei).Layer12 = Layer12;
-    
-    
+        
     %MdSensResult.Sen
 end
 end
