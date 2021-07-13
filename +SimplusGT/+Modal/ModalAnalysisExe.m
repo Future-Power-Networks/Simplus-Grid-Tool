@@ -1,4 +1,4 @@
-function [MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, SensMatrix, SensLayer1, SensLayer2]=ModalAnalysisExe(UserdataModal)
+function [MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, MdSensResult]=ModalAnalysisExe(UserdataModal)
 
 %% invoke variables from original workspace
 N_Apparatus = evalin('base', 'N_Apparatus');
@@ -16,12 +16,15 @@ Para = evalin('base', 'Para');
 PowerFlow = evalin('base', 'PowerFlow');
 Ts = evalin('base', 'Ts');
 ListBus = evalin('base', 'ListBus');
+GmObj_Cell=evalin('base', 'GmObj_Cell');
+YbusObj=evalin('base', 'YbusObj');
 
 %% read Modal config file.
 
 [AxisSel, ApparatusSelL12, ModeSelAll, ApparatusSelL3All,StateSel_DSS, ModeSel_DSS] = ...
     SimplusGT.Modal.ExcelRead(UserdataModal, N_Apparatus, ApparatusType, GminSS);
-[StatePFEnable, BodeEnable, Layer12Enable, Layer3Enable] = ...
+
+[StatePFEnable, BodeEnable, Layer12Enable, Layer3Enable, SensEnable] = ...
     SimplusGT.Modal.EnablingRead(UserdataModal); %Enablling control.
 
 %check for illegal selection.
@@ -123,42 +126,47 @@ end
 % Ynodal: nodal admittance matrix with apparatus
 % Yre: a rearranged admittance: diagonal---node element admittance;
 %                               off-diagonal------branch element admittance
+MdSensResult=[];
+
+if SensEnable == 1 % if enable
 for modei=1:ModeSelNum
     
-    % modes of Zsys are not completely matched with Ysys, so we need to
-    % find the same mode in Zsys.
-    GmObj_Cell=evalin('base', 'GmObj_Cell');
-    YbusObj=evalin('base', 'YbusObj');
-    [~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus, N_Bus);
-    ZminSS = SimplusGT.dss2ss(ZsysDSS);
+    % modes of Zsys may not completely matched with Ysys (a small error due to float calculation), so we need to
+    % find the same (neareast) mode in Zsys first.
+    m_tol = 1e-3; % tolerance
+    
+    ZminSS = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus, N_Bus);
     [~,D]=eig(ZminSS.A);
     ZMode_Hz=diag(D)/2/pi;  
     lambda_sel = MdMode(ModeSelAll(modei));
     Ek = 0;
     for n = 1: length(ZMode_Hz) % Mode calculated from Y may in different order from calculated from Z
-        if abs(lambda_sel-ZMode_Hz(n))<=1e-9
+        if abs(lambda_sel-ZMode_Hz(n))<=m_tol
             Ek = n;
         end
-        if n == length(ZMode_Hz) && abs(lambda_sel-ZMode_Hz(n))>1e-5 && Ek == 0 % not matched
+        if n == length(ZMode_Hz) && abs(lambda_sel-ZMode_Hz(n))>m_tol && Ek == 0 % not matched
             error('eigenvalue mismatch')
         end
     end  
     FreqSel = imag(ZMode_Hz(Ek));  
    
-    [SensMatrix(modei).Val, Ybus_val(modei).Val, Ynodal_val(modei).Val, Yre_val(modei).Val, ZminSS,ZMode_Hz] ...
-        =SimplusGT.Modal.SensitivityCal(Ek); % get the sensitivity matrix and some admittance matrices.        
-    SensMatrix(modei).mode = [num2str(FreqSel),'~Hz'];
-    Ybus_val(modei).mode = [num2str(FreqSel),'~Hz'];
-    Ynodal_val(modei).mode = [num2str(FreqSel),'~Hz'];
-    Yre_val(modei).mode = [num2str(FreqSel),'~Hz'];
-
+    [SensMatrix, Ybus_val, Ynodal_val, Yre_val] ...
+        =SimplusGT.Modal.SensitivityCal(ZminSS,Ek); % get the sensitivity matrix and some admittance matrices.        
+        
+    [SensLayer1_val, SensLayer2_val,Layer12] = SimplusGT.Modal.SensLayer12(SensMatrix,Yre_val,modei,ZMode_Hz(Ek));
     
-    [SensLayer1_val, SensLayer2_val] = SimplusGT.Modal.SensLayer12(SensMatrix(modei).Val,Yre_val(modei).Val,modei,FreqSel);
     
-    SensLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
-    SensLayer1(modei).Result = SensLayer1_val;
-    SensLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
-    SensLayer2(modei).Result = SensLayer2_val;
+    MdSensResult(modei).mode = [num2str(FreqSel),'~Hz'];
+    MdSensResult(modei).SensMatrix = SensMatrix;
+    MdSensResult(modei).Ynodal_val = Ynodal_val;
+    MdSensResult(modei).Yre_val = Yre_val;
+    MdSensResult(modei).Layer1_mat = SensLayer1_val;
+    MdSensResult(modei).Layer2_mat = SensLayer2_val;
+    MdSensResult(modei).Layer12 = Layer12;
+    
+    
+    %MdSensResult.Sen
+end
 end
 % Sensitivity Layer 1
 

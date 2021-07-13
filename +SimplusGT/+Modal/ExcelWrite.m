@@ -228,35 +228,37 @@ EnableSheet(7,1) = {'State-PF'};
 EnableSheet(8,1) = {'Bodeplot'};
 EnableSheet(9,1) = {'Impedance-PF Layer 1&2'};
 EnableSheet(10,1) = {'Impedance-PF Layer 3'};
-for i=7:10
+EnableSheet(11,1) = {'whole-system sensitivity'};
+
+for i=7:11
     EnableSheet(i,2) = {1};
 end
 xlswrite(filename,EnableSheet,'Enabling','A1');
 
 
-%% Sensitivity mode select worksheet
-%*** Mode select.
-SensitivitySheet(1,1) = {'Mode selection for eigenvalue sensitivity analysis'};
-SensitivitySheet(2,1) = {'Mode'};
-SensitivitySheet(2,2) = {'Value'};
-SensitivitySheet(2,3) = {'Select'};
-index=3;
-
-GmObj_Cell=evalin('base', 'GmObj_Cell');
-YbusObj=evalin('base', 'YbusObj');
-[~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus,N_Bus);
-ZminSS = SimplusGT.dss2ss(ZsysDSS);
-[~,D]=eig(ZminSS.A);
-Mode_Hz=diag(D)/2/pi;
-
-for i=1:ModeNum
-    ModeName = strcat('Mode',num2str(i));
-    SensitivitySheet(index,1)={ModeName};
-    SensitivitySheet(index,2)={num2str(Mode_Hz(i),'%.2f')};
-    SensitivitySheet(index,3)={0};
-    index=index+1;
-end
-xlswrite(filename,SensitivitySheet,'SensitivitySel','A1');
+% %% Sensitivity mode select worksheet
+% %*** Mode select.
+% SensitivitySheet(1,1) = {'Mode selection for eigenvalue sensitivity analysis'};
+% SensitivitySheet(2,1) = {'Mode'};
+% SensitivitySheet(2,2) = {'Value'};
+% SensitivitySheet(2,3) = {'Select'};
+% index=3;
+% 
+% GmObj_Cell=evalin('base', 'GmObj_Cell');
+% YbusObj=evalin('base', 'YbusObj');
+% [~,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus,N_Bus);
+% ZminSS = SimplusGT.dss2ss(ZsysDSS);
+% [~,D]=eig(ZminSS.A);
+% Mode_Hz=diag(D)/2/pi;
+% 
+% for i=1:ModeNum
+%     ModeName = strcat('Mode',num2str(i));
+%     SensitivitySheet(index,1)={ModeName};
+%     SensitivitySheet(index,2)={num2str(Mode_Hz(i),'%.2f')};
+%     SensitivitySheet(index,3)={0};
+%     index=index+1;
+% end
+% xlswrite(filename,SensitivitySheet,'SensitivitySel','A1');
 
 %%
 %%

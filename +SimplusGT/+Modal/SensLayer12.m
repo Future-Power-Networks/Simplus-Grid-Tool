@@ -1,4 +1,4 @@
-function [SensLayer1, SensLayer2] = SensLayer12(SensMatrix,Yre_val,modei,FreqSel)
+function [SensLayer1, SensLayer2, Layer12] = SensLayer12(SensMatrix,Yre_val,modei,ModeSel)
 N_Bus=evalin('base', 'N_Bus');
 for i=1:N_Bus
     for j=1:N_Bus
@@ -25,14 +25,17 @@ h=figure(2110+modei);
 set(h,'position',[254.6,151.4,976.8,556]);
 
 % Count=0;
+% Layer2 results abs sum, for normalization.
+Layer1Sum=0;
 Layer2RealSum=0;
 Layer2ImagSum=0;
-for k = 1:N_Bus
-    for j = 1:N_Bus
-       Layer2RealSum = Layer2RealSum + abs(real(SensLayer2(k,j)));
-       Layer2ImagSum = Layer2ImagSum + abs(imag(SensLayer2(k,j)));
-    end
-end
+
+nodeL1val = diag(SensLayer1);
+Layer1Sum = (sum(SensLayer1,'all')+sum(nodeL1val,'all')) / 2;
+nodeL2val = diag(SensLayer2);
+Layer2RealSum = ( sum(abs(real(SensLayer2)),'all')+sum(abs(real(nodeL2val)),'all') )/2;
+Layer2ImagSum = ( sum(abs(imag(SensLayer2)),'all')+sum(abs(imag(nodeL2val)),'all') )/2;
+
 
 Count=0;
 for k = 1:N_Bus % node    
@@ -44,18 +47,26 @@ for k = 1:N_Bus % node
        Layer2.imag_pu(Count) = imag(SensLayer2(k,k))/Layer2ImagSum;
        VecLegend{Count} = ['Node',num2str(k)];
        c(Count) = categorical({['Node',num2str(k)]});
+       Layer12(Count).Component=['Node',num2str(k)];
+       Layer12(Count).L1val_norm=Layer1(Count)/Layer1Sum;
+       Layer12(Count).L2val_real_norm=Layer2.real_pu(Count);
+       Layer12(Count).L2val_imag_norm=Layer2.imag_pu(Count);
 end
-for k = 1:N_Bus-1
+for k = 1:N_Bus-1 % branch
     for j = k:N_Bus
         if k~=j && SensLayer1(k,j)~=0
            Count = Count + 1;
            Layer1(Count) = SensLayer1(k,j);
            Layer2.real(Count) = real(SensLayer2(k,j));
            Layer2.imag(Count) = imag(SensLayer2(k,j));
-           Layer2.real_pu(Count) = real(SensLayer2(k,j));%/Layer2RealSum;
-           Layer2.imag_pu(Count) = imag(SensLayer2(k,j));%/Layer2ImagSum;
+           Layer2.real_pu(Count) = real(SensLayer2(k,j))/Layer2RealSum;
+           Layer2.imag_pu(Count) = imag(SensLayer2(k,j))/Layer2ImagSum;
            VecLegend{Count} = ['Branch',num2str(k),'-',num2str(j)];
            c(Count) = categorical({['Branch',num2str(k),'-',num2str(j)]});
+           Layer12(Count).Component=['Branch',num2str(k),'-',num2str(j)];
+           Layer12(Count).L1val_norm=Layer1(Count)/Layer1Sum;
+           Layer12(Count).L2val_real_norm=Layer2.real_pu(Count);
+           Layer12(Count).L2val_imag_norm=Layer2.imag_pu(Count);
         end
     end
 end
@@ -92,7 +103,7 @@ grid on;
 %     text(i-0.4,Layer2.imag(i),num2str(Layer2.imag(i)));
 % end
 
-TitStr = ['Mode: ',num2str(FreqSel,'%.2f'), ' Hz'];
+TitStr = ['Mode: ',num2str(ModeSel,'%.2f'), ' Hz'];
 SimplusGT.mtit(TitStr, 'color',[1 0 0], 'xoff', -0.3);
 
 end

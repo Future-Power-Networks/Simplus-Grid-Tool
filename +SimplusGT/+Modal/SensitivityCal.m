@@ -1,39 +1,22 @@
 % Calculate the admittance sensitivity matrix and nodal admittance matrix at the k-th labmda, 
 % Final results will be numerical matrices.
+% SensMat: eigenvalue-sensitivity matrix
+% Ybus_val: network admittance value(lines + passive loads)
+% Ynodal_val: value of the system nodal admittance matrix
+% Yre_val: value of a rearranged nodal admittance matrix: diag->node, off
+%          diag -> branch.
 % Author: Yue Zhu
-function [SensMat,Ybus_val,Ynodal_val,Yre_val,ZminSS,Mode_Hz] = SensitivityCal(Ek)
 
-GmObj_Cell=evalin('base', 'GmObj_Cell');
+function [SensMat,Ybus_val,Ynodal_val,Yre_val] = SensitivityCal(ZminSS,Ek)
+
+%GmObj_Cell=evalin('base', 'GmObj_Cell');
 YbusObj=evalin('base', 'YbusObj');
 N_Apparatus=evalin('base', 'N_Apparatus');
 N_Bus=evalin('base', 'N_Bus');
 GmDSS_Cell=evalin('base', 'GmDSS_Cell');
 ApparatusBus=evalin('base', 'ApparatusBus');
 
-
-[ZsysObj,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus,N_Bus);
-%[~,ZsysDSS] = ZsysObj.GetDSS(ZsysObj);
-[ZminSS,~] = SimplusGT.dss2ss(ZsysDSS);
-%ZminSS = minreal(ZsysDSS, 1e-5);
-[~,ZmInStr,ZmOutStr] = ZsysObj.GetString(ZsysObj);%get name string
-Port_i_in = [];
-Port_v_out = [];
-for i = 1:N_Apparatus
-    [~,in1] = SimplusGT.CellFind(ZmInStr,['i_d',num2str(i)]);
-    [~,in2] = SimplusGT.CellFind(ZmInStr, ['i',num2str(i)]);
-    
-    [~,out1] = SimplusGT.CellFind(ZmOutStr,['v_d',num2str(i)]);
-    [~,out2] = SimplusGT.CellFind(ZmOutStr,['v',num2str(i)]);
-    if ~isempty(in1) %ac apparatus
-        Port_i_in = [Port_i_in,in1,in1+1];
-        Port_v_out = [Port_v_out,out1,out1+1];
-    elseif ~isempty(in2) % dc: not activated at this moment.
-        Port_i_in = [Port_i_in,in2];
-        Port_v_out = [Port_v_out,out2];
-    else
-        error(['Error']);
-    end
-end
+%ZminSS = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus,N_Bus);
 
 A=ZminSS.A;
 B=ZminSS.B;
@@ -41,62 +24,9 @@ C=ZminSS.C;
 [Phi,D]=eig(A);
 Psi=inv(Phi); 
 Mode=diag(D);
-Mode_Hz=Mode/2/pi;
-%% Trim B and C, keep only i as input and v as output
-for i = 1:N_Bus*2
-    Btrim(:,i)=B(:,Port_i_in(i));
-    Ctrim(i,:)=C(Port_v_out(i),:);
-end
-
-% YsysObj=evalin('base', 'YsysObj');
-% [~,YsysDSS] = YsysObj.GetDSS(YsysObj);
-% [YminSS, ~]= SimplusGT.dss2ss(YsysDSS);
-% %YminSS = SimplusGT.dss2ss(YsysDSS);
-% [~,YmInStr,YmOutStr] = YsysObj.GetString(YsysObj);%get name string
-% Port_v_in = [];
-% Port_i_out = [];
-% for i = 1:N_Apparatus
-%     [~,in1] = SimplusGT.CellFind(YmInStr,['v_d',num2str(i)]);
-%     [~,in2] = SimplusGT.CellFind(YmInStr, ['v',num2str(i)]);
-%     
-%     [~,out1] = SimplusGT.CellFind(YmOutStr,['i_d',num2str(i)]);
-%     [~,out2] = SimplusGT.CellFind(YmOutStr,['i',num2str(i)]);
-%     if ~isempty(in1) %ac apparatus
-%         Port_v_in = [Port_v_in,in1,in1+1];
-%         Port_i_out = [Port_i_out,out1,out1+1];
-%     elseif ~isempty(in2) % dc: not activated at this moment.
-%         Port_v_in = [Port_v_in,in2];
-%         Port_i_out = [Port_i_out,out2];
-%     else
-%         error(['Error']);
-%     end
-% end
-% A=YminSS.A;
-% B=YminSS.B;
-% C=YminSS.C;
-% [Phi,D]=eig(A);
-% Psi=inv(Phi); 
-% Mode=diag(D);
-% Mode_Hz=Mode/2/pi;
-% %% Trim B and C, keep only i as input and v as output
-% for i = 1:N_Bus*2
-%     Btrim(:,i)=B(:,Port_v_in(i));
-%     Ctrim(i,:)=C(Port_i_out(i),:);
-% end
-
-
 
 %% Admittance Sensitivity Matrix = -1* residue matrix
-SensMat_exp = -1*Ctrim*Phi(:,Ek)*Psi(Ek,:)*Btrim; % Residue matrix in expansion form
-% for i=1:N_Bus
-%     for j=1:N_Bus
-%         SenMat_exp1(2*i-1,2*j-1)=-1*Ctrim(2*i-1,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j-1);
-%         SenMat_exp1(2*i-1,2*j)=-1*Ctrim(2*i-1,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j);
-%         SenMat_exp1(2*i,2*j-1)=-1*Ctrim(2*i,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j-1);
-%         SenMat_exp1(2*i,2*j)=-1*Ctrim(2*i,:)*Phi(:,Ek)*Psi(Ek,:)*Btrim(:,2*j);
-%     end
-% end
-
+SensMat_exp = -1*C*Phi(:,Ek)*Psi(Ek,:)*B; % Residue matrix in expansion form
 
 % pack up into d-q format
 for i = 1:N_Bus

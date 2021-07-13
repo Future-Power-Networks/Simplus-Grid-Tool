@@ -36,7 +36,7 @@ index_adjust = 0;
 Sheets.Add([], Sheets.Item(SheetCount)); %add a new sheet after the last sheet.
 Sheets.Add([], Sheets.Item(SheetCount+1));
 Sheets.Add([], Sheets.Item(SheetCount+2));
-Sheets.Add([], Sheets.Item(SheetCount+3));
+%Sheets.Add([], Sheets.Item(SheetCount+3));
 for i=1:SheetCount %delete old sheets
     current_sheet = get(Sheets, 'Item', (i-index_adjust));
     invoke(current_sheet, 'Delete')
@@ -51,7 +51,7 @@ Sheets.Item(2).Name = 'Impedance-PF';
 %fprintf('Worksheet called %s added. \n',sheet_names{2});
 Sheets.Item(3).Name = 'Enabling';
 %fprintf('Worksheet called %s added. \n',sheet_names{3});
-Sheets.Item(4).Name = 'SensitivitySel';
+%Sheets.Item(4).Name = 'SensitivitySel';
 
 Workbook.Save;
 Workbooks.Close;

@@ -1,4 +1,5 @@
-% Use the toolbox results to acquire whole-system impedance mode
+% Use the toolbox results to acquire whole-system impedance model
+% Output: the state-space model of whole-system impedance.
 % ###ONLY support AC system at present.###
 % Method: Zsys = feedback(Zm,Yb)
 %    1) get impedance model for each apparatus Zm
@@ -6,7 +7,7 @@
 %Author: Yue Zhu
 
 
-function [ZsysObj,ZsysDSS] = WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus, N_Bus)
+function Zsys_SS = WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus, N_Bus)
 
 % 1) Switch the input v and output i of all apparatus to change into impedance model Zm
 for i = 1: N_Apparatus 
@@ -38,5 +39,9 @@ end
 % 3) Feedback Zm and Ybus
 ZsysObj = SimplusGT.ObjFeedback(ZmObj,YbusObj,Port_i_feedin,Port_v_feedout);
 [~,ZsysDSS] = ZsysObj.GetDSS(ZsysObj);
+% trim input and output, keep only i_in and v_out.
+ZsysDSS_trim = ZsysDSS(Port_v_feedout,Port_i_feedin);
+ % transfer DSS to SS
+[Zsys_SS,~] = SimplusGT.dss2ss(ZsysDSS_trim);
 
 end
