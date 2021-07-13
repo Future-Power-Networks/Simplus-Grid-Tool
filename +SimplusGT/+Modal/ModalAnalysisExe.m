@@ -77,6 +77,7 @@ end
 
 %% State Participation Factor
 if StatePFEnable == 1
+    fprintf('Calculating whole-system eigenvalue sensitivity...\n')
 %Phi_DSS;
 %StateSel_DSS;
 ApparatusStateTotal = 0;
@@ -154,8 +155,7 @@ for modei=1:ModeSelNum
         =SimplusGT.Modal.SensitivityCal(ZminSS,Ek); % get the sensitivity matrix and some admittance matrices.        
         
     [SensLayer1_val, SensLayer2_val,Layer12] = SimplusGT.Modal.SensLayer12(SensMatrix,Yre_val,modei,ZMode_Hz(Ek));
-    
-    
+        
     MdSensResult(modei).mode = [num2str(FreqSel),'~Hz'];
     MdSensResult(modei).SensMatrix = SensMatrix;
     MdSensResult(modei).Ynodal_val = Ynodal_val;
