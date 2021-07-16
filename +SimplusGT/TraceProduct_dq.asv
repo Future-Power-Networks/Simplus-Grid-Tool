@@ -1,0 +1,25 @@
+% Trace of two dq-based matrix.
+% output = Trace(a,b), where the elements is a d-q struct.
+% Author: Yue Zhu
+
+function trace_ = TraceFo_dq(a,b)
+
+if size(a)~=size(b)
+    error('size must be the same')
+end
+[row_num,col_num]=size(a);
+if row_num~=row_num
+    error('both must be square matrix')
+end
+trace_ =zeros(2);
+
+for k=1:length(a)
+    for j=1:length(a)
+        trace_.dd = trace_(1,1)+a(k,j).dd * b(k,j).dd;
+        trace_.dd = trace_(1,2)+a(k,j).dq * b(k,j).dq;
+        trace_.dd = trace_(2,1)+a(k,j).qd * b(k,j).qd;
+        trace_.dd = trace_(2,2)+a(k,j).qq * b(k,j).qq;
+    end
+end
+
+end

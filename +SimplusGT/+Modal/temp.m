@@ -1,67 +1,45 @@
-% ZmDSS_cell = cell(N_Bus);
-% ZmDSS = dss([],[],[],[],[]);
-% for k = 1:N_Bus
-%     YmObj_ = GmObj_Cell{k};
-%     [~,YmDSS_] = YmObj_.GetDSS(YmObj_);
-%     if isempty(YmDSS_.A)    %floating bus
-%         ZmDSS_cell{k} = YmDSS_;
-%     else
-%         YmDSS_ = YmDSS_(1:2,1:2);
-%         ZmDSS_cell{k} = inv(YmDSS_);
-%         %ZmDSS_cell{k} = SimplusGT.DssSwitchInOut(YmDSS_,2);
-%     end
-%     ZmDSS = SimplusGT.DssAppend(ZmDSS,ZmDSS_cell{k});
-% end
-
-[ZsysObj,ZsysDSS] = SimplusGT.WholeSysZ_cal(GmObj_Cell,YbusObj,N_Apparatus, N_Bus);
-
-%ZsysDSS = feedback(ZmDSS,YbusDSS);
-%[za,zb] = tfdata(ZsysDSS(15,15));
-Zsys_pole = pole(ZsysDSS)/2/pi;
-figure(2);
-clf
-scatter(real(Zsys_pole)*2*pi,imag(Zsys_pole),'x','LineWidth',1.5); hold on; grid on;
-xlabel('Real Part (Hz)');
-ylabel('Imaginary Part (Hz)');
-title('Zoomed pole map');
-axis([-30,10,-3.5,3.5]);
-
-[~,ZmInStr,ZmOutStr] = ZsysObj.GetString(ZsysObj);%get name string
-Port_i_in = [];
-Port_v_out = [];
-for i = 1:N_Apparatus
-    [~,in1] = SimplusGT.CellFind(ZmInStr,['i_d',num2str(i)]);    
-    [~,out1] = SimplusGT.CellFind(ZmOutStr,['v_d',num2str(i)]);
-    if ~isempty(in1) %ac apparatus
-        Port_i_in = [Port_i_in,in1,in1+1];
-        Port_v_out = [Port_v_out,out1,out1+1];
-    else
-        error(['Error']);
-    end
-end
+ mode_rad = pole_sys(186)*2*pi;
+% Gm = GmDSS_Cell{3};
+% Gm = Gm(1:2,1:2);
+% Zm = inv(Gm);
+% ZmValOrig.dd=evalfr(Zm(1,1),mode_rad);
+% ZmValOrig.dq=evalfr(Zm(1,2),mode_rad);
+% ZmValOrig.qd=evalfr(Zm(2,1),mode_rad);
+% ZmValOrig.qq=evalfr(Zm(2,2),mode_rad);
+% 
+% ParamName = fieldnames(Para{3});
+% ParaNew = Para;
+% ParaSel = getfield(Para{3},ParamName{1}); % extract the parameter
+% delta_para = 0;%1e-5*(1+abs(ParaSel));
+% ParaPerturb = ParaSel + delta_para ; % add perturabation
+% ParaNew = setfield(ParaNew{3}, ParamName{1}, ParaPerturb); % update the parameter  
+% [~,GmDSS_Cell_New,~,~,~,~,~,~,~] ...
+%         = SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{3},ApparatusType{3},...
+%                             PowerFlow{3},Para{3},Ts,ListBus);
+% 
+% Gm = GmDSS_Cell_New;
+% Gm = Gm(1:2,1:2);
+% Zm = inv(Gm);
+% ZmValNew.dd=evalfr(Zm(1,1),mode_rad);
+% ZmValNew.dq=evalfr(Zm(1,2),mode_rad);
+% ZmValNew.qd=evalfr(Zm(2,1),mode_rad);
+% ZmValNew.qq=evalfr(Zm(2,2),mode_rad);
 
 
-%minreal(ZsysDSS)
-%[~,ZbusDSS] = ZbusObj.GetDSS(ZbusObj);
-% Ym8Obj = GmObj_Cell{8};
-% [~,Ym8DSS] = Ym8Obj.GetDSS(Ym8Obj);
-% Ym8_dss = Ym8DSS(1:2,1:2);
-% Zm8DSS = inv(Ym8_dss);
-% %Zm8tfdd = tf(c);
-% [ znum , zden ] = tfdata( Zm8DSS(1,1) );
-% [zr,zp,~] = residue(znum{1},zden{1});
-% zr = zr/2/pi;
-%tf_Ym8=zeros(2);
-% tf_Ym8(1,1) = tf(Ym8DSS(1,1));
-% tf_Ym8(1,2) = tf(Ym8DSS(1,2));
-% tf_Ym8(2,1) = tf(Ym8DSS(2,1));
-% tf_Ym8(2,2) = tf(Ym8DSS(2,2));
-% Ym8SS = tf2ss(
+GmDSS_Cell_3=GmDSS_Cell{3};
+GmValOrig.dd=evalfr(GmDSS_Cell_3(1,1),mode_rad)
 
-%Ym8DSS.B = Ym8DSS.B(:,1:2);
-%Ym8DSS.D= Ym8DSS.D(1:2, 1:2);
-%Ym8DSS.C= Ym8DSS.C(1:2,:);
+[~,GmDSS_Cell_3x,~,~,~,~,~,~,~] ...
+        = SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{3},ApparatusType{3},...
+                            ApparatusPowerFlow{3},Para{3},Ts,ListBus);
+                        
+GmValOrig.dd=evalfr(GmDSS_Cell_3x(1,1),mode_rad)
 
-%Ym8DSS.B = Bx;
 
-%inv(Ym8DSS)h
+
+% function [GmObj,GmDSS,ApparatusPara,ApparatusEqui,DiscreDampingResistor,OtherInputs,StateStr,InputStr,OutputStr] ...
+%         = ApparatusModelCreate(ApparatusBus,Type,PowerFlow,Para,Ts,ListBus) 
+%     
+% [GmObj_Cell{i},GmDSS_Cell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
+%         SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{i},ApparatusType{i},ApparatusPowerFlow{i},Para{i},Ts,ListBus);
+    

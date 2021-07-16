@@ -7,14 +7,14 @@
 % not affect the equilibrium point at other points. Therefore, to calculate
 % the new impedance, we only need to update the parameter, and then call the function
 % SimplusGT.Toolbox.ApparatusModelCreate, and take the output GmDSS_Cell.
-function Layer3Result = MdLayer3(Residue,ZmVal,FreqSel,ApparatusType,...
-                ApparatusSelL3All,Para,PowerFlow,Ts,ApparatusBus,ListBus)
+function Layer3Result = MdLayer3(Residue,ZmVal,Mode_Hz,ApparatusType,...
+                ApparatusSelL3All,Para,ApparatusPowerFlow,Ts,ApparatusBus,ListBus)
 
 ApparatusSelNum=length(ApparatusSelL3All);
-
+Mode_rad = Mode_Hz*2*pi;
 for ApparatusCount = 1:ApparatusSelNum
     ApparatusSelL3 = ApparatusSelL3All(ApparatusCount);
-    ZmValOrig = ZmVal(ApparatusSelL3);
+    ZmValOrig = ZmVal(ApparatusSelL3);  
     ParamName = fieldnames(Para{ApparatusSelL3});
     ParamNum = length(ParamName);
     Residue_ = Residue(ApparatusSelL3);
@@ -25,14 +25,13 @@ for ApparatusCount = 1:ApparatusSelNum
         delta_para = 1e-5*(1+abs(ParaSel));
         ParaPerturb = ParaSel + delta_para ; % add perturabation
         ParaNew = setfield(ParaNew{ApparatusSelL3}, ParamName{k}, ParaPerturb); % update the parameter  
-%         [~,GmDSS_Cell_New,~,~,~,~,~,~] = ...
-%             SimplusGT.Toolbox.ApparatusModelCreate_old('Type', ApparatusType{ApparatusSelL3} ,...
-%             'Flow',PowerFlow{ApparatusSelL3},'Para',ParaNew,'Ts',Ts);        
+   
         [~,GmDSS_Cell_New,~,~,~,~,~,~,~] ...
         = SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{ApparatusSelL3},ApparatusType{ApparatusSelL3},...
-                            PowerFlow{ApparatusSelL3},ParaNew,Ts,ListBus);
-     
-        ZmValNew = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell_New, FreqSel);
+                            ApparatusPowerFlow{ApparatusSelL3},ParaNew,Ts,ListBus);
+        
+       
+       ZmValNew = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell_New, Mode_rad);
         
         Layer3Result(ApparatusCount).Apparatus={['Apparatus',num2str(ApparatusSelL3)]};
         Layer3Result(ApparatusCount).Result(k).ParaName = ParamName(k);

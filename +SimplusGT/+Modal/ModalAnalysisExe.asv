@@ -137,6 +137,7 @@ MdSensResult=[];
 
 if SensEnable == 1 % if enable
 fprintf('Calculating whole-system eigenvalue sensitivity...\n')
+fprintf('Calculating whole-system impedance...\n')
 ZminSS = SimplusGT.WholeSysZ_cal(GmObj,YbusObj,Port_i, Port_v);
 [~,D]=eig(ZminSS.A);
 ZMode_rad=diag(D);
@@ -161,14 +162,13 @@ for modei=1:ModeSelNum
     Mode_rad = ZMode_rad(Ek);
    
     fprintf('Calculating sensitivity matrix...\n')
-    [SensMatrix, ~, Ynodal_val, Yre_val] ...
-        =SimplusGT.Modal.SensitivityCal(ZminSS,Ek,Mode_rad,YbusObj); % get the sensitivity matrix and some admittance matrices.        
+    [SensMatrix, Ybus_val, Ynodal_val, Yre_val] ...
+        =SimplusGT.Modal.SensitivityCal(ZminSS,Ek,lam); % get the sensitivity matrix and some admittance matrices.        
     
     fprintf('Calculating sensitivity Layer-2...\n')
     [SensLayer1_val, SensLayer2_val,Layer12] = SimplusGT.Modal.SensLayer12(SensMatrix,Yre_val,modei,ZMode_Hz(Ek));
     fprintf('Calculating sensitivity Layer-3...\n')
-    Line_sel = [12,21];% See ListLineNew!.
-    [SensLayer3_app,SensLayer3_bus] = SimplusGT.Modal.SensLayer3(SensMatrix,Mode_rad,ApparatusSelL3All,Line_sel);
+    SensLayer3_app = SimplusGT.Modal.SensLayer3(SensMatrix,Mode_rad,ApparatusSelL3All);
        
     MdSensResult(modei).mode = [num2str(FreqSel),'~Hz'];
     MdSensResult(modei).SensMatrix = SensMatrix;
@@ -178,7 +178,7 @@ for modei=1:ModeSelNum
     MdSensResult(modei).Layer2_mat = SensLayer2_val;
     MdSensResult(modei).Layer12 = Layer12;
     MdSensResult(modei).Layer3_app = SensLayer3_app;
-    MdSensResult(modei).Layer3_bus = SensLayer3_bus;
+        
     %MdSensResult.Sen
 end
 end

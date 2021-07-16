@@ -26,12 +26,11 @@ Psi=inv(Phi);
 Mode=diag(D);
 
 %% Admittance Sensitivity Matrix = -1* residue matrix
-%SensMat_exp = zeros(N_Bus*2);
-% for i=1:N_Bus*2
-%     for j=1:N_Bus*2
-%         SensMat_exp(i,j)=-1*C(i,:)*Phi(:,Ek)*Psi(Ek,:)*B(:,j);
-%     end
-% end
+for i=1:N_Bus*2
+    for j=1:N_Bus*2
+        SensMat_exp(i,j)=-1*C(i,:)*Phi(:,Ek)
+    end
+end
 SensMat_exp = -1*C*Phi(:,Ek)*Psi(Ek,:)*B; % Residue matrix in expansion form
 
 % pack up into d-q format

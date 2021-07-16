@@ -27,6 +27,7 @@ ZmValAll = cell(1,ModeSelNum);
 for modei=1:ModeSelNum
     ModeSel = ModeSelAll(modei);
     FreqSel = imag(GbMode(ModeSel));
+    lambda = GbMode(ModeSel)*2*pi;
     pin=1;
     pout=1;
     for k =1: N_Apparatus
@@ -38,10 +39,10 @@ for modei=1:ModeSelNum
             ResidueAll{modei}(k).qq=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);           
             
             1i;
-            GmTf.dd=evalfr(GmDSS_Cell{k}(1,1),2*pi*FreqSel*1i);
-            GmTf.dq=evalfr(GmDSS_Cell{k}(1,2),2*pi*FreqSel*1i);
-            GmTf.qd=evalfr(GmDSS_Cell{k}(2,1),2*pi*FreqSel*1i);
-            GmTf.qq=evalfr(GmDSS_Cell{k}(2,2),2*pi*FreqSel*1i);
+            GmTf.dd=evalfr(GmDSS_Cell{k}(1,1),lambda);
+            GmTf.dq=evalfr(GmDSS_Cell{k}(1,2),lambda);
+            GmTf.qd=evalfr(GmDSS_Cell{k}(2,1),lambda);
+            GmTf.qq=evalfr(GmDSS_Cell{k}(2,2),lambda);
             Gm = [GmTf.dd, GmTf.dq ; GmTf.qd, GmTf.qq];
             Zm = inv(Gm);
             ZmValAll{modei}(k).dd = Zm(1,1);

@@ -104,19 +104,17 @@ for m = 1:length(Line_sel) % all rows
             Sens_branch.qq=SensMatrix(FB(k),FB(k)).qq+SensMatrix(TB(k),TB(k)).qq-...
                 SensMatrix(FB(k),TB(k)).qq-SensMatrix(TB(k),FB(k)).qq;
             if j==1
-                Dzx=[Znew-Zorig,0; 0, Znew-Zorig]/DZ;
-                Dy_=inv(Dzx);
+                Dz=(Znew-Zorig,0; 0, Znew-Zorig);
+                Dy_=inv(Dz);
                 Dy.dd=Dy_(1,1);
-                Dy.dq=Dy_(1,2);
-                Dy.qd=Dy_(2,1);
-                Dy.qq=Dy_(2,2);
+                Dy.dq=Dy_(1,1);
+                Dy.qd=Dy_(1,1);
+                Dy.qq=(1/Znew-1/Zorig)/DZ;
             elseif j==2
-                Dzx=[0, 1i*(Znew-Zorig); -1i*(Znew-Zorig), 0]/DZ;
-                Dy_=inv(Dzx);
-                Dy.dd=Dy_(1,1);
-                Dy.dq=Dy_(1,2);
-                Dy.qd=Dy_(2,1);
-                Dy.qq=Dy_(2,2);
+                Dy.dd=0;
+                Dy.dq=(1/(Znew*1i)-1/(Zorig*1i))/DZ;
+                Dy.qd=(1/(Znew*1i)-1/(Zorig*1i))/DZ;
+                Dy.qq=0;
             else
                 error('not support for now!')
             end
