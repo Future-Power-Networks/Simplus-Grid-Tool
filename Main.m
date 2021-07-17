@@ -8,18 +8,19 @@ fprintf('==================================\n')
 fprintf('Start.\n')
 fprintf('==================================\n')
 
+% ### Set the name of netlist
+% Other possible function: readmatrix, csvread ...
+% Name_Netlist = 'netlist_Paper_SingleSGInfiniteBus.xlsx';
+% Name_Netlist = 'netlist_Paper_SingleVSIInfiniteBus.xlsx';
+Name_Netlist = 'netlist_Paper_IEEE14Bus_v7.xlsx';
+
 %%
 % ==================================================
 % Load customized data
 % ==================================================
 fprintf('Load customized data.\n')
 
-% ### Load the data
-% Other possible function: readmatrix, csvread ...
-% Name_Netlist = 'netlist_Paper_SingleSGInfiniteBus.xlsx';
-% Name_Netlist = 'netlist_Paper_SingleVSIInfiniteBus.xlsx';
-Name_Netlist = 'netlist_Paper_IEEE14Bus_v7.xlsx';
-
+% #### Load data
 ListBus = xlsread(Name_Netlist,1);     
 ListDevice = xlsread(Name_Netlist,2);
 ListBasic = xlsread(Name_Netlist,3);

@@ -7,7 +7,7 @@
 clear all;
 close all;
 
-enable_save = 1;
+enable_save = 0;
 
 s = sym('s');
 F0 = 60;
@@ -112,8 +112,8 @@ end
 
 %% Plot K in complex plane
 
+% With frequency shift
 if 1
-
 fn = fn+1;
 figure(fn)
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.25 0.35]);
@@ -130,11 +130,32 @@ Y_L = -600;
 Y_H = 200;
 set(gca,'YLim',[Y_L,Y_H]);
 % set(gca,'YTick',YTick);
-
 if enable_save
     print(gcf,'Case_VSI_Complex_K.png','-dpng','-r600');
 end
+end
 
+% No frequency shift
+if 0
+fn = fn+1;
+figure(fn)
+set(gcf,'units','normalized','outerposition',[0.1 0.1 0.25 0.35]);
+plot_K(K{1},0*1j*2*pi); grid on; hold on;
+plot_K(K{2},0*1j*2*pi); grid on; hold on;
+plot_K(K{3},0*1j*2*pi); grid on; hold on;
+plot_K(K{4},0*1j*2*pi); grid on; hold on;
+plot_K(K{5},0*1j*2*pi); grid on; hold on;
+% X_L = -200;
+% X_H = 300;
+% set(gca,'XLim',[X_L,X_H]);
+% set(gca,'XTick',[-200,0,200,300]);
+% Y_L = -600;
+% Y_H = 200;
+% set(gca,'YLim',[Y_L,Y_H]);
+% set(gca,'YTick',YTick);
+if enable_save
+    print(gcf,'Case_VSI_Complex_K.png','-dpng','-r600');
+end
 end
 
 %% Plot poles of K
