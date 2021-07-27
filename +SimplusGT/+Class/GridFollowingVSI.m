@@ -101,7 +101,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             Q0	= obj.PowerFlow(2);
             V0	= obj.PowerFlow(3);
             xi	= obj.PowerFlow(4);
-            w   = obj.PowerFlow(5);
+            w0  = obj.PowerFlow(5);
             
            	% Get parameters
             C_dc        = obj.Para(1);

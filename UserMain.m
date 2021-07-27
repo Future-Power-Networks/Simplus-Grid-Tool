@@ -1,5 +1,6 @@
-% To users:
-% Please use this file to run toolbox.
+% Read me please:
+% Please read the comments in this file carefully, and use this file to run
+% toolbox.
 
 %% Tips
 %
