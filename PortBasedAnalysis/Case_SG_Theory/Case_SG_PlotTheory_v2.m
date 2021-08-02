@@ -5,9 +5,11 @@
 
 %%
 clear all;
+clc;
 close all;
 
-enable_save = 1;
+enable_save = 0;
+enable_LineEMT = 1;     % 1-proposed; 0-conventional.
 
 s = sym('s');
 F0 = 60;
@@ -33,25 +35,33 @@ ColorRGB();
 % GsysDSS_J3d5_D0d1_R0d2  = load('GsysDSS_psif1_D0d1_R0d2.mat').GsysDSS;
 % GsysDSS_J3d5_D0d1_R0d3  = load('GsysDSS_psif1_D0d1_R0d3.mat').GsysDSS;
 
-GsysDSS_J3d5_D0d1_R0    = load('GsysDSS_psif1_D0d2_R0.mat').GsysDSS;
-GsysDSS_J3d5_D0d1_R0d05 = load('GsysDSS_psif1_D0d2_R0d05.mat').GsysDSS;
-GsysDSS_J3d5_D0d1_R0d1  = load('GsysDSS_psif1_D0d2_R0d1.mat').GsysDSS;
-GsysDSS_J3d5_D0d1_R0d2  = load('GsysDSS_psif1_D0d2_R0d2.mat').GsysDSS;
-GsysDSS_J3d5_D0d1_R0d3  = load('GsysDSS_psif1_D0d2_R0d3.mat').GsysDSS;
+if enable_LineEMT
+GsysDSS_J3d5_D0d2_R0    = load('GsysDSS_psif1_D0d2_R0.mat').GsysDSS;
+GsysDSS_J3d5_D0d2_R0d05 = load('GsysDSS_psif1_D0d2_R0d05.mat').GsysDSS;
+GsysDSS_J3d5_D0d2_R0d1  = load('GsysDSS_psif1_D0d2_R0d1.mat').GsysDSS;
+GsysDSS_J3d5_D0d2_R0d2  = load('GsysDSS_psif1_D0d2_R0d2.mat').GsysDSS;
+GsysDSS_J3d5_D0d2_R0d3  = load('GsysDSS_psif1_D0d2_R0d3.mat').GsysDSS;
+else
+GsysDSS_J3d5_D0d2_R0    = load('st_GsysDSS_psif1_D0d2_R0.mat').st_GsysDSS;
+GsysDSS_J3d5_D0d2_R0d05 = load('st_GsysDSS_psif1_D0d2_R0d05.mat').st_GsysDSS;
+GsysDSS_J3d5_D0d2_R0d1  = load('st_GsysDSS_psif1_D0d2_R0d1.mat').st_GsysDSS;
+GsysDSS_J3d5_D0d2_R0d2  = load('st_GsysDSS_psif1_D0d2_R0d2.mat').st_GsysDSS;
+GsysDSS_J3d5_D0d2_R0d3  = load('st_GsysDSS_psif1_D0d2_R0d3.mat').st_GsysDSS;
+end
 
 % Get min realization
-GminSS{1} = minreal(GsysDSS_J3d5_D0d1_R0);
-GminSS{2} = minreal(GsysDSS_J3d5_D0d1_R0d05);
-GminSS{3} = minreal(GsysDSS_J3d5_D0d1_R0d1);
-GminSS{4} = minreal(GsysDSS_J3d5_D0d1_R0d2);
-GminSS{5} = minreal(GsysDSS_J3d5_D0d1_R0d3);
+GminSS{1} = minreal(GsysDSS_J3d5_D0d2_R0);
+GminSS{2} = minreal(GsysDSS_J3d5_D0d2_R0d05);
+GminSS{3} = minreal(GsysDSS_J3d5_D0d2_R0d1);
+GminSS{4} = minreal(GsysDSS_J3d5_D0d2_R0d2);
+GminSS{5} = minreal(GsysDSS_J3d5_D0d2_R0d3);
 
 % Calculate poles
-pole_sys{1}     = pole(GsysDSS_J3d5_D0d1_R0)/2/pi; 
-pole_sys{2}     = pole(GsysDSS_J3d5_D0d1_R0d05)/2/pi; 
-pole_sys{3}     = pole(GsysDSS_J3d5_D0d1_R0d1)/2/pi;
-pole_sys{4}     = pole(GsysDSS_J3d5_D0d1_R0d2)/2/pi; 
-pole_sys{5}     = pole(GsysDSS_J3d5_D0d1_R0d3)/2/pi; 
+pole_sys{1}     = pole(GsysDSS_J3d5_D0d2_R0)/2/pi; 
+pole_sys{2}     = pole(GsysDSS_J3d5_D0d2_R0d05)/2/pi; 
+pole_sys{3}     = pole(GsysDSS_J3d5_D0d2_R0d1)/2/pi;
+pole_sys{4}     = pole(GsysDSS_J3d5_D0d2_R0d2)/2/pi; 
+pole_sys{5}     = pole(GsysDSS_J3d5_D0d2_R0d3)/2/pi; 
 
 % Convert ss to sym for plotting
 for i = 1:length(GminSS)
@@ -131,7 +141,11 @@ set(gca,'YLim',[Y_L,Y_H]);
 set(gca,'YTick',YTick);
 
 if enable_save
-    print(gcf,'Case_SG_PoleLocus.png','-dpng','-r600');
+    if enable_LineEMT
+        print(gcf,'Case_SG_PoleLocus.png','-dpng','-r600');
+    else
+        print(gcf,'Case_SG_PoleLocus_NoLineEMT.png','-dpng','-r600');
+    end
 end
 
 end
@@ -142,23 +156,51 @@ if 1
 fn = fn+1;
 figure(fn)
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.25 0.35]);
-
-plot_K(K{1},1j*2*pi); grid on; hold on; %
-plot_K(K{2},1j*2*pi); grid on; hold on; % 
-plot_K(K{3},1j*2*pi); grid on; hold on; % 
-plot_K(K{4},1j*2*pi); grid on; hold on; % 
-plot_K(K{5},1j*2*pi); grid on; hold on; %
-X_L = -3e-6;
-X_H = 2e-6;
-set(gca,'XLim',[X_L,X_H]);
-% set(gca,'XTick',XTick);
-Y_L = -0.6e-3;
-Y_H = 0.2e-3;
-set(gca,'YLim',[Y_L,Y_H]);
-set(gca,'YTick',[-0.6e-3,-0.4e-3,-0.2e-3,0,0.2e-3]);
-
-if enable_save
-    print(gcf,'Case_SG_Complex_K.png','-dpng','-r600');
+if enable_LineEMT
+    plot_K(K{1},1j*2*pi); grid on; hold on; %
+    plot_K(K{2},1j*2*pi); grid on; hold on; % 
+    plot_K(K{3},1j*2*pi); grid on; hold on; % 
+    plot_K(K{4},1j*2*pi); grid on; hold on; % 
+    plot_K(K{5},1j*2*pi); grid on; hold on; %
+    X_L = -3e-6;
+    X_H = 2e-6;
+    set(gca,'XLim',[X_L,X_H]);
+    % set(gca,'XTick',XTick);
+    Y_L = -0.6e-3;
+    Y_H = 0.2e-3;
+    set(gca,'YLim',[Y_L,Y_H]);
+    set(gca,'YTick',[-0.6e-3,-0.4e-3,-0.2e-3,0,0.2e-3]);
+    if enable_save
+        print(gcf,'Case_SG_Complex_K.png','-dpng','-r600');
+    end
+else
+    plot_K(K{1},0.962*1j*2*pi); grid on; hold on; %
+    plot_K(K{2},1.031*1j*2*pi); grid on; hold on; % 
+    plot_K(K{3},1.078*1j*2*pi); grid on; hold on; % 
+    plot_K(K{4},1.131*1j*2*pi); grid on; hold on; % 
+    plot_K(K{5},1.149*1j*2*pi); grid on; hold on; %
+    X_L = 0;
+    X_H = 2e-6;
+    set(gca,'XLim',[X_L,X_H]);
+    % set(gca,'XTick',XTick);
+    Y_L = -0.6e-3;
+    Y_H = 0;
+    set(gca,'YLim',[Y_L,Y_H]);
+    set(gca,'YTick',[-0.6e-3,-0.4e-3,-0.2e-3,0]);
+    if enable_save
+        print(gcf,'Case_SG_Complex_K_NoLineEMT_Zoomed.png','-dpng','-r600');
+    end
+  	X_L = -3e-6;
+    X_H = 2e-6;
+    set(gca,'XLim',[X_L,X_H]);
+    % set(gca,'XTick',XTick);
+    Y_L = -0.6e-3;
+    Y_H = 0.2e-3;
+    set(gca,'YLim',[Y_L,Y_H]);
+    set(gca,'YTick',[-0.6e-3,-0.4e-3,-0.2e-3,0,0.2e-3]);
+    if enable_save
+        print(gcf,'Case_SG_Complex_K_NoLineEMT.png','-dpng','-r600');
+    end
 end
 
 end

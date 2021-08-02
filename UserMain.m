@@ -82,6 +82,13 @@ fprintf('Get the descriptor-state-space model of network lines.\n')
 ZbusObj = obj_SwitchInOut(YbusObj,lsw);
 [ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.ReadString(ZbusObj);
 
+[st_YbusObj,st_YbusDSS,~] = YbusCalcDSS_Steady(ListLine,Wbase);
+[~,lsw] = size(st_YbusDSS.B);
+st_ZbusObj = obj_SwitchInOut(st_YbusObj,lsw);
+[ZbusStateStr_st,ZbusInputStr_st,ZbusOutputStr_st] = st_ZbusObj.ReadString(st_ZbusObj);
+% Notes:
+% "st" means steady.
+
 % ### Get the models of bus devices
 fprintf('Get the descriptor-state-space model of bus devices.\n')
 for i = 1:N_Device
@@ -100,6 +107,8 @@ fprintf('Get the descriptor-state-space model of whole system.\n')
 GmObj = DeviceModel_Link(GmObj_Cell);
 [GsysObj,GsysDSS,Port_v,Port_i,Port_w,Port_T_m,Port_ang_r,Port_P_dc,Port_v_dc] = ...
     GmZbus_Connect(GmObj,ZbusObj);
+[st_GsysObj,st_GsysDSS,st_Port_v,st_Port_i,st_Port_w,st_Port_T_m,st_Port_ang_r,st_Port_P_dc,st_Port_v_dc] = ...
+    GmZbus_Connect(GmObj,st_ZbusObj);
 
 % ### Chech if the system is proper
 fprintf('Check if the whole system is proper:\n')
@@ -177,6 +186,7 @@ figure_n = 1000;
 % Plot pole/zero map
 fprintf('Calculate pole/zero.\n')
 pole_sys = pole(GsysDSS)/2/pi;
+st_pole_sys = pole(st_GsysDSS)/2/pi;
 fprintf('Check if the system is stable:\n')
 if isempty(find(real(pole_sys)>1e-9, 1))
     fprintf('Stable.\n');
@@ -190,14 +200,22 @@ if Enable_PlotPole
     scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
-    mtit('Global Pole Map');
+    mtit('Global Pole Map: Actual');
     
 	figure_n = figure_n+1;
     figure(figure_n);
     scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
-    mtit('Zoomed Pole Map');
+    mtit('Zoomed Pole Map: Actual');
+    axis([-250,50,-250,250]);
+    
+  	figure_n = figure_n+1;
+    figure(figure_n);
+    scatter(real(st_pole_sys),imag(st_pole_sys),'x','LineWidth',1.5); hold on; grid on;
+    xlabel('Real Part (Hz)');
+    ylabel('Imaginary Part (Hz)');
+    mtit('Zoomed Pole Map: No Line EMT Dynamics');
     axis([-250,50,-250,250]);
 else
     fprintf('Warning: The default plot of pole map is disabled.\n')

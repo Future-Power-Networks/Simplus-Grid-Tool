@@ -5,9 +5,11 @@
 
 %%
 clear all;
+clc;
 close all;
 
-enable_save = 0;
+enable_save = 1;
+enable_LineEMT = 1;     % 1-proposed; 0-conventional.
 
 s = sym('s');
 F0 = 60;
@@ -24,11 +26,21 @@ C_dc = 1.25;
 
 %%
 % Load saved data
+if enable_LineEMT
+% With line EMT dynamcis
 GsysDSS_SCR1d3  = load('GsysDSS_SCR1d3.mat').GsysDSS;
 GsysDSS_SCR1d5  = load('GsysDSS_SCR1d5.mat').GsysDSS;
 GsysDSS_SCR1d7  = load('GsysDSS_SCR1d7.mat').GsysDSS;
 GsysDSS_SCR2    = load('GsysDSS_SCR2.mat').GsysDSS;
 GsysDSS_SCR2d5  = load('GsysDSS_SCR2d5.mat').GsysDSS;
+else
+% Without line EMT dynamics
+GsysDSS_SCR1d3  = load('st_GsysDSS_SCR1d3.mat').st_GsysDSS;
+GsysDSS_SCR1d5  = load('st_GsysDSS_SCR1d5.mat').st_GsysDSS;
+GsysDSS_SCR1d7  = load('st_GsysDSS_SCR1d7.mat').st_GsysDSS;
+GsysDSS_SCR2    = load('st_GsysDSS_SCR2.mat').st_GsysDSS;
+GsysDSS_SCR2d5  = load('st_GsysDSS_SCR2d5.mat').st_GsysDSS;
+end
 
 % Notes:
 % These SCR values consider both the grid impedance and the output filter
@@ -105,57 +117,71 @@ set(gca,'YLim',[Y_L,Y_H]);
 set(gca,'YTick',YTick);
 
 if enable_save
-    print(gcf,'Case_VSI_PoleLocus.png','-dpng','-r600');
+    if enable_LineEMT
+        print(gcf,'Case_VSI_PoleLocus.png','-dpng','-r600');
+    else
+        print(gcf,'Case_VSI_PoleLocus_NoLineEMT.png','-dpng','-r600');
+    end
 end
 
 end
 
 %% Plot K in complex plane
 
-% With frequency shift
 if 1
+    
 fn = fn+1;
 figure(fn)
 set(gcf,'units','normalized','outerposition',[0.1 0.1 0.25 0.35]);
-plot_K(K{1},81.04*1j*2*pi); grid on; hold on;
-plot_K(K{2},71.57*1j*2*pi); grid on; hold on;
-plot_K(K{3},65.27*1j*2*pi); grid on; hold on;
-plot_K(K{4},60.74*1j*2*pi); grid on; hold on;
-plot_K(K{5},55.86*1j*2*pi); grid on; hold on;
-X_L = -200;
-X_H = 300;
-set(gca,'XLim',[X_L,X_H]);
-set(gca,'XTick',[-200,0,200,300]);
-Y_L = -600;
-Y_H = 200;
-set(gca,'YLim',[Y_L,Y_H]);
-% set(gca,'YTick',YTick);
-if enable_save
-    print(gcf,'Case_VSI_Complex_K.png','-dpng','-r600');
-end
+if enable_LineEMT
+    plot_K(K{1},81.04*1j*2*pi); grid on; hold on;
+    plot_K(K{2},71.57*1j*2*pi); grid on; hold on;
+    plot_K(K{3},65.27*1j*2*pi); grid on; hold on;
+    plot_K(K{4},60.74*1j*2*pi); grid on; hold on;
+    plot_K(K{5},55.86*1j*2*pi); grid on; hold on;
+    % Notes:
+    % The frequency shift is required because, for an inverter, the
+    % frequency of the osillation mode is not close to 0 Hz anymore.
+    X_L = -200;
+    X_H = 300;
+    set(gca,'XLim',[X_L,X_H]);
+    set(gca,'XTick',[-200,0,200,300]);
+    Y_L = -600;
+    Y_H = 200;
+    set(gca,'YLim',[Y_L,Y_H]);
+    if enable_save
+      print(gcf,'Case_VSI_Complex_K.png','-dpng','-r600');
+    end
+else
+    plot_K(K{1},6.289*1j*2*pi); grid on; hold on;
+    plot_K(K{2},6.022*1j*2*pi); grid on; hold on;
+    plot_K(K{3},5.723*1j*2*pi); grid on; hold on;
+    plot_K(K{4},5.286*1j*2*pi); grid on; hold on;
+    plot_K(K{5},4.643*1j*2*pi); grid on; hold on;
+  	X_L = 0;
+    X_H = 200;
+    set(gca,'XLim',[X_L,X_H]);
+    set(gca,'XTick',[0,100,200]);
+    Y_L = -300;
+    Y_H = 0;
+    set(gca,'YLim',[Y_L,Y_H]);
+    set(gca,'YTick',[-300,-200,-100,0]);
+	if enable_save
+        print(gcf,'Case_VSI_Complex_K_NoLineEMT_zoomed.png','-dpng','-r600');
+    end
+   	X_L = -200;
+    X_H = 300;
+    set(gca,'XLim',[X_L,X_H]);
+    set(gca,'XTick',[-200,0,200,300]);
+    Y_L = -600;
+    Y_H = 200;
+    set(gca,'YLim',[Y_L,Y_H]);
+    set(gca,'YTick',[-600,-400,-200,0,200]);
+    if enable_save
+        print(gcf,'Case_VSI_Complex_K_NoLineEMT.png','-dpng','-r600');
+    end
 end
 
-% No frequency shift
-if 0
-fn = fn+1;
-figure(fn)
-set(gcf,'units','normalized','outerposition',[0.1 0.1 0.25 0.35]);
-plot_K(K{1},0*1j*2*pi); grid on; hold on;
-plot_K(K{2},0*1j*2*pi); grid on; hold on;
-plot_K(K{3},0*1j*2*pi); grid on; hold on;
-plot_K(K{4},0*1j*2*pi); grid on; hold on;
-plot_K(K{5},0*1j*2*pi); grid on; hold on;
-% X_L = -200;
-% X_H = 300;
-% set(gca,'XLim',[X_L,X_H]);
-% set(gca,'XTick',[-200,0,200,300]);
-% Y_L = -600;
-% Y_H = 200;
-% set(gca,'YLim',[Y_L,Y_H]);
-% set(gca,'YTick',YTick);
-if enable_save
-    print(gcf,'Case_VSI_Complex_K.png','-dpng','-r600');
-end
 end
 
 %% Plot poles of K
