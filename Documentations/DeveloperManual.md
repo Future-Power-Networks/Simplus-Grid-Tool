@@ -1,4 +1,4 @@
-# Manual for Developers
+# SimplusGT Manual for Developers
 
 ## Introduction
 

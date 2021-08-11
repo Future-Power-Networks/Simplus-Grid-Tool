@@ -1,4 +1,4 @@
-# Manual for Users
+# SimplusGT Manual for Users
 
 ## Introduction
 
