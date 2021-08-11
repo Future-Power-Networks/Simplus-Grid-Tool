@@ -10,11 +10,13 @@ This is the quick manual for developers who want to contribute to the toolbox de
 
 2- The toolbox structure will be introduced briefly below. After that, you can also view the advanced manual in "Files for Developers" subfolder, and/or view the codes and comments in each ".m" file for more details.
 
-3- There are three sets of naming conventions:  
+## Coding Style
+
+There are three sets of naming conventions:  
     1) microsoft, like PlotFigure, EpwmConfig  
     2) gnu-linux, like plot_figure, pwm_config  
     3) free style, like ss2tf  
-Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly in this project, and use free style when needed.
+Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly for this toolbox, and use free style when needed. For more details of the coding style, please see "[CodingStyle.md](https://github.com/Future-Power-Networks/Simplus-Grid-Tool/blob/master/Documentations/CodingStyle.md)".
 
 ## Logic and Architecture
 

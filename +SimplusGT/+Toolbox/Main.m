@@ -1,3 +1,5 @@
+% This is the main function for SimplusGT.
+
 % Author(s): Yitong Li, Yunjie Gu
 
 %% 
