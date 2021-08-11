@@ -14,7 +14,7 @@ Copy the repository (download all codes) into your PC, and run "InstallSimplusGT
 
 ## Documentations
 
-The comments in "UserMain.m" and "UserData.xlsm" explain basic functions. More details and advanced functions can be found in manuals in "Documentations" folder.
+The comments in "UserMain.m" and "UserData.xlsm" explain basic functions, please read them carefully. More details can be found in manuals in "Documentations" folder.
 
 ## Contact
 
