@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is the quick manual for developers who want to contribute to the toolbox developement. If you have any inquires, please feel free to contact: Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yg934@bath.ac.uk), and Yue Zhu (yue.zhu18@imperial.ac.uk).
+This is the quick manual for developers who want to contribute to the toolbox developement or for uses who want to know more technical details of this toolbox. If you have any inquires, please feel free to contact: Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yg934@bath.ac.uk), and Yue Zhu (yue.zhu18@imperial.ac.uk).
  
 ## Tips for Developers
 
