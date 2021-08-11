@@ -7,8 +7,8 @@ This is an instruction of the detailed coding style for Simplus Grid Tool (Simpl
 ## Naming Convention
 
 There are three sets of naming conventions:  
-    1) microsoft, like PlotFigure 
-    2) gnu-linux, like plot_figure
+    1) microsoft, like PlotFigure  
+    2) gnu-linux, like plot_figure  
     3) free style, like ss2tf  
 Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft for this toolbox, and use free style when needed. This rule is valid for names of folders, functions, variables.
 
