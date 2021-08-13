@@ -46,5 +46,9 @@ for i = 1:n
 end
 </pre>
 
+## Validation of Codes
+
+Everytime before raising a pull request, everyone should validate the newly added codes first. By runing the default 4 bus system, and comparing the results with the original results "[ForDebug_4Bus.png](https://github.com/Future-Power-Networks/Simplus-Grid-Tool/blob/master/Debug/ForDebug_4Bus.png)" saved in Debug folder. The results include eigenvalue maps, bode diagram, and time-domain simulations. In most cases, the results should remain PERFECTLY same. If they are changed, the changes should agree the logic and be highlighted in the pull request.
+
 
 
