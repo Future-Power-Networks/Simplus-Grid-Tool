@@ -10,7 +10,11 @@ There are three sets of naming conventions:
     1) microsoft, like PlotFigure  
     2) gnu-linux, like plot_figure  
     3) free style, like ss2tf  
-Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft for this toolbox, and use free style when needed. This rule is valid for names of folders, functions, variables.
+Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft for this toolbox, and use free style when needed. 
+
+This rule is valid for names of folders, functions, variables.
+
+Please do not overload the functions given by Matlab or written by others. Please use existing functions or doing modifications, rather than creating a new but similar function with a same name.
 
 ## Folder
 
@@ -48,7 +52,9 @@ end
 
 ## Validation of Codes
 
-Everytime before raising a pull request, everyone should validate the newly added codes first. By runing the default 4 bus system, and comparing the results with the original results "[ForDebug_4Bus.png](https://github.com/Future-Power-Networks/Simplus-Grid-Tool/blob/master/Debug/ForDebug_4Bus.png)" saved in Debug folder. The results include eigenvalue maps, bode diagram, and time-domain simulations. In most cases, the results should remain PERFECTLY same. If they are changed, the changes should agree the logic and be highlighted in the pull request.
+Before raising a pull request, everyone should validate the modified codes first, by runing the default 4 bus system, and comparing the results with the original results "[ForDebug_4Bus.png](https://github.com/Future-Power-Networks/Simplus-Grid-Tool/blob/master/Debug/ForDebug_4Bus.png)" saved in "Debug" folder. The results include eigenvalue maps, bode diagram, and time-domain simulations. In most cases, the results should remain PERFECTLY same. If they are changed, the changes should agree the logic and be highlighted in the pull request. Further benchmark will be added later.
+
+
 
 
 
