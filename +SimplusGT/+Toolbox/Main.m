@@ -199,9 +199,13 @@ fprintf('Check Stability\n')
 fprintf('==================================\n')
 
 fprintf('Calculatting pole/zero...\n')
-pole_sys = pole(GsysDSS)/2/pi;
+% pole_sys_ = pole(GsysDSS)/2/pi;
+[~,pole_sys] = eig(GsysDSS.A,GsysDSS.E);
+pole_sys = diag(pole_sys);
+pole_sys = pole_sys(find(real(pole_sys) ~= inf));
+pole_sys = pole_sys/2/pi;
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-8, 1))
+if isempty(find(real(pole_sys)>1e-6, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
