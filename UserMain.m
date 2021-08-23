@@ -26,25 +26,9 @@ close all;  % Close all figures, etc
 % Other example power systems (in "Examples" folder):
 %
 % Pure ac power system examples:
-% UserData = 'SgInfiniteBus.xlsx';              % Single synchronous generator and infinite bus
-% UserData = 'GflInverterInfiniteBus.xlsx';   	% Single grid-following inverter and infinite bus
-% UserData = 'GfmInverterInfiniteBus.xlsx';   	% Single grid-forming inverter and infinite bus
-% UserData = 'IEEE_14Bus.xlsx';
-% UserData = 'IEEE_30Bus.xlsx';
-% UserData = 'IEEE_57Bus.xlsx';
-% UserData = 'NETS_NYPS_68Bus.xlsx';
-%
-% Pure dc power system examples:
-% UserData = 'GfdBuckInfiniteBus.xlsx';          % Single grid-feeding buck converter and infinite bus
-%
-% Hybrid ac-dc power system examples:
-% UserData = 'Hybrid_test_v1.xlsx';
-% UserData = 'Hybrid_test_v2.xlsx';
+% UserData = 'H_SingleSgInfiniteBus.xlsx';
+UserData = 'H_SingleGflInfiniteBus.xlsx';
 
-% UserData = 'Nature_NETS_NYPS_68Bus_original';
-% UserData = 'Nature_NETS_NYPS_68Bus_2SG_OtherIBR';
-UserData = '3MachineModel_test_v3';
-% UserData = '2MachineModel_test';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();
