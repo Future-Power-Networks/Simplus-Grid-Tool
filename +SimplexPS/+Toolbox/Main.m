@@ -187,7 +187,14 @@ fprintf('Check Stability\n')
 fprintf('==================================\n')
 
 fprintf('Calculatting pole/zero...\n')
-pole_sys = pole(GsysDSS)/2/pi;
+% pole_sys = pole(GsysDSS)/2/pi;
+
+[~,pole_sys] = eig(GsysDSS.A,GsysDSS.E);
+
+pole_sys = diag(pole_sys);
+pole_sys = pole_sys(find(real(pole_sys) ~= inf));
+pole_sys = pole_sys/2/pi;
+
 fprintf('Checking if the system is stable:\n')
 if isempty(find(real(pole_sys)>1e-8, 1))
     fprintf('Stable!\n');
@@ -301,11 +308,24 @@ fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
 if (Enable_Participation == 1) && (isempty(DcAreaFlag))
-    SimplexPS.Modal.ModalPreRun;
-    SimplexPS.Modal.ModalAnalysis;
-    fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
-else
-    fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
+% [phi_tb,xi_tb,psi_tb] = eig(GsysDSS.A,GsysDSS.E);
+% xi_tb = diag(xi_tb);
+% phi_inv_tb = phi_tb^(-1);
+% IndexInfinite = find(xi_tb == inf);
+% for i = 1:length(IndexInfinite)
+%     xi_tb(i) = -1e4;
+% end
+% find(xi_tb>0)
+% 
+% stop
+
+% stop
+    
+%     SimplexPS.Modal.ModalPreRun;
+%     SimplexPS.Modal.ModalAnalysis;
+%     fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
+% else
+%     fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
 end
 
 

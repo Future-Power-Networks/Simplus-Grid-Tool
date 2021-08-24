@@ -27,8 +27,8 @@ close all;  % Close all figures, etc
 %
 % Pure ac power system examples:
 % UserData = 'H_SingleSgInfiniteBus.xlsx';
-UserData = 'H_SingleGflInfiniteBus.xlsx';
-
+% UserData = 'H_SingleGflInfiniteBus.xlsx';
+UserData = 'Nature_NETS_NYPS_68Bus_HybridSGIBR';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();
