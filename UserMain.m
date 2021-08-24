@@ -55,7 +55,7 @@ SimplusGT.Toolbox.Main();
                     % A quick introduction of DSS modeling method:
                     % https://uk.mathworks.com/help/simulink/slref/descriptorstatespace.html
                     
-% GminSS;           % Whole-system port model (state space form).
+% GsysSS;           % Whole-system port model (state space form).
                     % Notes: This model is the minimum realization of
                     % GsysDSS, which keeps the same input and output as
                     % GsysDSS, but reduces the order of state.

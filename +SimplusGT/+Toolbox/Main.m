@@ -150,7 +150,7 @@ if isproper(GsysDSS)
     fprintf('Proper!\n');
     fprintf('Calculating the minimum realization of the system model for later use...\n')
     % GminSS = minreal(GsysDSS);
-    GminSS = SimplusGT.dss2ss(GsysDSS);
+    GsysSS = SimplusGT.dss2ss(GsysDSS);
     % This "minreal" function only changes the element sequence of state
     % vectors, but does not change the element sequence of input and output
     % vectors.
@@ -158,7 +158,7 @@ if isproper(GsysDSS)
 else
     error('Error: System is improper, which has more zeros than poles.')
 end
-if SimplusGT.is_dss(GminSS)
+if SimplusGT.is_dss(GsysSS)
     error(['Error: Minimum realization is in descriptor state space (dss) form.']);
 end
 
@@ -200,12 +200,12 @@ fprintf('==================================\n')
 
 fprintf('Calculatting pole/zero...\n')
 % pole_sys_ = pole(GsysDSS)/2/pi;
-[~,pole_sys] = eig(GsysDSS.A,GsysDSS.E);
-pole_sys = diag(pole_sys);
-pole_sys = pole_sys(find(real(pole_sys) ~= inf));
-pole_sys = pole_sys/2/pi;
+[~,EigenValueSys] = eig(GsysSS.A);
+EigenValueSys = diag(EigenValueSys);
+EigenValueSys = EigenValueSys(find(real(EigenValueSys) ~= inf));
+EigenValueSys = EigenValueSys/2/pi;
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-6, 1))
+if isempty(find(real(EigenValueSys)>1e-6, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
@@ -266,13 +266,13 @@ if Enable_PlotPole
     figure_n = figure_n+1;
     figure(figure_n);
     subplot(1,2,1)
-    scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(EigenValueSys),imag(EigenValueSys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Global pole map');
     
 	subplot(1,2,2)
-    scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(EigenValueSys),imag(EigenValueSys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
@@ -299,7 +299,7 @@ if Enable_PlotAdmittance
         if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
            (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
            (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
-           	Yss{k}  = GminSS(BusPort_i{k},BusPort_v{k});
+           	Yss{k}  = GsysSS(BusPort_i{k},BusPort_v{k});
             Ysym{k} = SimplusGT.ss2sym(Yss{k});
             SimplusGT.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
