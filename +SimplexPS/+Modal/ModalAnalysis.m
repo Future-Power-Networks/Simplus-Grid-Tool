@@ -77,7 +77,7 @@ DeviceStateTotal = 0;
 for Di=1:length(DeviceStateStr)
     DeviceStateTotal = DeviceStateTotal + length(DeviceStateStr{Di});
 end
-
+Psi_DSS = inv(Phi_DSS);
 for modei = 1: length(ModeSel_DSS)
     FreqSel = imag(ModeDSS(ModeSel_DSS(modei)));
     ModeSel = ModeSel_DSS(modei);
@@ -101,7 +101,7 @@ for modei = 1: length(ModeSel_DSS)
             MdStatePF(modei).result(statei).State = SysStateString(StateSel);
             % after printing the correct name, change StateSel back to match with GsysSS.
             StateSel = StateSel_DSS(statei); 
-            Psi_DSS = inv(Phi_DSS);
+            
             StatePF = Phi_DSS(StateSel,ModeSel) * Psi_DSS(ModeSel,StateSel);            
             MdStatePF(modei).result(statei).PF = StatePF;
             MdStatePF(modei).result(statei).PF_ABS = abs(StatePF);

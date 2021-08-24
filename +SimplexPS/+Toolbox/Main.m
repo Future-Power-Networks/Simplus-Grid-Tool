@@ -189,14 +189,27 @@ fprintf('==================================\n')
 fprintf('Calculatting pole/zero...\n')
 % pole_sys = pole(GsysDSS)/2/pi;
 
-[~,pole_sys] = eig(GsysDSS.A,GsysDSS.E);
+[~,pole_sys_dss] = eig(GsysDSS.A,GsysDSS.E);
+pole_sys_dss = diag(pole_sys_dss);
+pole_sys_dss = pole_sys_dss(find(real(pole_sys_dss) ~= inf));
+pole_sys_dss = pole_sys_dss/2/pi;
+unstable_pole_sys = pole_sys_dss(find(pole_sys_dss>1e-3))
 
-pole_sys = diag(pole_sys);
-pole_sys = pole_sys(find(real(pole_sys) ~= inf));
-pole_sys = pole_sys/2/pi;
+[~,pole_sys_ss] = eig(GminSS.A);
+pole_sys_ss = diag(pole_sys_ss);
+pole_sys_ss = pole_sys_ss/2/pi;
+unstable_pole_sys_dss2ss = pole_sys_ss(find(pole_sys_ss>1e-3))
+
+pole_sys = pole_sys_ss;
+
+% GminSS_1 = minreal(GsysDSS);
+% [~,pole_sys_min] = eig(GminSS_1.A);
+% pole_sys_min = diag(pole_sys_min);
+% pole_sys_min = pole_sys_min/2/pi;
+% unstable_pole_sys_min = pole_sys(find(pole_sys_min>1e-3))
 
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys)>1e-8, 1))
+if isempty(find(real(pole_sys_ss)>1e-8, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
@@ -250,13 +263,13 @@ if Enable_PlotPole
     figure_n = figure_n+1;
     figure(figure_n);
     subplot(1,2,1)
-    scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_sys_ss),imag(pole_sys_ss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Global pole map');
     
 	subplot(1,2,2)
-    scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_sys_ss),imag(pole_sys_ss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
@@ -307,26 +320,26 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
-if (Enable_Participation == 1) && (isempty(DcAreaFlag))
-% [phi_tb,xi_tb,psi_tb] = eig(GsysDSS.A,GsysDSS.E);
-% xi_tb = diag(xi_tb);
-% phi_inv_tb = phi_tb^(-1);
-% IndexInfinite = find(xi_tb == inf);
-% for i = 1:length(IndexInfinite)
-%     xi_tb(i) = -1e4;
-% end
-% find(xi_tb>0)
+% if (Enable_Participation == 1) && (isempty(DcAreaFlag))
+% % [phi_tb,xi_tb,psi_tb] = eig(GsysDSS.A,GsysDSS.E);
+% % xi_tb = diag(xi_tb);
+% % phi_inv_tb = phi_tb^(-1);
+% % IndexInfinite = find(xi_tb == inf);
+% % for i = 1:length(IndexInfinite)
+% %     xi_tb(i) = -1e4;
+% % end
+% % find(xi_tb>0)
+% % 
+% % stop
 % 
-% stop
-
-% stop
-    
+% % stop
+%     
 %     SimplexPS.Modal.ModalPreRun;
 %     SimplexPS.Modal.ModalAnalysis;
 %     fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 % else
 %     fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
-end
+% end
 
 
 %%

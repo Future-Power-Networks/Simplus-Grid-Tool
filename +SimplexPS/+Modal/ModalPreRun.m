@@ -21,7 +21,7 @@ SimplexPS.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old con
 % Layer-1 analysis, d-d axis for bode plot, and device-1 for Layer-3
 % analysis. As well, it will select two modes with lowest damping.
 % Write 1 to enable auto select.
-AutoSel = 1;
+AutoSel = 0;
 
 [AutoSelResult] = SimplexPS.Modal.ExcelWrite(N_Bus,N_Device,DeviceType,...
     DeviceStateStr,DeviceInputStr,DeviceOutputStr,ZbusStateStr, GminSS, GsysDSS, AutoSel, Fbase, FileModal);
