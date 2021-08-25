@@ -1,4 +1,4 @@
-function [MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, MdSensResult]=ModalAnalysisExe(UserdataModal)
+function [MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, MdSensResult, ZminSS]=ModalAnalysisExe(UserdataModal)
 
 %% invoke variables from original workspace
 N_Apparatus = evalin('base', 'N_Apparatus');
@@ -91,10 +91,11 @@ for Di=1:length(ApparatusStateStr)
     ApparatusStateTotal = ApparatusStateTotal + length(ApparatusStateStr{Di});
 end
 
+Psi_DSS = inv(Phi_DSS);
 for modei = 1: length(ModeSel_DSS)
     FreqSel = imag(ModeDSS(ModeSel_DSS(modei)));
     ModeSel = ModeSel_DSS(modei);
-    MdStatePF(modei).mode = [num2str(FreqSel),'~Hz'];
+    MdStatePF(modei).mode = [num2str(ModeDSS(ModeSel_DSS(modei))),'~Hz'];
     for statei=1:length(StateSel_DSS)
             StateSel = IndexSS(StateSel_DSS(statei)); % this is used to print the correct name
             if StateSel > ApparatusStateTotal %belong to line.
@@ -114,7 +115,6 @@ for modei = 1: length(ModeSel_DSS)
             MdStatePF(modei).result(statei).State = SysStateString(StateSel);
             % after printing the correct name, change StateSel back to match with GsysSS.
             StateSel = StateSel_DSS(statei); 
-            Psi_DSS = inv(Phi_DSS);
             StatePF = Phi_DSS(StateSel,ModeSel) * Psi_DSS(ModeSel,StateSel);            
             MdStatePF(modei).result(statei).PF = StatePF;
             MdStatePF(modei).result(statei).PF_ABS = abs(StatePF);
@@ -167,7 +167,7 @@ for modei=1:ModeSelNum
     fprintf('Calculating sensitivity Layer-2...\n')
     [SensLayer1_val, SensLayer2_val,Layer12] = SimplusGT.Modal.SensLayer12(SensMatrix,Yre_val,modei,ZMode_Hz(Ek));
     fprintf('Calculating sensitivity Layer-3...\n')
-    Line_sel = [12,21];% See ListLineNew!.
+    Line_sel = [15];% See ListLineNew!.
     [SensLayer3_app,SensLayer3_bus] = SimplusGT.Modal.SensLayer3(SensMatrix,Mode_rad,ApparatusSelL3All,Line_sel);
        
     MdSensResult(modei).mode = [num2str(FreqSel),'~Hz'];
@@ -180,6 +180,13 @@ for modei=1:ModeSelNum
     MdSensResult(modei).Layer3_app = SensLayer3_app;
     MdSensResult(modei).Layer3_bus = SensLayer3_bus;
     %MdSensResult.Sen
+    SensLayer1_val(find(SensLayer1_val==0))=nan;
+    figure(modei+100);
+    heatmap(SensLayer1_val);
+    SensLayer2_val(find(SensLayer2_val==0))=nan;
+    figure(modei+101);
+    heatmap(real(SensLayer2_val));
+    
 end
 end
 % Sensitivity Layer 1

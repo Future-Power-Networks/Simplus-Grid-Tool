@@ -43,7 +43,7 @@ SimplusGT.Modal.ExcelPrep(UserdataModal); %create a new excel file, or clear old
 % Layer-1 analysis, d-d axis for bode plot, and apparatus-1 for Layer-3
 % analysis. As well, it will select two modes with lowest damping.
 % Write 1 to enable auto select.
-MdAutoSel = 1;
+MdAutoSel = 0;
 
 [AutoSelResult] = SimplusGT.Modal.ExcelWrite(N_Bus, N_Apparatus,ApparatusType,ApparatusBus,...
     ApparatusStateStr,ZbusStateStr, GminSS, GsysDSS, MdAutoSel, Fbase, UserdataModal);

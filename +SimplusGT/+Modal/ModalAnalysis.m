@@ -27,5 +27,5 @@ UserdataModal = [UserdataModal 'Examples\ParticipationAnalysis\','ModalConfig_',
 
 %Basic infomation acquirement.
 
-[MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, MdSensResult]=SimplusGT.Modal.ModalAnalysisExe(UserdataModal);
+[MdLayer1, MdLayer2, MdLayer3, MdStatePF, MdMode, MdSensResult,ZminSS]=SimplusGT.Modal.ModalAnalysisExe(UserdataModal);
 

@@ -25,9 +25,11 @@ close all;  % Close all figures, etc
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
 %UserData = 'UserData.xlsm';
-%UserData = 'IEEE_14Bus_Cyprus_original.xlsx';.
-UserData = 'IEEE_14Bus_Cyprus_test.xlsx';
+%UserData = 'IEEE_14Bus_Cyprus_original.xlsx';
+%UserData = 'IEEE_14Bus_Cyprus_test.xlsx';
 %UserData = 'IEEE_14Bus';
+UserData = 'IEEE_14Bus_Cyprus_modified.xlsx';
+%UserData = 'IEEE_14Bus_Cyprus_modified2.xlsx';
 
 % Other example power systems (in "Examples" folder):
 %
@@ -49,13 +51,13 @@ UserData = 'IEEE_14Bus_Cyprus_test.xlsx';
 %% Run toolbox
 SimplusGT.Toolbox.Main();
 
-figure(1);
-clf
-scatter(real(pole_sys)*2*pi,imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
-xlabel('Real Part (Hz)');
-ylabel('Imaginary Part (Hz)');
-title('Zoomed pole map');
-axis([-30,10,-3.5,3.5]);
+% figure(1);
+% clf
+% scatter(real(pole_sys)*2*pi,imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
+% xlabel('Real Part (Hz)');
+% ylabel('Imaginary Part (Hz)');
+% title('Zoomed pole map');
+% axis([-30,10,-3.5,3.5]);
 %% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space
                     % form). Notes: The elements of state, input, and
