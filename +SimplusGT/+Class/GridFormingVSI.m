@@ -196,7 +196,7 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             % State space equations
          	% dx/dt = f(x,u)
             % y     = g(x,u)
-            %if CallFlag == 1    
+            if CallFlag == 1    
             % ### Call state equation: dx/dt = f(x,u)
             
                 % Power measurement
@@ -326,7 +326,7 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
 
                 % Phase angle
                 dtheta = w;
-            if CallFlag == 1     
+       
                 % dx
                 f_xu = [di_ld; di_lq; di_ld_i; di_lq_i; dv_od; dv_oq; dv_od_i; dv_oq_i; di_od; di_oq; dv_od_r; dw; dtheta];
                 Output = f_xu;
