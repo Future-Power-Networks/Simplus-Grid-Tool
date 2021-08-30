@@ -17,8 +17,8 @@ close all
 % Change the current folder
 fprintf('Changing the current folder to the toolbox folder...\n')
 mfile_name = mfilename('fullpath');
-[pathstr,~,~]  = fileparts(mfile_name);
-cd(pathstr);
+[RootPath,~,~]  = fileparts(mfile_name);
+cd(RootPath);
 
 % Check the matlab version
 fprintf('Checking the Matlab version...\n')

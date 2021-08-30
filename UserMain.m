@@ -23,12 +23,10 @@ close all;  % Close all figures, etc
 % generator-inverter-composite power system. Please feel free to change it.
 % UserData = 'UserData.xlsx';
 
-% Other example power systems (in "Examples" folder):
-%
-% Pure ac power system examples:
+% Examples used in the paper:
 % UserData = 'H_SingleSgInfiniteBus.xlsx';
 % UserData = 'H_SingleGflInfiniteBus.xlsx';
-UserData = 'Nature_NETS_NYPS_68Bus_HybridSGIBR';
+UserData = 'Gamma_SingleSgInfiniteBus_ForSim';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

@@ -1,9 +1,15 @@
-% This script plots the H analysis
+% This script plots the inertia and bandwidth analysis
 
 clear all
 clc
 close all
 
+mfile_name = mfilename('fullpath');
+[RootPath,~,~]  = fileparts(mfile_name);
+cd(RootPath);
+
+%% Enables
+Enable_SaveFigure = 1;
 
 %% Load data
 H_SimData_SG = load('H_SimData_SG').H_SimData_SG;
@@ -45,56 +51,42 @@ FigNum = 0;
 LineWidth = 1.2;
 
 FigRowMax = 3;
-FigColumnMax = 2;
+FigColumnMax = 1;
 
 Time = Time - 1.8;
 t_Limit = [0,0.8];
-t_Ticks = [0,0.4,0.8];
-w_Limit = [0.98,1.01]; 
+t_Ticks = [0,0.2,0.4,0.6,0.8];
+w_Limit = [0.98,1.02]; 
+w_Ticks = [0.98,1,1.02];
 s_Limit = [0,1];
 s_Ticks = [0,0.5,1];
 e_Limit = [-5,10]*1e-3;
 e_Ticks = [-5,0,5,10]*1e-3;
 
+FigSize = [0.1 0.1 0.18 0.55];
+
 %% Plot
+% SG
 FigNum = FigNum + 1;
 figure(FigNum)
+set(gcf,'units','normalized','outerposition',FigSize);
 subplot(FigRowMax,FigColumnMax,1)
 plot(Time,w_SG,'LineWidth',LineWidth); grid on; hold on;
-%xlabel('Time (s)','interpreter','latex')
 ylabel('$\omega$ (pu)','interpreter','latex')
 xlim(t_Limit);
 xticks(t_Ticks)
 ylim(w_Limit);
-% yticks(w_Ticks);
+yticks(w_Ticks);
 
 subplot(FigRowMax,FigColumnMax,2)
-plot(Time,w_IBR,'LineWidth',LineWidth); grid on; hold on;
-%xlabel('Time (s)','interpreter','latex')
-ylabel('$\omega$ (pu)','interpreter','latex')
+plot(Time,s_SG_abs,'LineWidth',LineWidth); grid on; hold on;
+ylabel('$S$ (pu)','interpreter','latex')
 xlim(t_Limit);
 xticks(t_Ticks)
-ylim(w_Limit);
+ylim(s_Limit);
+yticks(s_Ticks);
 
 subplot(FigRowMax,FigColumnMax,3)
-plot(Time,s_SG_abs,'LineWidth',LineWidth); grid on; hold on;
-xlabel('Time (s)','interpreter','latex')
-ylabel('$S$ (pu)','interpreter','latex')
-xlim(t_Limit);
-xticks(t_Ticks)
-ylim(s_Limit);
-yticks(s_Ticks);
-
-subplot(FigRowMax,FigColumnMax,4)
-plot(Time,s_IBR_abs,'LineWidth',LineWidth); grid on; hold on;
-xlabel('Time (s)','interpreter','latex')
-ylabel('$S$ (pu)','interpreter','latex')
-xlim(t_Limit);
-xticks(t_Ticks)
-ylim(s_Limit);
-yticks(s_Ticks);
-
-subplot(FigRowMax,FigColumnMax,5)
 plot(Time,s_SG_int,'LineWidth',LineWidth); grid on; hold on;
 xlabel('Time (s)','interpreter','latex')
 ylabel('$E$ (pu)','interpreter','latex')
@@ -103,7 +95,33 @@ xticks(t_Ticks)
 ylim(e_Limit);
 yticks(e_Ticks);
 
-subplot(FigRowMax,FigColumnMax,6)
+if Enable_SaveFigure
+    print(gcf,'H_Sim_SG.png','-dpng','-r600');
+end
+
+% IBR
+FigNum = FigNum + 1;
+figure(FigNum)
+set(gcf,'units','normalized','outerposition',FigSize);
+subplot(FigRowMax,FigColumnMax,1)
+
+subplot(FigRowMax,FigColumnMax,1)
+plot(Time,w_IBR,'LineWidth',LineWidth); grid on; hold on;
+ylabel('$\omega$ (pu)','interpreter','latex')
+xlim(t_Limit);
+xticks(t_Ticks)
+ylim(w_Limit);
+yticks(w_Ticks);
+
+subplot(FigRowMax,FigColumnMax,2)
+plot(Time,s_IBR_abs,'LineWidth',LineWidth); grid on; hold on;
+ylabel('$S$ (pu)','interpreter','latex')
+xlim(t_Limit);
+xticks(t_Ticks)
+ylim(s_Limit);
+yticks(s_Ticks);
+
+subplot(FigRowMax,FigColumnMax,3)
 plot(Time,s_IBR_int,'LineWidth',LineWidth); grid on; hold on;
 xlabel('Time (s)','interpreter','latex')
 ylabel('$E$ (pu)','interpreter','latex')
@@ -111,3 +129,7 @@ xlim(t_Limit);
 xticks(t_Ticks)
 ylim(e_Limit);
 yticks(e_Ticks);
+
+if Enable_SaveFigure
+    print(gcf,'H_Sim_IBR.png','-dpng','-r600');
+end

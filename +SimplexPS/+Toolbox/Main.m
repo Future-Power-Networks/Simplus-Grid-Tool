@@ -198,7 +198,7 @@ unstable_pole_sys = pole_sys_dss(find(pole_sys_dss>1e-3))
 [~,pole_sys_ss] = eig(GminSS.A);
 pole_sys_ss = diag(pole_sys_ss);
 pole_sys_ss = pole_sys_ss/2/pi;
-unstable_pole_sys_dss2ss = pole_sys_ss(find(pole_sys_ss>1e-3))
+unstable_pole_sys_dss2ss = pole_sys_ss(find(pole_sys_ss>1e-5))
 
 pole_sys = pole_sys_ss;
 
@@ -209,7 +209,7 @@ pole_sys = pole_sys_ss;
 % unstable_pole_sys_min = pole_sys(find(pole_sys_min>1e-3))
 
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys_ss)>1e-8, 1))
+if isempty(find(real(pole_sys_ss)>1e-5, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
@@ -321,19 +321,6 @@ fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
 % if (Enable_Participation == 1) && (isempty(DcAreaFlag))
-% % [phi_tb,xi_tb,psi_tb] = eig(GsysDSS.A,GsysDSS.E);
-% % xi_tb = diag(xi_tb);
-% % phi_inv_tb = phi_tb^(-1);
-% % IndexInfinite = find(xi_tb == inf);
-% % for i = 1:length(IndexInfinite)
-% %     xi_tb(i) = -1e4;
-% % end
-% % find(xi_tb>0)
-% % 
-% % stop
-% 
-% % stop
-%     
 %     SimplexPS.Modal.ModalPreRun;
 %     SimplexPS.Modal.ModalAnalysis;
 %     fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    

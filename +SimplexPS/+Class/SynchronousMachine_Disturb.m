@@ -13,7 +13,7 @@
 
 %% Class
 
-classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
+classdef SynchronousMachine_Disturb < SimplexPS.Class.ModelAdvance
     
     properties(Access = protected)
         psi_f;
@@ -102,6 +102,29 @@ classdef SynchronousMachine < SimplexPS.Class.ModelAdvance
             L  = obj.Para(3);
             R  = obj.Para(4);
             W0 = obj.Para(5);
+
+           	% =================================
+            % For single-SG-infinite-bus system, D: 1->0.1->1
+            % =================================
+            % Reduce D from 10 to 0.1 to cause the instability
+            if obj.Timer >= 10
+                D_new = D/100;
+                T_m_new = T_m + D*W0 - D_new*W0;
+                
+                D = D_new;
+                T_m = T_m_new;
+            end
+            
+            % Increase D to from 0.01 to 10 to damp the swing osillation
+         	if obj.Timer >= 14
+                D_new = D*100;
+                T_m_new = T_m + D*W0 - D_new*W0;
+                
+                D = D_new;
+                T_m = T_m_new;
+            end
+            % =================================
+            
             
             % State space equations
           	% dx/dt = f(x,u)
