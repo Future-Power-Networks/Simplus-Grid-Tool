@@ -25,8 +25,8 @@ close all;  % Close all figures, etc
 
 % Examples used in the paper:
 % UserData = 'H_SingleSgInfiniteBus.xlsx';
-% UserData = 'H_SingleGflInfiniteBus.xlsx';
-UserData = 'Gamma_SingleSgInfiniteBus_ForSim';
+UserData = 'H_SingleGflInfiniteBus.xlsx';
+% UserData = 'Gamma_SingleSgInfiniteBus_ForSim';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

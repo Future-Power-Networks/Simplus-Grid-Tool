@@ -104,20 +104,24 @@ classdef SynchronousMachine_Disturb < SimplexPS.Class.ModelAdvance
             W0 = obj.Para(5);
 
            	% =================================
-            % For single-SG-infinite-bus system, D: 1->0.1->1
+            % For unstable gamma test of SG: 10->0
             % =================================
             % Reduce D from 10 to 0.1 to cause the instability
-            if obj.Timer >= 10
-                D_new = D/100;
+            if obj.Timer >= 3
+                D_new = 0;
                 T_m_new = T_m + D*W0 - D_new*W0;
                 
                 D = D_new;
                 T_m = T_m_new;
             end
+            % =================================
             
+         	% =================================
+            % For stable gamma test of SG: 0->5
+            % =================================
             % Increase D to from 0.01 to 10 to damp the swing osillation
-         	if obj.Timer >= 14
-                D_new = D*100;
+         	if obj.Timer >= 3.35
+                D_new = 3/W0^2;
                 T_m_new = T_m + D*W0 - D_new*W0;
                 
                 D = D_new;

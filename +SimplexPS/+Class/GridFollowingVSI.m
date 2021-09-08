@@ -113,7 +113,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             ki_pll  = obj.Para(6);      % PLL, I
             tau_pll = obj.Para(7);
             kp_i    = obj.Para(8);    	% i, P
-            ki_i    = obj.Para(9)/10;                                           % ??????
+            ki_i    = obj.Para(9);                                                  % ??????
             k_pf    = obj.Para(10);
             L       = obj.Para(11);     % L filter
             R       = obj.Para(12);     % L filter's inner resistance
