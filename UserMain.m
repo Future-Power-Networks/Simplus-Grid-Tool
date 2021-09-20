@@ -25,8 +25,27 @@ close all;  % Close all figures, etc
 
 % Examples used in the paper:
 % UserData = 'H_SingleSgInfiniteBus.xlsx';
-UserData = 'H_SingleGflInfiniteBus.xlsx';
+% UserData = 'H_SingleGflInfiniteBus.xlsx';
 % UserData = 'Gamma_SingleSgInfiniteBus_ForSim';
+
+% K analysis
+% UserData = 'K_68Bus_SG_Load';
+% UserData = 'K_68Bus_SG_IBR_Load';
+% UserData = 'K_68Bus_SG_IBR';
+% UserData = 'K_68Bus_SG_IBR_17';
+% UserData = 'K_68Bus_SG_IBR_6';
+
+% UserData = 'K_68Bus_SG_IBR_Test';
+% UserData = 'K_68Bus_SG_IBR_Test_v2';
+% UserData = 'K_68Bus_SG_IBR_Test_v3';
+% Notes:       
+% The system is stable when:
+                                        % 1- increasing the sampling frequency
+                                        % 2- adding the LPF for PLL, which seems to play a very important role in transient stability. 
+                                        
+% 4bus test
+UserData = '4Bus_v1';
+
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

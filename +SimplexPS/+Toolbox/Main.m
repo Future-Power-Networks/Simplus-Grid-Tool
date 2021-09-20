@@ -189,18 +189,18 @@ fprintf('==================================\n')
 fprintf('Calculatting pole/zero...\n')
 % pole_sys = pole(GsysDSS)/2/pi;
 
-[~,pole_sys_dss] = eig(GsysDSS.A,GsysDSS.E);
-pole_sys_dss = diag(pole_sys_dss);
-pole_sys_dss = pole_sys_dss(find(real(pole_sys_dss) ~= inf));
-pole_sys_dss = pole_sys_dss/2/pi;
-unstable_pole_sys = pole_sys_dss(find(pole_sys_dss>1e-3))
+[~,pole_dss] = eig(GsysDSS.A,GsysDSS.E);
+pole_dss = diag(pole_dss);
+pole_dss = pole_dss(find(real(pole_dss) ~= inf));
+pole_dss = pole_dss/2/pi;
+unstable_pole_dss = pole_dss(find(pole_dss>1e-3))
 
-[~,pole_sys_ss] = eig(GminSS.A);
-pole_sys_ss = diag(pole_sys_ss);
-pole_sys_ss = pole_sys_ss/2/pi;
-unstable_pole_sys_dss2ss = pole_sys_ss(find(pole_sys_ss>1e-5))
+[~,pole_ss] = eig(GminSS.A);
+pole_ss = diag(pole_ss);
+pole_ss = pole_ss/2/pi;
+unstable_pole_ss = pole_ss(find(pole_ss>1e-5))
 
-pole_sys = pole_sys_ss;
+pole_sys = pole_ss;
 
 % GminSS_1 = minreal(GsysDSS);
 % [~,pole_sys_min] = eig(GminSS_1.A);
@@ -209,7 +209,7 @@ pole_sys = pole_sys_ss;
 % unstable_pole_sys_min = pole_sys(find(pole_sys_min>1e-3))
 
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_sys_ss)>1e-5, 1))
+if isempty(find(real(pole_ss)>1e-5, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
@@ -263,13 +263,13 @@ if Enable_PlotPole
     figure_n = figure_n+1;
     figure(figure_n);
     subplot(1,2,1)
-    scatter(real(pole_sys_ss),imag(pole_sys_ss),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_ss),imag(pole_ss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Global pole map');
     
 	subplot(1,2,2)
-    scatter(real(pole_sys_ss),imag(pole_sys_ss),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_ss),imag(pole_ss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
