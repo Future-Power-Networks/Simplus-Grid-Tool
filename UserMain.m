@@ -38,13 +38,31 @@ close all;  % Close all figures, etc
 % UserData = 'K_68Bus_SG_IBR_Test';
 % UserData = 'K_68Bus_SG_IBR_Test_v2';
 % UserData = 'K_68Bus_SG_IBR_Test_v3';
+% UserData = 'K_68Bus_SG_IBR_Test_v4';
 % Notes:       
 % The system is stable when:
                                         % 1- increasing the sampling frequency
                                         % 2- adding the LPF for PLL, which seems to play a very important role in transient stability. 
                                         
 % 4bus test
-UserData = '4Bus_v1';
+% UserData = '4Bus_Chain_0d3_SG';
+% UserData = '4Bus_Chain_0d45_SG';
+% UserData = '4Bus_Chain_0d45_SG_Load';
+% UserData = '4Bus_Chain_0d5_SG';
+%
+% UserData = '4Bus_Chain_v1';
+% UserData = '4Bus_Chain_0d3';
+% UserData = '4Bus_Chain_0d4';
+% UserData = '4Bus_Chain_0d45';
+% UserData = '4Bus_Chain_0d5';
+
+% 8bus test
+% UserData = '8Bus_Chain_v1';
+UserData = '8Bus_Mesh_v1';
+
+% multi bus
+% UserData = 'IEEE_14Bus';
+% UserData = 'NETS_NYPS_68Bus';
 
 
 %% Run toolbox
