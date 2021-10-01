@@ -2,14 +2,12 @@ clear all
 clc
 close all
 
-ListBus = [1,1;
-           2,1];
-       
-
-       t1 = [4,4;
-            2,2;
-            NaN,0;
-            1,1;
-            NaN,0];
-        
-       t2 =  sortrows(t1,1)
+A1 = [1,0;
+      0,1];
+  
+A2 = [1,1;
+      1,1];
+  
+  t1 = isdiag(A1)
+  
+  t2 = isdiag(A2)

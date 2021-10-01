@@ -9,12 +9,14 @@
 
 %%
 
-function PrintSysString(ApparatusBus,ApparatusType,ApparatusCell,ZbusStateStr)
+function PrintSysString(ApparatusBus,ApparatusType,ApparatusCell,ZbusObj)
 
 %% Get strings
 for n = 1:length(ApparatusCell)
     [ApparatusStateStr{n},ApparatusInStr{n},ApparatusOutStr{n}] = ApparatusCell{n}.GetString(ApparatusCell{n});
 end
+
+[ZbusStateStr,~,~] = ZbusObj.GetString(ZbusObj);
 
 %%
 N_Apparatus = length(ApparatusBus);

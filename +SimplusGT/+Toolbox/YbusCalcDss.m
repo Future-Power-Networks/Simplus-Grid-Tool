@@ -220,6 +220,9 @@ for n = 1:N_Branch              % Calculate the branch paramter one by one
         for i = 1:length(Ybranch{n}.A)
             Ybranch_StateStr{n}{1,i} = strcat('x_br',num2str(FB(n)),'-',num2str(TB(n)),'_',num2str(i));
         end
+        % All states, including the states caused by DssSwitchInOut, are
+        % all defined as "x_br...", where "br" indicates branch. The states
+        % are orderred in a horizontal cell vector.
     end
     
 end

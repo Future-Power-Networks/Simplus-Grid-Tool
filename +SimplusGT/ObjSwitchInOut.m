@@ -8,35 +8,35 @@
 % The state string will be modified in this function.
 
 %%
-function obj_new = ObjSwitchInOut(obj,length_sw)
+function ObjNew = ObjSwitchInOut(Obj,LengthSwtich)
 
 % Load data
-[~,G] = obj.GetDSS(obj);
-[StateStr,InputStr,OutputStr] = obj.GetString(obj);
+[~,G] = Obj.GetDSS(Obj);
+[StateStr,InputStr,OutputStr] = Obj.GetString(Obj);
 
 % Create a new object
-obj_new =SimplusGT.Class.ModelBase;
+ObjNew =SimplusGT.Class.ModelBase;
 
 % Switch
-G_new = SimplusGT.DssSwitchInOut(G,length_sw);
-obj_new.SetDSS(obj_new,G_new);
+G_New = SimplusGT.DssSwitchInOut(G,LengthSwtich);
+ObjNew.SetDSS(ObjNew,G_New);
 
 % Get the string
-StateStr_new = StateStr;
-InputStr_new = InputStr;
-OutputStr_new = OutputStr;
-for i = 1:length_sw
+StateStrNew = StateStr;
+InputStrNew = InputStr;
+OutputStrNew = OutputStr;
+for i = 1:LengthSwtich
     % Add xi_i into state string vector, which is caused by calling
     % "dss_SwitchInOut"
-    StateStr_new = [StateStr_new,strcat('xi_',num2str(i))];
+    StateStrNew = [StateStrNew,strcat('xi_',num2str(i))];
     
     % Switch the corresponding input and output string
-    InputStr_new{i} = OutputStr{i};
-    OutputStr_new{i} = InputStr{i};
+    InputStrNew{i} = OutputStr{i};
+    OutputStrNew{i} = InputStr{i};
 end
-obj_new.SetString(obj_new,StateStr_new,InputStr_new,OutputStr_new);
+ObjNew.SetString(ObjNew,StateStrNew,InputStrNew,OutputStrNew);
 
 % Check the dimension
-SimplusGT.ObjCheckDim(obj_new);
+SimplusGT.ObjCheckDim(ObjNew);
 
 end

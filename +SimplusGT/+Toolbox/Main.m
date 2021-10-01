@@ -80,7 +80,7 @@ if ~isempty(DcAreaFlag)
 end
 switch Flag_PowerFlowAlgorithm
     case 1  % Gauss-Seidel 
-        [PowerFlow,~,~,~,~,~,~,~] = SimplusGT.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
+        [PowerFlow] = SimplusGT.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
     case 2  % Newton-Raphson
        	[PowerFlow] = SimplusGT.PowerFlow.PowerFlowNR(ListBus,ListLine,Wbase);
     otherwise
@@ -94,7 +94,7 @@ end
 ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);
 
 % Move load flow (PLi and QLi) to bus admittance matrix
-[ListBus,ListLineNew,PowerFlowNew] = SimplusGT.PowerFlow.Load2SelfBranch(ListBus,ListLine,PowerFlow);
+[ListBusNew,ListLineNew,PowerFlowNew] = SimplusGT.PowerFlow.Load2SelfBranch(ListBus,ListLine,PowerFlow);
 
 % For printting later
 ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
@@ -107,10 +107,11 @@ ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
 % ### Get the model of lines
 fprintf('Getting the descriptor state space model of network lines...\n')
 
-[YbusObj,YbusDSS,~] = SimplusGT.Toolbox.YbusCalcDss(ListBus,ListLineNew,Wbase);
-[~,lsw] = size(YbusDSS.B);
-ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,lsw);
-[ZbusStateStr,ZbusInputStr,ZbusOutputStr] = ZbusObj.GetString(ZbusObj);
+[YbusObj,YbusDSS,~] = SimplusGT.Toolbox.YbusCalcDss(ListBusNew,ListLineNew,Wbase);
+% if Enable_RemoveDuplicateStates == 1
+%     YbusObj = SimplusGT.Toolbox.RemoveYbusDuplicateStates(YbusObj);
+% end
+ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,length(YbusDSS));
 
 % ### Get the models of bus apparatuses
 fprintf('Getting the descriptor state space model of bus apparatuses...\n')
@@ -122,11 +123,11 @@ for i = 1:N_Apparatus
     else
         error(['Error']);
     end
-    [GmObj_Cell{i},GmDSS_Cell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
-        SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{i},ApparatusType{i},ApparatusPowerFlow{i},Para{i},Ts,ListBus);
     
-    % The following data is not used in the script, but will be used in
-    % simulations. Do not delete!
+    % The following data may not used in the script, but will be used in
+    % simulations. So, do not delete!
+    [GmObj_Cell{i},GmDSS_Cell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
+        SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{i},ApparatusType{i},ApparatusPowerFlow{i},Para{i},Ts,ListBusNew);
     x_e{i} = ApparatusEqui{i}{1};
     u_e{i} = ApparatusEqui{i}{2};
 end
@@ -177,7 +178,7 @@ fprintf('Whole system port model (descriptor state space form): GsysDSS\n')
 if Enable_PrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
-    SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObj_Cell,ZbusStateStr);
+    SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObj_Cell,ZbusObj);
 	fprintf('Print power flow result:\n')
     fprintf('The format below is "| bus | P | Q | V | angle | omega |". P and Q are in load convention.\n')
     ListPowerFlow
@@ -238,7 +239,7 @@ if Enable_CreateSimulinkModel == 1
     close_system(Name_Model,0);
     
     % Create the simulink model
-    SimplusGT.Simulink.MainSimulink(Name_Model,ListBus,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
+    SimplusGT.Simulink.MainSimulink(Name_Model,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
