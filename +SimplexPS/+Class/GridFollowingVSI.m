@@ -111,9 +111,13 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             v_dc_r  = obj.Para(2);
             kp_v_dc = obj.Para(3);      % v_dc, P
             ki_v_dc = obj.Para(4);      % v_dc, I
-            kp_pll  = obj.Para(5);      % PLL, P
-            ki_pll  = obj.Para(6)/10;      % PLL, I
+            kp_pll  = obj.Para(5)/5;      % PLL, P
+            ki_pll  = obj.Para(6);      % PLL, I
+            % /2
+            % /500
             tau_pll = obj.Para(7);
+                % Default is 1/(2*pi*500);
+                % tau_pll = 1/(2*pi*10);
             kp_i    = obj.Para(8)*10;    	% i, P
             ki_i    = obj.Para(9);                                                  % ??????
             k_pf    = obj.Para(10);
@@ -148,7 +152,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             P_dc   = u(4);
 
             % Saturation setting
-            EnableSaturation = 1;
+            EnableSaturation = 0;
             
             % Frequency limit and saturation
             w_limit_H = W0*1.5;

@@ -38,7 +38,10 @@ close all;  % Close all figures, etc
 % UserData = 'K_68Bus_SG_IBR_Test';
 % UserData = 'K_68Bus_SG_IBR_Test_v2';
 % UserData = 'K_68Bus_SG_IBR_Test_v3';
-% UserData = 'K_68Bus_SG_IBR_Test_v4';
+UserData = 'K_68Bus_SG_IBR_Test_v4';
+
+%UserData = 'K_68Bus_SG_IBR_Test_NoCap';
+% UserData = 'K_68Bus_SG_IBR_Test_Load';
 % Notes:       
 % The system is stable when:
                                         % 1- increasing the sampling frequency
@@ -58,7 +61,7 @@ close all;  % Close all figures, etc
 
 % 8bus test
 % UserData = '8Bus_Chain_v1';
-UserData = '8Bus_Mesh_v1';
+% UserData = '8Bus_Mesh_v1';
 
 % multi bus
 % UserData = 'IEEE_14Bus';
