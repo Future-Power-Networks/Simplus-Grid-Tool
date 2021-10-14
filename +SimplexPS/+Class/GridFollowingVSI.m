@@ -226,8 +226,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
 
 
             % Frequency limit and saturation
-            w_limit_H = W0*1.5;
-            w_limit_L = W0*0.5;
+            w_limit_H = W0*1.1;
+            w_limit_L = W0*0.9;
             if EnableSaturation
             w = min(w,w_limit_H);
             w = max(w,w_limit_L);
@@ -239,6 +239,10 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
                 % Notes:
                 % This introduces an additional state w.
+                
+%                 if w>w_limit_H || w<w_limit_L
+%                     dw = 0;
+%                 end
             else
                 dw = 0;                                         % No LPF
                 w = w_pll_i + e_ang*kp_pll;

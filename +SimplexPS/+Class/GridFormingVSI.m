@@ -134,8 +134,8 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             Rov      = 0;
             kp_i_ldq = w_i_ldq*Lf;
             ki_i_ldq = w_i_ldq^2*Lf/4;
-            kp_v_odq = w_v_odq*Cf;
-            ki_v_odq = w_v_odq^2*Cf/4*100;
+            kp_v_odq = w_v_odq*Cf*5;
+            ki_v_odq = w_v_odq^2*Cf/4*50;
                 % This is a different way of setting voltage PI
                 % kp_v_odq = 1/(16*w_i_ldq*Lf);
                 % ki_v_odq = 1/(4*Lf);
@@ -157,6 +157,9 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
                 %           v_oq_r = v_oq_0
                 if 1
                     dw = (w0 + Dw*(P0 - p) - w)*wf;         % P-w droop
+%                     if w>1.5*w0 || w<0.5*w0
+%                         dw = 0;
+%                     end
                 else
                     dw = (w0 - Dw*(P0/V - i_od) - w)*wf; 	% id-w droop
                 end
