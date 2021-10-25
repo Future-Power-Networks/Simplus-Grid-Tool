@@ -83,7 +83,8 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
             i_oq = imag(i_oq);
             theta = xi;
             
-            P0 = 0;
+            %
+            P0 = -P;                                        % ???
             
             % ??? Temp
             obj.v_od_r = real(v_odq);
@@ -97,12 +98,14 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
         % State space model
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
         	% Get the power PowerFlow values
+            P 	= obj.PowerFlow(1);
             V	= obj.PowerFlow(3);
             
             % Get input
             v_gd   = u(1);
             v_gq   = u(2);
             P0     = u(3);
+            % P0 = -P;
 
             % Get state
             i_ld   = x(1);
@@ -161,7 +164,7 @@ classdef GridFormingVSI < SimplexPS.Class.ModelAdvance
 %                         dw = 0;
 %                     end
                 else
-                    dw = (w0 - Dw*(P0/V - i_od) - w)*wf; 	% id-w droop
+                    dw = (w0 + Dw*(P0/V - (-i_od)) - w)*wf; 	% id-w droop
                 end
                 v_od_r = obj.v_od_r;
                 v_oq_r = obj.v_oq_r;
