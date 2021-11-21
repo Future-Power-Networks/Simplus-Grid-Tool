@@ -112,14 +112,12 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             kp_v_dc = obj.Para(3);      % v_dc, P
             ki_v_dc = obj.Para(4);      % v_dc, I
             kp_pll  = obj.Para(5);      % PLL, P
-            ki_pll  = obj.Para(6)*0;      % PLL, I
-            % tau_pll = obj.Para(7);
-            tau_pll = 1/(100*2*pi);
-
-                % Notes:
-                % This setting will make the PLL controller become:
-                % kp/(1+s/w_tau)
-                
+            ki_pll  = obj.Para(6);      % PLL, I
+            % /2
+            % /500
+            tau_pll = obj.Para(7);
+                % Default is 1/(2*pi*500);
+                % tau_pll = 1/(2*pi*10);
             kp_i    = obj.Para(8);    	% i, P
             ki_i    = obj.Para(9);                                                  % ??????
             k_pf    = obj.Para(10);
@@ -183,6 +181,16 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             end
             % i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
             i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
+            
+%             % For current ramp
+%             t_start = 0.6;
+%             dt_ramp = 0.4;
+%             if (obj.Timer>=t_start) && (obj.Timer<=(t_start+dt_ramp))
+%                 delta_id = obj.i_d_r/dt_ramp;
+%                 i_d_r = delta_id*(obj.Timer - t_start);
+%                 delta_iq = obj.i_q_r/dt_ramp;
+%                 i_q_r = delta_iq*(obj.Timer - t_start);
+%             end
 
          	% Current saturation
             if EnableSaturation
@@ -260,8 +268,6 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             
             if 1                                                                            % ??????
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
-                % dw = (0 + e_ang*ki_pll*10000/(kp_pll*100) - w)*kp_pll*100;      % The equivalent LPF is ki/kp*1/(1+s/kp);
-                % dw = (w_pll_i/1000 + e_ang*ki_pll*100/(kp_pll*10) - w)*kp_pll*10;      % The equivalent LPF is ki/kp*1/(1+s/kp);
                 % Notes:
                 % This introduces an additional state w.
                 
