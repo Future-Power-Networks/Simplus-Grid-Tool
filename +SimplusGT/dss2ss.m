@@ -14,9 +14,10 @@
 
 % algorithms: 
 % E dx/dt = Ax + Bu
+% If E is diagonal and is not full rank, this equation can be re-written as
 % E1 dx1/dt = A11*x1 + A12*x2 + B1*u (1)
 %         0 = A21*x1 + A22*x2 + B2*u (2)
-% if A22 is invertable, x2 can be solved from (2)
+% if A22 is invertable, x2 can be solved from (2) directly
 % if not, we find the maximum N so that N*A22 = 0 (N called null)
 % and rank(N) + rank(A22) = length(A22)
 % now we multiplies N to (2) to have
@@ -53,7 +54,7 @@ D = Gdss.D;
 E = Gdss.E;
 
 if ~isdiag(E)
-    error('E matrix is not diagonal');
+    error('Error: E matrix is not diagonal.');
 end
 
 DiagE = diag(E);
@@ -62,8 +63,9 @@ Index = zeros(m,1);
 Point1 = 0;
 Point2 = m+1;
 
+% Find zero elements in E matrix
 for n = 1:m
-    if DiagE(n) < 1e-12         %detect if E is zero with tolerance
+    if DiagE(n) < 1e-12         % Detect if E is zero with tolerance
         Point2 = Point2 - 1;
         Index(Point2) = n;
     else
