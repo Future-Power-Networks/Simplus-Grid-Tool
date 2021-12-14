@@ -1,55 +1,43 @@
-% To users:
-% Please use this file to run toolbox.
-
-%% Tips
-%
-% Please read manuals in the "Documentations" folder if you want to know
-% more details about this tool.
-%
-% Please ensure that the toolbox is installed first, by running
-% "InstallSimplusGT.m" once.
-%
-% The toolbox defaultly saves the results into Workspace, prints the key
-% results in Command Window, and plots key figures.
-%
-% For changing default user data, please use "UserData.xlsx". More examples
-% can be found in "Examples" folder.
+% This model is the modified IEEE 14-BUS model in the paper.
 
 %% Clear matlab
 clear all;  % Clear Matlab workspace
 clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
-%% Set user data
-% Default
-% "UserData.xlsx" defaultly contains the data of a 4-bus
-% generator-inverter-composite power system. Please feel free to change it.
-%UserData = 'UserData.xlsm';
-%UserData = 'IEEE_14Bus_Cyprus_original.xlsx';
-%UserData = 'IEEE_14Bus_Cyprus_test.xlsx';
-%UserData = 'IEEE_14Bus';
-UserData = 'IEEE_14Bus_Cyprus_modified.xlsx';
-%UserData = 'IEEE_14Bus_Cyprus_modified2.xlsx';
+%% Set user data, select one excel file to form the system.
+%UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % original model
+UserData = 'IEEE_14Bus_Cyprus_modified.xlsx';   % Detuned model
+% UserData = 'IEEE_14Bus_Cyprus_modified2.xlsx'; % Tuned model
 
-% Other example power systems (in "Examples" folder):
-%
-% Pure ac power system examples:
-% UserData = 'SgInfiniteBus.xlsx';              % Single synchronous generator and infinite bus
-% UserData = 'GflInverterInfiniteBus.xlsx';   	% Single grid-following inverter and infinite bus
-% UserData = 'GfmInverterInfiniteBus.xlsx';   	% Single grid-forming inverter and infinite bus
-% UserData = 'IEEE_14Bus.xlsx';
-% UserData = 'IEEE_30Bus.xlsx';
-% UserData = 'IEEE_57Bus.xlsx';
-% UserData = 'NETS_NYPS_68Bus.xlsx';
-%
-% Pure dc power system examples:
-% UserData = 'GfdBuckInfiniteBus.xlsx';         % Single grid-feeding buck converter and infinite bus
-%
-% Hybrid ac-dc power system examples:
-% UserData = 'Hybrid_test_v1.xlsx';             % A 4-bus hybrid ac-dc system
-
-%% Run toolbox
+%% Run toolbox, get solutions of the system.
 SimplusGT.Toolbox.Main();
+
+%% Modal analysis: participation and eigenvalue sensitivity
+% Step-1: run 'ModalInitialise.m'. 
+% Each time you run this code, it will generate an excel file in 
+% 'Simplus-Grid-Tool\Examples\ParticipationAnalysis\', from which you can
+% will need to select the interesting modes, apparatus, d-q axes...
+% So if the system remains unchanged, don't run it.
+%
+% SimplusGT.Modal.ModalInitialise();
+
+% Step-2: run the analysis codes. Figures will pop out.
+% Numerical resutls of the Sensitivity can be found in 'MdSensResult'.
+% 
+SimplusGT.Modal.ModalAnalysis();
+
+%% Plot a map and show the propagation of the oscillation
+run map_draw.m
+
+%% Plot bode-plot from previous saved data.
+run bode_draw.m
+
+
+%% Pole-map plot (zoomed)
+% this is used to plot the same zoomed pole-map as the original model of Cyprus
+% in DigSLIENT Power Factory. The poles are nearly the same, proving that the 
+% model is successfully transplanted to this tool box.
 
 % figure(1);
 % clf

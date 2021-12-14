@@ -180,12 +180,14 @@ for modei=1:ModeSelNum
     MdSensResult(modei).Layer3_app = SensLayer3_app;
     MdSensResult(modei).Layer3_bus = SensLayer3_bus;
     %MdSensResult.Sen
-    SensLayer1_val(find(SensLayer1_val==0))=nan;
     figure(modei+100);
+    SensLayer1_val(find(SensLayer1_val==0))=nan;
     heatmap(SensLayer1_val);
-    SensLayer2_val(find(SensLayer2_val==0))=nan;
+    title('Heatmap of Grey-box Layer-1')
     figure(modei+101);
+    SensLayer2_val(find(SensLayer2_val==0))=nan;
     heatmap(real(SensLayer2_val));
+    title('Heatmap of Grey-box Layer-2 real part (damping)')
     
 end
 end
