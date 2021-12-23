@@ -26,9 +26,14 @@ CountState = 0;
 % Device
 IndexState{1} = 1;
 for i = 1:N_Device
-    fprintf(['    Device ',num2str(i),':\n']);
-    IndexState{i+1} = SimplexPS.PrintIndexCell(DeviceStateStr{i},6,IndexState{i});
-    IndexState{i+1} = IndexState{i+1} + 1;
+ 	if DeviceType{i} ~= 100 && DeviceType{i} ~= 1100
+  	% Print only when the apparatus is not a floating bus.
+        fprintf(['    Device ',num2str(i),':\n']);
+        IndexState{i+1} = SimplexPS.PrintIndexCell(DeviceStateStr{i},6,IndexState{i});
+        IndexState{i+1} = IndexState{i+1} + 1;
+  	else
+        IndexState{i+1} = SimplexPS.PrintIndexCell(DeviceStateStr{i},6,IndexState{i});
+    end
 end
 % Network
 fprintf(['    Network line:\n']);

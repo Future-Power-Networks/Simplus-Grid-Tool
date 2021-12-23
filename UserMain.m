@@ -22,6 +22,7 @@ close all;  % Close all figures, etc
 % "UserData.xlsx" defaultly contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
 % UserData = 'UserData.xlsx';
+% UserData = 'SgInfiniteBus.xlsx';
 
 % Examples used in the paper:
 % UserData = 'H_SingleSgInfiniteBus.xlsx';
@@ -35,10 +36,13 @@ close all;  % Close all figures, etc
 % UserData = 'K_68Bus_SG_IBR_17';
 % UserData = 'K_68Bus_SG_IBR_6';
 
-% UserData = 'K_68Bus_SG_IBR_Test';
-% UserData = 'K_68Bus_SG_IBR_Test_v2';
-% UserData = 'K_68Bus_SG_IBR_Test_v3';
-% UserData = 'K_68Bus_SG_IBR_Test_v4';
+% UserData = 'K_68Bus_IBR_NoCap';
+% UserData = 'K_68Bus_IBR_NoCap_NoQ';
+
+% UserData = 'K_68Bus_IBR';
+% UserData = 'K_68Bus_IBR_17';
+% UserData = 'K_68Bus_IBR_17_15';
+% UserData = 'K_68Bus_IBR_17_15_2';
 
 %UserData = 'K_68Bus_SG_IBR_Test_NoCap';
 % UserData = 'K_68Bus_SG_IBR_Test_Load';
@@ -46,6 +50,11 @@ close all;  % Close all figures, etc
 % The system is stable when:
                                         % 1- increasing the sampling frequency
                                         % 2- adding the LPF for PLL, which seems to play a very important role in transient stability. 
+
+% Steady state operating point test
+% UserData = 'K_Test_2IBR';
+% UserData = 'K_Test_4IBR';
+% UserData = 'K_Test_8IBR';
                                         
 % 4bus test
 % UserData = '4Bus_Chain_0d3_SG';

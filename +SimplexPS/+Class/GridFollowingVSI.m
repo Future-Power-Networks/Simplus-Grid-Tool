@@ -115,6 +115,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             ki_pll  = obj.Para(6)*0;      % PLL, I
             % tau_pll = obj.Para(7);
             tau_pll = 1/(100*2*pi);
+            % tau_pll = 1/(20*2*pi);
 
                 % Notes:
                 % This setting will make the PLL controller become:

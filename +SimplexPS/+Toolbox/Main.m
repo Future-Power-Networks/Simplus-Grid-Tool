@@ -193,12 +193,12 @@ fprintf('Calculatting pole/zero...\n')
 pole_dss = diag(pole_dss);
 pole_dss = pole_dss(find(real(pole_dss) ~= inf));
 pole_dss = pole_dss/2/pi;
-unstable_pole_dss = pole_dss(find(pole_dss>1e-3))
+unstable_pole_dss = pole_dss(find(pole_dss>1e-9))
 
 [~,pole_ss] = eig(GminSS.A);
 pole_ss = diag(pole_ss);
 pole_ss = pole_ss/2/pi;
-unstable_pole_ss = pole_ss(find(pole_ss>1e-5))
+unstable_pole_ss = pole_ss(find(pole_ss>1e-9))
 
 pole_sys = pole_ss;
 
@@ -209,11 +209,35 @@ pole_sys = pole_ss;
 % unstable_pole_sys_min = pole_sys(find(pole_sys_min>1e-3))
 
 fprintf('Checking if the system is stable:\n')
-if isempty(find(real(pole_ss)>1e-5, 1))
+if isempty(find(real(pole_ss)>1e-9, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
 end
+
+%%
+% % ==================================================
+% % For participation factor analysis
+% % ==================================================
+fprintf('\n')
+fprintf('=================================\n')
+fprintf('Participation Factor Analysis\n')
+fprintf('=================================\n')
+
+[RightVec,D,LeftVec] = eig(GsysDSS.A,GsysDSS.E);
+D = diag(D)/2/pi;
+for i = 1:length(D)
+    imag_D = abs(imag(D(i)));
+    if (imag_D < 40) && (imag_D > 20)
+        PoleIndex = i;
+        break;
+    end
+end
+RightVec_ = RightVec(:,PoleIndex);
+LeftVec_ = LeftVec(PoleIndex,:);
+PfList = LeftVec_.*transpose(RightVec_);
+PfList = abs(PfList);
+[~,StateIndex] = maxk(PfList,20)
 
 %%
 % ==================================================
