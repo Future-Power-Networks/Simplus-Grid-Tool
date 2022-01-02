@@ -219,6 +219,7 @@ end
 % % ==================================================
 % % For participation factor analysis
 % % ==================================================
+if 0
 fprintf('\n')
 fprintf('=================================\n')
 fprintf('Participation Factor Analysis\n')
@@ -238,6 +239,7 @@ LeftVec_ = LeftVec(PoleIndex,:);
 PfList = LeftVec_.*transpose(RightVec_);
 PfList = abs(PfList);
 [~,StateIndex] = maxk(PfList,20)
+end
 
 %%
 % ==================================================
