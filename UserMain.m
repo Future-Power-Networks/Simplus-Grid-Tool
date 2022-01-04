@@ -12,7 +12,8 @@ fprintf('==================================\n')
 % Other possible function: readmatrix, csvread ...
 % Name_Netlist = 'netlist_Paper_SingleSGInfiniteBus.xlsx';
 % Name_Netlist = 'netlist_Paper_SingleVSIInfiniteBus.xlsx';
-Name_Netlist = 'netlist_Paper_IEEE14Bus_v7.xlsx';
+% Name_Netlist = 'netlist_Paper_IEEE14Bus_v7.xlsx';
+Name_Netlist = 'netlist_Paper_IEEE14Bus_InfBus.xlsx';
 
 %%
 % ==================================================
@@ -192,6 +193,8 @@ if isempty(find(real(pole_sys)>1e-9, 1))
     fprintf('Stable.\n');
 else
     fprintf('Warning: Unstable.\n')
+    Index = find(real(pole_sys)>1e-9);
+    Unstable_Pole = pole_sys(Index)
 end
 if Enable_PlotPole
     fprintf('Plot pole/zero map.\n')
