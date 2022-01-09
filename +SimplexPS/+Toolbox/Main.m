@@ -193,6 +193,7 @@ fprintf('Calculatting pole/zero...\n')
 pole_dss = diag(pole_dss);
 pole_dss = pole_dss(find(real(pole_dss) ~= inf));
 pole_dss = pole_dss/2/pi;
+pole_dss = pole_dss(find(pole_dss<1e9));
 unstable_pole_dss = pole_dss(find(pole_dss>1e-9))
 
 [~,pole_ss] = eig(GminSS.A);
@@ -200,7 +201,7 @@ pole_ss = diag(pole_ss);
 pole_ss = pole_ss/2/pi;
 unstable_pole_ss = pole_ss(find(pole_ss>1e-9))
 
-pole_sys = pole_ss;
+pole_sys = pole_dss;
 
 % GminSS_1 = minreal(GsysDSS);
 % [~,pole_sys_min] = eig(GminSS_1.A);
@@ -220,6 +221,7 @@ end
 % % For participation factor analysis
 % % ==================================================
 if 0
+if Enable_ParticipationFactorAnalysis
 fprintf('\n')
 fprintf('=================================\n')
 fprintf('Participation Factor Analysis\n')
@@ -229,7 +231,7 @@ fprintf('=================================\n')
 D = diag(D)/2/pi;
 for i = 1:length(D)
     imag_D = abs(imag(D(i)));
-    if (imag_D < 40) && (imag_D > 20)
+    if (imag_D < ImagMax) && (imag_D > ImagMin)
         PoleIndex = i;
         break;
     end
@@ -238,7 +240,8 @@ RightVec_ = RightVec(:,PoleIndex);
 LeftVec_ = LeftVec(PoleIndex,:);
 PfList = LeftVec_.*transpose(RightVec_);
 PfList = abs(PfList);
-[~,StateIndex] = maxk(PfList,20)
+[StateParti,StateIndex] = maxk(PfList,20)
+end
 end
 
 %%
@@ -289,13 +292,13 @@ if Enable_PlotPole
     figure_n = figure_n+1;
     figure(figure_n);
     subplot(1,2,1)
-    scatter(real(pole_ss),imag(pole_ss),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Global pole map');
     
 	subplot(1,2,2)
-    scatter(real(pole_ss),imag(pole_ss),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');

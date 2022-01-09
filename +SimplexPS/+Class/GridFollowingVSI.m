@@ -156,6 +156,11 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
 
             % Saturation setting
             EnableSaturation = 0;
+            if obj.Timer >= 1
+                EnableSaturation_Voltage = 0;
+            else
+                EnableSaturation_Voltage = 0;
+            end
             
             % Frequency limit and saturation
             w_limit_H = W0*1.5;
@@ -164,10 +169,10 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             i_d_limit = inf;
             i_q_limit = inf;
             % Ac voltage limit
-            e_d_limit_H = 1.5;
-            e_d_limit_L = -1.5;
-        	e_q_limit_H = 1.5;
-            e_q_limit_L = -1.5;
+            e_d_limit_H = 1.4;
+            e_d_limit_L = -1.4;
+        	e_q_limit_H = 0.5;
+            e_q_limit_L = -0.5;
 %             e_q_limit_x = sqrt(1-min(1,v_d^2));
 %             e_q_limit_H = e_q_limit_x;
 %             e_q_limit_L = -e_q_limit_x;
@@ -319,7 +324,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             e_q = -(i_q_r - i_q)*kp_i + i_q_i;
 
             % Ac voltage (duty cycle) saturation
-            if EnableSaturation
+            if EnableSaturation_Voltage
                 e_d = min(e_d,e_d_limit_H);
                 e_d = max(e_d,e_d_limit_L);
                 e_q = min(e_q,e_q_limit_H);

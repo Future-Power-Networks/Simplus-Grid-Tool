@@ -30,57 +30,35 @@ close all;  % Close all figures, etc
 % UserData = 'Gamma_SingleSgInfiniteBus_ForSim';
 
 % K analysis
+UserData = 'K_68Bus_IBR_Load';
+% UserData = 'K_68Bus_IBR';
+% UserData = 'K_68Bus_IBR_17';
+% UserData = 'K_68Bus_IBR_17_14';
+% UserData = 'K_68Bus_IBR_17_14_7';
+
+% UserData = 'K_CC_IBR';
+
+% Test
+% UserData = 'K_68Bus_IBR_NoLineResistance';
+% UserData = 'K_68Bus_IBR_1';
+% UserData = 'K_68Bus_IBR_1_17';
 % UserData = 'K_68Bus_SG_Load';
 % UserData = 'K_68Bus_SG_IBR_Load';
 % UserData = 'K_68Bus_SG_IBR';
 % UserData = 'K_68Bus_SG_IBR_17';
 % UserData = 'K_68Bus_SG_IBR_6';
-
-% UserData = 'K_68Bus_IBR_NoCap';
-% UserData = 'K_68Bus_IBR_NoCap_NoQ';
-
-% UserData = 'K_68Bus_IBR';
-% UserData = 'K_68Bus_IBR_17';
-% UserData = 'K_68Bus_IBR_17_14';
-UserData = 'K_68Bus_IBR_17_14_7';
-% UserData = 'K_68Bus_IBR_17_14_1';
-% UserData = 'K_68Bus_IBR_17_14_1_7';
-% UserData = 'K_68Bus_IBR_17_15';
-% UserData = 'K_68Bus_IBR_17_15_2';
-
-%UserData = 'K_68Bus_SG_IBR_Test_NoCap';
+% UserData = 'K_68Bus_SG_IBR_Test_NoCap';
 % UserData = 'K_68Bus_SG_IBR_Test_Load';
+
 % Notes:       
 % The system is stable when:
                                         % 1- increasing the sampling frequency
                                         % 2- adding the LPF for PLL, which seems to play a very important role in transient stability. 
 
-% Steady state operating point test
-% UserData = 'K_Test_2IBR';
-% UserData = 'K_Test_4IBR';
-% UserData = 'K_Test_8IBR';
+Enable_ParticipationFactorAnalysis = 0; % 1/0
+ImagMax = 60;                           % Hz, the upper limit of the selected mode
+ImagMin = 10;                           % Hz, the lower limit of the selected mode
                                         
-% 4bus test
-% UserData = '4Bus_Chain_0d3_SG';
-% UserData = '4Bus_Chain_0d45_SG';
-% UserData = '4Bus_Chain_0d45_SG_Load';
-% UserData = '4Bus_Chain_0d5_SG';
-%
-% UserData = '4Bus_Chain_v1';
-% UserData = '4Bus_Chain_0d3';
-% UserData = '4Bus_Chain_0d4';
-% UserData = '4Bus_Chain_0d45';
-% UserData = '4Bus_Chain_0d5';
-
-% 8bus test
-% UserData = '8Bus_Chain_v1';
-% UserData = '8Bus_Mesh_v1';
-
-% multi bus
-% UserData = 'IEEE_14Bus';
-% UserData = 'NETS_NYPS_68Bus';
-
-
 %% Run toolbox
 SimplexPS.Toolbox.Main();
 
