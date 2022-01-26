@@ -30,7 +30,7 @@ close all;  % Close all figures, etc
 % UserData = 'Gamma_SingleSgInfiniteBus_ForSim';
 
 % K analysis
-UserData = 'K_68Bus_IBR_Load';
+% UserData = 'K_68Bus_IBR_Load';
 % UserData = 'K_68Bus_IBR';
 % UserData = 'K_68Bus_IBR_17';
 % UserData = 'K_68Bus_IBR_17_14';
@@ -50,11 +50,14 @@ UserData = 'K_68Bus_IBR_Load';
 % UserData = 'K_68Bus_SG_IBR_Test_NoCap';
 % UserData = 'K_68Bus_SG_IBR_Test_Load';
 
+% UserData = '2Bus_SG_IBR';
+UserData = '2Bus_GFM_IBR';
+
 % Notes:       
 % The system is stable when:
                                         % 1- increasing the sampling frequency
                                         % 2- adding the LPF for PLL, which seems to play a very important role in transient stability. 
-
+                                        
 Enable_ParticipationFactorAnalysis = 0; % 1/0
 ImagMax = 60;                           % Hz, the upper limit of the selected mode
 ImagMin = 10;                           % Hz, the lower limit of the selected mode
