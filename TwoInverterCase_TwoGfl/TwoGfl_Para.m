@@ -31,8 +31,8 @@ Lc = 1e-9;
 
 %% Grid-following inverter
 % PLL
-w_pll = 15*2*pi;   % (rad/s)
-w_tau = 1e3 *2*pi;  % (rad/s)
+w_pll = 15*2*pi;   % (rad/s)    % Notes: ki_pll is set to zero in the simulink model. In other words, w_pll only determins kp_pll.
+w_tau = 30*2*pi;   % (rad/s)
 
 % Current loop
 w_i_GFL = 250 *2*pi;    % (rad/s)

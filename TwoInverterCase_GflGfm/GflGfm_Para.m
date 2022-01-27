@@ -7,12 +7,8 @@ clear all
 close all
 clc
 
-%%
-t0 = 2;
-dt = 1;
-
 %% Fundamental parameters
-Fs = 50;             % (kHz)
+Fs = 20;             % (kHz)
 Fs = Fs*1e3;
 Ts = 1/Fs;
 
@@ -31,8 +27,8 @@ Lc = 1e-9;
 
 %% Grid-following inverter
 % PLL
-w_pll = 15*2*pi;    % (rad/s)
-w_tau = 15*2*pi;    % (rad/s)
+w_pll = 15*2*pi;     % (rad/s)
+w_tau = 1000*2*pi;    % (rad/s)
 
 % Current loop
 w_i_GFL = 250 *2*pi;    % (rad/s)
