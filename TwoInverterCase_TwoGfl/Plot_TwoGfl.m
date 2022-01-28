@@ -55,15 +55,16 @@ ylim([0.9,1.2]);
 yticks([0.9,1,1.1,1.2]);
 plot([xtick1,xtick1],[-5,5],'--k'); hold on; grid on;
 plot([xtick2,xtick2],[-5,5],'--k'); hold on; grid on;
-% title('Grid-Following Inverter 1','interpreter','latex')
 
 subplot(3,1,2)
-plot(time,-idq1,'LineWidth',LineWidth); grid on; hold on;
+plot(time,idq1,'LineWidth',LineWidth); grid on; hold on;
 ylabel('$i_{dq1}$ (pu)','interpreter','latex')
 xlim(XLim);
 xticks(XTicks);
-ylim([-4,1]);
-yticks([-4,-3,-2,-1,0,1]);
+%ylim([-4,1]);
+%yticks([-4,-3,-2,-1,0,1]);
+ylim([-1,4]);
+yticks([-1,0,1,2,3,4]);
 plot([xtick1,xtick1],[-5,5],'--k'); hold on; grid on;
 plot([xtick2,xtick2],[-5,5],'--k'); hold on; grid on;
 
@@ -94,15 +95,16 @@ ylim([0.9,1.2]);
 yticks([0.9,1,1.1,1.2]);
 plot([xtick1,xtick1],[-5,5],'--k'); hold on; grid on;
 plot([xtick2,xtick2],[-5,5],'--k'); hold on; grid on;
-% title('Grid-Following Inverter 1','interpreter','latex')
 
 subplot(3,1,2)
-plot(time,-idq2,'LineWidth',LineWidth); grid on; hold on;
+plot(time,idq2,'LineWidth',LineWidth); grid on; hold on;
 ylabel('$i_{dq2}$ (pu)','interpreter','latex')
 xlim(XLim);
 xticks(XTicks);
-ylim([-4,1]);
-yticks([-4,-3,-2,-1,0,1]);
+% ylim([-4,1]);
+% yticks([-4,-3,-2,-1,0,1]);
+ylim([-1,4]);
+yticks([-1,0,1,2,3,4]);
 plot([xtick1,xtick1],[-5,5],'--k'); hold on; grid on;
 plot([xtick2,xtick2],[-5,5],'--k'); hold on; grid on;
 
