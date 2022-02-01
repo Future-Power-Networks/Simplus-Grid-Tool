@@ -13,6 +13,8 @@ SimplusGT.ColorRgb();
 
 %% Select data
 UserData = 'NETS_NYPS_68Bus_Test';
+% UserData = 'K_68Bus_IBR';
+% UserData = 'K_68Bus_IBR_17';
 
 %% Compare toolbox with nature
 Enable_ComparisonToolbox = 0;           % 1/0: Compare the toolbox with nature
@@ -20,7 +22,6 @@ Enable_ComparisonToolbox = 0;           % 1/0: Compare the toolbox with nature
                                         % Notes:
                                         % The LPF of PLL will influence the comparison a lot
                                    
-Enable_SmallSignalAnalysis = Enable_ComparisonToolbox;
 SimplusGT.Toolbox.Main();
 
 if Enable_ComparisonToolbox
@@ -43,8 +44,8 @@ Enable_FiedlerAbs               = 1;
 Enable_NoneZeroXi               = 0;
 
 % Enable control loop
-Enable_VoltageNode_InnerLoop    = 1;    % 1/0: star-delta conversion for flux inductance of voltage node                ???
-Enable_CurrentNode_InnerLoop    = 1;    % 1/0: inner-current loop impedance of current node                             ???
+Enable_VoltageNode_InnerLoop    = 0;    % 1/0: star-delta conversion for flux inductance of voltage node                ???
+Enable_CurrentNode_InnerLoop    = 0;    % 1/0: inner-current loop impedance of current node                             ???
 
 Enable_vq_PLL                   = 1;    % 1/0: change Q-PLL to vq-PLL
 Enable_Change_Sign_PLL        	= 0;    % 1/0: change the sign of Q, epsilon_m = 90 or -90, for current node
@@ -248,10 +249,10 @@ for i = n_Ibus_1st:(n_Fbus_1st-1)
 
 % Notes: 
 % All inverters have same current controllers
-kp_i = ApparatusParaNew{i}.kp_i_dq;  
-ki_i = ApparatusParaNew{i}.ki_i_dq;                                                    % ???
-Lf   = ApparatusParaNew{i}.L;
 Rf   = ApparatusParaNew{i}.R;
+Lf   = ApparatusParaNew{i}.wLf;
+kp_i = ApparatusParaNew{i}.f_i_dq*2*pi*Lf/W0;  
+ki_i = (ApparatusParaNew{i}.f_i_dq*2*pi)^2*Lf/W0/4;
 
 % Notes:
 % The bandwidth of vq-PLL and Q-PLL would be different, because Q is
@@ -259,9 +260,8 @@ Rf   = ApparatusParaNew{i}.R;
 % different inverters to be same, there Q-PLL bandwidth would probably be
 % different because of different id output or active power output. We
 % ensure the vq-PLL bandwidth here.
-kp_pll{i} = ApparatusParaNew{i}.kp_pll;                                                  % ???
-% kp_pll{i} = 0;
-ki_pll{i} = ApparatusParaNew{i}.ki_pll;
+kp_pll{i} = ApparatusParaNew{i}.f_pll*2*pi; 
+ki_pll{i} = (ApparatusParaNew{i}.f_pll*2*pi)^2/4;
 PI_pll{i} = kp_pll{i} + ki_pll{i}/s;
 
 end
@@ -862,5 +862,3 @@ SaveData.Order_Old2New = Order_Old2New;
 SaveData.Order_New2Old = Order_New2Old;
 SaveData.pole_T1cl = pole_T1cl;
 SaveData.pole_T12cl = pole_T12cl;
-
-stop

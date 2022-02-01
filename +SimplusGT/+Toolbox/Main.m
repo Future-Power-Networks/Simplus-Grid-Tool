@@ -100,7 +100,7 @@ ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);
 ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
 
 % Enable_SmallSignalAnalysis = 1;
-% if Enable_SmallSignalAnalysis
+if Enable_ComparisonToolbox
 
 %%
 % ==================================================
@@ -302,7 +302,7 @@ else
     fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
 end
 
-% end
+end
 
 %%
 % ==================================================
