@@ -99,6 +99,9 @@ ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);
 % For printting later
 ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
 
+% Enable_SmallSignalAnalysis = 1;
+% if Enable_SmallSignalAnalysis
+
 %%
 % ==================================================
 % Descriptor state space model
@@ -205,47 +208,14 @@ fprintf('Calculatting pole/zero...\n')
 EigenValueSys = diag(EigenValueSys);
 EigenValueSys = EigenValueSys(find(real(EigenValueSys) ~= inf));
 EigenValueSys = EigenValueSys/2/pi;
+
+pole_sys = EigenValueSys;       % For the comparison used in power communication theory.
+
 fprintf('Checking if the system is stable:\n')
 if isempty(find(real(EigenValueSys)>1e-6, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
-end
-
-%%
-% ==================================================
-% Create Simulink Model
-% ==================================================
-fprintf('\n')
-fprintf('=================================\n')
-fprintf('Simulink Model\n')
-fprintf('=================================\n')
-
-if N_Bus>=150
-    Enable_CreateSimulinkModel = 0;
-    fprintf('Warning: The system has more than 150 buses;\n')
-    fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
-    fprintf('         The static and dynamic analysis will not be influenced.\n')
-end
-
-if Enable_CreateSimulinkModel == 1
-    
-    fprintf('Creating the simulink model automatically, please wait a second...\n')
-
-    % Set the simulink model name
-    Name_Model = 'mymodel_v1';
-
-    % Close existing model with same name
-    close_system(Name_Model,0);
-    
-    % Create the simulink model
-    SimplusGT.Simulink.MainSimulink(Name_Model,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
-    fprintf('Get the simulink model successfully! \n')
-    fprintf('Please click the "run" button in the model to run it.\n')
-    %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
-
-else
-    fprintf('Warning: The auto creation of simulink model is disabled.\n')
 end
 
 %%
@@ -332,6 +302,43 @@ else
     fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
 end
 
+% end
+
+%%
+% ==================================================
+% Create Simulink Model
+% ==================================================
+fprintf('\n')
+fprintf('=================================\n')
+fprintf('Simulink Model\n')
+fprintf('=================================\n')
+
+if N_Bus>=150
+    Enable_CreateSimulinkModel = 0;
+    fprintf('Warning: The system has more than 150 buses;\n')
+    fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
+    fprintf('         The static and dynamic analysis will not be influenced.\n')
+end
+
+if Enable_CreateSimulinkModel == 1
+    
+    fprintf('Creating the simulink model automatically, please wait a second...\n')
+
+    % Set the simulink model name
+    Name_Model = 'mymodel_v1';
+
+    % Close existing model with same name
+    close_system(Name_Model,0);
+    
+    % Create the simulink model
+    SimplusGT.Simulink.MainSimulink(Name_Model,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
+    fprintf('Get the simulink model successfully! \n')
+    fprintf('Please click the "run" button in the model to run it.\n')
+    %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
+
+else
+    fprintf('Warning: The auto creation of simulink model is disabled.\n')
+end
 
 %%
 fprintf('\n')

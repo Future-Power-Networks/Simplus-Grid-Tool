@@ -100,4 +100,11 @@ end
 UpdateListLine = sortrows(UpdateListLine,2);
 UpdateListLine = sortrows(UpdateListLine,1);
 
+% The output format of the ListLine
+% From Bus | To Bus | R | X | B | G | T | AreaType
+% Notes: 
+% The passive loads are also combined into R, X, B, G
+% R and X are in series, B and G are in parallel, RX and BG are in
+% parallel.
+
 end
