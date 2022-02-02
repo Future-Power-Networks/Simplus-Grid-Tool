@@ -1,7 +1,5 @@
 % This is the main function for analying the power grids by
-% power-communication-isomorphism.
-
-% Author(s): Yitong Li, Yunjie Gu
+% communication theory
 
 %% Prepare
 clear all
@@ -21,8 +19,8 @@ UserData = 'Test_68Bus_IBR_17';         % IBR at node 17 is repaced by a SG
 
 %% Enable settings
 % Enable inner loop
-Enable_VoltageNode_InnerLoop    = 1;    % 1/0: star-delta conversion for flux inductance of voltage node                ???
-Enable_CurrentNode_InnerLoop    = 1;    % 1/0: inner-current loop impedance of current node                             ???
+Enable_VoltageNode_InnerLoop    = 1;    % 1/0: star-delta conversion for flux inductance of voltage node 
+Enable_CurrentNode_InnerLoop    = 1;    % 1/0: inner-current loop impedance of current node
 
 % PLL settings
 Enable_vq_PLL                   = 1;    % 1/0: change Q-PLL to vq-PLL
@@ -37,7 +35,7 @@ Enable_Plot_GraphOrigin         = 1;    % 1/0: Plot the graph of the original po
 Fig_N = 2000;
 
 %% Compare conventional small-signal (toolbox) with the proposed communication theory
-Enable_ComparisonToolbox = 0;           % 1/0: Compare the toolbox with nature
+Enable_ComparisonToolbox = 1;           % 1/0: Compare the toolbox with nature
                                         % This enable value will also be used later when plotting
                                         % Notes:
                                         % The LPF of PLL will influence the comparison a lot
@@ -47,9 +45,9 @@ SimplusGT.Toolbox.Main();
 
 if Enable_ComparisonToolbox
     save('pole_sys.mat','pole_sys');
-    clc
-    close all
 end
+clc
+close all
 
 %%
 fprintf('\n')
@@ -111,7 +109,7 @@ SimplusGT.Communication.FindNodeIndex();
 SimplusGT.Communication.HandleNode();
 
 %% Network matrix
-fprintf('Calculate network matrix: hybrid admittance/impedance matrix, network gain matrix...\n')
+fprintf('Calculate network matrix: hybrid admittance/impedance matrix, or equivalently channel gain...\n')
 
 % Convert the nodol admittance matrix to hybrid admittance/impedance matrix
 Gbus = SimplusGT.Communication.HybridMatrixYZ(Ybus,n_Ibus_1st);
@@ -139,7 +137,7 @@ Gbus_ = -Gbus_;
 Gbus_prime = (Gbus_ - Gbus)/(1i*dW);         	% Consider
 
 %% 
-fprintf('Calculate network matrix: complex power matrix...\n')
+fprintf('Calculate network matrix: complex power...\n')
 % Update input and output so that they correspond to the hybrid
 % admittance/impedance matrix, i.e., Output = -Gbus*Input
 Input = [V(1:n_Ibus_1st-1);
@@ -173,7 +171,6 @@ if Enable_vq_PLL
 else
     S = conj(Input)*transpose(Input);
 end
-ang_S_degree = angle(S)/pi*180;
 
 %% 
 fprintf('Calculate network matrix: mu, GAMMA, and gamma...\n')
@@ -228,7 +225,7 @@ for i = n_Ibus_1st:N_Bus
         Hmat(i,i) = 1/ki_pll{i};                        % PI format
         Dmat(i,i) = kp_pll{i}/ki_pll{i};
     else                                    
-        Hmat(i,i) = 1/(w_PLL_LPF*kp_pll{i});                % LPF format
+        Hmat(i,i) = 1/(w_PLL_LPF*kp_pll{i});         	% LPF format
         Dmat(i,i) = 1/kp_pll{i};
         ki_pll{i} = 0;
     end
@@ -268,7 +265,7 @@ for m = 1:N_Bus
     end
 end
 FreqShift = double(FreqShift);
-FreqShift = -FreqShift;    % For negative feedback
+FreqShift = -FreqShift;             % For negative feedback
 
 % Notes:
 % K can be interpreted as the synchronizing torque coefficient, as dS is
@@ -283,7 +280,7 @@ KH = Hinv*K;
 [phi,xi,psi] = eig(KH);                 % phi is the right eigenvector matrix, psi is the left eigenvector matrix, xi is the eigenvalue matrix. Noting that phi^(-1) can also be regarded as a left eigenvector matrix.
 phi_inv = phi^(-1);
 xi_diag = diag(xi);
-xi_diag_Hz = vpa(xi_diag/2/pi,5)
+xi_diag = vpa(xi_diag,5)
 [xi_min,xi_min_index] = min( real(xi_diag) );
 fprintf(['KH stability: ']);
 if xi_min < -1e-5
@@ -292,9 +289,8 @@ if xi_min < -1e-5
     xi_min_index;
 else
     fprintf(['stable xi.\n']);
-    % Converet x_min to 2nd smallest x_min, i.e., get the smallest non-zero
-    % xi.
-    Enable_NoneZeroXi = 1;
+    Enable_NoneZeroXi = 1;  % Converet x_min to 2nd smallest x_min, i.e., 
+                            % get the smallest non-zero xi.
     if Enable_NoneZeroXi
         [xi_min2,xi_min2_index] = mink(real(xi_diag),2);
         xi_min = xi_min2(2);
@@ -306,7 +302,7 @@ if 0
 SimplusGT.Communication.AnalysisK();
 end
 
-%% Apparatus Matrix: T and H^{-1}
+%% Apparatus Matrix: T
 fprintf('Calculate the apparatus state space model...\n')
 
 % Notes
@@ -330,13 +326,6 @@ n_v_ref = 1;                % Select the first voltage node as the reference
 % Voltage node
 % ================================
 if Exist_Vbus == 1
-    
-% Symbolic transfer function form:
-% omega = 1/(D + J*s) * W;
-% for i = 1:(n_Ibus_1st-1)
-%     T_V_sym{i} = 1/(D{i}/J{i} + s);         % All T_V{i} should be same
-% end
-% F_V_sym = -s/T_V_sym{n_v_ref};
 
 % State space form:
 % dx/dt = [domega]/dt = [-D/J,0]*[omega] + [1/J]*[W];
@@ -360,13 +349,6 @@ end
 % Current node
 % ================================
 if Exist_Ibus == 1
-    
-% Symbolic transfer function form
-% omega = (kp_pll{i} + ki_pll{i}/s) * W
-% for i = n_Ibus_1st:N_Bus
-%     T_I_sym{i} = PI_pll{i}/ki_pll{i};       % All T_I{i} should be same
-% end
-% F_I_sym = -s/T_I_sym{n_i_ref};
 
 % State space form
 if Enable_PLL_LPF == 0                                                        	% ???
@@ -468,16 +450,10 @@ pole_toolbox = pole_toolbox(index);
 index = find(real(pole_toolbox)>-1e3);
 pole_toolbox = pole_toolbox(index);
 scatter(real(pole_toolbox),imag(pole_toolbox),'x','LineWidth',1.5); hold on; grid on;
-legend('Yunjie Wihtout F Shift','Yunjie With F Shift','Toolbox')
+legend('Wihtout Freq Shift','With Freq Shift','Toolbox')
 end
 
 %% Check stability
-% By proposed criterion
-% fprintf('Check the stability by the proposed criterion:\n')
-% Stability Check Voltage Current
-% StabilityCheckVoltageCurrent();
-
-% By pole
 fprintf('Check the stability by poles:\n')
 UnstablePoleIndex     = find(real(pole_T12cl)>1e-9);
 UnstablePoleIndexRisk = find(real(pole_T12cl)>0);
