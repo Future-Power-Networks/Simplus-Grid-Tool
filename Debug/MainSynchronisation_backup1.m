@@ -6,21 +6,16 @@ clear all
 clc
 close all
 
-%% Get color RGB
-SimplusGT.ColorRgb();
-
 %% Select data
-% UserData = 'Test_68Bus_NETS_NYPS';      % Default NETS_NYPS system
-% UserData = 'Test_68Bus_IBR_Load';       % IBRs with passvie loads
-% UserData = 'Test_68Bus_IBR';            % IBRs with active loads
-% UserData = 'Test_68Bus_IBR_17';         % IBR at node 17 is repaced by a SG
-UserData = 'Test_68Bus_IBR_17_14';      % 17, 14
-% UserData = 'Test_68Bus_IBR_17_14_7';    % 17, 14, 7
+% UserData = 'Test_68Bus_NETS_NYPS';        % Default NETS_NYPS system
+% UserData = 'Test_68Bus_IBR';              % Full-IBR system
+% UserData = 'Test_68Bus_IBR_17_14';      	% IBRs at nodes 17, 14 are replaced by SGs
+UserData = 'Test_4Bus';                     % 4 bus system
 
 %% Enable settings
 % Enable inner loop
-Enable_VoltageNode_InnerLoop    = 1;    % 1/0: star-delta conversion for flux inductance of voltage node 
-Enable_CurrentNode_InnerLoop    = 1;    % 1/0: inner-current loop impedance of current node
+Enable_VoltageNode_InnerLoop    = 0;    % 1/0: star-delta conversion for flux inductance of voltage node 
+Enable_CurrentNode_InnerLoop    = 0;    % 1/0: inner-current loop impedance of current node
 
 % PLL settings
 Enable_vq_PLL                   = 1;    % 1/0: change Q-PLL to vq-PLL
@@ -87,7 +82,7 @@ fprintf('Consider the influence of node type on node admittance matrix...\n')
 % Find the node index
 SimplusGT.Communication.FindNodeIndex();
 
-% Handle voltage, current, and floating nodes
+% Handle voltage, current, and floating/empty nodes
 SimplusGT.Communication.HandleNode();
 
 %% Network matrix
@@ -95,23 +90,16 @@ fprintf('Calculate network matrix: hybrid admittance/impedance matrix, or equiva
 
 % Convert the nodol admittance matrix to hybrid admittance/impedance matrix
 Gbus = SimplusGT.Communication.HybridMatrixYZ(Ybus,n_Ibus_1st);
-GbusVI  = Gbus;
-GbusVIF = SimplusGT.Communication.HybridMatrixYZ(YbusVIF,n_Ibus_1st);
-
-% For numerically calculating Gbus_prime later
 Gbus_ = SimplusGT.Communication.HybridMatrixYZ(Ybus_,n_Ibus_1st);
 
 % Notes:
 % It should be ensured that the buses are listed in the form like this:
 % [Vbus1, Vbus2, Vbus3, Ibus4, Ibus5, ...]
     
-Gbus = -Gbus;  	% Change the power direction to load convention.
-              	% Noting that this operation is different from Ybus
-                % = -Ybus if the system has current nodes. The current
-                % direction is not important actually.
-ang_G_degree = angle(Gbus)/pi*180;
-         
-Gbus_ = -Gbus_;
+Gbus = -Gbus;       % Change to load convention.
+Gbus_ = -Gbus_;    	% Noting that this operation is different from Ybus
+                    % = -Ybus if the system has current nodes. The current
+                    % direction is not important actually.
 
 % Get G_prime
 % Notes: It is calculaed by numerical method
@@ -162,8 +150,8 @@ for i = 1:N_Bus
     elseif ApparatusSourceType(i) == 2      % Current node
         mu(i) = pi/2;      % W = Q
         if Enable_vq_PLL
-            theta_i = angle(-I(i));
-            theta_v = angle(V(i));
+            theta_i = angle(-I(i))
+            theta_v = angle(V(i))
             mu(i) = pi/2 - (theta_i-theta_v);      % The Q direction is changed to vq direction.
         end
     else
@@ -216,6 +204,6 @@ end
 end
 
 %%
-if 0 
+if 1
     SimplusGT.Communication.SmallSignalAnalysis();
 end
