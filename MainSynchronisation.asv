@@ -6,6 +6,9 @@ clear all
 clc
 close all
 
+%% Get color RGB
+SimplusGT.ColorRgb();
+
 %% Select data
 % UserData = 'Test_68Bus_NETS_NYPS';      % Default NETS_NYPS system
 % UserData = 'Test_68Bus_IBR_Load';       % IBRs with passvie loads
@@ -102,11 +105,13 @@ Gbus_ = SimplusGT.Communication.HybridMatrixYZ(Ybus_,n_Ibus_1st);
 % It should be ensured that the buses are listed in the form like this:
 % [Vbus1, Vbus2, Vbus3, Ibus4, Ibus5, ...]
     
-Gbus = -Gbus;       % Change to load convention.
-Gbus_ = -Gbus_;    	% Noting that this operation is different from Ybus
-                    % = -Ybus if the system has current nodes. The current
-                    % direction is not important actually.
+Gbus = -Gbus;  	% Change the power direction to load convention.
+              	% Noting that this operation is different from Ybus
+                % = -Ybus if the system has current nodes. The current
+                % direction is not important actually.
 ang_G_degree = angle(Gbus)/pi*180;
+         
+Gbus_ = -Gbus_;
 
 % Get G_prime
 % Notes: It is calculaed by numerical method
