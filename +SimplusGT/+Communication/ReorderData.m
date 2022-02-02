@@ -58,6 +58,7 @@ I = I(Order_Old2New,:);
 
 % Re-order nodal admittance matrix
 Ybus = Ybus(Order_Old2New,Order_Old2New);
+Ybus_ = Ybus_(Order_Old2New,Order_Old2New);
 
 % Re-order device para
 for i = 1:N_Bus

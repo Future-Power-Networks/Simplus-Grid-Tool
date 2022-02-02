@@ -99,7 +99,8 @@ ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);
 % For printting later
 ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
 
-% Enable_SmallSignalAnalysis = 1;
+%%
+Enable_ComparisonToolbox = 0;
 if Enable_ComparisonToolbox
 
 %%
@@ -302,7 +303,6 @@ else
     fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
 end
 
-end
 
 %%
 % ==================================================
@@ -345,6 +345,12 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('End: run successfully.\n')
 fprintf('==================================\n')
+
+
+%%
+end
+
+
 %%
 % Remained questions:
 % - Advanced power flow, including droop bus, etc
