@@ -33,7 +33,7 @@ close all;  % Close all figures, etc
 % UserData = 'K_68Bus_IBR_Load';
 % UserData = 'K_68Bus_IBR';
 % UserData = 'K_68Bus_IBR_17';
-% UserData = 'K_68Bus_IBR_17_14';
+UserData = 'K_68Bus_IBR_17_14';
 % UserData = 'K_68Bus_IBR_17_14_7';
 
 % UserData = 'K_CC_IBR';
@@ -51,7 +51,7 @@ close all;  % Close all figures, etc
 % UserData = 'K_68Bus_SG_IBR_Test_Load';
 
 % UserData = '2Bus_SG_IBR';
-UserData = '2Bus_GFM_IBR';
+% UserData = '2Bus_GFM_IBR';
 
 % Notes:       
 % The system is stable when:
