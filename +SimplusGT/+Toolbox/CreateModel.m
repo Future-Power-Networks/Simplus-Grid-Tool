@@ -35,10 +35,11 @@ close_system(Name_Model,0);
 
 % Create the simulink model
 SimplusGT.Simulink.MainSimulink(Name_Model,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
+[status,msg]=mkdir('Models'); % Returning "status" and "msg" stops it printing a warning
 fn = strcat('Models/',modelName);
 save_system(Name_Model,fn);
 % output json as well
-saveAsJsonToFile(inputData,strcat(fn,'.json'));
+SaveAsJsonToFile(inputData,strcat(fn,'.json'));
 close_system(fn)
 
 fprintf('Simulink model %s successfully saved! \n', modelName);

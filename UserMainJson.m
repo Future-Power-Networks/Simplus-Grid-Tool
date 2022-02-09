@@ -1,6 +1,8 @@
 %
 % Version of UserMain using json input
 %
+% Author(s) Rob Oldaker
+%
 
 % Read me please:
 % Please read the comments in this file carefully, and use this file to run
@@ -27,7 +29,7 @@ close all;  % Close all figures, etc
 
 %% Set user data
 % Default
-% "UserData.json" defaultly contains the data of a 4-bus
+% "UserData.json" contains the data of a 4-bus
 % generator-inverter-composite power system. Please feel free to change it.
 
 inputData = JsonDecoder('UserData.json');

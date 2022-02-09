@@ -1,0 +1,1899 @@
+{
+  "basic": {
+    "Fs": 30000,
+    "Fbase": 60,
+    "Sbase": 1,
+    "Vbase": 1
+  },
+  "adv": {
+    "discretizationMethod": 2,
+    "linearizationTimes": 1,
+    "discretizationDampingFlag": 1,
+    "directFeedThrough": 0,
+    "powerFlowAlgorithm": 2,
+    "enableCreateSimulinkModel": 1,
+    "enablePlotPole": 1,
+    "enablePlotAdmittance": 1,
+    "enablePrintOutput": 1,
+    "enableParticipation": 0
+  },
+  "buses": [
+    {
+      "busNo": 1,
+      "busType": 1,
+      "VSp": 1.04,
+      "theta": 0,
+      "PGi": 1.2890000000000001,
+      "QGi": -0.161,
+      "PLi": 0.55,
+      "QLi": 0.17,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 2,
+      "busType": 2,
+      "VSp": 1.01,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": -0.008,
+      "PLi": 0.03,
+      "QLi": 0.88,
+      "Qmin": -0.17,
+      "Qmax": 0.5,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 3,
+      "busType": 2,
+      "VSp": 0.985,
+      "theta": 0,
+      "PGi": 0.4,
+      "QGi": -0.01,
+      "PLi": 0.41,
+      "QLi": 0.21,
+      "Qmin": -0.1,
+      "Qmax": 0.6,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 4,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 5,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.13,
+      "QLi": 0.04,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 6,
+      "busType": 2,
+      "VSp": 0.98,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0.008,
+      "PLi": 0.75,
+      "QLi": 0.02,
+      "Qmin": -0.08,
+      "Qmax": 0.25,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 7,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 8,
+      "busType": 2,
+      "VSp": 1.005,
+      "theta": 0,
+      "PGi": 4.5,
+      "QGi": 0.621,
+      "PLi": 1.5,
+      "QLi": 0.22,
+      "Qmin": -1.4,
+      "Qmax": 2,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 9,
+      "busType": 2,
+      "VSp": 0.98,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0.022000000000000002,
+      "PLi": 1.21,
+      "QLi": 0.26,
+      "Qmin": -0.03,
+      "Qmax": 0.09,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 10,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.05,
+      "QLi": 0.02,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 11,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 12,
+      "busType": 2,
+      "VSp": 1.015,
+      "theta": 0,
+      "PGi": 3.1,
+      "QGi": 1.285,
+      "PLi": 3.77,
+      "QLi": 0.24,
+      "Qmin": -1.5,
+      "Qmax": 1.55,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 13,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.18,
+      "QLi": 0.023,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 14,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.105,
+      "QLi": 0.053,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 15,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.22,
+      "QLi": 0.05,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 16,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.43,
+      "QLi": 0.03,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 17,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.42,
+      "QLi": 0.08,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 18,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.272,
+      "QLi": 0.098,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 19,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.033,
+      "QLi": 0.006,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 20,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.023,
+      "QLi": 0.01,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 21,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 22,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 23,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.063,
+      "QLi": 0.021,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 24,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 25,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.063,
+      "QLi": 0.032,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 26,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 27,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.093000000000000013,
+      "QLi": 0.005,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 28,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.046,
+      "QLi": 0.023,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 29,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.17,
+      "QLi": 0.026000000000000002,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 30,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.036000000000000004,
+      "QLi": 0.018000000000000002,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 31,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.057999999999999996,
+      "QLi": 0.028999999999999998,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 32,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.016,
+      "QLi": 0.008,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 33,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.038,
+      "QLi": 0.019,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 34,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 35,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.06,
+      "QLi": 0.03,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 36,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 37,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 38,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.14,
+      "QLi": 0.07,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 39,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 40,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 41,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.063,
+      "QLi": 0.03,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 42,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.071,
+      "QLi": 0.044000000000000004,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 43,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.02,
+      "QLi": 0.01,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 44,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.12,
+      "QLi": 0.018000000000000002,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 45,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 46,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 47,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.297,
+      "QLi": 0.11599999999999999,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 48,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 49,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.18,
+      "QLi": 0.085,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 50,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.21,
+      "QLi": 0.105,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 51,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.18,
+      "QLi": 0.053,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 52,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.049,
+      "QLi": 0.022000000000000002,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 53,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.2,
+      "QLi": 0.1,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 54,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.040999999999999995,
+      "QLi": 0.013999999999999999,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 55,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.068,
+      "QLi": 0.034,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 56,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.076,
+      "QLi": 0.022000000000000002,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 57,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.067,
+      "QLi": 0.02,
+      "Qmin": 0,
+      "Qmax": 0,
+      "areaNo": 1,
+      "ACDC": 1
+    }
+  ],
+  "networkLines": [],
+  "networkLinesIEEE": [
+    {
+      "fromBus": 1,
+      "toBus": 2,
+      "R": 0.0083,
+      "X": 0.028,
+      "B": 0.129,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 2,
+      "toBus": 3,
+      "R": 0.0298,
+      "X": 0.085,
+      "B": 0.0818,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 3,
+      "toBus": 4,
+      "R": 0.0112,
+      "X": 0.0366,
+      "B": 0.038,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 4,
+      "toBus": 5,
+      "R": 0.0625,
+      "X": 0.132,
+      "B": 0.0258,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 4,
+      "toBus": 6,
+      "R": 0.043,
+      "X": 0.148,
+      "B": 0.0348,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 6,
+      "toBus": 7,
+      "R": 0.02,
+      "X": 0.102,
+      "B": 0.0276,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 6,
+      "toBus": 8,
+      "R": 0.0339,
+      "X": 0.173,
+      "B": 0.047,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 8,
+      "toBus": 9,
+      "R": 0.0099,
+      "X": 0.0505,
+      "B": 0.0548,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 9,
+      "toBus": 10,
+      "R": 0.0369,
+      "X": 0.1679,
+      "B": 0.044,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 9,
+      "toBus": 11,
+      "R": 0.0258,
+      "X": 0.0848,
+      "B": 0.0218,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 9,
+      "toBus": 12,
+      "R": 0.0648,
+      "X": 0.295,
+      "B": 0.0772,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 9,
+      "toBus": 13,
+      "R": 0.0481,
+      "X": 0.158,
+      "B": 0.0406,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 13,
+      "toBus": 14,
+      "R": 0.0132,
+      "X": 0.0434,
+      "B": 0.011,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 13,
+      "toBus": 15,
+      "R": 0.0269,
+      "X": 0.0869,
+      "B": 0.023,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 1,
+      "toBus": 15,
+      "R": 0.0178,
+      "X": 0.091,
+      "B": 0.0988,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 1,
+      "toBus": 16,
+      "R": 0.0454,
+      "X": 0.206,
+      "B": 0.0546,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 1,
+      "toBus": 17,
+      "R": 0.0238,
+      "X": 0.108,
+      "B": 0.0286,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 3,
+      "toBus": 15,
+      "R": 0.0162,
+      "X": 0.053,
+      "B": 0.0544,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 4,
+      "toBus": 18,
+      "R": 0,
+      "X": 0.555,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.97
+    },
+    {
+      "fromBus": 4,
+      "toBus": 18,
+      "R": 0,
+      "X": 0.43,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.978
+    },
+    {
+      "fromBus": 5,
+      "toBus": 6,
+      "R": 0.0302,
+      "X": 0.0641,
+      "B": 0.0124,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 7,
+      "toBus": 8,
+      "R": 0.0139,
+      "X": 0.0712,
+      "B": 0.0194,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 10,
+      "toBus": 12,
+      "R": 0.0277,
+      "X": 0.1262,
+      "B": 0.0328,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 11,
+      "toBus": 13,
+      "R": 0.0223,
+      "X": 0.0732,
+      "B": 0.0188,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 12,
+      "toBus": 13,
+      "R": 0.0178,
+      "X": 0.058,
+      "B": 0.0604,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 12,
+      "toBus": 16,
+      "R": 0.018,
+      "X": 0.0813,
+      "B": 0.0216,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 12,
+      "toBus": 17,
+      "R": 0.0397,
+      "X": 0.179,
+      "B": 0.0476,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 14,
+      "toBus": 15,
+      "R": 0.0171,
+      "X": 0.0547,
+      "B": 0.0148,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 18,
+      "toBus": 19,
+      "R": 0.461,
+      "X": 0.685,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 19,
+      "toBus": 20,
+      "R": 0.283,
+      "X": 0.434,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 21,
+      "toBus": 20,
+      "R": 0,
+      "X": 0.7767,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1.043
+    },
+    {
+      "fromBus": 21,
+      "toBus": 22,
+      "R": 0.0736,
+      "X": 0.117,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 22,
+      "toBus": 23,
+      "R": 0.0099,
+      "X": 0.0152,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 23,
+      "toBus": 24,
+      "R": 0.166,
+      "X": 0.256,
+      "B": 0.0084,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 24,
+      "toBus": 25,
+      "R": 0,
+      "X": 1.182,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 24,
+      "toBus": 25,
+      "R": 0,
+      "X": 1.23,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 24,
+      "toBus": 26,
+      "R": 0,
+      "X": 0.0473,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1.043
+    },
+    {
+      "fromBus": 26,
+      "toBus": 27,
+      "R": 0.165,
+      "X": 0.254,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 27,
+      "toBus": 28,
+      "R": 0.0618,
+      "X": 0.0954,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 28,
+      "toBus": 29,
+      "R": 0.0418,
+      "X": 0.0587,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 7,
+      "toBus": 29,
+      "R": 0,
+      "X": 0.0648,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.967
+    },
+    {
+      "fromBus": 25,
+      "toBus": 30,
+      "R": 0.135,
+      "X": 0.202,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 30,
+      "toBus": 31,
+      "R": 0.326,
+      "X": 0.497,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 31,
+      "toBus": 32,
+      "R": 0.507,
+      "X": 0.755,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 32,
+      "toBus": 33,
+      "R": 0.0392,
+      "X": 0.036,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 34,
+      "toBus": 32,
+      "R": 0,
+      "X": 0.953,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.975
+    },
+    {
+      "fromBus": 34,
+      "toBus": 35,
+      "R": 0.052,
+      "X": 0.078,
+      "B": 0.0032,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 35,
+      "toBus": 36,
+      "R": 0.043,
+      "X": 0.0537,
+      "B": 0.0016,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 36,
+      "toBus": 37,
+      "R": 0.029,
+      "X": 0.0366,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 37,
+      "toBus": 38,
+      "R": 0.0651,
+      "X": 0.1009,
+      "B": 0.002,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 37,
+      "toBus": 39,
+      "R": 0.0239,
+      "X": 0.0379,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 36,
+      "toBus": 40,
+      "R": 0.03,
+      "X": 0.0466,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 22,
+      "toBus": 38,
+      "R": 0.0192,
+      "X": 0.0295,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 11,
+      "toBus": 41,
+      "R": 0,
+      "X": 0.749,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.955
+    },
+    {
+      "fromBus": 41,
+      "toBus": 42,
+      "R": 0.207,
+      "X": 0.352,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 41,
+      "toBus": 43,
+      "R": 0,
+      "X": 0.412,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 38,
+      "toBus": 44,
+      "R": 0.0289,
+      "X": 0.0585,
+      "B": 0.002,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 15,
+      "toBus": 45,
+      "R": 0,
+      "X": 0.1042,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.955
+    },
+    {
+      "fromBus": 14,
+      "toBus": 46,
+      "R": 0,
+      "X": 0.0735,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.9
+    },
+    {
+      "fromBus": 46,
+      "toBus": 47,
+      "R": 0.023,
+      "X": 0.068,
+      "B": 0.0032,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 47,
+      "toBus": 48,
+      "R": 0.0182,
+      "X": 0.0233,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 48,
+      "toBus": 49,
+      "R": 0.0834,
+      "X": 0.129,
+      "B": 0.0048,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 49,
+      "toBus": 50,
+      "R": 0.0801,
+      "X": 0.128,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 50,
+      "toBus": 51,
+      "R": 0.1386,
+      "X": 0.22,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 10,
+      "toBus": 51,
+      "R": 0,
+      "X": 0.0712,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.93
+    },
+    {
+      "fromBus": 13,
+      "toBus": 49,
+      "R": 0,
+      "X": 0.191,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.895
+    },
+    {
+      "fromBus": 29,
+      "toBus": 52,
+      "R": 0.1442,
+      "X": 0.187,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 52,
+      "toBus": 53,
+      "R": 0.0762,
+      "X": 0.0984,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 53,
+      "toBus": 54,
+      "R": 0.1878,
+      "X": 0.232,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 54,
+      "toBus": 55,
+      "R": 0.1732,
+      "X": 0.2265,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 11,
+      "toBus": 43,
+      "R": 0,
+      "X": 0.153,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.958
+    },
+    {
+      "fromBus": 44,
+      "toBus": 45,
+      "R": 0.0624,
+      "X": 0.1242,
+      "B": 0.004,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 40,
+      "toBus": 56,
+      "R": 0,
+      "X": 1.195,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.958
+    },
+    {
+      "fromBus": 56,
+      "toBus": 41,
+      "R": 0.553,
+      "X": 0.549,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 56,
+      "toBus": 42,
+      "R": 0.2125,
+      "X": 0.354,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 39,
+      "toBus": 57,
+      "R": 0,
+      "X": 1.355,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.98
+    },
+    {
+      "fromBus": 57,
+      "toBus": 56,
+      "R": 0.174,
+      "X": 0.26,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 38,
+      "toBus": 49,
+      "R": 0.115,
+      "X": 0.177,
+      "B": 0.003,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 38,
+      "toBus": 48,
+      "R": 0.0312,
+      "X": 0.0482,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 9,
+      "toBus": 55,
+      "R": 0,
+      "X": 0.1205,
+      "B": 0,
+      "G": 0,
+      "turnsRatio": 0.94
+    },
+    {
+      "fromBus": 18,
+      "toBus": 18,
+      "R": "NaN",
+      "X": "NaN",
+      "B": 0.1,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 25,
+      "toBus": 25,
+      "R": "NaN",
+      "X": "NaN",
+      "B": 0.059,
+      "G": 0,
+      "turnsRatio": 1
+    },
+    {
+      "fromBus": 53,
+      "toBus": 53,
+      "R": "NaN",
+      "X": "NaN",
+      "B": 0.063,
+      "G": 0,
+      "turnsRatio": 1
+    }
+  ],
+  "apparatus": [
+    {
+      "busNo": 1,
+      "type": 0,
+      "params": {
+        "J": 14,
+        "D": 40,
+        "wL": 0.075,
+        "R": 0.0125,
+        "w0": 376.99111843077515
+      }
+    },
+    {
+      "busNo": 2,
+      "type": 0,
+      "params": {
+        "J": 3.5,
+        "D": 10,
+        "wL": 0.3,
+        "R": 0.05,
+        "w0": 376.99111843077515
+      }
+    },
+    {
+      "busNo": 3,
+      "type": 0,
+      "params": {
+        "J": 0.35,
+        "D": 1,
+        "wL": 0.3,
+        "R": 0.05,
+        "w0": 376.99111843077515
+      }
+    },
+    {
+      "busNo": 4,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 5,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 6,
+      "type": 0,
+      "params": {
+        "J": 3.5,
+        "D": 10,
+        "wL": 0.3,
+        "R": 0.05,
+        "w0": 376.99111843077515
+      }
+    },
+    {
+      "busNo": 7,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 8,
+      "type": 0,
+      "params": {
+        "J": 3.5,
+        "D": 10,
+        "wL": 0.3,
+        "R": 0.05,
+        "w0": 376.99111843077515
+      }
+    },
+    {
+      "busNo": 9,
+      "type": 0,
+      "params": {
+        "J": 3.5,
+        "D": 10,
+        "wL": 0.3,
+        "R": 0.05,
+        "w0": 376.99111843077515
+      }
+    },
+    {
+      "busNo": 10,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 11,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 12,
+      "type": 0,
+      "params": {
+        "J": 3.5,
+        "D": 10,
+        "wL": 0.3,
+        "R": 0.05,
+        "w0": 376.99111843077515
+      }
+    },
+    {
+      "busNo": 13,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 14,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 15,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 16,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 17,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 18,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 19,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 20,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 21,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 22,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 23,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 24,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 25,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 26,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 27,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 28,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 29,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 30,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 31,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 32,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 33,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 34,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 35,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 36,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 37,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 38,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 39,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 40,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 41,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 42,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 43,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 44,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 45,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 46,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 47,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 48,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 49,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 50,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 51,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 52,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 53,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 54,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 55,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 56,
+      "type": 100,
+      "params": []
+    },
+    {
+      "busNo": 57,
+      "type": 100,
+      "params": []
+    }
+  ]
+}

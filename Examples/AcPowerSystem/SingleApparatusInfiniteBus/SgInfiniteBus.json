@@ -1,0 +1,78 @@
+{
+  "basic": {
+    "Fs": 60000,
+    "Fbase": 60,
+    "Sbase": 1,
+    "Vbase": 1
+  },
+  "adv": {
+    "discretizationMethod": 2,
+    "linearizationTimes": 1,
+    "discretizationDampingFlag": 1,
+    "directFeedThrough": 0,
+    "powerFlowAlgorithm": 1,
+    "enableCreateSimulinkModel": 1,
+    "enablePlotPole": 1,
+    "enablePlotAdmittance": 1,
+    "enablePrintOutput": 1,
+    "enableParticipation": 0
+  },
+  "buses": [
+    {
+      "busNo": 1,
+      "busType": 1,
+      "VSp": 0.995,
+      "theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -1,
+      "Qmax": 1,
+      "areaNo": 1,
+      "ACDC": 1
+    },
+    {
+      "busNo": 2,
+      "busType": 3,
+      "VSp": 1,
+      "theta": 0,
+      "PGi": 0.9,
+      "QGi": 0.3,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -1,
+      "Qmax": 1,
+      "areaNo": 1,
+      "ACDC": 1
+    }
+  ],
+  "networkLines": {
+    "fromBus": 1,
+    "toBus": 2,
+    "R": 0,
+    "wL": 0.65,
+    "wC": 0,
+    "G": 0,
+    "turnsRatio": 1
+  },
+  "networkLinesIEEE": [],
+  "apparatus": [
+    {
+      "busNo": 1,
+      "type": 90,
+      "params": []
+    },
+    {
+      "busNo": 2,
+      "type": 0,
+      "params": {
+        "J": 3.5,
+        "D": 10,
+        "wL": 0.3,
+        "R": 0.003,
+        "w0": 376.99111843077515
+      }
+    }
+  ]
+}

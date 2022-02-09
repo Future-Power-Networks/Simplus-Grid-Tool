@@ -1,3 +1,9 @@
+%
+% Makes Json copies of existing spreadsheet config files.
+%
+% Author(s) Rob Oldaker
+%
+
 file = 'UserData.xlsm';
 convertXlsmToJson(file);
 file = 'Examples\HybridPowerSystem\Hybrid_test_v1.xlsx';
@@ -79,18 +85,10 @@ function convertXlsmToJson(file)
     end
    
     disp(data);
-    json = jsonencode(data,'PrettyPrint',true,'ConvertInfAndNaN',false);
-    % NaN and Inf are not valid json literals so put them in quotes to make it valid json
-    json = strrep(json,'-Inf','"-Inf"');
-    json = strrep(json,'NaN','"NaN"');
-    json = strrep(json,'Inf','"Inf"');
-
     jsonFile = replace(file,'.xlsx','.json');
     jsonFile = replace(jsonFile,'.xlsm','.json');
     if ~strcmp(jsonFile,file)
-        fid = fopen(jsonFile,'wt');
-        fprintf(fid, json, + '\n');
-        fclose(fid);
+        SaveAsJsonToFile(data,jsonFile);
         fprintf('Successfully converted file %s\n',file);
     end
 
