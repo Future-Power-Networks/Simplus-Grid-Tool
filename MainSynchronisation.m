@@ -217,6 +217,6 @@ end
 end
 
 %%
-if 0 
+if 1
     SimplusGT.Communication.SmallSignalAnalysis();
 end
