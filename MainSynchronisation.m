@@ -6,6 +6,9 @@ clear all
 clc
 close all
 
+%% Get color RGB
+SimplusGT.ColorRgb();
+
 %% Select data
 % UserData = 'Test_68Bus_NETS_NYPS';      % Default NETS_NYPS system
 % UserData = 'Test_68Bus_IBR_Load';       % IBRs with passvie loads
@@ -51,7 +54,7 @@ fprintf('Calculate nodal admittance matrix...\n')
 W0 = Wbase;
 Ybus = SimplusGT.Communication.YbusCalcSym(ListLineNew,W0,'albe');       % We get the alpha/beta frame nodal admittance matrix
 
-% Convert Ybus to numerical value
+% Convert Ybus to double
 dW = 1e-10*(1+Wbase);
 Ybus_ = double(subs(Ybus,'s',1i*(W0+dW)));   % Used for calculating derivative numerically
 Ybus = double(subs(Ybus,'s',1i*W0));
@@ -63,7 +66,7 @@ fprintf('Reorder the data...\n')
 % Notes:
 %
 % In this code, the bus/node should be orderred in this sequence:
-% [all voltage nodes, all current nodes, all floating/empty bus nodes], i.e.,
+% [all voltage nodes, all current nodes, all floating bus nodes], i.e.,
 % [v bus, ..., v bus, i bus, ..., i bus, f bus, ... f bus].
 % Hence, in this section, we re-order the data obtained from excel first,
 % to make sure that this required sequence can be obtained. Noting that,
@@ -102,11 +105,14 @@ Gbus_ = SimplusGT.Communication.HybridMatrixYZ(Ybus_,n_Ibus_1st);
 % It should be ensured that the buses are listed in the form like this:
 % [Vbus1, Vbus2, Vbus3, Ibus4, Ibus5, ...]
     
-Gbus = -Gbus;       % Change to load convention.
-Gbus_ = -Gbus_;    	% Noting that this operation is different from Ybus
-                    % = -Ybus if the system has current nodes. The current
-                    % direction is not important actually.
+Gbus = -Gbus;  	% Change the power direction to load convention.
+              	% Noting that this operation is different from Ybus
+                % = -Ybus if the system has current nodes. The current
+                % direction is not important actually.
 ang_G_degree = angle(Gbus)/pi*180;
+                
+% For numerically calculating Gbus_prime
+Gbus_ = -Gbus_;
 
 % Get G_prime
 % Notes: It is calculaed by numerical method
