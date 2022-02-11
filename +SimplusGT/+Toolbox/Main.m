@@ -99,9 +99,7 @@ ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);
 % For printting later
 ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
 
-
-
-%% The following codes are all disabled here
+%%
 Enable_ComparisonToolbox = 0;
 if Enable_ComparisonToolbox
 

@@ -7,18 +7,20 @@ clc
 close all
 
 %% Select data
-% UserData = 'Test_68Bus_NETS_NYPS';        % Default NETS_NYPS system
-% UserData = 'Test_68Bus_IBR';              % Full-IBR system
-UserData = 'Test_68Bus_IBR_17_14';      	% IBRs at nodes 17, 14 are replaced by SGs
-% UserData = 'Test_4Bus';                     % 4 bus system
+% UserData = 'Test_68Bus_NETS_NYPS';      % Default NETS_NYPS system
+% UserData = 'Test_68Bus_IBR_Load';       % IBRs with passvie loads
+% UserData = 'Test_68Bus_IBR';            % IBRs with active loads
+% UserData = 'Test_68Bus_IBR_17';         % IBR at node 17 is repaced by a SG
+UserData = 'Test_68Bus_IBR_17_14';      % 17, 14
+% UserData = 'Test_68Bus_IBR_17_14_7';    % 17, 14, 7
 
 %% Enable settings
 % Enable inner loop
-Enable_VoltageNode_InnerLoop    = 0;    % 1/0: star-delta conversion for flux inductance of voltage node 
-Enable_CurrentNode_InnerLoop    = 0;    % 1/0: inner-current loop impedance of current node
+Enable_VoltageNode_InnerLoop    = 1;    % 1/0: star-delta conversion for flux inductance of voltage node 
+Enable_CurrentNode_InnerLoop    = 1;    % 1/0: inner-current loop impedance of current node
 
 % PLL settings
-Enable_vq_PLL                   = 1;    % 1/0
+Enable_vq_PLL                   = 1;    % 1/0: change Q-PLL to vq-PLL
 Enable_PLL_LPF                  = 1;    % 1/0: if the PLL with an additional 100Hz LPF
 w_PLL_LPF                       = 2*pi*100;     % Bandwidth of the PLL LPF
 
@@ -37,6 +39,9 @@ fprintf('==================================\n')
 fprintf('Synchronisation analysis.\n')
 fprintf('==================================\n')
 
+%% Update power flow
+[V,I] = SimplusGT.Communication.UpdateVI(PowerFlowNew);
+
 %% Nodal admittance matrix
 % Symbolic
 s = sym('s');
@@ -50,10 +55,6 @@ Ybus = SimplusGT.Communication.YbusCalcSym(ListLineNew,W0,'albe');       % We ge
 dW = 1e-10*(1+Wbase);
 Ybus_ = double(subs(Ybus,'s',1i*(W0+dW)));   % Used for calculating derivative numerically
 Ybus = double(subs(Ybus,'s',1i*W0));
-
-% Get V and I
-[V,I] = SimplusGT.Communication.UpdateVI(PowerFlowNew);
-
 % Nnotes:
 % Ybus should statisfy: I = Ybus*V
 
@@ -83,7 +84,7 @@ fprintf('Consider the influence of node type on node admittance matrix...\n')
 % Find the node index
 SimplusGT.Communication.FindNodeIndex();
 
-% Handle voltage, current, and floating/empty nodes
+% Handle voltage, current, and floating nodes
 SimplusGT.Communication.HandleNode();
 
 %% Network matrix
@@ -91,24 +92,36 @@ fprintf('Calculate network matrix: hybrid admittance/impedance matrix, or equiva
 
 % Convert the nodol admittance matrix to hybrid admittance/impedance matrix
 Gbus = SimplusGT.Communication.HybridMatrixYZ(Ybus,n_Ibus_1st);
+GbusVI  = Gbus;
+GbusVIF = SimplusGT.Communication.HybridMatrixYZ(YbusVIF,n_Ibus_1st);
+
+% For numerically calculating Gbus_prime later
 Gbus_ = SimplusGT.Communication.HybridMatrixYZ(Ybus_,n_Ibus_1st);
 
-Gbus = -Gbus;  	% Change the power direction to load convention.
-              	% Noting that this operation is different from Ybus
-                % = -Ybus if the system has current nodes. The current
-                % direction is not important actually.
+% Notes:
+% It should be ensured that the buses are listed in the form like this:
+% [Vbus1, Vbus2, Vbus3, Ibus4, Ibus5, ...]
+    
+Gbus = -Gbus;       % Change to load convention.
+Gbus_ = -Gbus_;    	% Noting that this operation is different from Ybus
+                    % = -Ybus if the system has current nodes. The current
+                    % direction is not important actually.
+ang_G_degree = angle(Gbus)/pi*180;
 
-Gbus_prime = (Gbus_ - Gbus)/(1i*dW);                % Consider 
+% Get G_prime
+% Notes: It is calculaed by numerical method
+Gbus_prime = (Gbus_ - Gbus)/(1i*dW);         	% Consider
 
 %% 
 fprintf('Calculate network matrix: complex power...\n')
 % Update input and output so that they correspond to the hybrid
-% admittance/impedance matrix, i.e., Output = Gbus*Input
+% admittance/impedance matrix, i.e., Output = -Gbus*Input
 Input = [V(1:n_Ibus_1st-1);
          I(n_Ibus_1st:end)];
 Output = [I(1:n_Ibus_1st-1);
           V(n_Ibus_1st:end)];
-
+      
+% Normalize the current node because of PLL
 InputNormalized = Input;        % Initialize
 for i = 1:length(Input)
     if ApparatusSourceType(i) == 2
@@ -134,24 +147,20 @@ if Enable_vq_PLL
 else
     S = conj(Input)*transpose(Input);
 end
-      
+
 %% 
 fprintf('Calculate network matrix: mu, GAMMA, and gamma...\n')
 % Get mu
 for i = 1:N_Bus
     if ApparatusSourceType(i) == 1          % Voltage node
-        mu(i,:) = 0;         % W = P
+        mu(i) = 0;         % W = P
     elseif ApparatusSourceType(i) == 2      % Current node
-        % mu(i,:) = -pi/2;      % W = -Q
-        mu(i,:) = pi/2;
-        % mu(i,:) = 0;
-        
-     	if Enable_vq_PLL
+        mu(i) = pi/2;      % W = Q
+        if Enable_vq_PLL
             theta_i = angle(-I(i));
             theta_v = angle(V(i));
             mu(i) = pi/2 - (theta_i-theta_v);      % The Q direction is changed to vq direction.
         end
-        
     else
         error(['Error']);
     end
@@ -165,17 +174,12 @@ for m = 1:N_Bus
     end
 end
 
-% Output
-% mu
-% GAMMA
-% gamma
-
 %%
 fprintf('Calculate network matrix: inertia, damping...\n')
 % Initialize
 Hmat = eye(N_Bus);
-Dmat = eye(N_Bus);
 Hinv = inv(Hmat);
+Dmat = eye(N_Bus);
 
 % Update voltage node
 if Exist_Vbus == 1
@@ -184,7 +188,8 @@ for i = 1:(n_Ibus_1st-1)
     Hmat(i,i) = J{i};
     Dmat(i,i) = D{i};
     
-    Hinv(i,i) = 1/Hmat(i,i);
+  	Hinv(i,i) = 1/Hmat(i,i);
+    Hinv(i,i) = double(Hinv(i,i));
 end
 end
 
@@ -201,8 +206,11 @@ for i = n_Ibus_1st:N_Bus
         ki_pll{i} = 0;
     end
     Hinv(i,i) = 1/Hmat(i,i);
+    Hinv(i,i) = double(Hinv(i,i));
 end
 end
 
-%% 
-SimplusGT.Communication.SmallSignalAnalysis();
+%%
+if 0 
+    SimplusGT.Communication.SmallSignalAnalysis();
+end
