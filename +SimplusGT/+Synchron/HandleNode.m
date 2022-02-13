@@ -6,7 +6,7 @@ if ExistVbus == 0
 else
 fprintf('Handle voltage node...\n')
 
-for i = 1:(n_Ibus_1st-1)
+for i = 1:(NumIbus1st-1)
 J{i} = ApparatusParaNew{i}.J*2/Wbase^2;
 D{i} = ApparatusParaNew{i}.D/Wbase^2;
 J{i} = J{i}*Wbase;
@@ -18,19 +18,19 @@ D{i} = D{i}*Wbase;
 Lsg = ApparatusParaNew{i}.wL/Wbase;
 Rsg = ApparatusParaNew{i}.R;
 Zsg = s*Lsg + Rsg;
-Y_sg{i} = 1/Zsg;
+Ysg{i} = 1/Zsg;
 
 % Convert Ysg to double
-Y_sg_{i} = double(subs(Y_sg{i},'s',1i*(Wbase+dW)));
-Y_sg{i} = double(subs(Y_sg{i},'s',1i*Wbase));
+Ysg_{i} = double(subs(Ysg{i},'s',1i*(Wbase+dW)));
+Ysg{i} = double(subs(Ysg{i},'s',1i*Wbase));
 end    
 
 % Doing D-Y conversion
 if Enable_VoltageNode_InnerLoop
 
 % Prepare star-delta conversion by adding new buses
-Ybus = SimplusGT.Synchron.PrepareConvertDY(Ybus,n_Ibus_1st,N_Bus,Y_sg);
-Ybus_ = SimplusGT.Synchron.PrepareConvertDY(Ybus_,n_Ibus_1st,N_Bus,Y_sg_);
+Ybus = SimplusGT.Synchron.PrepareConvertDY(Ybus,NumIbus1st,N_Bus,Ysg);
+Ybus_ = SimplusGT.Synchron.PrepareConvertDY(Ybus_,NumIbus1st,N_Bus,Ysg_);
     
 % Doing the star-delta conversion.
 % Notes: Assume old voltage bus as zero current bus, and then switch the
@@ -50,8 +50,8 @@ Ybus_ = Ybus_(1:N_Bus,1:N_Bus);
 % would lead to wrong results in some cases when Ybus is almost
 % non-invertible.
 I = I(1:N_Bus,:);
-for i = 1:(n_Ibus_1st-1)
-    V(i) = V(i) + I(i)/Y_sg{i};
+for i = 1:(NumIbus1st-1)
+    V(i) = V(i) + I(i)/Ysg{i};
 end
 
 else
@@ -71,7 +71,7 @@ fprintf('Handle current node...\n')
 
 % Get the inner loop parameters
 
-for i = n_Ibus_1st:(n_Fbus_1st-1)
+for i = NumIbus1st:(NumFbus1st-1)
 
 % Notes: 
 % All inverters have same current controllers
@@ -95,21 +95,21 @@ end
 % alpha/beta
 Z_PIi = kp_i + ki_i/(s-1i*Wbase);        
 Z_Lf = s*Lf+Rf;
-Y_inv = (s-1i*Wbase)/((kp_i + s*Lf+Rf)*(s-1i*Wbase) + ki_i);
+Yinv = (s-1i*Wbase)/((kp_i + s*Lf+Rf)*(s-1i*Wbase) + ki_i);
 
-Y_inv_ = double(subs(Y_inv,'s',1i*(Wbase+dW)));
-Y_inv = double(subs(Y_inv,'s',1i*Wbase));
+Yinv_ = double(subs(Yinv,'s',1i*(Wbase+dW)));
+Yinv = double(subs(Yinv,'s',1i*Wbase));
 
 % Notes:
 % When current controller is very fast, Y_inv -> 0 and can be ignored.
 
 % Add Y_inv to nodal admittance matrix
-if Enable_CurrentNode_InnerLoop                                                 % ??? 
+if Enable_CurrentNode_InnerLoop 
     
-for i = n_Ibus_1st:(n_Fbus_1st - 1)
+for i = NumIbus1st:(NumFbus1st - 1)
     % Self branch
-    Ybus(i,i) = Ybus(i,i) + Y_inv;
-    Ybus_(i,i) = Ybus_(i,i) + Y_inv_;
+    Ybus(i,i) = Ybus(i,i) + Yinv;
+    Ybus_(i,i) = Ybus_(i,i) + Yinv_;
 end
 
 % Update I
@@ -129,22 +129,22 @@ end
 % and eliminated here after converting the Y matrix to Y-Z hybrid matrix.
 if ExistFbus == 0
     fprintf('Warning: The system has no floating node.\n')
-    YbusVIF = Ybus;
-    YbusVI = Ybus;
+    % YbusVIF = Ybus;
+    % YbusVI = Ybus;
 else
     
 fprintf('Eliminate floating node...\n')
 
-YbusVIF = Ybus;
+% YbusVIF = Ybus;
 
-Ybus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,n_Fbus_1st);
-Ybus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,n_Fbus_1st);
+Ybus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,NumFbus1st);
+Ybus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,NumFbus1st);
 
-N_Bus = n_Fbus_1st-1;
-Ybus = Ybus(1:N_Bus,1:N_Bus);
-Ybus_ = Ybus_(1:N_Bus,1:N_Bus);
+N_Node = NumFbus1st-1;              % N_Node contains Vbus and Ibus only
+Ybus = Ybus(1:N_Node,1:N_Node);
+Ybus_ = Ybus_(1:N_Node,1:N_Node);
 YbusVI = Ybus;
-V = V(1:N_Bus,:);
-I = I(1:N_Bus,:);
+V = V(1:N_Node,:);
+I = I(1:N_Node,:);
 
 end
