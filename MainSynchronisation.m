@@ -47,7 +47,7 @@ fprintf('Synchronisation analysis.\n')
 fprintf('==================================\n')
 
 %% Update power flow
-[V,I] = SimplusGT.Communication.UpdateVI(PowerFlowNew);
+[V,I] = SimplusGT.Synchron.UpdateVI(PowerFlowNew);
 
 %% Nodal admittance matrix
 % Symbolic
@@ -56,7 +56,7 @@ s = sym('s');
 % Calculate nodal admittance matrix
 fprintf('Calculate nodal admittance matrix...\n')
 W0 = Wbase;
-Ybus = SimplusGT.Communication.YbusCalcSym(ListLineNew,W0,'albe');       % We get the alpha/beta frame nodal admittance matrix
+Ybus = SimplusGT.Synchron.YbusCalcSym(ListLineNew,W0,'albe');       % We get the alpha/beta frame nodal admittance matrix
 
 % Convert Ybus to double
 dW = 1e-10*(1+Wbase);
@@ -66,8 +66,8 @@ Ybus = double(subs(Ybus,'s',1i*W0));
 % Ybus should statisfy: I = Ybus*V
 
 % Get Ybus during fault
-ListLineFault = SimplusGT.Communication.GetListLineFault(NfaultBus,ListLineNew,ListBus);
-YbusFault = SimplusGT.Communication.YbusCalcSym(ListLineFault,W0,'albe');
+ListLineFault = SimplusGT.Synchron.GetListLineFault(NfaultBus,ListLineNew,ListBus);
+YbusFault = SimplusGT.Synchron.YbusCalcSym(ListLineFault,W0,'albe');
 YbusFault = double(subs(YbusFault,'s',1i*W0));
 
 %% Reorder the Data
@@ -82,7 +82,7 @@ fprintf('Reorder the data...\n')
 % the device data, the power flow data, and the network line data should
 % all be re-orderred.
 
-SimplusGT.Communication.ReorderData();
+SimplusGT.Synchron.ReorderData();
 
 %% The Influence of node type and their parameters on Ybus
 fprintf('Consider the influence of node type on node admittance matrix...\n')
@@ -94,21 +94,21 @@ fprintf('Consider the influence of node type on node admittance matrix...\n')
 % complex dq and alpha/beta frame.
 
 % Find the node index
-SimplusGT.Communication.FindNodeIndex();
+SimplusGT.Synchron.FindNodeIndex();
 
 % Handle voltage, current, and floating nodes
-SimplusGT.Communication.HandleNode();
+SimplusGT.Synchron.HandleNode();
 
 %% Network matrix
 fprintf('Calculate network matrix: hybrid admittance/impedance matrix, or equivalently channel gain...\n')
 
 % Convert the nodol admittance matrix to hybrid admittance/impedance matrix
-Gbus = SimplusGT.Communication.HybridMatrixYZ(Ybus,n_Ibus_1st);
+Gbus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,n_Ibus_1st);
 GbusVI  = Gbus;
-GbusVIF = SimplusGT.Communication.HybridMatrixYZ(YbusVIF,n_Ibus_1st);
+GbusVIF = SimplusGT.Synchron.HybridMatrixYZ(YbusVIF,n_Ibus_1st);
 
 % For numerically calculating Gbus_prime later
-Gbus_ = SimplusGT.Communication.HybridMatrixYZ(Ybus_,n_Ibus_1st);
+Gbus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,n_Ibus_1st);
 
 % Notes:
 % It should be ensured that the buses are listed in the form like this:
@@ -128,7 +128,7 @@ Gbus_ = -Gbus_;
 Gbus_prime = (Gbus_ - Gbus)/(1i*dW);         	% Consider
 
 % Get fault Gbus
-GbusFault = SimplusGT.Communication.HybridMatrixYZ(YbusFault,n_Ibus_1st);
+GbusFault = SimplusGT.Synchron.HybridMatrixYZ(YbusFault,n_Ibus_1st);
 GbusFault = - GbusFault;
 
 %% 
@@ -248,7 +248,7 @@ end
 
 %%
 if 0
-    SimplusGT.Communication.SmallSignalAnalysis();
+    SimplusGT.Synchron.SmallSignalAnalysis();
 end
 
 %%
@@ -264,23 +264,23 @@ x0 = [x0_1;
 % x0(1) = x0(1) - 5/180*pi;
 
 if 0
-    [t_out,x_out] = ode45(@(t,x) SimplusGT.Communication.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
+    [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
 else
-    [t_out,x_out] = ode45(@(t,x) SimplusGT.Communication.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
+    [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
     t_out1 = t_out;
     x_out1 = x_out;
     clear('t_out','x_out');
     
     TimeRange = [2, 2.05];
     x0 = transpose(x_out1(end,:));
-    [t_out,x_out] = ode45(@(t,x) SimplusGT.Communication.StateEqu(x,GAMMAFault,gammaFault,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
+    [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMAFault,gammaFault,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
     t_out2 = t_out;
     x_out2 = x_out;
     clear('t_out','x_out');
     
   	TimeRange = [2.05, 4];
     x0 = transpose(x_out2(end,:));
-    [t_out,x_out] = ode45(@(t,x) SimplusGT.Communication.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
+    [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
     t_out3 = t_out;
     x_out3 = x_out;
     clear('t_out','x_out');

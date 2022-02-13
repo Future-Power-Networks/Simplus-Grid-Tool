@@ -29,15 +29,15 @@ end
 if Enable_VoltageNode_InnerLoop
 
 % Prepare star-delta conversion by adding new buses
-Ybus = SimplusGT.Communication.PrepareConvertDY(Ybus,n_Ibus_1st,N_Bus,Y_sg);
-Ybus_ = SimplusGT.Communication.PrepareConvertDY(Ybus_,n_Ibus_1st,N_Bus,Y_sg_);
+Ybus = SimplusGT.Synchron.PrepareConvertDY(Ybus,n_Ibus_1st,N_Bus,Y_sg);
+Ybus_ = SimplusGT.Synchron.PrepareConvertDY(Ybus_,n_Ibus_1st,N_Bus,Y_sg_);
     
 % Doing the star-delta conversion.
 % Notes: Assume old voltage bus as zero current bus, and then switch the
 % current and voltage for these buses so that current becomes input, and
 % finally remove corresponding blocks because the input current is zero.
-Ybus = SimplusGT.Communication.HybridMatrixYZ(Ybus,N_Bus+1);
-Ybus_ = SimplusGT.Communication.HybridMatrixYZ(Ybus_,N_Bus+1);
+Ybus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,N_Bus+1);
+Ybus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,N_Bus+1);
 
 % Eliminate the old voltage bus, i.e., zero current bus
 Ybus = Ybus(1:N_Bus,1:N_Bus);
@@ -137,8 +137,8 @@ fprintf('Eliminate floating node...\n')
 
 YbusVIF = Ybus;
 
-Ybus = SimplusGT.Communication.HybridMatrixYZ(Ybus,n_Fbus_1st);
-Ybus_ = SimplusGT.Communication.HybridMatrixYZ(Ybus_,n_Fbus_1st);
+Ybus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,n_Fbus_1st);
+Ybus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,n_Fbus_1st);
 
 N_Bus = n_Fbus_1st-1;
 Ybus = Ybus(1:N_Bus,1:N_Bus);
