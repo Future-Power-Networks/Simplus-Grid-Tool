@@ -80,7 +80,7 @@ n_v_ref = 1;                % Select the first voltage node as the reference
 % ================================
 % Voltage node
 % ================================
-if Exist_Vbus == 1
+if ExistVbus == 1
 
 % State space form:
 % dx/dt = [domega]/dt = [-D/J,0]*[omega] + [1/J]*[W];
@@ -103,7 +103,7 @@ end
 % ================================
 % Current node
 % ================================
-if Exist_Ibus == 1
+if ExistIbus == 1
 
 % State space form
 if Enable_PLL_LPF == 0                                                        	% ???

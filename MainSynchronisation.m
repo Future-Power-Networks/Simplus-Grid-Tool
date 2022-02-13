@@ -11,11 +11,11 @@ close all
 % UserData = 'Test_68Bus_IBR_Load';       % IBRs with passvie loads
 % UserData = 'Test_68Bus_IBR';            % IBRs with active loads
 % UserData = 'Test_68Bus_IBR_17';         % IBR at node 17 is repaced by a SG
-% UserData = 'Test_68Bus_IBR_17_14';      % 17, 14
+UserData = 'Test_68Bus_IBR_17_14';      % 17, 14
 % UserData = 'Test_68Bus_IBR_17_14_7';    % 17, 14, 7
 
 % UserData = 'Test_2Bus';
-UserData = 'Test_3Bus';
+% UserData = 'Test_3Bus';
 
 %% Enable settings
 % Enable inner loop
@@ -55,20 +55,19 @@ s = sym('s');
 
 % Calculate nodal admittance matrix
 fprintf('Calculate nodal admittance matrix...\n')
-W0 = Wbase;
-Ybus = SimplusGT.Synchron.YbusCalcSym(ListLineNew,W0,'albe');       % We get the alpha/beta frame nodal admittance matrix
+Ybus = SimplusGT.Synchron.YbusCalcSym(ListLineNew,Wbase,'albe');       % We get the alpha/beta frame nodal admittance matrix
 
 % Convert Ybus to double
 dW = 1e-10*(1+Wbase);
-Ybus_ = double(subs(Ybus,'s',1i*(W0+dW)));   % Used for calculating derivative numerically
-Ybus = double(subs(Ybus,'s',1i*W0));
+Ybus_ = double(subs(Ybus,'s',1i*(Wbase+dW)));   % Used for calculating derivative numerically
+Ybus = double(subs(Ybus,'s',1i*Wbase));
 % Nnotes:
 % Ybus should statisfy: I = Ybus*V
 
 % Get Ybus during fault
 ListLineFault = SimplusGT.Synchron.GetListLineFault(NfaultBus,ListLineNew,ListBus);
-YbusFault = SimplusGT.Synchron.YbusCalcSym(ListLineFault,W0,'albe');
-YbusFault = double(subs(YbusFault,'s',1i*W0));
+YbusFault = SimplusGT.Synchron.YbusCalcSym(ListLineFault,Wbase,'albe');
+YbusFault = double(subs(YbusFault,'s',1i*Wbase));
 
 %% Reorder the Data
 fprintf('Reorder the data...\n')
@@ -209,7 +208,7 @@ Hinv = inv(Hmat);
 Dmat = eye(N_Bus);
 
 % Update voltage node
-if Exist_Vbus == 1
+if ExistVbus == 1
 for i = 1:(n_Ibus_1st-1)
     % The inertia of a SG is J
     Hmat(i,i) = J{i};
@@ -221,7 +220,7 @@ end
 end
 
 % Update current node
-if Exist_Ibus == 1
+if ExistIbus == 1
 for i = n_Ibus_1st:N_Bus
     % The inertia of an inverter is ki_pll.
     if Enable_PLL_LPF == 0
@@ -247,13 +246,14 @@ for i = 1:N_Bus
 end
 
 %%
-if 0
+if 1
     SimplusGT.Synchron.SmallSignalAnalysis();
 end
 
 %%
+if 0
 fprintf('Run time-domain simulation...\n')
-options = odeset('MaxStep',1/Fs*30);
+options = odeset('MaxStep',1e3);
 TimeRange = [0 2];
 x0_1 = angle(Input);
 x0_2 = ones(N_Bus,1)*Wbase;
@@ -263,7 +263,8 @@ x0 = [x0_1;
 % Add a disturbance
 % x0(1) = x0(1) - 5/180*pi;
 
-if 0
+if 1
+    TimeRange = [0 4];
     [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
 else
     [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
@@ -289,10 +290,10 @@ else
     x_out = [x_out1;x_out2;x_out3];
 end
 
-% 
+% Organize the data
 theta_out = x_out(:,[1:N_Bus]);
 omega_out = x_out(:,[N_Bus+1:2*N_Bus]);
-theta_out = theta_out - theta_out(:,1); % Get the angle difference
+theta_out = theta_out - theta_out(:,2); % Get the angle difference
 theta_out = theta_out/pi*180;
 omega_out = omega_out/Wbase;
 
@@ -311,3 +312,5 @@ plot(t_out,omega_out);
 %
 % The time-domain simulation shows both the voltage and current
 % angle/frequency rather than the voltage only.
+
+end

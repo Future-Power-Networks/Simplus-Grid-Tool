@@ -29,8 +29,6 @@ ListLineAdd = [NfaultBus, NfaultBus, inf, inf, 0, 1e9, 1, FaultAreaType];
 
 % Add the fault branch into the ListLine Matrix
 if isempty(Index)
-    size(ListLine)
-    size(ListLineAdd)
     ListLineFault = [ListLine;
                      ListLineAdd];
     ListLineFault = sortrows(ListLineFault,2);

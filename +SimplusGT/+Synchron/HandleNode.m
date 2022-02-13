@@ -1,28 +1,28 @@
 % =============================
 % Handle voltage node
 % =============================
-if Exist_Vbus == 0
+if ExistVbus == 0
     fprintf('Warning: The system has no voltage node.\n')
 else
 fprintf('Handle voltage node...\n')
 
 for i = 1:(n_Ibus_1st-1)
-J{i} = ApparatusParaNew{i}.J*2/W0^2;
-D{i} = ApparatusParaNew{i}.D/W0^2;
+J{i} = ApparatusParaNew{i}.J*2/Wbase^2;
+D{i} = ApparatusParaNew{i}.D/Wbase^2;
 J{i} = J{i}*Wbase;
 D{i} = D{i}*Wbase;
 % Notes: 
 % Adding '*Wbase' is because the power swing equation rather than the
 % torque swing equation is used, and P=T*w0 if w is not in per unit system.
 
-Lsg = ApparatusParaNew{i}.wL/W0;
+Lsg = ApparatusParaNew{i}.wL/Wbase;
 Rsg = ApparatusParaNew{i}.R;
 Zsg = s*Lsg + Rsg;
 Y_sg{i} = 1/Zsg;
 
 % Convert Ysg to double
-Y_sg_{i} = double(subs(Y_sg{i},'s',1i*(W0+dW)));
-Y_sg{i} = double(subs(Y_sg{i},'s',1i*W0));
+Y_sg_{i} = double(subs(Y_sg{i},'s',1i*(Wbase+dW)));
+Y_sg{i} = double(subs(Y_sg{i},'s',1i*Wbase));
 end    
 
 % Doing D-Y conversion
@@ -63,7 +63,7 @@ end
 % =============================
 % Handle current node
 % =============================
-if Exist_Ibus == 0
+if ExistIbus == 0
     fprintf('Warning: The system has no current node.\n')
 else
 
@@ -76,7 +76,7 @@ for i = n_Ibus_1st:(n_Fbus_1st-1)
 % Notes: 
 % All inverters have same current controllers
 Rf   = ApparatusParaNew{i}.R;
-Lf   = ApparatusParaNew{i}.wLf/W0;
+Lf   = ApparatusParaNew{i}.wLf/Wbase;
 kp_i = ApparatusParaNew{i}.f_i_dq*2*pi*Lf;  
 ki_i = (ApparatusParaNew{i}.f_i_dq*2*pi)^2*Lf/4;
 
@@ -93,12 +93,12 @@ PI_pll{i} = kp_pll{i} + ki_pll{i}/s;
 end
 
 % alpha/beta
-Z_PIi = kp_i + ki_i/(s-1i*W0);        
+Z_PIi = kp_i + ki_i/(s-1i*Wbase);        
 Z_Lf = s*Lf+Rf;
-Y_inv = (s-1i*W0)/((kp_i + s*Lf+Rf)*(s-1i*W0) + ki_i);
+Y_inv = (s-1i*Wbase)/((kp_i + s*Lf+Rf)*(s-1i*Wbase) + ki_i);
 
-Y_inv_ = double(subs(Y_inv,'s',1i*(W0+dW)));
-Y_inv = double(subs(Y_inv,'s',1i*W0));
+Y_inv_ = double(subs(Y_inv,'s',1i*(Wbase+dW)));
+Y_inv = double(subs(Y_inv,'s',1i*Wbase));
 
 % Notes:
 % When current controller is very fast, Y_inv -> 0 and can be ignored.
@@ -127,7 +127,7 @@ end
 % Notes:
 % The floating bus (i.e., no device bus) is assumed as zero-current bus,
 % and eliminated here after converting the Y matrix to Y-Z hybrid matrix.
-if Exist_Fbus == 0
+if ExistFbus == 0
     fprintf('Warning: The system has no floating node.\n')
     YbusVIF = Ybus;
     YbusVI = Ybus;
