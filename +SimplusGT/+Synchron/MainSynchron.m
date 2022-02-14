@@ -227,7 +227,7 @@ end
 %%
 if 1
 fprintf('Run time-domain simulation...\n')
-options = odeset('MaxStep',1e3);
+options = odeset('MaxStep',1e-3);   % This para is very important and influences the results a lot.
 TimeRange = [0 2];
 x0_1 = angle(Input);
 x0_2 = ones(N_Node,1)*Wbase;
