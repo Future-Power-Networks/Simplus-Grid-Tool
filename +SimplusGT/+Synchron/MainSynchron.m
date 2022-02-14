@@ -235,7 +235,7 @@ x0 = [x0_1;
       x0_2];
   
 % Add a disturbance
-x0(1) = x0(1) - 5/180*pi;
+% x0(1) = x0(1) - 5/180*pi;
 
 if 0
     TimeRange = [0 4];
@@ -277,8 +277,11 @@ FigN = FigN + 1;
 figure(FigN)
 subplot(2,1,1)
 plot(t_out,theta_out);
+ylabel('Phase Angle')
 subplot(2,1,2)
 plot(t_out,omega_out);
+ylabel('Frequency')
+xlabel('Time (s)')
 % SimplusGT.mtit('Time-domain simulation');
 
 % Notes:
