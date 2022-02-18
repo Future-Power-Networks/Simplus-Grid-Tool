@@ -85,11 +85,13 @@ while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     end
     
     I = Ybus*V;
-    S = I.*conj(V);
+    % S = I.*conj(V);
+    S = V.*conj(I);
     N = length(V);
     
-    tolerV = max(abs(abs(V) - abs(Vprev)));     % Calculate V tolerance.
-    tolerP = max(abs(real(S(2:N)) - P(2:N)));     % Calculate P tolerance, exclude the slack terminal
+    tolerV = max(abs(abs(V) - abs(Vprev)));         % Calculate V tolerance.
+    tolerP = max(abs(real(S(1:N)) - P(1:N)));       % Calculate P tolerance, exclude the slack terminal
+    tolerP(IndexSlack) = 0;                         % The P tolerance at slack bus should be ignored
 %     tolerQ = max(abs(imag(S(2:N)) + Q(2:N)));     % Calculate Q tolerance, exclude the slack terminal
 %    tolerP = 0;
     tolerQ = 0;
