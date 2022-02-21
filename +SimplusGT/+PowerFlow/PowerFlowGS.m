@@ -12,14 +12,6 @@ ListType = ListBus(:,2);        % Ac bus type: 1-Slack, 2-PV,  3-PQ
                                 % Dc bus type: 1-Slack, 2-N/A, 3-P
 
 IndexSlack = find(ListType == 1);      % Index of slack bus
-% if (isempty(IndexSlack))
-%     error(['Error: no slack bus']);
-% elseif (length(IndexSlack) > 1)
-%     error(['Error: more than one slack bus']);
-% elseif (IndexSlack ~= 1)
-%     error(['Error: bus 1 is not slack bus']);
-% end
-% number_slack = ListNumber(IndexSlack);
 
 V0   = ListBus(:,3);         % Initial bus voltages.
 th0  = ListBus(:,4);         % Initial bus voltage angles.
@@ -90,10 +82,10 @@ while ((tolerance>tolerance_max) && (iteration<=iteration_max))
     N = length(V);
     
     tolerV = max(abs(abs(V) - abs(Vprev)));         % Calculate V tolerance.
-    tolerP = max(abs(real(S(1:N)) - P(1:N)));       % Calculate P tolerance, exclude the slack terminal
+    tolerP = abs(real(S(1:N)) - P(1:N));            % Calculate P tolerance
     tolerP(IndexSlack) = 0;                         % The P tolerance at slack bus should be ignored
-%     tolerQ = max(abs(imag(S(2:N)) + Q(2:N)));     % Calculate Q tolerance, exclude the slack terminal
-%    tolerP = 0;
+    tolerP = max(tolerP);
+%  	tolerQ = max(abs(imag(S(2:N)) + Q(2:N)));     % Calculate Q tolerance, exclude the slack terminal
     tolerQ = 0;
     
     % We use tolerV only here to check the total tolerance

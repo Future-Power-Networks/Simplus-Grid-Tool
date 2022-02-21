@@ -14,11 +14,8 @@ w_PLL_LPF                       = 2*pi*100;     % Bandwidth of the PLL LPF
 % Enable plot
 Enable_Plot_Eigenvalue          = 1;    % 1/0: Plot eigenvalues.
 
-% Initialize figure index
-FigN = 2000;
-
 %% Fault settings
-NfaultBus = 3;
+NfaultBus = 37;
 Tfault = 1/60*3;
 
 %% Update power flow

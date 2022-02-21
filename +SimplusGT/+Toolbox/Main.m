@@ -2,6 +2,10 @@
 
 % Author(s): Yitong Li, Yunjie Gu
 
+clear all
+close all
+clc
+
 %% 
 % Notes:
 %
@@ -9,6 +13,10 @@
 %
 % Please use "Main_Customer.m" rather than this file for running the
 % toolbox.
+
+UserData = 'Test_68Bus_IBR_17.xlsx';
+
+FigN = 1000;
 
 %%
 fprintf('==================================\n')

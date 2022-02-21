@@ -1,6 +1,8 @@
+%
 % Version of UserMain using json input
 %
 % Author(s) Rob Oldaker
+%
 
 % Read me please:
 % Please read the comments in this file carefully, and use this file to run
@@ -35,7 +37,7 @@ close all;  % Close all figures, etc
 % this function saved in SimplusGT/Toolbox folder:
 % SimplusGT.Toolbox.ConvertExcelFile2JsonFile();
 
-InputData = SimplusGT.JsonDecoder('UserData.json');
+% InputData = SimplusGT.JsonDecoder('UserData.json');
 
 %%
 % Other example power systems (in "Examples" folder):
@@ -54,6 +56,11 @@ InputData = SimplusGT.JsonDecoder('UserData.json');
 %
 % Hybrid ac-dc power system examples:
 % InputData = SimplusGT.JsonDecoder('Hybrid_test_v1.json');             % A 4-bus hybrid ac-dc system
+%
+% For synchronisation analysis test:
+% InputData = SimplusGT.JsonDecoder('Test_68Bus_IBR.json');
+InputData = SimplusGT.JsonDecoder('Test_68Bus_IBR_17.json');
+% InputData = SimplusGT.JsonDecoder('Test_68Bus_IBR_17_14.json');
 
 %% Run toolbox
 SimplusGT.Toolbox.MainStruct();

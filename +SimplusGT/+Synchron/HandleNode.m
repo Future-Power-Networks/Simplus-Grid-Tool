@@ -127,6 +127,8 @@ end
 % Notes:
 % The floating bus (i.e., no device bus) is assumed as zero-current bus,
 % and eliminated here after converting the Y matrix to Y-Z hybrid matrix.
+N_Node = NumFbus1st-1;              % N_Node contains Vbus and Ibus only
+
 if ExistFbus == 0
     fprintf('Warning: The system has no floating node.\n')
     % YbusVIF = Ybus;
@@ -139,8 +141,6 @@ fprintf('Eliminate floating node...\n')
 
 Ybus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,NumFbus1st);
 Ybus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,NumFbus1st);
-
-N_Node = NumFbus1st-1;              % N_Node contains Vbus and Ibus only
 Ybus = Ybus(1:N_Node,1:N_Node);
 Ybus_ = Ybus_(1:N_Node,1:N_Node);
 YbusVI = Ybus;

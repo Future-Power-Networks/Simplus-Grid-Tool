@@ -38,3 +38,10 @@ SimplusGT.Toolbox.Excel2Json(file);
 
 file = 'Examples\AcPowerSystem\IEEE_14Bus\IEEE_14Bus.xlsx';
 SimplusGT.Toolbox.Excel2Json(file);
+
+% file = 'Examples\TestSynchronisation\Test_68Bus_IBR.xlsx';
+% SimplusGT.Toolbox.Excel2Json(file);
+% file = 'Examples\TestSynchronisation\Test_68Bus_IBR_17.xlsx';
+% SimplusGT.Toolbox.Excel2Json(file);
+% file = 'Examples\TestSynchronisation\Test_68Bus_IBR_17_14.xlsx';
+% SimplusGT.Toolbox.Excel2Json(file);

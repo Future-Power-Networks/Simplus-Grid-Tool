@@ -66,6 +66,6 @@ xlabel('Time (s)')
 % should not be changed. Or the sign of Gamma should be changed.
 %
 % The time-domain simulation shows both the voltage and current
+% angle/frequency rather than the voltage only.
 
 end
-% angle/frequency rather than the voltage only.
