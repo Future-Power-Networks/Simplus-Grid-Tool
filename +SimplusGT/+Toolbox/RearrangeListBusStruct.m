@@ -3,24 +3,24 @@
 
 % Author(s): Yitong Li
 
-function [UpdateBus,N_Bus] = RearrangeListBusStruct(inputData)
+function [UpdateBus,N_Bus] = RearrangeListBusStruct(InputData)
 
 % Load data
 ListBus=[];
-for i = 1:size(inputData.buses,1)
-    bus=inputData.buses(i);
-    ListBus(i,1) = bus.busNo;
-    ListBus(i,2) = bus.busType;
-    ListBus(i,3) = bus.VSp;
-    ListBus(i,4) = bus.theta;
-    ListBus(i,5) = bus.PGi;
-    ListBus(i,6) = bus.QGi;
-    ListBus(i,7) = bus.PLi;
-    ListBus(i,8) = bus.QLi;
-    ListBus(i,9) = bus.Qmin;
-    ListBus(i,10) = bus.Qmax;
-    ListBus(i,11) = bus.areaNo;
-    ListBus(i,12) = bus.ACDC;
+for i = 1:size(InputData.Bus,1)
+    Bus=InputData.Bus(i);
+    ListBus(i,1) = Bus.BusNo;
+    ListBus(i,2) = Bus.BusType;
+    ListBus(i,3) = Bus.Voltage;
+    ListBus(i,4) = Bus.Theta;
+    ListBus(i,5) = Bus.PGi;
+    ListBus(i,6) = Bus.QGi;
+    ListBus(i,7) = Bus.PLi;
+    ListBus(i,8) = Bus.QLi;
+    ListBus(i,9) = Bus.Qmin;
+    ListBus(i,10) = Bus.Qmax;
+    ListBus(i,11) = Bus.AreaNo;
+    ListBus(i,12) = Bus.AcDc;
 end
 
 % Re-order the bus sequence and area

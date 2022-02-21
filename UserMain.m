@@ -1,3 +1,9 @@
+%
+% Version of UserMain using json input
+%
+% Author(s) Rob Oldaker
+%
+
 % Read me please:
 % Please read the comments in this file carefully, and use this file to run
 % toolbox.
@@ -22,30 +28,37 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Set user data
-% Default
-% "UserData.xlsx" defaultly contains the data of a 4-bus
-% generator-inverter-composite power system. Please feel free to change it.
-UserData = 'UserData.xlsm';
+% "UserData.xlsx" and "UserData.json" contain the data of an example 4-bus
+% generator-inverter-composite power system. Please feel free to change
+% them. 
+% 
+% ".xlsx" is the excel file, and ".json" is the corresponding json
+% file. Users can easily convert an Excel file to a json file by calling
+% this function saved in SimplusGT/Toolbox folder:
+% SimplusGT.Toolbox.ConvertExcelFile2JsonFile();
 
+InputData = SimplusGT.JsonDecoder('UserData.json');
+
+%%
 % Other example power systems (in "Examples" folder):
 %
 % Pure ac power system examples:
-% UserData = 'SgInfiniteBus.xlsx';              % Single synchronous generator and infinite bus
-% UserData = 'GflInverterInfiniteBus.xlsx';   	% Single grid-following inverter and infinite bus
-% UserData = 'GfmInverterInfiniteBus.xlsx';   	% Single grid-forming inverter and infinite bus
-% UserData = 'IEEE_14Bus.xlsx';
-% UserData = 'IEEE_30Bus.xlsx';
-% UserData = 'IEEE_57Bus.xlsx';
-% UserData = 'NETS_NYPS_68Bus.xlsx';
+% InputData = SimplusGT.JsonDecoder('SgInfiniteBus.json');              % Single synchronous generator and infinite bus
+% InputData = SimplusGT.JsonDecoder('GflInverterInfiniteBus.json');   	% Single grid-following inverter and infinite bus
+% InputData = SimplusGT.JsonDecoder('GfmInverterInfiniteBus.json');   	% Single grid-forming inverter and infinite bus
+% InputData = SimplusGT.JsonDecoder('IEEE_14Bus.json');
+% InputData = SimplusGT.JsonDecoder('IEEE_30Bus.json');
+% InputData = SimplusGT.JsonDecoder('IEEE_57Bus.json');
+% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
 %
 % Pure dc power system examples:
-% UserData = 'GfdBuckInfiniteBus.xlsx';         % Single grid-feeding buck converter and infinite bus
+% InputData = SimplusGT.JsonDecoder('GfdBuckInfiniteBus.json');         % Single grid-feeding buck converter and infinite bus
 %
 % Hybrid ac-dc power system examples:
-% UserData = 'Hybrid_test_v1.xlsx';             % A 4-bus hybrid ac-dc system
+% InputData = SimplusGT.JsonDecoder('Hybrid_test_v1.json');             % A 4-bus hybrid ac-dc system
 
 %% Run toolbox
-SimplusGT.Toolbox.Main();
+SimplusGT.Toolbox.MainStruct();
 
 %% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space
@@ -78,7 +91,3 @@ SimplusGT.Toolbox.Main();
 
 % mymodel_v1;       % This is the simulink model generated automatically 
                     % based on the user data.
-                    
-%% User function
-% Users can write their own functions here to further deal with the data
-% mentioned above.

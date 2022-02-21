@@ -14,16 +14,16 @@
 %
 % "app" means apparatus.
 
-function [AppBusCell,AppTypeCell,ParaCell,N_App] = RearrangeListApparatusStruct(inputData,W0,ListBus)
+function [AppBusCell,AppTypeCell,ParaCell,N_App] = RearrangeListApparatusStruct(InputData,W0,ListBus)
 
 ListApp=[];
 index=1;
 ListAppBusChar={};
-for i=1:size(inputData.apparatus,1)
-    aData = inputData.apparatus(i);
-    [listAppArray,listAppCharArray] = toListAppArray(aData);
-    ListApp(i,:) = listAppArray;
-    ListAppBusChar{i} = listAppCharArray;
+for i=1:size(InputData.Apparatus,1)
+    aData = InputData.Apparatus(i);
+    [ListAppArray,ListAppCharArray] = toListAppArray(aData);
+    ListApp(i,:) = ListAppArray;
+    ListAppBusChar{i} = ListAppCharArray;
     index=index+1;
 end
 
@@ -225,82 +225,6 @@ for i = 1:N_App
     end
 end
 
-% Replace the default data by customized data
-%
-% Notes: 
-% This method can reduce the calculation time of "for" loop. The "for" loop
-% runs only when "row" is not empty.
-%
-% The sequence of cases are determined by the excel form. This also
-% decouples the sequence between the excel form and the system object.
-for i = 1:length(row)
-  	AppBus   = AppBusCell{row(i)};
-	AppType	= AppTypeCell{row(i)};
- 	UserValue 	= ListApp(row(i),column(i));     % Customized value
-    SwitchFlag = column(i)-2;                   	% Find the updated parameter
-  	if floor(AppType/10) == 0                    % Synchronous machine
-        switch SwitchFlag 
-         	case 1; ParaCell{row(i)}.J  = UserValue;
-            case 2; ParaCell{row(i)}.D  = UserValue;
-            case 3; ParaCell{row(i)}.wL = UserValue;
-            case 4; ParaCell{row(i)}.R  = UserValue; 
-            otherwise
-                error(['Error: paramter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
-        end
-    elseif (floor(AppType/10) == 1)              % Grid-following inverter
-        switch SwitchFlag
-            case 1; ParaCell{row(i)}.V_dc   = UserValue;
-            case 2; ParaCell{row(i)}.C_dc   = UserValue;
-            case 3; ParaCell{row(i)}.wLf    = UserValue;
-            case 4; ParaCell{row(i)}.R      = UserValue;
-            case 5; ParaCell{row(i)}.f_v_dc = UserValue;
-            case 6; ParaCell{row(i)}.f_pll  = UserValue;
-            case 7; ParaCell{row(i)}.f_i_dq = UserValue;
-            otherwise
-                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
-        end
-    elseif floor(AppType/10) == 2                % Grid-forming inverter
-        switch SwitchFlag
-            case 1;  ParaCell{row(i)}.wLf     = UserValue;
-          	case 2;  ParaCell{row(i)}.Rf      = UserValue;
-          	case 3;  ParaCell{row(i)}.wCf     = UserValue;
-           	case 4;  ParaCell{row(i)}.wLc  	  = UserValue;
-         	case 5;  ParaCell{row(i)}.Rc  	  = UserValue;
-           	case 6;  ParaCell{row(i)}.Xov 	  = UserValue;
-            case 7;  ParaCell{row(i)}.Dw      = UserValue;
-            case 8;  ParaCell{row(i)}.fdroop  = UserValue;
-          	case 9;  ParaCell{row(i)}.fvdq    = UserValue;
-          	case 10; ParaCell{row(i)}.fidq    = UserValue; 
-            otherwise
-                %error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
-        end
-    elseif floor(AppType/10) == 101 % Grid-feeding buck
-        switch SwitchFlag
-            case 1;  ParaCell{row(i)}.Vdc   = UserValue;
-          	case 2;  ParaCell{row(i)}.Cdc   = UserValue;
-          	case 3;  ParaCell{row(i)}.wLf   = UserValue;
-           	case 4;  ParaCell{row(i)}.R  	= UserValue;
-         	case 5;  ParaCell{row(i)}.fi  	= UserValue;
-           	case 6;  ParaCell{row(i)}.fvdc 	= UserValue;
-            otherwise
-                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
-        end
-    elseif floor(AppType/10) == 200 % Interlink ac-dc converter
-        switch SwitchFlag
-            case 1;  ParaCell{row(i)}.C_dc  = UserValue;
-            case 2;  ParaCell{row(i)}.wL_ac = UserValue;
-            case 3;  ParaCell{row(i)}.R_ac  = UserValue;
-            case 4;  ParaCell{row(i)}.wL_dc = UserValue;
-            case 5;  ParaCell{row(i)}.R_dc  = UserValue;
-            case 6;  ParaCell{row(i)}.fidq  = UserValue;
-            case 7;  ParaCell{row(i)}.fvdc  = UserValue;
-            case 8;  ParaCell{row(i)}.fpll  = UserValue;
-            otherwise
-                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
-        end
-    end
-end
-
 %% The re-order can only be done here
 % For a single-area pure ac system, we re-order the apparatuses 
 AreaTypeCheck = find(ListBus(:,12) == 2, 1);
@@ -317,71 +241,72 @@ if isempty(AreaTypeCheck) && isempty(AreaNoCheck)
     ParaCell    = ParaCellNew;
 end
 
-    function [a,busNoStr] = toListAppArray(aData)
-    a=nan(1,13);
-    busNoStr = '';
-    if length(aData.busNo)==1
-        a(1) = aData.busNo(1);
-    else
-        a(1) = NaN;
-        busNoStr = '';
-        for idx = 1:length(aData.busNo)
-            busNoStr=strcat(busNoStr,sprintf('%d',aData.busNo(idx)));
-            if idx<length(aData.busNo)
-                busNoStr = strcat(busNoStr,',');
-            end
-        end
-    end
-    a(2) = aData.type;
-    if floor(aData.type/10) == 0
-        a(3) = aData.params.J;
-        a(4) = aData.params.D;
-        a(5) = aData.params.wL;
-        a(6) = aData.params.R;
-        a(7) = NaN;
-        a(8) = NaN;
-        a(9) = NaN;        
-    elseif floor(aData.type/10) == 1
-        a(3) = aData.params.V_dc;
-        a(4) = aData.params.C_dc;
-        a(5) = aData.params.wLf;
-        a(7) = aData.params.f_v_dc;
-        a(6) = aData.params.R;
-        a(8) = aData.params.f_pll;
-        a(9) = aData.params.f_i_dq;
-    elseif floor(aData.type/10) == 2
-        a(3) = aData.params.wLf
-        a(4) = aData.params.Rf
-        a(5) = aData.params.wCf
-        a(6) = aData.params.wLc
-        a(7) = aData.params.Rc
-        a(8) = aData.params.Xov
-        a(9) = aData.params.wCf
-        a(10) = aData.params.Dw
-        a(11) = aData.params.fdroop
-        a(12) = aData.params.fvdq
-        a(13) = aData.params.fidq
-    elseif floor(aData.type/10)==101
-        a(3) = aData.params.Vdc;
-        a(4) = aData.params.Cdc;
-        if isfield(aData.params, 'wLf')
-            a(5) = aData.params.wLf;
-        elseif isfield(aData.params, 'wL')
-            a(5) = aData.params.wL;
-        end
-        a(6) = aData.params.R;
-        a(7) = aData.params.fi;
-        a(8) = aData.params.fvdc;
-    elseif floor(aData.type/10)==200
-        a(3) = aData.params.C_dc
-        a(4) = aData.params.wL_ac;
-        a(5) = aData.params.R_ac;
-        a(6) = aData.params.wL_dc;
-        a(7) = aData.params.R_dc;
-        a(8) = aData.params.fidq
-        a(9) = aData.params.fvdc
-        a(10)= aData.params.fpll
-    end
 end
 
+%%
+function [a,BusNoStr] = toListAppArray(aData)
+a=nan(1,13);
+BusNoStr = '';
+if length(aData.BusNo)==1
+    a(1) = aData.BusNo(1);
+else
+    a(1) = NaN;
+    BusNoStr = '';
+    for idx = 1:length(aData.BusNo)
+        BusNoStr=strcat(BusNoStr,sprintf('%d',aData.BusNo(idx)));
+        if idx<length(aData.BusNo)
+            BusNoStr = strcat(BusNoStr,',');
+        end
+    end
+end
+a(2) = aData.Type;
+if floor(aData.Type/10) == 0
+    a(3) = aData.Para.J;
+    a(4) = aData.Para.D;
+    a(5) = aData.Para.wL;
+    a(6) = aData.Para.R;
+    a(7) = NaN;
+    a(8) = NaN;
+    a(9) = NaN;        
+elseif floor(aData.Type/10) == 1
+    a(3) = aData.Para.V_dc;
+    a(4) = aData.Para.C_dc;
+    a(5) = aData.Para.wLf;
+    a(7) = aData.Para.f_v_dc;
+    a(6) = aData.Para.R;
+    a(8) = aData.Para.f_pll;
+    a(9) = aData.Para.f_i_dq;
+elseif floor(aData.Type/10) == 2
+    a(3) = aData.Para.wLf;
+    a(4) = aData.Para.Rf;
+    a(5) = aData.Para.wCf;
+    a(6) = aData.Para.wLc;
+    a(7) = aData.Para.Rc;
+    a(8) = aData.Para.Xov;
+    a(9) = aData.Para.wCf;
+    a(10) = aData.Para.Dw;
+    a(11) = aData.Para.fdroop;
+    a(12) = aData.Para.fvdq;
+    a(13) = aData.Para.fidq;
+elseif floor(aData.Type/10)==101
+    a(3) = aData.Para.Vdc;
+    a(4) = aData.Para.Cdc;
+    if isfield(aData.Para, 'wLf')
+        a(5) = aData.Para.wLf;
+    elseif isfield(aData.Para, 'wL')
+        a(5) = aData.Para.wL;
+    end
+    a(6) = aData.Para.R;
+    a(7) = aData.Para.fi;
+    a(8) = aData.Para.fvdc;
+elseif floor(aData.Type/10)==200
+    a(3) = aData.Para.C_dc;
+    a(4) = aData.Para.wL_ac;
+    a(5) = aData.Para.R_ac;
+    a(6) = aData.Para.wL_dc;
+    a(7) = aData.Para.R_dc;
+    a(8) = aData.Para.fidq;
+    a(9) = aData.Para.fvdc;
+    a(10)= aData.Para.fpll;
+end
 end

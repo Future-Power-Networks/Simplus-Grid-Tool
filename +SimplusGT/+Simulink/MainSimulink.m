@@ -9,7 +9,7 @@
 % 'PortConnectivity', 'PortHandles', 'ScopeConfiguration'
 
 %%
-function MainSimulink(Name_Model,ListBus,ListLine,ApparatusBus,ApparatusType,ListAdvance,PowerFlow)
+function MainSimulink(Name_Model,ListBus,ListLine,ApparatusBus,ApparatusType,Advance)
 
 %% Common variables
 SimplusGT.Simulink.NewSimulinkModel('ModelName',Name_Model);
@@ -51,7 +51,7 @@ Shift_Apparatus = [-150,0];
 
 % Add apparatus
 [FullName_Apparatus,Name_Apparatus,Pos_Apparatus] = ...
-    SimplusGT.Simulink.SimAddApparatus(Name_Model,Name_LibFile,Size_Apparatus,Shift_Apparatus,Pos_Bus,ApparatusBus,ApparatusType,ListAdvance);
+    SimplusGT.Simulink.SimAddApparatus(Name_Model,Name_LibFile,Size_Apparatus,Shift_Apparatus,Pos_Bus,ApparatusBus,ApparatusType,Advance);
 
 %% Add apparatus ground
 % Paramters

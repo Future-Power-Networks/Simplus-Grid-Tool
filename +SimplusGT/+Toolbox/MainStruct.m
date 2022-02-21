@@ -32,47 +32,34 @@ cd(pathstr);                            % Change the current address
 fprintf('Loading data, please wait a second...\n')
 
 % ### Re-arrange basic settings
-basicData = inputData.basic;
-Fs = basicData.Fs;
+Fs = InputData.Basic.Fs;
 Ts = 1/Fs;               % (s), sampling period
-Fbase = basicData.Fbase; % (Hz), base frequency
-Sbase = basicData.Sbase; % (VA), base power
-Vbase = basicData.Vbase; % (V), base voltage
+Fbase = InputData.Basic.Fbase; % (Hz), base frequency
+Sbase = InputData.Basic.Sbase; % (VA), base power
+Vbase = InputData.Basic.Vbase; % (V), base voltage
 Ibase = Sbase/Vbase;     % (A), base current
 Zbase = Vbase/Ibase;     % (Ohm), base impedance
 Ybase = 1/Zbase;         % (S), base admittance
 Wbase = Fbase*2*pi;      % (rad/s), base angular frequency
-
-% ### Re-arrange advanced settings
-advData = inputData.adv;
-Flag_PowerFlowAlgorithm   	= advData.powerFlowAlgorithm;
-Enable_CreateSimulinkModel	= advData.enableCreateSimulinkModel;
-Enable_PlotPole           	= advData.enablePlotPole;
-Enable_PlotAdmittance     	= advData.enablePlotAdmittance;
-Enable_PrintOutput       	= advData.enablePrintOutput;
-Enable_Participation        = advData.enableParticipation;
-ListAdvance = [];
-ListAdvance(1)=advData.discretizationMethod;
-ListAdvance(2)=advData.linearizationTimes;
-ListAdvance(3)=advData.discretizationDampingFlag;
-ListAdvance(4)=advData.directFeedThrough;
-ListAdvance(5)=advData.powerFlowAlgorithm;
-ListAdvance(6)=advData.enableCreateSimulinkModel;
-ListAdvance(7)=advData.enablePlotPole;
-ListAdvance(8)=advData.enablePlotAdmittance;
-ListAdvance(9)=advData.enablePrintOutput;
-ListAdvance(10)=advData.enableParticipation;
-ListAdvance=ListAdvance';
+Advance = InputData.Advance;
+% Notes:
+% The base values would be used in simulations, and should not be deleted
+% here.
 
 % ### Re-arrange the bus netlist
-[ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBusStruct(inputData);
+[ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBusStruct(InputData);
 
 % ### Re-arrange the line netlist
-[ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLineStruct(inputData,ListBus);
+[ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLineStruct(InputData,ListBus);
 DcAreaFlag = find(ListBus(:,12)==2);
 
 % ### Re-arrange the apparatus netlist
-[ApparatusBus,ApparatusType,Para,N_Apparatus] = SimplusGT.Toolbox.RearrangeListApparatusStruct(inputData,Wbase,ListBus);
+NumApparatus = length(InputData.Apparatus);
+for i = 1:NumApparatus
+    ApparatusBus{i} = InputData.Apparatus(i).BusNo;
+    ApparatusType{i} = InputData.Apparatus(i).Type;
+    Para{i} = InputData.Apparatus(i).Para;
+end
 % The names of "ApparatusType" and "Para" can not be changed, because they
 % will also be used in simulink model.
 
@@ -87,10 +74,10 @@ DcAreaFlag = find(ListBus(:,12)==2);
 % ### Power flow analysis
 fprintf('Doing the power flow analysis...\n')
 if ~isempty(DcAreaFlag)
-    Flag_PowerFlowAlgorithm = 1;
+    InputData.Advance.PowerFlowAlgorithm = 1;
     fprintf(['Warning: Because the system has dc area(s), the Gauss-Seidel power flow method is always used.\n']);
 end
-switch Flag_PowerFlowAlgorithm
+switch InputData.Advance.PowerFlowAlgorithm
     case 1  % Gauss-Seidel 
         [PowerFlow] = SimplusGT.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
     case 2  % Newton-Raphson
@@ -127,7 +114,7 @@ ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,length(YbusDSS));
 
 % ### Get the models of bus apparatuses
 fprintf('Getting the descriptor state space model of bus apparatuses...\n')
-for i = 1:N_Apparatus
+for i = 1:NumApparatus
     if length(ApparatusBus{i}) == 1
      	ApparatusPowerFlow{i} = PowerFlowNew{ApparatusBus{i}};
     elseif length(ApparatusBus{i}) == 2
@@ -187,7 +174,7 @@ fprintf('Print results\n')
 fprintf('==================================\n')
 fprintf('Whole system port model (system object form): GsysObj\n')
 fprintf('Whole system port model (descriptor state space form): GsysDSS\n')
-if Enable_PrintOutput
+if InputData.Advance.EnablePrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
     SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObj_Cell,ZbusObj);
@@ -234,24 +221,24 @@ fprintf('Simulink Model\n')
 fprintf('=================================\n')
 
 if N_Bus>=150
-    Enable_CreateSimulinkModel = 0;
+    InputData.Advance.EnableCreateSimulinkModel = 0;
     fprintf('Warning: The system has more than 150 buses;\n')
     fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
     fprintf('         The static and dynamic analysis will not be influenced.\n')
 end
 
-if Enable_CreateSimulinkModel == 1
+if InputData.Advance.EnableCreateSimulinkModel == 1
     
     fprintf('Creating the simulink model automatically, please wait a second...\n')
 
     % Set the simulink model name
-    Name_Model = 'mymodel_v1';
+    NameModel = 'mymodel_v1';
 
     % Close existing model with same name
-    close_system(Name_Model,0);
+    close_system(NameModel,0);
     
     % Create the simulink model
-    SimplusGT.Simulink.MainSimulink(Name_Model,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
+    SimplusGT.Simulink.MainSimulink(NameModel,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,Advance);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
@@ -274,7 +261,7 @@ fprintf('==================================\n')
 figure_n = 1000;
 
 % Plot pole/zero map
-if Enable_PlotPole
+if InputData.Advance.EnablePlotPole
     fprintf('Plotting pole map...\n')
     figure_n = figure_n+1;
     figure(figure_n);
@@ -300,7 +287,7 @@ omega_p = logspace(-1,4,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
-if Enable_PlotAdmittance
+if InputData.Advance.EnablePlotAdmittance
     fprintf('Plotting admittance spectrum...')
   	figure_n = figure_n+1;
  	figure(figure_n);
@@ -336,7 +323,7 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
-if (Enable_Participation == 1) && (isempty(DcAreaFlag))
+if (InputData.Advance.EnableParticipation == 1) && (isempty(DcAreaFlag))
     SimplusGT.Modal.ModalPreRun;
     SimplusGT.Modal.ModalAnalysis;
     fprintf('Generating GreyboxConfg.xlsx for user to config Greybox analysis.\n');    

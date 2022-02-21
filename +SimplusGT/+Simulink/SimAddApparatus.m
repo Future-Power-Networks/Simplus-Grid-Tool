@@ -2,13 +2,13 @@
 
 % Author(s): Yitong Li
 
-function [FullName_Apparatus,Name_Apparatus,Pos_Apparatus] = SimAddApparatus(Name_Model,Name_LibFile,Size_Apparatus,Shift_Apparatus,Pos_Bus,ApparatusBus,ApparatusType,ListAdvance)
+function [FullName_Apparatus,Name_Apparatus,Pos_Apparatus] = SimAddApparatus(Name_Model,Name_LibFile,Size_Apparatus,Shift_Apparatus,Pos_Bus,ApparatusBus,ApparatusType,Advance)
 
 % Organize data
-DiscreMethod = ListAdvance(1);
-LinearizationTimes = ListAdvance(2);
-DiscreDampingFlag = ListAdvance(3);
-DirectFeedthrough = ListAdvance(4);
+DiscreMethod = Advance.DiscretizationMethod;
+LinearizationTimes = Advance.LinearizationTimes;
+DiscreDampingFlag = Advance.DiscretizationDampingFlag;
+DirectFeedthrough = Advance.DirectFeedthrough;
 
 N_Apparatus = length(ApparatusType);
 

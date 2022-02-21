@@ -2,31 +2,31 @@
 
 % Author(s): Yitong Li
 
-function [UpdateLine,N_Branch,N_Bus] = RearrangeListLineStruct(inputData,ListBus)
+function [UpdateLine,NumBranch,NumBus] = RearrangeListLineStruct(InputData,ListBus)
 
 %% Load data
 ListLine=[];
-for i = 1:size(inputData.networkLines,1)
-    nData = inputData.networkLines(i);
-    ListLine(i,1) = nData.fromBus;
-    ListLine(i,2) = nData.toBus;
-    ListLine(i,3) = nData.R;
-    ListLine(i,4) = nData.wL;
-    ListLine(i,5) = nData.wC;
-    ListLine(i,6) = nData.G;
-    ListLine(i,7) = nData.turnsRatio;
+for i = 1:size(InputData.NetworkLine,1)
+    NetData = InputData.NetworkLine(i);
+    ListLine(i,1) = NetData.FromBus;
+    ListLine(i,2) = NetData.ToBus;
+    ListLine(i,3) = NetData.R;
+    ListLine(i,4) = NetData.wL;
+    ListLine(i,5) = NetData.wC;
+    ListLine(i,6) = NetData.G;
+    ListLine(i,7) = NetData.TurnsRatio;
 end
 
 ListLineIEEE=[];
-for i = 1:size(inputData.networkLinesIEEE,1)
-    nData = inputData.networkLinesIEEE(i);
-    ListLineIEEE(i,1) = nData.fromBus;
-    ListLineIEEE(i,2) = nData.toBus;
-    ListLineIEEE(i,3) = nData.R;
-    ListLineIEEE(i,4) = nData.X;
-    ListLineIEEE(i,5) = nData.B;
-    ListLineIEEE(i,6) = nData.G;
-    ListLineIEEE(i,7) = nData.turnsRatio;    
+for i = 1:size(InputData.NetworkLineIEEE,1)
+    NetDataIEEE = InputData.NetworkLineIEEE(i);
+    ListLineIEEE(i,1) = NetDataIEEE.FromBus;
+    ListLineIEEE(i,2) = NetDataIEEE.ToBus;
+    ListLineIEEE(i,3) = NetDataIEEE.R;
+    ListLineIEEE(i,4) = NetDataIEEE.X;
+    ListLineIEEE(i,5) = NetDataIEEE.B;
+    ListLineIEEE(i,6) = NetDataIEEE.G;
+    ListLineIEEE(i,7) = NetDataIEEE.TurnsRatio;    
 end
 
 
@@ -37,8 +37,8 @@ if size(ListLineIEEE,1) > 0
     fprintf('Warning: Line data in IEEE form is enabled, which over-writes the original line data.\n')    
     
  	% Replace NaN by inf
-    netlist_line_NaN = isnan(ListLineIEEE);
-    [r,c] = find(netlist_line_NaN == 1);  	% Find the index of "inf"
+    NetListLineNaN = isnan(ListLineIEEE);
+    [r,c] = find(NetListLineNaN == 1);  	% Find the index of "inf"
     ListLineIEEE(r,c) = inf;
     
     % Organize original branch data
@@ -119,9 +119,9 @@ if size(ListLineIEEE,1) > 0
     UpdateLine = [FB,TB,R,X,B,G,T];
     
     % Delete the open circuit branch
-    N_Branch = N_Br_orig + N_Br_self;
+    NumBranch = N_Br_orig + N_Br_self;
     CountIndexDelete = 0;
-    for i = 1:N_Branch
+    for i = 1:NumBranch
         % Find the open-circuit branch and delete it
         if ( isinf(R(i)) || isinf(X(i)) ) && (B(i)==0) && (G(i)==0)
             % The branch is open-circuit, jump this branch, i.e., delete
@@ -140,11 +140,11 @@ end
 
 %% Re-arrange netlist line
 % Organize data
-[N_Branch,ColumnMax_Line] = size(ListLine); 
+[NumBranch,ColumnMaxLine] = size(ListLine); 
 
 % Replace NaN by inf
-netlist_line_NaN = isnan(ListLine);
-[r,c] = find(netlist_line_NaN == 1);  	% Find the index of "inf"
+NetListLineNaN = isnan(ListLine);
+[r,c] = find(NetListLineNaN == 1);  	% Find the index of "inf"
 ListLine(r,c) = inf;
 
 % Get data
@@ -157,15 +157,15 @@ Gbr = ListLine(:,6);
 Tbr = ListLine(:,7);
 
 % Check data overflow
-if (ColumnMax_Line>7)
+if (ColumnMaxLine>7)
     error(['Error: Line data overflow.']); 
 end
 
 % Check number of bus
-N_Bus = max(max(FB), max(TB) );  
+NumBus = max(max(FB), max(TB) );  
 
 % Check short-circuit and open-circuit
-for i = 1:N_Branch
+for i = 1:NumBranch
     if ( isinf(Rbr(i)) || isinf(Xbr(i)) ) && ((Bbr(i)==0) && (Gbr(i)==0)) 
     	error(['Error: Branch' num2str(FB(i)) num2str(TB(i)) ' is open circuit']);
     end
@@ -181,7 +181,7 @@ for i = 1:N_Branch
 end
 
 % Check self-branch
-for i = 1:N_Branch
+for i = 1:NumBranch
     if FB(i) == TB(i)
         if Rbr(i)~=0 && (~isinf(Rbr(i))) 
             error(['Error: The self branch has to be a LCG parallel branch with R = 0 or a CG parallel branch with R = inf.'])
@@ -194,7 +194,7 @@ end
 % ListLine = [ListLine,zeros([N_Branch,1])];
 
 % Add area type into ListLine
-for i = 1:N_Branch
+for i = 1:NumBranch
     i1 = find(ListBus(:,1) == FB(i));
     i2 = find(ListBus(:,1) == TB(i));
     if ListBus(i1,12)~=ListBus(i2,12)
@@ -206,7 +206,7 @@ end
 
 % Re-arrange the data
 % Ensure "From Bus" <= "To Bus" is always valid
-for i = 1:N_Branch
+for i = 1:NumBranch
     if FB(i) > TB(i)
         % Switch "From" and "To"
         [TB(i),FB(i)] = deal(FB(i),TB(i));
