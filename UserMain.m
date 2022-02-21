@@ -47,8 +47,8 @@ close all;  % Close all figures, etc
 % For synchronisation test
 % UserData = 'Test_68Bus_NETS_NYPS';      % Default NETS_NYPS system
 % UserData = 'Test_68Bus_IBR_Load';       % IBRs with passvie loads
-UserData = 'Test_68Bus_IBR';            % IBRs with active loads
-% UserData = 'Test_68Bus_IBR_17';         % IBR at node 17 is repaced by a SG
+% UserData = 'Test_68Bus_IBR';            % IBRs with active loads
+UserData = 'Test_68Bus_IBR_17';         % IBR at node 17 is repaced by a SG
 % UserData = 'Test_68Bus_IBR_17_14';      % 17, 14
 % UserData = 'Test_68Bus_IBR_17_14_7';    % 17, 14, 7
 % UserData = 'Test_2Bus';
