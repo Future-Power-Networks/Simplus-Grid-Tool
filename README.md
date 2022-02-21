@@ -10,11 +10,11 @@ Matlab 2015a or later, with Simulink, Simscape/PowerSystem.
 
 ## Quick Start
 
-Copy the repository (download all codes) into your PC, and run "InstallSimplusGT.m" by Matlab. That's all! The SimplusGT will automatically run, and get results of an example 4-bus power system whose default parameters are saved in "UserData.xlsx". More examples can be found in "Examples" folder.
+Copy the repository (download all codes) into your PC, and run "InstallSimplusGT.m" by Matlab. That's all! The SimplusGT will automatically run, and get results of an example 4-bus power system whose default parameters are saved in "UserData.xlsx" and "UserData.json". More examples can be found in "Examples" folder.
 
 ## Documentations
 
-The comments in "UserMain.m" and "UserData.xlsm" explain basic functions, please read them carefully. More details can be found in manuals in "Documentations" folder.
+The comments in "UserMain.m", "UserData.xlsm", and "UserData.json" explain basic functions, please read them carefully. More details can be found in manuals in "Documentations" folder.
 
 ## Contact
 
