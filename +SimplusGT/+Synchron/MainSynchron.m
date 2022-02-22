@@ -219,7 +219,7 @@ for i = 1:N_Node
 end
 
 %%
-if 1
+if 0
 SimplusGT.Synchron.SmallSignalAnalysis();
 end
 

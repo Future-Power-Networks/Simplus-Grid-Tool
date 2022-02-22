@@ -56,7 +56,7 @@ InputData = SimplusGT.JsonDecoder('UserData.json');
 % InputData = SimplusGT.JsonDecoder('Hybrid_test_v1.json');             % A 4-bus hybrid ac-dc system
 
 %% Run toolbox
-SimplusGT.Toolbox.MainStruct();
+SimplusGT.Toolbox.Main();
 
 %% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space

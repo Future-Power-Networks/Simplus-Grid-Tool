@@ -2,10 +2,6 @@
 
 % Author(s): Yitong Li, Yunjie Gu
 
-clear all
-close all
-clc
-
 %% 
 % Notes:
 %
@@ -13,10 +9,6 @@ clc
 %
 % Please use "Main_Customer.m" rather than this file for running the
 % toolbox.
-
-UserData = 'Test_68Bus_IBR_17.xlsx';
-
-FigN = 1000;
 
 %%
 fprintf('==================================\n')
@@ -37,38 +29,40 @@ cd(pathstr);                            % Change the current address
 % ==================================================
 % Load customized data
 % ==================================================
-fprintf('Load data, please wait a second...\n')
+fprintf('Loading data, please wait a second...\n')
 
 % ### Re-arrange basic settings
-ListBasic = xlsread(UserData,'Basic');
-Fs = ListBasic(1);
-Ts = 1/Fs;              % (s), sampling period
-Fbase = ListBasic(2);   % (Hz), base frequency
-Sbase = ListBasic(3);   % (VA), base power
-Vbase = ListBasic(4);   % (V), base voltage
-Ibase = Sbase/Vbase;    % (A), base current
-Zbase = Vbase/Ibase;    % (Ohm), base impedance
-Ybase = 1/Zbase;        % (S), base admittance
-Wbase = Fbase*2*pi;     % (rad/s), base angular frequency
+Fs = InputData.Basic.Fs;
+Ts = 1/Fs;               % (s), sampling period
+Fbase = InputData.Basic.Fbase; % (Hz), base frequency
+Sbase = InputData.Basic.Sbase; % (VA), base power
+Vbase = InputData.Basic.Vbase; % (V), base voltage
+Ibase = Sbase/Vbase;     % (A), base current
+Zbase = Vbase/Ibase;     % (Ohm), base impedance
+Ybase = 1/Zbase;         % (S), base admittance
+Wbase = Fbase*2*pi;      % (rad/s), base angular frequency
+Advance = InputData.Advance;
+% Notes:
+% The base values would be used in simulations, and should not be deleted
+% here.
 
-% ### Re-arrange advanced settings
-ListAdvance = xlsread(UserData,'Advance');
-Flag_PowerFlowAlgorithm   	= ListAdvance(5);
-Enable_CreateSimulinkModel	= ListAdvance(6);
-Enable_PlotPole           	= ListAdvance(7);
-Enable_PlotAdmittance     	= ListAdvance(8);
-Enable_PrintOutput       	= ListAdvance(9);
-Enable_Participation        = ListAdvance(10);
+% Initialize figure index
+FigN = 1000;
 
 % ### Re-arrange the bus netlist
-[ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBus(UserData);
+[ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBusStruct(InputData);
 
 % ### Re-arrange the line netlist
-[ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLine(UserData,ListBus);
+[ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLineStruct(InputData,ListBus);
 DcAreaFlag = find(ListBus(:,12)==2);
 
 % ### Re-arrange the apparatus netlist
-[ApparatusBus,ApparatusType,Para,N_Apparatus] = SimplusGT.Toolbox.RearrangeListApparatus(UserData,Wbase,ListBus);
+NumApparatus = length(InputData.Apparatus);
+for i = 1:NumApparatus
+    ApparatusBus{i} = InputData.Apparatus(i).BusNo;
+    ApparatusType{i} = InputData.Apparatus(i).Type;
+    Para{i} = InputData.Apparatus(i).Para;
+end
 % The names of "ApparatusType" and "Para" can not be changed, because they
 % will also be used in simulink model.
 
@@ -80,17 +74,13 @@ DcAreaFlag = find(ListBus(:,12)==2);
 % Power flow analysis
 % ==================================================
 
-fprintf('==================================\n')
-fprintf('Power Flow Analysis\n')
-fprintf('==================================\n')
-
 % ### Power flow analysis
-fprintf('Calculate the power flow...\n')
+fprintf('Do the power flow analysis...\n')
 if ~isempty(DcAreaFlag)
-    Flag_PowerFlowAlgorithm = 1;
+    InputData.Advance.PowerFlowAlgorithm = 1;
     fprintf(['Warning: Because the system has dc area(s), the Gauss-Seidel power flow method is always used.\n']);
 end
-switch Flag_PowerFlowAlgorithm
+switch InputData.Advance.PowerFlowAlgorithm
     case 1  % Gauss-Seidel 
         [PowerFlow] = SimplusGT.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
     case 2  % Newton-Raphson
@@ -105,10 +95,11 @@ end
 % Move load flow (PLi and QLi) to bus admittance matrix
 [ListBusNew,ListLineNew,PowerFlowNew] = SimplusGT.PowerFlow.Load2SelfBranch(ListBus,ListLine,PowerFlow);
 
-% Print the results
+% For print
 ListPowerFlow = SimplusGT.PowerFlow.Rearrange(PowerFlow);
 ListPowerFlowNew = SimplusGT.PowerFlow.Rearrange(PowerFlowNew);
-fprintf('Print power flow:\n')
+
+fprintf('Print power flow result:\n')
 fprintf('The format below is "| bus | P | Q | V | angle | omega |". P and Q are in load convention.\n')
 ListPowerFlow
 
@@ -117,11 +108,8 @@ ListPowerFlow
 % Descriptor state space model
 % ==================================================
 
-fprintf('==================================\n')
-fprintf('State Space Analysis\n')
-fprintf('==================================\n')
-
-if 0
+EnableStateSpaceModel = 1;
+if EnableStateSpaceModel
 
 % ### Get the model of lines
 fprintf('Get the descriptor state space model of network lines...\n')
@@ -134,7 +122,7 @@ ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,length(YbusDSS));
 
 % ### Get the models of bus apparatuses
 fprintf('Get the descriptor state space model of bus apparatuses...\n')
-for i = 1:N_Apparatus
+for i = 1:NumApparatus
     if length(ApparatusBus{i}) == 1
      	ApparatusPowerFlow{i} = PowerFlowNew{ApparatusBus{i}};
     elseif length(ApparatusBus{i}) == 2
@@ -165,10 +153,10 @@ YsysObj = SimplusGT.ObjTruncate(GsysObj,Port_i,Port_v);
 YsysDSS = YsysObj.GetDSS(YsysObj);   
 
 % ### Chech if the system is proper
-fprintf('Checking if the whole system is proper:\n')
+fprintf('Check if the whole system is proper:\n')
 if isproper(GsysDSS)
     fprintf('Proper!\n');
-    fprintf('Calculating the minimum realization of the system model for later use...\n')
+    fprintf('Calculate the minimum realization of the system model for later use...\n')
     % GminSS = minreal(GsysDSS);
     GsysSS = SimplusGT.dss2ss(GsysDSS);
     % This "minreal" function only changes the element sequence of state
@@ -187,7 +175,7 @@ fprintf('\n')
 fprintf('Print State-Space Model: \n')
 fprintf('Whole system port model (system object form): GsysObj\n')
 fprintf('Whole system port model (descriptor state space form): GsysDSS\n')
-if Enable_PrintOutput
+if InputData.Advance.EnablePrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
     SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObj_Cell,ZbusObj);
@@ -206,8 +194,7 @@ fprintf('Calculate pole/zero...\n')
 EigenValueSys = diag(EigenValueSys);
 EigenValueSys = EigenValueSys(find(real(EigenValueSys) ~= inf));
 EigenValueSys = EigenValueSys/2/pi;
-
-fprintf('Check stability:\n')
+fprintf('Check if the system is stable:\n')
 if isempty(find(real(EigenValueSys)>1e-6, 1))
     fprintf('Stable!\n');
 else
@@ -218,14 +205,11 @@ end
 fprintf('\n')
 fprintf('Plot Fundamentals:\n')
 
-% Initialize figure index
-figure_n = 1000;
-
 % Plot pole/zero map
-if Enable_PlotPole
+if InputData.Advance.EnablePlotPole
     fprintf('Plot pole map...\n')
-    figure_n = figure_n+1;
-    figure(figure_n);
+    FigN = FigN+1;
+    figure(FigN);
     subplot(1,2,1)
     scatter(real(EigenValueSys),imag(EigenValueSys),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
@@ -248,10 +232,10 @@ omega_p = logspace(-1,4,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
-if Enable_PlotAdmittance
+if InputData.Advance.EnablePlotAdmittance
     fprintf('Plot admittance spectrum...')
-  	figure_n = figure_n+1;
- 	figure(figure_n);
+  	FigN = FigN+1;
+ 	figure(FigN);
     CountLegend = 0;
     VecLegend = {};
     for k = 1:N_Bus
@@ -275,24 +259,25 @@ else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
 
-% ###
+%
 % ==================================================
 % Modal Analysis
 % ==================================================
+
 fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
-if (Enable_Participation == 1) && (isempty(DcAreaFlag))
+if (InputData.Advance.EnableParticipation == 1) && (isempty(DcAreaFlag))
     SimplusGT.Modal.ModalPreRun;
     SimplusGT.Modal.ModalAnalysis;
     fprintf('Generate GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 else
-    fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.\n');
+    fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.');
 end
 
 else
-    fprintf('Warning: The state space analysis is disabled.\n');
+    fprintf('Warning: The state space modeling is disabled.\n');
 end
 
 %%
@@ -302,8 +287,12 @@ end
 fprintf('==================================\n')
 fprintf('Synchronization Analysis\n')
 fprintf('==================================\n')
-
-SimplusGT.Synchron.MainSynchron();
+EnableSynchronisationAnalysis = 0;
+if EnableSynchronisationAnalysis
+    SimplusGT.Synchron.MainSynchron();
+else
+    fprintf('Warning: The synchronisation analysis is disabled.\n')
+end
 
 %%
 % ==================================================
@@ -315,23 +304,24 @@ fprintf('Simulink Model\n')
 fprintf('=================================\n')
 
 if N_Bus>=150
-    Enable_CreateSimulinkModel = 0;
+    InputData.Advance.EnableCreateSimulinkModel = 0;
     fprintf('Warning: The system has more than 150 buses;\n')
-    fprintf('         The simulink model can not be created because of the limited size of simulink GUI.\n')
+    fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
+    fprintf('         The static and dynamic analysis will not be influenced.\n')
 end
 
-if Enable_CreateSimulinkModel == 1
+if InputData.Advance.EnableCreateSimulinkModel == 1
     
-    fprintf('Create the simulink model automatically, please wait a moment...\n')
+    fprintf('Create the simulink model automatically, please wait a second...\n')
 
     % Set the simulink model name
-    Name_Model = 'mymodel_v1';
+    NameModel = 'mymodel_v1';
 
     % Close existing model with same name
-    close_system(Name_Model,0);
+    close_system(NameModel,0);
     
     % Create the simulink model
-    SimplusGT.Simulink.MainSimulink(Name_Model,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,ListAdvance,PowerFlowNew);
+    SimplusGT.Simulink.MainSimulink(NameModel,ListBusNew,ListLineNew,ApparatusBus,ApparatusType,Advance);
     fprintf('Get the simulink model successfully! \n')
     fprintf('Please click the "run" button in the model to run it.\n')
     %fprintf('Warning: for later use of the simulink model, please "save as" a different name.\n')
@@ -345,15 +335,3 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('End: run successfully.\n')
 fprintf('==================================\n')
-
-
-%%
-% Remained questions:
-% - Advanced power flow, including droop bus, etc
-% - The power flow calculation assumes the frequency is Wbase
-% - Initialization of network lines, such as the current of line inductor
-% and the voltage of line capacitor.
-% - The calculation of discrete damping resistor should be double checked,
-% especially for the interlink ac-dc converter which has hybrid ac-dc
-% electrical ports.
-

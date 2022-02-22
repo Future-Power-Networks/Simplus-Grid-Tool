@@ -36,12 +36,11 @@ for i2 = 1:N_Area
     if length(i3)~=1
         error(['Error: In an area, the area type has to be the same for all buses.']);
     end
-    if i3 == 2
-        i4 = find(ListBus(:,2)==2,1);
-        if ~isempty(i4)
-            error(['Error: The bus type in dc network can not be 2!']);
-        end
-    end
+end
+i4 = find(ListBus(:,12)==2);    
+i5 = find((ListBus(i4,2)==2),1);
+if ~isempty(i5)
+        error(['Error: The bus type in dc network can not be 2!']);
 end
 
 % Error check
@@ -56,21 +55,21 @@ end
 if (ColumnMax_Bus>12)
     error(['Error: Bus data overflow.']) 
 end
-for i4 = 1:N_Area
-    ListBusType = UpdateBusArea{i4}(:,2);
+for i6 = 1:N_Area
+    ListBusType = UpdateBusArea{i6}(:,2);
     IndexBusSlack = find(ListBusType == 1);
     if (isempty(IndexBusSlack))
-        error(['Error: The system has no slack bus in area ' num2str(i4) '.']);
+        error(['Error: The system has no slack bus in area ' num2str(i6) '.']);
     elseif IndexBusSlack ~= 1
         error(['Error: The first bus in each area has to be the slack bus.']);
     elseif (length(IndexBusSlack) > 1)
-        error(['Error: The system has more than one slack bus in area ' num2str(i4) '.']); 
+        error(['Error: The system has more than one slack bus in area ' num2str(i6) '.']); 
     end
 end
-for i5 = 1:N_Bus
-    if ListBus(i5,12) == 2
-        if ListBus(i5,2) == 2
-            error(['Error: Bus ' num2str(ListBus(i5,1)) ' is a dc bus, whose type can not be 2.'])
+for i7 = 1:N_Bus
+    if ListBus(i7,12) == 2
+        if ListBus(i7,2) == 2
+            error(['Error: Bus ' num2str(ListBus(i7,1)) ' is a dc bus, whose type can not be 2.'])
         end
     end
 end
