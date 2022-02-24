@@ -16,7 +16,7 @@ There are three sets of naming conventions:
     1) microsoft, like PlotFigure  
     2) gnu-linux, like plot_figure  
     3) free style, like ss2tf  
-Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly for this toolbox, and use free style when needed. For more details of the coding style, please see "[CodingStyle.md](https://github.com/Future-Power-Networks/Simplus-Grid-Tool/blob/master/Documentations/OtherDeveloperFiles/CodingStyle.md)".
+Matlab uses free style for its common functions, and uses microsoft mainly in others. We also use microsoft mainly for this toolbox, and use free style when needed. For more details of the coding style, please see "[CodingStyle.md](https://github.com/Future-Power-Networks/Simplus-Grid-Tool/blob/master/Documentations/CodingStyle.md)".
 
 ## Logic and Architecture
 
