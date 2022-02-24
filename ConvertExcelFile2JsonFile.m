@@ -2,10 +2,20 @@
 %
 % Author(s): Rob Oldaker, Yitong Li
 
+%%
+% Clear
 clear all
 clc
 close all
 
+%%
+% Change the matlab path to the file path
+PathStr = mfilename('fullpath');        % Get the path of this file
+[PathStr,~,~]  = fileparts(PathStr);
+cd(PathStr);                            % Change the current address
+
+%%
+% Convert excel file to json file
 file = 'UserData.xlsm';
 SimplusGT.Toolbox.Excel2Json(file);
 

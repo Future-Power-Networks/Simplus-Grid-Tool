@@ -57,21 +57,16 @@ warning('on','all')     % Turn on all warnings
 clc
 
 %%
-% Installation is completed
-DlgTitle = 'Congratulations!';
-DlgQuestion = 'The toolbox is installed successfully! Do you want to run "UserMain.m" to experience it NOW?';
-choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
-
-%%
-% Notes: 
-% adding path should be improved.
-
-if strcmp(choice,'Yes')
-    open('UserMain.m');
-    run('UserMain.m');
-else
- 	msgbox('The installation is completed. Please run "UserMain.m" later in the root path for using the toolbox.');
-end
+% % Installation is completed
+% DlgTitle = 'Congratulations!';
+% DlgQuestion = 'The toolbox is installed successfully! Do you want to run "UserMain.m" to experience it NOW?';
+% choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
+% if strcmp(choice,'Yes')
+%     open('UserMain.m');
+%     run('UserMain.m');
+% else
+%  	msgbox('The installation is completed. Please run "UserMain.m" later in the root path for using the toolbox.');
+% end
 
 %%
 fprintf('Congratulations!\n')

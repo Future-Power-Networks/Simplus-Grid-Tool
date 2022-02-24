@@ -32,8 +32,7 @@ close all;  % Close all figures, etc
 % 
 % ".xlsx" is the excel file, and ".json" is the corresponding json
 % file. Users can easily convert an Excel file to a json file by calling
-% this function saved in SimplusGT/Toolbox folder:
-% SimplusGT.Toolbox.ConvertExcelFile2JsonFile();
+% this function: ConvertExcelFile2JsonFile();
 
 InputData = SimplusGT.JsonDecoder('UserData.json');
 

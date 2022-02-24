@@ -10,9 +10,9 @@ close all
 %% 
 % Change the current folder
 fprintf('Changing the current folder to the toolbox folder...\n')
-mfile_name = mfilename('fullpath');
-[pathstr,~,~]  = fileparts(mfile_name);
-cd(pathstr);
+MfileName = mfilename('fullpath');
+[RootPath,~,~]  = fileparts(MfileName);
+cd(RootPath);
 
 % Remove folder from path
 rmpath(genpath(pwd));

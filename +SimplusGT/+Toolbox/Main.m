@@ -19,11 +19,11 @@ fprintf('==================================\n')
 % ==================================================
 % Change current path of matlab
 % ==================================================
-pathstr = mfilename('fullpath');        % Get the path of main.m
-[pathstr,~,~]  = fileparts(pathstr);    % Get the path of Toolbox namespace
-[pathstr,~,~]  = fileparts(pathstr);    % Get the of root namespace
-[pathstr,~,~]  = fileparts(pathstr);    % Get the path of toolbox
-cd(pathstr);                            % Change the current address
+PathStr = mfilename('fullpath');        % Get the path of main.m
+[PathStr,~,~]  = fileparts(PathStr);    % Get the path of Toolbox namespace
+[PathStr,~,~]  = fileparts(PathStr);    % Get the of root namespace
+[PathStr,~,~]  = fileparts(PathStr);    % Get the path of toolbox
+cd(PathStr);                            % Change the current address
 
 %%
 % ==================================================
