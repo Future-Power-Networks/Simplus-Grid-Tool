@@ -25,13 +25,13 @@ SimplusGT.Toolbox.Main();
 % Step-2: run the analysis codes. Figures will pop out.
 % Numerical resutls of the Sensitivity can be found in 'MdSensResult'.
 % 
-SimplusGT.Modal.ModalAnalysis();
+%SimplusGT.Modal.ModalAnalysis();
 
 %% Plot a map and show the propagation of the oscillation
-run map_draw.m
+%run map_draw.m
 
 %% Plot bode-plot from previous saved data.
-run bode_draw.m
+%run bode_draw.m
 
 
 %% Pole-map plot (zoomed)

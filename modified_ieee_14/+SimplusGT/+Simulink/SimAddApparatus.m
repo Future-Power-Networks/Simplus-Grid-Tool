@@ -37,6 +37,15 @@ for i = 1:N_Apparatus
                 Name_Apparatus{i} = ['VSI-Droop' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
                 add_block([Name_LibFile '/Grid-Forming Voltage-Source Inverter (dq-Frame System Object)'],FullName_Apparatus{i});
+                
+            case 004 % Cyprus models
+                Name_Apparatus{i} = ['SM' num2str(Bus)];
+                FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                if ApparatusType{i}==41
+                    add_block([Name_LibFile '/SynchronousMachineFull_Cyp_SMAVR (dq-Frame System Object)'],FullName_Apparatus{i});
+                elseif ApparatusType{i}==42
+                    add_block([Name_LibFile '/SynchronousMachineFull_Cyp_SMAVRPSSGOV (dq-Frame System Object)'],FullName_Apparatus{i});
+                end
             case 009
             	Name_Apparatus{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
