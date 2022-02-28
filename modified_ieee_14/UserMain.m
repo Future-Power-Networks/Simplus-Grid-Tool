@@ -6,9 +6,9 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Set user data, select one excel file to form the system.
-%UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % original model
-UserData = 'IEEE_14Bus_Cyprus_modified.xlsx';   % Detuned model
-% UserData = 'IEEE_14Bus_Cyprus_modified2.xlsx'; % Tuned model
+UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % original model
+%UserData = 'IEEE_14Bus_Cyprus_modified.xlsx';   % Detuned model
+%UserData = 'IEEE_14Bus_Cyprus_modified2.xlsx'; % Tuned model
 
 %% Run toolbox, get solutions of the system.
 SimplusGT.Toolbox.Main();

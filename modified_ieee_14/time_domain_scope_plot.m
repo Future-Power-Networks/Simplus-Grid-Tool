@@ -1,14 +1,14 @@
-load('Scope_S13_detuned.mat');
-load('Scope_S13_tuned.mat');
+load('Scope_P12_detuned.mat');
+load('Scope_P12_tuned.mat');
 
 Ts=4e-5;
 t_start = 34.5;
 t_end = 36;
 d_start = t_start/Ts+1;
 d_end = t_end/Ts+1;
-tout = Scope_S13_detuned.time;
-A13_detuned = Scope_S13_detuned.signals.values;
-A13_tuned = Scope_S13_tuned.signals.values;
+tout = Scope_P12_detuned.time;
+P12_detuned = Scope_P12_detuned.signals.values;
+P12_tuned = Scope_P12_tuned.signals.values;
 
 color1 = [1,0,0];
 color2 = [0,0.45,0.74];
@@ -27,11 +27,11 @@ figure(1);
 set(gcf,'position',[500,500,900*1.4*width_L,300*1.4]);
 %subplot('Position',P1);
 subplot(2,1,1)
-plot(tout(d_start:d_end), A13_detuned(d_start:d_end),'LineWidth',L_width, 'Color',color1);
+plot(tout(d_start:d_end), P12_detuned(d_start:d_end),'LineWidth',L_width, 'Color',color1);
 axis([t_start,t_end,0,0.25]) ;
 grid on;
 subplot(2,1,2)
-plot(tout(d_start:d_end), A13_tuned(d_start:d_end),'LineWidth',L_width, 'Color',color2);
+plot(tout(d_start:d_end), P12_tuned(d_start:d_end),'LineWidth',L_width, 'Color',color2);
 axis([t_start,t_end,0,0.25]);
 %set(gca,'FontSize',Fsize, 'FontName','TimesNewRoman','FontWeight','Bold');
 grid on;

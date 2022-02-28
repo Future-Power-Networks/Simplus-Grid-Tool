@@ -19,7 +19,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
     
     methods
         % constructor
-        function obj = GridFollowingVSI(varargin)
+        function obj = GridFollowingVSI(varargin)   
             % Support name-value pair arguments when constructing object
             setProperties(obj,nargin,varargin{:});
         end
