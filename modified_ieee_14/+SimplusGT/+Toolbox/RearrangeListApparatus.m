@@ -159,6 +159,55 @@ Para0020.fvdq   =300;   % (Hz) vdc bandwidth
 Para0020.fidq   =600;   % current control bandwidth
 Para0020.w0     = W0;
 
+% ======================================
+% Synchronous generato ----- Full Model
+% ======================================
+Para0030.X=0.0125;
+Para0030.R=0;
+Para0030.Xd=0.1; %synchronous reactance in d axis
+Para0030.Xd1=0.031; %transient reactance
+Para0030.Xd2=0.025; %subtransient reactance
+Para0030.Td1=10.2; %d-axis open circuit transient time constant
+Para0030.Td2=0.05; %d-axis open circuit sub-transient time constant
+Para0030.Xq=0.069;
+Para0030.Xq1=0.0416667;
+Para0030.Xq2=0.025;
+Para0030.Tq1=1.5;
+Para0030.Tq2=0.035;
+Para0030.H=42;
+Para0030.D=0;
+Para0030.TR=0.01;
+Para0030.KA=1;
+Para0030.TA=0.02;
+Para0030.VRmax=10;
+Para0030.VRmin=-10;
+Para0030.KE=1;
+Para0030.TE=0.785;
+Para0030.E1=3.9267;
+Para0030.SE1=0.07;
+Para0030.E2=5.2356;
+Para0030.SE2=0.91;
+Para0030.KF=0.03;
+Para0030.TF=1;
+Para0030.KP=200;
+Para0030.KI=50;
+Para0030.KD=50;
+Para0030.TD=0.01;
+Para0030.KPSS=20;
+Para0030.TW=15;
+Para0030.T11=0.15;
+Para0030.T12=0.04;
+Para0030.T21=0.15;
+Para0030.T22=0.04;
+Para0030.T31=0.15;
+Para0030.T32=0.04;
+Para0030.VSSmax=0.2;
+Para0030.VSSmin=-0.05;
+Para0030.Rgov=0.05;
+Para0030.T1gov=0.8;
+Para0030.T2gov=1.8;
+Para0030.T3gov=6;
+Para0030.Dtgov=0.2;
 
 % ======================================
 % Synchronous generato ----- Full Model ---- Cyprus Model
@@ -281,6 +330,8 @@ for i = 1:N_App
             ParaCell{i} = Para0010;     % Grid-following inverter
       	case 2
             ParaCell{i} = Para0020;     % Grid-forming inverter
+        case 3
+            ParaCell{i} = Para0030;     % Synchronous Machine full model (68-bus model)
         case 4
             ParaCell{i} = Para0040;     % Synchronous Machine full model (Cyprus model)
             % Yue's Full-Order Machine
@@ -355,6 +406,58 @@ for i = 1:length(row)
           	case 10; ParaCell{row(i)}.fidq    = UserValue; 
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+        end
+        
+    elseif floor(AppType/10) == 3 %full model
+        switch SwitchFlag
+            case 1; ParaCell{row(i)}.X=UserValue;
+            case 2; ParaCell{row(i)}.R=UserValue;
+            case 3; ParaCell{row(i)}.Xd=UserValue; 
+            case 4; ParaCell{row(i)}.Xd1=UserValue; 
+            case 5; ParaCell{row(i)}.Xd2=UserValue; 
+            case 6; ParaCell{row(i)}.Td1=UserValue; 
+            case 7; ParaCell{row(i)}.Td2=UserValue;
+            case 8; ParaCell{row(i)}.Xq=UserValue;
+            case 9; ParaCell{row(i)}.Xq1=UserValue;
+            case 10;ParaCell{row(i)}.Xq2=UserValue;
+            case 11;ParaCell{row(i)}.Tq1=UserValue;
+            case 12;ParaCell{row(i)}.Tq2=UserValue;
+            case 13;ParaCell{row(i)}.H=UserValue;
+            case 14;ParaCell{row(i)}.D=UserValue;
+            case 15;ParaCell{row(i)}.TR=UserValue;
+            case 16;ParaCell{row(i)}.KA=UserValue;
+            case 17;ParaCell{row(i)}.TA=UserValue;
+            case 18;ParaCell{row(i)}.VRmax=UserValue;
+            case 19;ParaCell{row(i)}.VRmin=UserValue;
+            case 20;ParaCell{row(i)}.KE=UserValue;
+            case 21;ParaCell{row(i)}.TE=UserValue;
+            case 22;ParaCell{row(i)}.E1=UserValue;
+            case 23;ParaCell{row(i)}.SE1=UserValue;
+            case 24;ParaCell{row(i)}.E2=UserValue;
+            case 25;ParaCell{row(i)}.SE2=UserValue;
+            case 26;ParaCell{row(i)}.KF=UserValue;
+            case 27;ParaCell{row(i)}.TF=UserValue;
+            case 28;ParaCell{row(i)}.KP=UserValue;
+            case 29;ParaCell{row(i)}.KI=UserValue;
+            case 30;ParaCell{row(i)}.KD=UserValue;
+            case 31;ParaCell{row(i)}.TD=UserValue;
+            case 32;ParaCell{row(i)}.KPSS=UserValue;
+            case 33;ParaCell{row(i)}.TW=UserValue;
+            case 34;ParaCell{row(i)}.T11=UserValue;
+            case 35;ParaCell{row(i)}.T12=UserValue;
+            case 36;ParaCell{row(i)}.T21=UserValue;
+            case 37;ParaCell{row(i)}.T22=UserValue;
+            case 38;ParaCell{row(i)}.T31=UserValue;
+            case 39;ParaCell{row(i)}.T32=UserValue;
+            case 40;ParaCell{row(i)}.VSSmax=UserValue;
+            case 41;ParaCell{row(i)}.VSSmin=UserValue;
+            case 42;ParaCell{row(i)}.Rgov=UserValue;
+            case 43;ParaCell{row(i)}.T1gov=UserValue;
+            case 44;ParaCell{row(i)}.T2gov=UserValue;
+            case 45;ParaCell{row(i)}.T3gov=UserValue;
+            case 46;ParaCell{row(i)}.Dtgov=UserValue;
+            otherwise
+                error(['Error: parameter overflow, bus ' num2str(bus) 'type ' num2str(type) '.']);
         end
     
     elseif floor(AppType/10) == 4 %full model Cyprus
