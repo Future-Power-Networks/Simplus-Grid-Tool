@@ -34,7 +34,7 @@ close all;  % Close all figures, etc
 % file. Users can easily convert an Excel file to a json file by calling
 % this function: ConvertExcelFile2JsonFile();
 
-InputData = SimplusGT.JsonDecoder('UserData.json');
+% InputData = SimplusGT.JsonDecoder('UserData.json');
 
 %%
 % Other example power systems (in "Examples" folder):
@@ -46,7 +46,7 @@ InputData = SimplusGT.JsonDecoder('UserData.json');
 % InputData = SimplusGT.JsonDecoder('IEEE_14Bus.json');
 % InputData = SimplusGT.JsonDecoder('IEEE_30Bus.json');
 % InputData = SimplusGT.JsonDecoder('IEEE_57Bus.json');
-% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
+InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
 %
 % Pure dc power system examples:
 % InputData = SimplusGT.JsonDecoder('GfdBuckInfiniteBus.json');         % Single grid-feeding buck converter and infinite bus

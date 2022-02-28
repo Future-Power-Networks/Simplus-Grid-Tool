@@ -108,7 +108,7 @@ ListPowerFlow
 % Descriptor state space model
 % ==================================================
 
-EnableStateSpaceModel = 1;
+EnableStateSpaceModel = 0;
 if EnableStateSpaceModel
 
 % ### Get the model of lines
@@ -287,7 +287,7 @@ end
 fprintf('==================================\n')
 fprintf('Synchronization Analysis\n')
 fprintf('==================================\n')
-EnableSynchronisationAnalysis = 0;
+EnableSynchronisationAnalysis = 1;
 if EnableSynchronisationAnalysis
     SimplusGT.Synchron.MainSynchron();
 else
