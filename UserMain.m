@@ -53,6 +53,9 @@ UserData = 'K_68Bus_IBR_17_14';
 % UserData = '2Bus_SG_IBR';
 % UserData = '2Bus_GFM_IBR';
 
+% SG System
+% UserData = 'K_NETS_NYPS_68Bus';
+
 % Notes:       
 % The system is stable when:
                                         % 1- increasing the sampling frequency
