@@ -23,6 +23,7 @@ Port_i=evalin('base', 'Port_i');
 Port_v=evalin('base', 'Port_v');
 
 
+CaseStudy=evalin('base', 'CaseStudy'); % for case study selection
 
 %% read Modal config file.
 
@@ -168,6 +169,9 @@ for modei=1:ModeSelNum
     [SensLayer1_val, SensLayer2_val,Layer12] = SimplusGT.Modal.SensLayer12(SensMatrix,Yre_val,modei,ZMode_Hz(Ek));
     fprintf('Calculating sensitivity Layer-3...\n')
     Line_sel = [15];% See ListLineNew!.
+    if CaseStudy>=4 && CaseStudy<=6
+        Line_sel = [37];
+    end
     [SensLayer3_app,SensLayer3_bus] = SimplusGT.Modal.SensLayer3(SensMatrix,Mode_rad,ApparatusSelL3All,Line_sel);
        
     MdSensResult(modei).mode = [num2str(FreqSel),'~Hz'];

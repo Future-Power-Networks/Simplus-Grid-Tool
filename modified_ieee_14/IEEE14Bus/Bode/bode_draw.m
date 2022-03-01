@@ -34,18 +34,19 @@ Z2=load('ZminSS_tuned','ZminSS');
 Zdetuned=Z1.ZminSS;
 Ztuned=Z2.ZminSS;
 
-bode(Zdetuned(21,21),P);
-hold on;
+%bode(Zdetuned(21,21),P);
+%hold on;
 bode(Zdetuned(23,23),P);
 hold on;
-bode(Zdetuned(25,25),P);
-hold on;
-bode(Ztuned(21,21),P);
-hold on;
+%bode(Zdetuned(25,25),P);
+%hold on;
+%bode(Ztuned(21,21),P);
+%hold on;
 bode(Ztuned(23,23),P);
 hold on;
-bode(Ztuned(25,25),P);
-hold on;
+%bode(Ztuned(25,25),P);
+%hold on;
+title('Wholesystem Impedance model node-12 dd bode before and after tuning')
 
 %ZminSS2=load('ZminSS_tuned','ZminSS');
 

@@ -51,8 +51,10 @@ switch floor(Type/10)
                     
     % ### Grid-following inverter
     case 1      % Type 10-19
-        if Type~=19
+        if Type==10
             Apparatus = SimplusGT.Class.GridFollowingVSI('ApparatusType',Type);
+        elseif Type==18
+            Apparatus = SimplusGT.Class.GridFollowingVSI_old('ApparatusType',Type);
         else
             Apparatus = SimplusGT.Class.GridFollowingInverterStationary('ApparatusType',Type);
         end
@@ -68,7 +70,11 @@ switch floor(Type/10)
                    
     % ### Grid-forming inverter
     case 2  % Type 20-29
-        Apparatus = SimplusGT.Class.GridFormingVSI('ApparatusType',Type);
+        if Type==20
+            Apparatus = SimplusGT.Class.GridFormingVSI('ApparatusType',Type);
+        elseif Type==28
+            Apparatus = SimplusGT.Class.GridFormingVSI_old('ApparatusType',Type);
+        end
         Apparatus.Para = [ Para.wLf;
                         Para.Rf;
                         Para.wCf;

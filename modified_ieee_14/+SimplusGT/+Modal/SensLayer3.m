@@ -10,7 +10,10 @@ ListBus=evalin('base', 'ListBus');
 ApparatusPowerFlow= evalin('base', 'ApparatusPowerFlow');
 ApparatusType=evalin('base', 'ApparatusType');
 ApparatusBus=evalin('base', 'ApparatusBus');
-            
+
+%if length(ApparatusSelL3All)==0
+%    error('you need to choose an Apparatus in Sheet-2 colum L in Modalconfig excel file')
+    
 for AppCount = 1:length(ApparatusSelL3All)
     AppSel = ApparatusSelL3All(AppCount);
     1i;
@@ -118,7 +121,7 @@ for m = 1:length(Line_sel) % all rows
                 Dy.qd=Dy_(2,1);
                 Dy.qq=Dy_(2,2);
             else
-                error('not support for now!')
+                error('this line is not support for Layer-3 for now, choose another line in ModalAnalysisExe.m!')
             end
             D_lambda_rad = SimplusGT.inner_product_dq(Sens_branch,Dy);
             %%%%%%%%%%%%%%%%%

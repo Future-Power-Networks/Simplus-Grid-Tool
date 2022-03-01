@@ -6,15 +6,12 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=5;
-
+CaseStudy=2;
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
     case 2; UserData = 'IEEE_14Bus_Cyprus_modified.xlsx';   % IEEE-14 Detuned model
     case 3; UserData = 'IEEE_14Bus_Cyprus_modified2.xlsx'; % IEEE-14 Tuned model
-    case 4; UserData = 'NETS_NYPS_68_original'; % 68 bus original model.
-    case 5; UserData = 'NETS_NYPS_68_modified_detuned'; % 68 bus detuned model.
-    case 6; UserData = 'NETS_NYPS_68_modified_tuned'; % 68 bus tuned model.
+    case 4; UserData = 'NETS_NYPS_68_modified_detuned'; % 68 bus detuned model.
 end
 
 %% Step 2: Run toolbox, get solutions of the system.
@@ -25,27 +22,25 @@ SimplusGT.Toolbox.Main();
 % Each time you run this code, it will generate an excel file in 
 % 'Simplus-Grid-Tool\Examples\ParticipationAnalysis\', from which you
 % will need to select the interesting modes, apparatus, d-q axes...
-% If you are using a different matlab version (not 2018b) as me, then run it and select
+% If you are using a different matlab version as me, then run it and select
 % manually. After the first time, if the system remains unchanged, don't run it
 % otherwise you will loose your selections.
 %
 % SimplusGT.Modal.ModalInitialise();
 
-% Step 3.2: run the analysis codes. Figures will pop out.
+% Step-2: run the analysis codes. Figures will pop out.
 % Numerical resutls of the Sensitivity can be found in 'MdSensResult'.
 % 
 %SimplusGT.Modal.ModalAnalysis();
 
-%% Additional: Plot a map and show the propagation of the oscillation (for IEEE-14)
-% To draw the map figure as shown in my paper. But you need to run
-% ModalAnalysis first.
+%% Plot a map and show the propagation of the oscillation (for IEEE-14)
 %run map_draw.m
 
-%% Additional: Plot bode-plot from previous saved data. (for IEEE-14)
+%% Plot bode-plot from previous saved data. (for IEEE-14)
 %run bode_draw.m
 
 
-%% Additional: Pole-map plot (zoomed)
+%% Pole-map plot (zoomed)
 % this is used to plot the same zoomed pole-map as the original model of Cyprus
 % in DigSLIENT Power Factory. The poles are nearly the same, proving that the 
 % model is successfully transplanted to this tool box.
@@ -58,7 +53,7 @@ SimplusGT.Toolbox.Main();
 % title('Zoomed pole map');
 % axis([-30,10,-3.5,3.5]);
 
-%% Additional: System solution results available to users (saved in Workspace)
+%% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space
                     % form). Notes: The elements of state, input, and
                     % output vectors are printed in the command window.

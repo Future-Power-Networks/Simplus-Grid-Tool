@@ -73,6 +73,6 @@ for i=1:14
 end
 set(gca,'position',[0 0 1 1])
 img=gcf;%getimage(gcf);
-print(img,'-dpng','-r300','./propagation/bus14_prop.png')
+print(img,'-dpng','-r300','./IEEE14Bus/propagation/bus14_prop.png')
 
 

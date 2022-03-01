@@ -384,7 +384,7 @@ for i = 1:length(row)
         switch SwitchFlag
             case 1; ParaCell{row(i)}.V_dc   = UserValue;
             case 2; ParaCell{row(i)}.C_dc   = UserValue;
-            case 3; ParaCell{row(i)}.wL     = UserValue;
+            case 3; ParaCell{row(i)}.wLf     = UserValue;
             case 4; ParaCell{row(i)}.R      = UserValue;
             case 5; ParaCell{row(i)}.f_v_dc = UserValue;
             case 6; ParaCell{row(i)}.f_pll  = UserValue;
