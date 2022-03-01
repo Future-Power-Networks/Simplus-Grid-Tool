@@ -31,7 +31,7 @@ close all;  % Close all figures, etc
 
 % K analysis
 % UserData = 'K_68Bus_IBR_Load';
-% UserData = 'K_68Bus_IBR';
+UserData = 'K_68Bus_IBR';
 % UserData = 'K_68Bus_IBR_17';
 % UserData = 'K_68Bus_IBR_17_14';
 % UserData = 'K_68Bus_IBR_17_14_7';
@@ -54,8 +54,9 @@ close all;  % Close all figures, etc
 % UserData = '2Bus_GFM_IBR';
 
 % SG System
-UserData = 'K_NETS_NYPS_68Bus';
-% UserData = 'K_NETS_NYPS_68Bus_StabilityLimit';
+% UserData = 'K_NETS_NYPS_68Bus';
+% UserData = 'K_NETS_NYPS_68Bus_LowDamping';
+% UserData = 'K_NETS_NYPS_68Bus_HighDamping';
 
 % Notes:       
 % The system is stable when:
