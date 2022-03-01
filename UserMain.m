@@ -46,7 +46,12 @@ close all;  % Close all figures, etc
 % InputData = SimplusGT.JsonDecoder('IEEE_14Bus.json');
 % InputData = SimplusGT.JsonDecoder('IEEE_30Bus.json');
 % InputData = SimplusGT.JsonDecoder('IEEE_57Bus.json');
+
+ConvertExcelFile2JsonFile();
+
 InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
+% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_StabilityLimit.json');
+
 %
 % Pure dc power system examples:
 % InputData = SimplusGT.JsonDecoder('GfdBuckInfiniteBus.json');         % Single grid-feeding buck converter and infinite bus
