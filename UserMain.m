@@ -49,9 +49,10 @@ close all;  % Close all figures, etc
 
 ConvertExcelFile2JsonFile();
 
-InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
-% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_v2.json');
-% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_StabilityLimit.json');
+% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
+% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_LowDamping.json');
+InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_HighDamping.json');
+% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_LowDamping_SingleSgCase.json');
 
 %
 % Pure dc power system examples:
@@ -62,6 +63,10 @@ InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();
+
+if 1
+    print(gcf,['Sim_v1.png'],'-dpng','-r600');
+end
 
 %% Results available to users (saved in Workspace)
 % GsysDSS;          % Whole-system port model (descriptor state space

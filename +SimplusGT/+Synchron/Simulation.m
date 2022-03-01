@@ -81,14 +81,14 @@ figure(FigN)
 FigSize = [0.1 0.1 0.35 0.5];
 set(gcf,'units','normalized','outerposition',FigSize);
 subplot(2,1,1)
-plot(t_out-TimeShift,theta_out);
-xlim(TimeLimit);
-xlabel('Time (s)')
-ylabel('Angle (Degree)')
-subplot(2,1,2)
 plot(t_out-TimeShift,omega_out);
 xlim(TimeLimit);
 ylabel('Frequency (pu)')
+xlabel('Time (s)')
+subplot(2,1,2)
+plot(t_out-TimeShift,theta_out);
+xlim(TimeLimit);
+ylabel('Angle (Degree)')
 xlabel('Time (s)')
 % SimplusGT.mtit('Time-domain simulation');
 

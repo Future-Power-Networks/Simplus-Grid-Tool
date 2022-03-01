@@ -15,22 +15,9 @@ w_PLL_LPF                       = 2*pi*100;     % Bandwidth of the PLL LPF
 Enable_Plot_Eigenvalue          = 1;    % 1/0: Plot eigenvalues.
 
 %% Fault settings
-% NfaultBus = 1;
-% NfaultBus = 2;
-% NfaultBus = 18;
-% NfaultBus = 34;
+NfaultBus = 1;
 % NfaultBus = 37;
-% NfaultBus = 39;
-% NfaultBus = 45;
-% NfaultBus = 46;
-% NfaultBus = 48;
-% NfaultBus = 50;
-% NfaultBus = 53;
-% NfaultBus = 56;
-NfaultBus = 58;
-% NfaultBus = 60;
-% NfaultBus = 66;
-Tfault = 1/60*3;
+
 
 %% Update power flow
 [V,I] = SimplusGT.Synchron.UpdateVI(PowerFlowNew);
