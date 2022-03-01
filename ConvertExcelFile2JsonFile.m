@@ -48,6 +48,9 @@ SimplusGT.Toolbox.Excel2Json(file);
 
 file = 'Examples\NETS_NYPS_68Bus_LowDamping_SingleSgCase.xlsx';
 SimplusGT.Toolbox.Excel2Json(file);
+
+file = 'Examples\NETS_NYPS_68Bus_HighDamping_SingleSgCase.xlsx';
+SimplusGT.Toolbox.Excel2Json(file);
 % 
 % file = 'Examples\AcPowerSystem\IEEE_57Bus\IEEE_57Bus.xlsx';
 % SimplusGT.Toolbox.Excel2Json(file);

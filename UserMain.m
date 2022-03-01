@@ -53,6 +53,7 @@ ConvertExcelFile2JsonFile();
 % InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_LowDamping.json');
 InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_HighDamping.json');
 % InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_LowDamping_SingleSgCase.json');
+% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_HighDamping_SingleSgCase.json');
 
 %
 % Pure dc power system examples:

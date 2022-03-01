@@ -26,14 +26,14 @@ switch 2
         x_out1 = x_out;
         clear('t_out','x_out');
 
-        TimeRange = [10, 10.05];
+        TimeRange = [10, 10.5];
         x0 = transpose(x_out1(end,:));
         [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMAFault,gammaFault,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
         t_out2 = t_out;
         x_out2 = x_out;
         clear('t_out','x_out');
 
-        TimeRange = [10.05, 12];
+        TimeRange = [10.5, 12];
         x0 = transpose(x_out2(end,:));
         [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
         t_out3 = t_out;
@@ -65,8 +65,8 @@ end
 % Organize the data
 theta_out = x_out(:,[1:N_Node]);
 omega_out = x_out(:,[N_Node+1:2*N_Node]);
-% theta_out = theta_out - theta_out(:,1); % Get the angle difference
-theta_out = theta_out - theta_out(:,16); % Get the angle difference
+theta_out = theta_out - theta_out(:,1); % Get the angle difference
+% theta_out = theta_out - theta_out(:,16); % Get the angle difference
 theta_out = theta_out/pi*180;
 omega_out = omega_out/Wbase;
 
