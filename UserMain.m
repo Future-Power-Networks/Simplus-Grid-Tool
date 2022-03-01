@@ -50,6 +50,7 @@ close all;  % Close all figures, etc
 ConvertExcelFile2JsonFile();
 
 InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
+% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_v2.json');
 % InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus_StabilityLimit.json');
 
 %

@@ -26,14 +26,14 @@ switch 2
         x_out1 = x_out;
         clear('t_out','x_out');
 
-        TimeRange = [10, 10.2];
+        TimeRange = [10, 10.05];
         x0 = transpose(x_out1(end,:));
         [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMAFault,gammaFault,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
         t_out2 = t_out;
         x_out2 = x_out;
         clear('t_out','x_out');
 
-        TimeRange = [10.2, 12];
+        TimeRange = [10.05, 12];
         x0 = transpose(x_out2(end,:));
         [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
         t_out3 = t_out;
@@ -65,14 +65,15 @@ end
 % Organize the data
 theta_out = x_out(:,[1:N_Node]);
 omega_out = x_out(:,[N_Node+1:2*N_Node]);
-theta_out = theta_out - theta_out(:,1); % Get the angle difference
+% theta_out = theta_out - theta_out(:,1); % Get the angle difference
+theta_out = theta_out - theta_out(:,16); % Get the angle difference
 theta_out = theta_out/pi*180;
 omega_out = omega_out/Wbase;
 
 % theta_out = mod(theta_out,360);
 
-TimeShift = 1.5;
-TimeShift = 0;
+% TimeShift = 1.5;
+TimeShift = 9.5;
 TimeLimit = [0,2.5];
 
 FigN = FigN + 1;
@@ -81,11 +82,12 @@ FigSize = [0.1 0.1 0.35 0.5];
 set(gcf,'units','normalized','outerposition',FigSize);
 subplot(2,1,1)
 plot(t_out-TimeShift,theta_out);
-% xlim(TimeLimit);
+xlim(TimeLimit);
+xlabel('Time (s)')
 ylabel('Angle (Degree)')
 subplot(2,1,2)
 plot(t_out-TimeShift,omega_out);
-% xlim(TimeLimit);
+xlim(TimeLimit);
 ylabel('Frequency (pu)')
 xlabel('Time (s)')
 % SimplusGT.mtit('Time-domain simulation');
