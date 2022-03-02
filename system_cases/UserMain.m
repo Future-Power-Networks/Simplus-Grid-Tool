@@ -15,9 +15,11 @@ switch CaseStudy
     case 4; UserData = 'NETS_NYPS_68_original'; % 68 bus original model.
     case 5; UserData = 'NETS_NYPS_68_modified_detuned'; % 68 bus detuned model.
     case 6; UserData = 'NETS_NYPS_68_modified_tuned'; % 68 bus tuned model.
+    case 7; UserData = 'NETS_NYPS_68_modified_tuned_inter_area'; % 68 bus tuned to stabilise the 0.65Hz interarea mode.
 end
 
 %% Step 2: Run toolbox, get solutions of the system.
+tic
 SimplusGT.Toolbox.Main();
 
 %% Step 3: Modal analysis: participation and eigenvalue sensitivity
@@ -34,7 +36,8 @@ SimplusGT.Toolbox.Main();
 % Step 3.2: run the analysis codes. Figures will pop out.
 % Numerical resutls of the Sensitivity can be found in 'MdSensResult'.
 % 
-%SimplusGT.Modal.ModalAnalysis();
+% SimplusGT.Modal.ModalAnalysis();
+toc
 
 %% Additional: Plot a map and show the propagation of the oscillation (for IEEE-14)
 % To draw the map figure as shown in my paper. But you need to run
