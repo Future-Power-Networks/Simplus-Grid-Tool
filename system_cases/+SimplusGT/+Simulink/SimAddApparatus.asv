@@ -28,10 +28,9 @@ for i = 1:N_Apparatus
             case 001
                 Name_Apparatus{i} = ['VSI-PLL' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
-                if ApparatusType{i}<18
+                if ApparatusType{i}<=18 && ApparatusType{i}~=19
                     add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)'],FullName_Apparatus{i});
                 elseif ApparatusType{i}==18
-                    add_block([Name_LibFile '/Grid-Following Voltage-Source Inverter (dq-Frame System Object)_old'],FullName_Apparatus{i});
                 else
                     add_block([Name_LibFile '/Grid-Following Inverter (alpha/beta System Object)'],FullName_Apparatus{i});
                 end
