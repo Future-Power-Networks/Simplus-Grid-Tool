@@ -25,7 +25,7 @@ IndexBranchTo = find(ListLine(:,2) == NfaultBus);
 % The fault can not be a pure short-circuit because the modeling will
 % report an error.
 %             | From | To | R | X | C | G | T | AreaType
-ListLineAdd = [NfaultBus, NfaultBus, inf, inf, 0, 1e9, 1, FaultAreaType];
+ListLineAdd = [NfaultBus, NfaultBus, inf, inf, 0, 1e20, 1, FaultAreaType];
 
 % Add the fault branch into the ListLine Matrix
 if isempty(Index)

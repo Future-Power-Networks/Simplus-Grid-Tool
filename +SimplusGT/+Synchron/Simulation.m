@@ -26,14 +26,16 @@ switch 2
         x_out1 = x_out;
         clear('t_out','x_out');
 
-        TimeRange = [10, 10.5];
+        TimeRange = [10, 10.16667];
+        % TimeRange = [10, 10.5];
         x0 = transpose(x_out1(end,:));
         [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMAFault,gammaFault,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
         t_out2 = t_out;
         x_out2 = x_out;
         clear('t_out','x_out');
 
-        TimeRange = [10.5, 12];
+        TimeRange = [10.16667, 12];
+        % TimeRange = [10.5, 12];
         x0 = transpose(x_out2(end,:));
         [t_out,x_out] = ode45(@(t,x) SimplusGT.Synchron.StateEqu(x,GAMMA,gamma,Hmat,Dmat,Wref,Wbase),TimeRange,x0,options);
         t_out3 = t_out;
@@ -76,20 +78,24 @@ omega_out = omega_out/Wbase;
 TimeShift = 9.5;
 TimeLimit = [0,2.5];
 
+LineWidth = 1;
+
 FigN = FigN + 1;
 figure(FigN)
-FigSize = [0.1 0.1 0.35 0.5];
+FigSize = [0.1 0.1 0.35 0.45];
 set(gcf,'units','normalized','outerposition',FigSize);
 subplot(2,1,1)
-plot(t_out-TimeShift,omega_out);
+plot(t_out-TimeShift,omega_out,'LineWidth',LineWidth);
 xlim(TimeLimit);
 ylabel('Frequency (pu)')
-xlabel('Time (s)')
+% xlabel('Time (s)')
+% ylim([0.965,1.03])
 subplot(2,1,2)
-plot(t_out-TimeShift,theta_out);
+plot(t_out-TimeShift,theta_out,'LineWidth',LineWidth);
 xlim(TimeLimit);
 ylabel('Angle (Degree)')
 xlabel('Time (s)')
+% ylim([-50,500])
 % SimplusGT.mtit('Time-domain simulation');
 
 % Notes:
