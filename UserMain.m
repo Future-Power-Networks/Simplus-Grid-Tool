@@ -18,43 +18,13 @@ clc;        % Clear matlab command window
 close all;  % Close all figures, etc
 
 %% Set user data
-% Default
-% "UserData.xlsx" defaultly contains the data of a 4-bus
-% generator-inverter-composite power system. Please feel free to change it.
-% UserData = 'UserData.xlsx';
-% UserData = 'SgInfiniteBus.xlsx';
-
-% Examples used in the paper:
-% UserData = 'H_SingleSgInfiniteBus.xlsx';
-% UserData = 'H_SingleGflInfiniteBus.xlsx';
-% UserData = 'Gamma_SingleSgInfiniteBus_ForSim';
-
 % K analysis
-% UserData = 'K_68Bus_IBR_Load';
-UserData = 'K_68Bus_IBR';
-% UserData = 'K_68Bus_IBR_17';
-% UserData = 'K_68Bus_IBR_17_14';
-% UserData = 'K_68Bus_IBR_17_14_7';
-
-% UserData = 'K_CC_IBR';
-
-% Test
-% UserData = 'K_68Bus_IBR_NoLineResistance';
-% UserData = 'K_68Bus_IBR_1';
-% UserData = 'K_68Bus_IBR_1_17';
-% UserData = 'K_68Bus_SG_Load';
-% UserData = 'K_68Bus_SG_IBR_Load';
-% UserData = 'K_68Bus_SG_IBR';
-% UserData = 'K_68Bus_SG_IBR_17';
-% UserData = 'K_68Bus_SG_IBR_6';
-% UserData = 'K_68Bus_SG_IBR_Test_NoCap';
-% UserData = 'K_68Bus_SG_IBR_Test_Load';
-
-% UserData = '2Bus_SG_IBR';
-% UserData = '2Bus_GFM_IBR';
+UserData = 'K_68Bus_IBR_Load';
+% UserData = 'K_68Bus_IBR';
 
 % SG System
 % UserData = 'K_NETS_NYPS_68Bus';
+% UserData = 'K_NETS_NYPS_68Bus_test';
 % UserData = 'K_NETS_NYPS_68Bus_LowDamping';
 % UserData = 'K_NETS_NYPS_68Bus_HighDamping';
 
