@@ -32,7 +32,8 @@ close all;  % Close all figures, etc
 % 
 % ".xlsx" is the excel file, and ".json" is the corresponding json
 % file. Users can easily convert an Excel file to a json file by calling
-% this function: ConvertExcelFile2JsonFile();
+% this function: 
+% ConvertExcelFile2JsonFile();
 
 UserData = 'UserData.json';
 
