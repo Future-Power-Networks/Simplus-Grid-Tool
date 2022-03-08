@@ -34,27 +34,28 @@ close all;  % Close all figures, etc
 % file. Users can easily convert an Excel file to a json file by calling
 % this function: ConvertExcelFile2JsonFile();
 
-InputData = SimplusGT.JsonDecoder('UserData.json');
+UserData = 'UserData.json';
 
 %%
 % Other example power systems (in "Examples" folder):
 %
 % Pure ac power system examples:
-% InputData = SimplusGT.JsonDecoder('SgInfiniteBus.json');              % Single synchronous generator and infinite bus
-% InputData = SimplusGT.JsonDecoder('GflInverterInfiniteBus.json');   	% Single grid-following inverter and infinite bus
-% InputData = SimplusGT.JsonDecoder('GfmInverterInfiniteBus.json');   	% Single grid-forming inverter and infinite bus
-% InputData = SimplusGT.JsonDecoder('IEEE_14Bus.json');
-% InputData = SimplusGT.JsonDecoder('IEEE_30Bus.json');
-% InputData = SimplusGT.JsonDecoder('IEEE_57Bus.json');
-% InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
+% UserData = 'SgInfiniteBus.json';              % Single synchronous generator and infinite bus
+% UserData = 'GflInverterInfiniteBus.json';   	% Single grid-following inverter and infinite bus
+% UserData = 'GfmInverterInfiniteBus.json';   	% Single grid-forming inverter and infinite bus
+% UserData = 'IEEE_14Bus.json';
+% UserData = 'IEEE_30Bus.json';
+% UserData = 'IEEE_57Bus.json';
+% UserData = 'NETS_NYPS_68Bus.json';
 %
 % Pure dc power system examples:
-% InputData = SimplusGT.JsonDecoder('GfdBuckInfiniteBus.json');         % Single grid-feeding buck converter and infinite bus
+% UserData = 'GfdBuckInfiniteBus.json';         % Single grid-feeding buck converter and infinite bus
 %
 % Hybrid ac-dc power system examples:
-% InputData = SimplusGT.JsonDecoder('Hybrid_test_v1.json');             % A 4-bus hybrid ac-dc system
+% UserData = 'Hybrid_test_v1.json';             % A 4-bus hybrid ac-dc system
 
 %% Run toolbox
+InputData = SimplusGT.JsonDecoder(UserData);
 SimplusGT.Toolbox.Main();
 
 %% Results available to users (saved in Workspace)
