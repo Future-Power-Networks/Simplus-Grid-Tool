@@ -18,6 +18,7 @@ UserData_Modal = UserData;
 UserData_Modal = strrep(UserData_Modal,'.xlsm','');
 UserData_Modal = strrep(UserData_Modal,'.xlsx','');
 UserData_Modal = strrep(UserData_Modal,'.xls','');
+UserData_Modal = strrep(UserData_Modal,'.json','');
 UserData_Modal = [UserData_Modal,'.xlsx'];
 
 %Basic infomation acquirement.
@@ -30,7 +31,7 @@ clear MdMode;
 
 %read Modal config file.
 [AxisSel, ApparatusSelL12, ModeSelAll, ApparatusSelL3All,StateSel_DSS, ModeSel_DSS] = ...
-    SimplusGT.Modal.ExcelRead(FileModal, N_Bus, ApparatusType, GminSS);
+    SimplusGT.Modal.ExcelRead(FileModal, N_Bus, ApparatusType, GsysSS);
 [StatePFEnable, BodeEnable, Layer12Enable, Layer3Enable] = ...
     SimplusGT.Modal.EnablingRead(FileModal); %Enablling control.
 
@@ -41,13 +42,13 @@ SimplusGT.Modal.DataCheck(AxisSel, ApparatusSelL12, ModeSelAll, ApparatusSelL3Al
 ModeSelNum = length(ModeSelAll);
 %get ResidueAll, ZmValAll.
 [MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
-    SimplusGT.Modal.SSCal(GminSS, N_Bus, ApparatusType, ModeSelAll, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr);
+    SimplusGT.Modal.SSCal(GsysSS, N_Bus, ApparatusType, ModeSelAll, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr);
 
 %% Impedance Participation Factor
 %Analysis.
 if BodeEnable ==1
     fprintf('plotting bode diagram for selected whole-system admittance...\n')
-    SimplusGT.Modal.BodeDraw(ApparatusSelL12, AxisSel, GminSS, ApparatusType, ApparatusBus, N_Bus, ApparatusInputStr, ApparatusOutputStr);
+    SimplusGT.Modal.BodeDraw(ApparatusSelL12, AxisSel, GsysSS, ApparatusType, ApparatusBus, N_Bus, ApparatusInputStr, ApparatusOutputStr);
 end
 
 for modei=1:ModeSelNum
@@ -97,7 +98,7 @@ for modei = 1: length(ModeSel_DSS)
                 StateName = {'Line'};
             else %belong to apparatus
                 StateSel_ = StateSel;
-                for Di = 1:N_Apparatus
+                for Di = 1:NumApparatus
                     if StateSel_ <= length(ApparatusStateStr{Di})
                         StateName = {['Apparatus',num2str(Di)]};
                         break;
