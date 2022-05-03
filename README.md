@@ -1,10 +1,6 @@
 # SimplexPowerSystems (Version: v2021-APR-20)
 
-SimplexPowerSystems (SimplexPS, in short) is an open-source toolbox for dynamic analysis and simulation of power systems (large-scale, multi-machine, generator-converter-composite, AC or DC or hybrid AC-DC).
-
-The toolbox is based on Matlab/Simulink but is going to be extended to Python. To be continued.
-
-Copyright. 2019-2021 Simplex Co. Ltd.
+This is an old version of toolbox for obtaining the results of ``power-communication-isomorphism''.
 
 ## System Requirement
 
