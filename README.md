@@ -16,6 +16,6 @@ Manuals are in "Documentations" folder.
 
 ## Contact
 
-If you have any inquiries or would like to join us, please feel free to contact:
+If you have any inquiries, please feel free to contact:
 
-Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yg934@bath.ac.uk), and Yue Zhu (yue.zhu18@imperial.ac.uk).
+Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yg934@bath.ac.uk).
