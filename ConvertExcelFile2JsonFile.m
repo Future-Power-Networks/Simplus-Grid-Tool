@@ -37,8 +37,8 @@ cd(PathStr);                            % Change the current address
 % file = 'Examples\AcPowerSystem\SingleApparatusInfiniteBus\GfmInverterInfiniteBus.xlsx';
 % SimplusGT.Toolbox.Excel2Json(file);
 % 
-% file = 'Examples\AcPowerSystem\NET_NYPS_68Bus\NETS_NYPS_68Bus.xlsx';
-% SimplusGT.Toolbox.Excel2Json(file);
+file = 'Examples\AcPowerSystem\NET_NYPS_68Bus\NETS_NYPS_68Bus.xlsx';
+SimplusGT.Toolbox.Excel2Json(file);
 
 file = 'Examples\NETS_NYPS_68Bus_LowDamping.xlsx';
 SimplusGT.Toolbox.Excel2Json(file);

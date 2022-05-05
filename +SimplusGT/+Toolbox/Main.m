@@ -108,7 +108,7 @@ ListPowerFlow
 % Descriptor state space model
 % ==================================================
 
-EnableStateSpaceModel = 0;
+EnableStateSpaceModel = 1;
 if EnableStateSpaceModel
 
 % ### Get the model of lines
@@ -199,6 +199,7 @@ if isempty(find(real(EigenValueSys)>1e-6, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
+    UnstablePoles = EigenValueSys(find(real(EigenValueSys)>1e-6))
 end
 
 % ### Plot fundamentals
@@ -287,7 +288,7 @@ end
 fprintf('==================================\n')
 fprintf('Synchronization Analysis\n')
 fprintf('==================================\n')
-EnableSynchronisationAnalysis = 1;
+EnableSynchronisationAnalysis = 0;
 if EnableSynchronisationAnalysis
     SimplusGT.Synchron.MainSynchron();
 else
