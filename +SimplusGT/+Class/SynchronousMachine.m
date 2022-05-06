@@ -1,4 +1,6 @@
-% This class defines the model of synchronous machine
+% This class defines the model of synchronous machine. This model is
+% equivalent to a grid-forming inverter controlled as a virtual synchronous
+% geneator.
 
 % Author(s): Yitong Li, Yunjie Gu
 
@@ -112,6 +114,19 @@ classdef SynchronousMachine < SimplusGT.Class.ModelAdvance
             J = J*2/W0^2;   % Jpu=J/Pb=[1/2*J*w0^2/Pb]*2/w0^2, [MWs/MW] 
             D = D/W0^2;     % Dpu=dTpu/dw=dPpu/dw/w0=[dP%/dw%]/w0^2, [%/%]
             L = wL/W0;
+            
+%          	% =================================
+%             % Step change of damping for faster convergence of initial
+%             % states
+%             % =================================
+%             if (obj.Timer <= 2) && (obj.Timer >= 1e-3)
+%                 D_new = D*10;
+%                 T_m_new = T_m + D*W0 - D_new*W0;
+%                 
+%                 D = D_new;
+%                 T_m = T_m_new;
+%             end
+            
             
             % Notes:
             % Noting that w is not in per unit system here. So, J and D

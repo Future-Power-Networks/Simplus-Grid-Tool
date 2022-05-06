@@ -111,6 +111,8 @@ ListPowerFlow
 EnableStateSpaceModel = 1;
 if EnableStateSpaceModel
 
+if 0 
+    
 % ### Get the model of lines
 fprintf('Get the descriptor state space model of network lines...\n')
 
@@ -119,6 +121,8 @@ fprintf('Get the descriptor state space model of network lines...\n')
 %     YbusObj = SimplusGT.Toolbox.RemoveYbusDuplicateStates(YbusObj);
 % end
 ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,length(YbusDSS));
+
+end
 
 % ### Get the models of bus apparatuses
 fprintf('Get the descriptor state space model of bus apparatuses...\n')
@@ -138,6 +142,9 @@ for i = 1:NumApparatus
     x_e{i} = ApparatusEqui{i}{1};
     u_e{i} = ApparatusEqui{i}{2};
 end
+
+% Disable the small-signal analysis
+if 0 
 
 % ### Get the appended model of all apparatuses
 fprintf('Get the appended descriptor state space model of all apparatuses...\n')
@@ -195,11 +202,11 @@ EigenValueSys = diag(EigenValueSys);
 EigenValueSys = EigenValueSys(find(real(EigenValueSys) ~= inf));
 EigenValueSys = EigenValueSys/2/pi;
 fprintf('Check if the system is stable:\n')
-if isempty(find(real(EigenValueSys)>1e-6, 1))
+if isempty(find(real(EigenValueSys)>1e-9, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
-    UnstablePoles = EigenValueSys(find(real(EigenValueSys)>1e-6))
+    UnstablePoles = EigenValueSys(find(real(EigenValueSys)>1e-9))
 end
 
 % ### Plot fundamentals
@@ -258,6 +265,8 @@ if InputData.Advance.EnablePlotAdmittance
     SimplusGT.mtit('Admittance Spectrum');
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
+end
+
 end
 
 %
