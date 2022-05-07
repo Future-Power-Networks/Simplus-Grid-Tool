@@ -7,11 +7,11 @@ clc
 close all
 
 %% Select data
-% DataName = 'LocalMode_HighInertia';
+DataName = 'LocalMode_HighInertia';
 % DataName = 'LocalMode_MedInertia';
 % DataName = 'LocalMode_LowInertia';
 
-DataName = 'InterAreaMode_HighInertia';
+% DataName = 'InterAreaMode_HighInertia';
 % DataName = 'InterAreaMode_MedInertia';
 % DataName = 'InterAreaMode_LowInertia';
 
@@ -94,12 +94,12 @@ for i = 1:NumBus
         xlim([0,2.5]);
         % ylim([0.88,1.12]);      % Local mode: low, medieum
         % ylim([0.95,1.1]);     	% Inter-area mode: low, medieum
-        % ylim([0.95,1.2]);           % Local mode: high
+        ylim([0.95,1.2]);           % Local mode: high
         %                           % Inter-area mode: high
         ylabel('Frequency (pu)')
         subplot(3,1,2)
         plot(Time,dtheta{i}*180/pi,'LineWidth',LineWidth); hold on; grid on;
-        % ylim([-20,400]);        % Local mode: high
+        ylim([-20,400]);        % Local mode: high
         %                       % Inter mode: high
         % ylim([-10,120]);        % All modes: low, medieum
         xlim([0,2.5]);

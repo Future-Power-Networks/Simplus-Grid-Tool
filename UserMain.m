@@ -11,10 +11,10 @@ ConvertExcelFile2JsonFile();
 % InputData = SimplusGT.JsonDecoder('NETS_NYPS_68Bus.json');
 
 % InputData = SimplusGT.JsonDecoder('68Bus_HighInertia_InterAreaMode.json');
-InputData = SimplusGT.JsonDecoder('68Bus_MedInertia_InterAreaMode.json');
+% InputData = SimplusGT.JsonDecoder('68Bus_MedInertia_InterAreaMode.json');
 % InputData = SimplusGT.JsonDecoder('68Bus_LowInertia_InterAreaMode.json');
 
-% InputData = SimplusGT.JsonDecoder('68Bus_HighInertia_LocalMode.json');
+InputData = SimplusGT.JsonDecoder('68Bus_HighInertia_LocalMode.json');
 % InputData = SimplusGT.JsonDecoder('68Bus_MedInertia_LocalMode.json');
 % InputData = SimplusGT.JsonDecoder('68Bus_LowInertia_LocalMode.json');
 
