@@ -1,6 +1,6 @@
 ## Introduction
 
-This project contains materials for getting the simulation results in our publication "Rethinking Grid-Forming and Grid-Following Inverters: A Duality Theory". These codes are specially customized for the case study in the article, so do NOT create your own case upon these codes as they may generate unwanted results. If you hope to develop your own project based on our toolbox, please use the up-to-date version in the master branch [here](https://github.com/Future-Power-Networks/Simplus-Grid-Tool).
+This project contains materials for getting the results of the duality theory of inverters. These codes are specially customized for the case study in the article, so do NOT create your own case upon these codes as they may generate unwanted results. If you hope to develop your own project based on our toolbox, please use the up-to-date version in the master branch [here](https://github.com/Future-Power-Networks/Simplus-Grid-Tool).
 
 ## Notes for Single-Inverter and Two-Inverter Systems
 
