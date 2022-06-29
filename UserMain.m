@@ -1,6 +1,4 @@
 % Version of UserMain using json input
-%
-% Author(s) Rob Oldaker
 
 % Read me please:
 % Please read the comments in this file carefully, and use this file to run
@@ -41,7 +39,7 @@ UserData = 'UserData.json';
 % Other example power systems (in "Examples" folder):
 %
 % Pure ac power system examples:
-% UserData = 'SgInfiniteBus.json';              % Single synchronous generator and infinite bus
+UserData = 'SgInfiniteBus.json';              % Single synchronous generator and infinite bus
 % UserData = 'GflInverterInfiniteBus.json';   	% Single grid-following inverter and infinite bus
 % UserData = 'GfmInverterInfiniteBus.json';   	% Single grid-forming inverter and infinite bus
 % UserData = 'IEEE_14Bus.json';
