@@ -228,7 +228,7 @@ else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
-omega_p = logspace(-1,4,1e3)*2*pi;
+omega_p = logspace(-2,4,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
@@ -244,7 +244,8 @@ if InputData.Advance.EnablePlotAdmittance
         if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
            (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
            (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
-           	Yss{k}  = GsysSS(BusPort_i{k},BusPort_v{k});
+            % Yss{k} = GsysSS(BusPort_i{k},BusPort_v{k});
+           	Yss{k}  = minreal(GsysSS(BusPort_i{k},BusPort_v{k}));
             Ysym{k} = SimplusGT.ss2sym(Yss{k});
             SimplusGT.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
@@ -255,6 +256,9 @@ if InputData.Advance.EnablePlotAdmittance
     xlabel('Frequency (Hz)');
     ylabel('Magnitude (pu)');
     SimplusGT.mtit('Admittance Spectrum');
+    
+    save('Data/Yss','Yss');
+    save('Data/Ysym','Ysym');
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end

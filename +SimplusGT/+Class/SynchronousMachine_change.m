@@ -30,7 +30,7 @@ classdef SynchronousMachine < SimplusGT.Class.ModelAdvance
     methods(Static)
         
         function [State,Input,Output] = SignalList(obj)
-            State	 = {'i_d','i_q','w','theta'};            
+            State	 = {'i_ld','i_lq','i_ld_i','i_lq_i','v_od','v_oq','v_od_i','v_oq_i','i_od','i_oq','w','theta'};           
             Input	 = {'v_d','v_q','T_m','v_ex'};
             Output = {'i_d','i_q','w','i_ex','theta'};
         end
@@ -46,23 +46,23 @@ classdef SynchronousMachine < SimplusGT.Class.ModelAdvance
             % Get parameters
         	D  = obj.Para(2);
             wL = obj.Para(3);
-            R  = obj.Para(4);
+            Rf  = obj.Para(4);
             W0 = obj.Para(5);
             
             % Calculate paramters
             D = D/W0^2;
-            L = wL/W0;
+            Lf = wL/W0;
             
             % Calculate parameters
             i_D = P/V;
             i_Q = -Q/V;     % Use -Q because S = V*conj(I)
-            i_DQ = i_D + 1j*i_Q;
-            e_DQ = V - i_DQ * (R + 1j*L*w);
-            arg_e = angle(e_DQ);
-            abs_e = abs(e_DQ);
+            i_dq = i_D + 1j*i_Q;
+            e_dq = V - i_dq * (Rf + 1j*Lf*w);
+            arg_e = angle(e_dq);
+            abs_e = abs(e_dq);
             xi = xi + arg_e;
             v_dq = V * exp(-1j*arg_e);
-            i_dq = i_DQ * exp(-1j*arg_e);
+            i_dq = i_dq * exp(-1j*arg_e);
             v_d = real(v_dq);
             v_q = imag(v_dq);
             i_d = real(i_dq);
@@ -81,6 +81,9 @@ classdef SynchronousMachine < SimplusGT.Class.ModelAdvance
             obj.psi_f = psi_f;
             v_ex = 0;
             theta = xi;
+            
+          	i_ld_i = real(e_dq);
+            i_lq_i = imag(e_dq);
 
             % Get equilibrium
             x_e = [i_d; i_q; w; theta];

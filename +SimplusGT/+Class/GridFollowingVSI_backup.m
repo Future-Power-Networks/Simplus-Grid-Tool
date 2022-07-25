@@ -34,11 +34,9 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % states appear because PI controllers are used
             % correspondingly.
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
-                State = {'i_d','i_q','i_d_i','i_q_i','v_od','v_oq','i_od','i_oq','w_pll_i','w','theta','v_dc','v_dc_i'};
+                State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
             elseif obj.ApparatusType == 11
-                State = {'i_d','i_q','i_d_i','i_q_i','v_od','v_oq','i_od','i_oq','w_pll_i','w','theta'};
-            elseif obj.ApparatusType == 13
-                State = {'i_ld','i_lq','i_ld_i','i_lq_i','v_od','v_oq','i_od','i_oq','w_pll_i','w','theta'};
+                State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
             else
                 error('Error: Invalid ApparatusType.');
             end
@@ -82,22 +80,15 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             ang_r = 0;
             theta = xi;
             
-            v_od = v_d;
-            v_oq = v_q;
-            i_od = i_d;
-            i_oq = i_q;
-            
             % ??? Temp
             obj.i_q_r = i_q_r;
 
             % Get equilibrium
-            x_e_1 = [i_d; i_q; i_d_i; i_q_i; v_od; v_oq; i_od; i_oq; w_pll_i; w; theta];
+            x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                 x_e = [x_e_1; v_dc; v_dc_i];
             elseif obj.ApparatusType == 11
                 x_e = x_e_1;
-            elseif obj.ApparatusType == 13
-                x_e = [i_d; i_q; i_d_i; i_q_i; v_od; v_oq; i_od; i_oq; w_pll_i; w; theta];
             else
                 error('Error: Invalid ApparatusType.');
             end
@@ -150,31 +141,18 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % similarly.
             
             % Get states
-          	i_ld   	= x(1);
-         	i_lq   	= x(2);
-          	i_ld_i  = x(3);
-            i_lq_i 	= x(4);
-          	v_od = x(5);
-         	v_oq = x(6);
-         	i_od = x(7);
-          	i_oq = x(8);
+          	i_d   	= x(1);
+         	i_q   	= x(2);
+          	i_d_i  	= x(3);
+            i_q_i 	= x(4);
+            w_pll_i = x(5);
+            w       = x(6);
+            theta   = x(7);
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
-               	w_pll_i = x(9);
-                w       = x(10);
-                theta   = x(11);
-                v_dc  	= x(12);
-                v_dc_i 	= x(13);
+                v_dc  	= x(8);
+                v_dc_i 	= x(9);
             elseif obj.ApparatusType == 11
-                w_pll_i = x(9);
-                w       = x(10);
-                theta   = x(11);
                 v_dc    = v_dc_r;
-                v_dc_i  = 0;
-            elseif obj.ApparatusType == 13
-              	w_pll_i = x(9);
-                w       = x(10);
-                theta   = x(11);
-            	v_dc    = v_dc_r;
                 v_dc_i  = 0;
             else
                 error('Error: Invalid ApparatusType.');
@@ -189,23 +167,23 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % Saturation setting
             EnableSaturation = 0;
             
-%             % Frequency limit and saturation
-%             w_limit_H = W0*1.1;
-%             w_limit_L = W0*0.9;
-%             % Current reference limit
-%             i_d_limit = 1.5;
-%             i_q_limit = 1.5;
-%             % Ac voltage limit
-%             e_d_limit_H = 1.5;
-%             e_d_limit_L = -1.5;
-%             e_q_limit_H = 1.5;
-%             e_q_limit_L = -1.5;
+            % Frequency limit and saturation
+            w_limit_H = W0*1.1;
+            w_limit_L = W0*0.9;
+            % Current reference limit
+            i_d_limit = 1.5;
+            i_q_limit = 1.5;
+            % Ac voltage limit
+            e_d_limit_H = 1.5;
+            e_d_limit_L = -1.5;
+            e_q_limit_H = 1.5;
+            e_q_limit_L = -1.5;
             
             % Get current reference
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                 % DC-link control
                 i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
-            elseif (obj.ApparatusType == 11) || (obj.ApparatusType == 13)
+            elseif obj.ApparatusType == 11
                 % % Active power control                                           
                 i_d_r = P0/V0;
             else
@@ -214,13 +192,13 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
             i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
 
-%             % Current saturation
-%             if EnableSaturation
-%                 i_d_r = min(i_d_r,i_d_limit);
-%                 i_d_r = max(i_d_r,-i_d_limit);
-%                 i_q_r = min(i_q_r,i_q_limit);
-%                 i_q_r = max(i_q_r,-i_q_limit);
-%             end
+            % Current saturation
+            if EnableSaturation
+                i_d_r = min(i_d_r,i_d_limit);
+                i_d_r = max(i_d_r,-i_d_limit);
+                i_q_r = min(i_q_r,i_q_limit);
+                i_q_r = max(i_q_r,-i_q_limit);
+            end
 
             % PLL angle measurement
             % Notes:
@@ -231,9 +209,6 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                     e_ang = atan2(v_q,v_d) - ang_r;
                 case 2                                  % vq-PLL
                     e_ang = v_q - ang_r;
-                    if obj.ApparatusType == 13
-                        e_ang = v_oq - ang_r;
-                    end
                 case 3                                  % Q-PLL
                     S = (v_d+1i*v_q)*conj(i_d_r+1i*i_q_r);
                     Q = imag(S);
@@ -241,7 +216,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                     % S should be calculated by removing the effects of
                     % both PIi and Lf. Hence, we use i_dq_r here based on
                     % the impedance circuit model.
-                    if i_ld<=0
+                    if i_d<=0
                         e_ang = - (Q-Q0) - ang_r;
                     else
                         e_ang = (Q-Q0) - ang_r;
@@ -269,12 +244,12 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
 
             % PLL Integral controller 
             dw_pll_i = e_ang*ki_pll;                          
-%             % Anti wind-up for PLL control 
-%             if EnableSaturation
-%                  if (w_pll_i >= w_limit_H && dw_pll_i >=0 )|| (w_pll_i <= w_limit_L && dw_pll_i <=0 )
-%                       dw_pll_i = 0;
-%                  end
-%             end 
+            % Anti wind-up for PLL control 
+            if EnableSaturation
+                 if (w_pll_i >= w_limit_H && dw_pll_i >=0 )|| (w_pll_i <= w_limit_L && dw_pll_i <=0 )
+                      dw_pll_i = 0;
+                 end
+            end 
             
             
             if 1                                                                          
@@ -282,12 +257,12 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 % Notes:
                 % This introduces an additional state w.
                 
-%                 % Limitation for w
-%                 if EnableSaturation
-%                      if (w >= w_limit_H && dw >=0 ) || (w <= w_limit_L && dw <= 0 )
-%                         dw = 0;                  %PLL Integral controller
-%                      end
-%                 end 
+                % Limitation for w
+                if EnableSaturation
+                     if (w >= w_limit_H && dw >=0 ) || (w <= w_limit_L && dw <= 0 )
+                        dw = 0;                  %PLL Integral controller
+                     end
+                end 
             else
                 dw = 0;                                         % No LPF
                 w = w_pll_i + e_ang*kp_pll;
@@ -304,18 +279,26 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % Ac current control
             if 1                                                                        
                 % dq-frame PI
-                di_ld_i = -(i_d_r - i_ld)*ki_i_dq;
-                di_lq_i = -(i_q_r - i_lq)*ki_i_dq;
+                di_d_i = -(i_d_r - i_d)*ki_i_dq;
+                di_q_i = -(i_q_r - i_q)*ki_i_dq;
+            else
+                % alpha/beta-frame PR control
+                i_dq_r = i_d_r + 1i*i_q_r;
+                i_dq = i_d + 1i*i_q;
+                i_dq_i = i_d_i + 1i*i_q_i;
+                di_dq_i = -(i_dq_r-i_dq)*ki_i_dq - 1i*w*i_dq_i + 1i*W0*i_dq_i;
+                di_d_i = real(di_dq_i);
+                di_q_i = imag(di_dq_i);
             end
-%             % Current controller anti-windup
-%             if EnableSaturation
-%                  if (i_ld_i >= e_d_limit_H && di_ld_i >=0 ) || (i_ld_i <= e_d_limit_L && di_ld_i <= 0)
-%                     di_ld_i = 0;                  
-%                  end
-%                  if (i_lq_i >= e_q_limit_H && di_lq_i >= 0 ) || (i_lq_i <= e_q_limit_L && di_lq_i <= 0)
-%                     di_lq_i = 0;                  
-%                  end                    
-%             end
+            % Current controller anti-windup
+            if EnableSaturation
+                 if (i_d_i >= e_d_limit_H && di_d_i >=0 ) || (i_d_i <= e_d_limit_L && di_d_i <= 0)
+                    di_d_i = 0;                  
+                 end
+                 if (i_q_i >= e_q_limit_H && di_q_i >= 0 ) || (i_q_i <= e_q_limit_L && di_q_i <= 0)
+                    di_q_i = 0;                  
+                 end                    
+            end
             
             % Notes:
             % For dq-frame PI controller,
@@ -325,74 +308,57 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % where w0 is the resonant frequency.
 
             % Ac voltage (duty cycle*v_dc)
-            e_d = -(i_d_r - i_ld)*kp_i_dq + i_ld_i;
-            e_q = -(i_q_r - i_lq)*kp_i_dq + i_lq_i;
+            e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i;
+            e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i;
 
-%             % Ac voltage (duty cycle) saturation
-%             if EnableSaturation
-%                 e_d = min(e_d,e_d_limit_H);
-%                 e_d = max(e_d,e_d_limit_L);
-%                 e_q = min(e_q,e_q_limit_H);
-%                 e_q = max(e_q,e_q_limit_L);
-%             end
+            % Ac voltage (duty cycle) saturation
+            if EnableSaturation
+                e_d = min(e_d,e_d_limit_H);
+                e_d = max(e_d,e_d_limit_L);
+                e_q = min(e_q,e_q_limit_H);
+                e_q = max(e_q,e_q_limit_L);
+            end
             
             % Dc link control
           	if obj.ApparatusType == 10
-                dv_dc = (e_d*i_ld + e_q*i_lq - P_dc)/v_dc/C_dc;       % C_dc
+                dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc;       % C_dc
                 dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
-%                 if EnableSaturation
-%                     % Anti wind-up for vdc control
-%                     if (v_dc_i >= i_d_limit && dv_dc_i >= 0 )|| (v_dc_i <= -i_d_limit && dv_dc_i <= 0 )
-%                         dv_dc_i = 0;  
-%                     end
-%                 end         
+                if EnableSaturation
+                    % Anti wind-up for vdc control
+                    if (v_dc_i >= i_d_limit && dv_dc_i >= 0 )|| (v_dc_i <= -i_d_limit && dv_dc_i <= 0 )
+                        dv_dc_i = 0;  
+                    end
+                end         
             elseif obj.ApparatusType == 12
                 i_dc = P_dc/v_dc_r;
-                dv_dc = ((e_d*i_ld + e_q*i_lq)/v_dc - i_dc)/C_dc; 	% C_dc
+                dv_dc = ((e_d*i_d + e_q*i_q)/v_dc - i_dc)/C_dc; 	% C_dc
                 dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
-%                 if EnableSaturation
-%                     % Anti wind-up for vdc control
-%                     if (v_dc_i >= i_d_limit && dv_dc_i >= 0 )|| (v_dc_i <= -i_d_limit && dv_dc_i <= 0 )
-%                         dv_dc_i = 0;
-%                     end
-%                 end   
-            elseif (obj.ApparatusType == 11) || (obj.ApparatusType == 13)
+                if EnableSaturation
+                    % Anti wind-up for vdc control
+                    if (v_dc_i >= i_d_limit && dv_dc_i >= 0 )|| (v_dc_i <= -i_d_limit && dv_dc_i <= 0 )
+                        dv_dc_i = 0;
+                    end
+                end   
+            elseif obj.ApparatusType == 11
                 % No dc link control
             else
                 error('Invalid ApparatusType.');
             end
             
             % Ac filter inductor
-          	di_ld = (v_od - R*i_ld + w*Lf*i_lq - e_d)/Lf;
-            di_lq = (v_oq - R*i_lq - w*Lf*i_ld - e_q)/Lf;
-            
-            % Cf equation
-        	% -(i_ld - i_od) = Cf*dv_cd/dt - w*Cf*v_cq
-         	% -(i_lq - i_oq) = Cf*dv_cq/dt + w*Cf*v_cd
-            Cf = 0.02/W0;
-            dv_od = (-(i_ld - i_od) + w*Cf*v_oq)/Cf;
-            dv_oq = (-(i_lq - i_oq) - w*Cf*v_od)/Cf;
-
-         	% Lc equation
-         	% v_od - v_d = -(Lc*di_od/dt + Rc*i_od - w*Lc*i_oq)
-        	% v_oq - v_q = -(Lc*di_oq/dt + Rc*i_oq + w*Lc*i_od)
-            Lc = 0.01/W0;
-            Rc = 0.01/10;
-         	di_od = (v_d - v_od - Rc*i_od + w*Lc*i_oq)/Lc;
-         	di_oq = (v_q - v_oq - Rc*i_oq - w*Lc*i_od)/Lc;
+          	di_d = (v_d - R*i_d + w*Lf*i_q - e_d)/Lf;
+            di_q = (v_q - R*i_q - w*Lf*i_d - e_q)/Lf;
             
             % State space equations
             % dx/dt = f(x,u)
             % y     = g(x,u)
             if CallFlag == 1    
             % ### Call state equation: dx/dt = f(x,u)
-                f_xu_1 = [di_ld; di_lq; di_ld_i; di_lq_i; dv_od; dv_oq; di_od; di_oq; dw_pll_i; dw; dtheta];
+                f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
                 if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
                 elseif obj.ApparatusType == 11
                     f_xu = f_xu_1;
-                elseif obj.ApparatusType == 13
-                    f_xu = [di_ld; di_lq; di_ld_i; di_lq_i; dv_od; dv_oq; di_od; di_oq; dw_pll_i; dw; dtheta];
                 else
                     error('Invalid ApparatusType.');
                 end
@@ -400,7 +366,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 
             elseif CallFlag == 2
           	% ### Call output equation: y = g(x,u)
-                g_xu = [i_od; i_oq; w; v_dc; theta];
+                g_xu = [i_d; i_q; w; v_dc; theta];
                 Output = g_xu;
             end
         end

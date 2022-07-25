@@ -44,6 +44,7 @@ fprintf('Installing...\n')
 addpath(genpath([RootPath,'/Examples']));         	% Add "Examples" folder
 addpath(genpath([RootPath,'/Library']));          	% Add "Library" folder
 addpath(genpath([RootPath,'/Documentations']));   	% Add "Documentations" folder
+addpath(genpath([RootPath,'/Data']));
 addpath(genpath(RootPath));                         % Add root path
 savepath;
 
