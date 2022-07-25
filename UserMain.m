@@ -31,15 +31,15 @@ close all;  % Close all figures, etc
 % ".xlsx" is the excel file, and ".json" is the corresponding json
 % file. Users can easily convert an Excel file to a json file by calling
 % this function: 
-% ConvertExcelFile2JsonFile();
+ConvertExcelFile2JsonFile();
 
-UserData = 'UserData.json';
+% UserData = 'UserData.json';
 
 %%
 % Other example power systems (in "Examples" folder):
 %
 % Pure ac power system examples:
-UserData = 'SgInfiniteBus.json';              % Single synchronous generator and infinite bus
+% UserData = 'SgInfiniteBus.json';              % Single synchronous generator and infinite bus
 % UserData = 'GflInverterInfiniteBus.json';   	% Single grid-following inverter and infinite bus
 % UserData = 'GfmInverterInfiniteBus.json';   	% Single grid-forming inverter and infinite bus
 % UserData = 'IEEE_14Bus.json';

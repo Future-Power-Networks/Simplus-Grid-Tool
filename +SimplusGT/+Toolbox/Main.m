@@ -228,7 +228,7 @@ else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
-omega_p = logspace(-1,4,1e3)*2*pi;
+omega_p = logspace(-2,4,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
@@ -245,7 +245,7 @@ if InputData.Advance.EnablePlotAdmittance
            (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
            (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
            	Yss{k}  = GsysSS(BusPort_i{k},BusPort_v{k});
-            Ysym{k} = SimplusGT.ss2sym(Yss{k});
+            Ysym{k} = SimplusGT.ss2sym(minreal(Yss{k}));
             SimplusGT.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)];

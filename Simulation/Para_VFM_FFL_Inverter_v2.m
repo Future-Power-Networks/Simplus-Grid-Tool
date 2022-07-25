@@ -6,7 +6,7 @@ close all
 clc
 
 %% Fundamental parameters
-Fs = 10;             % (kHz)
+Fs = 20;             % (kHz)
 Fs = Fs*1e3;
 Ts = 1/Fs;
 
@@ -68,3 +68,8 @@ Rline = Xline/5;
 % Update Cdc and Rdc by referring to LPF
 Cdc = Wbase/(vdc_ref^2)/(m*Wbase*w_droop)
 Rdc = w_droop/Wbase*vdc_ref^2
+
+%% Test
+Xline = Xline
+Rline = Rline
+Rdc = Rdc/2
