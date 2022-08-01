@@ -1,57 +1,40 @@
 % Make Json copies of existing spreadsheet config files.
 %
-% Author(s): Rob Oldaker, Yitong Li
+% Author(s): Rob Oldaker
+%
+% Modified by Yitong Li 
+% The script is changed to a function, which can automatically find the
+% file path.
 
-%%
-% Clear
-clear all
-clc
-close all
+function ConvertExcelFile2JsonFile(FileName)
 
 %%
 % Change the matlab path to the file path
-PathStr = mfilename('fullpath');        % Get the path of this file
-[PathStr,~,~]  = fileparts(PathStr);
-cd(PathStr);                            % Change the current address
+RootPath = mfilename('fullpath');        % Get the path of this file
+[RootPath,~,~]  = fileparts(RootPath);
+cd(RootPath);                            % Change the current address
+
+%%
+FilePath = fileparts(which(FileName));
+
+% Check if the file name is proper
+if isempty(FilePath)
+    error(['User excel data could not be found. Please double check if the data name and type are correct (".xls", ".xlsm", ".xlsx", etc) or if the data path is added.'])
+end
+
+% Get the folder name of the excel file
+FolderName = erase(FilePath,RootPath);
+
+% Get the full name of the excel file
+FileFullName = [FolderName,'\',FileName];
+
+% Remove '\' at the begining of the file name if needed.
+if strcmp(FileFullName(1),'\')
+    FileFullName = FileFullName(2:end);
+end
 
 %%
 % Convert excel file to json file
-file = 'UserData.xlsm';
-SimplusGT.Toolbox.Excel2Json(file);
+SimplusGT.Toolbox.Excel2Json(FileFullName);
 
-file = 'Examples\HybridPowerSystem\Hybrid_test_v1.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\HybridPowerSystem\Hybrid_test_v2.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\DcPowerSystem\SingleMachineInfiniteBus\GfdBuckInfiniteBus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\AcPowerSystem\SingleApparatusInfiniteBus\SgInfiniteBus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\AcPowerSystem\SingleApparatusInfiniteBus\GflInverterInfiniteBus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\AcPowerSystem\SingleApparatusInfiniteBus\GfmInverterInfiniteBus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\AcPowerSystem\NET_NYPS_68Bus\NETS_NYPS_68Bus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\AcPowerSystem\IEEE_57Bus\IEEE_57Bus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\AcPowerSystem\IEEE_30Bus\IEEE_30Bus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-file = 'Examples\AcPowerSystem\IEEE_14Bus\IEEE_14Bus.xlsx';
-SimplusGT.Toolbox.Excel2Json(file);
-
-% file = 'Examples\TestSynchronisation\Test_68Bus_IBR.xlsx';
-% SimplusGT.Toolbox.Excel2Json(file);
-% file = 'Examples\TestSynchronisation\Test_68Bus_IBR_17.xlsx';
-% SimplusGT.Toolbox.Excel2Json(file);
-% file = 'Examples\TestSynchronisation\Test_68Bus_IBR_17_14.xlsx';
-% SimplusGT.Toolbox.Excel2Json(file);
+end

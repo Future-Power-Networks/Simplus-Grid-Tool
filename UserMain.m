@@ -31,9 +31,10 @@ close all;  % Close all figures, etc
 % ".xlsx" is the excel file, and ".json" is the corresponding json
 % file. Users can easily convert an Excel file to a json file by calling
 % this function: 
-ConvertExcelFile2JsonFile();
+ConvertExcelFile2JsonFile('VfmFflInverterInfiniteBus.xlsx');
+UserData = 'VfmFflInverterInfiniteBus.json';
 
-% UserData = 'UserData.json';
+stop
 
 %%
 % Other example power systems (in "Examples" folder):

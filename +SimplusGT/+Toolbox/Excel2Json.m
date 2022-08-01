@@ -57,8 +57,8 @@ function Excel2Json(file)
     end
    
     disp(Data);
-    jsonFile = replace(file,'.xlsx','.json');
-    jsonFile = replace(jsonFile,'.xlsm','.json');
+    jsonFile = replace(file,'.xlsx','.json');       % For xlsx case
+    jsonFile = replace(jsonFile,'.xlsm','.json');   % For xlsm case
     if ~strcmp(jsonFile,file)
         SimplusGT.SaveAsJsonToFile(Data,jsonFile);
         fprintf('Successfully converted file: %s\n',file);
