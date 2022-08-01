@@ -244,7 +244,7 @@ if InputData.Advance.EnablePlotAdmittance
         if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
            (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
            (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
-           	Yss{k}  = GsysSS(BusPort_i{k},BusPort_v{k});
+           	Yss{k}  = minreal(GsysSS(BusPort_i{k},BusPort_v{k}));
             Ysym{k} = SimplusGT.ss2sym(Yss{k});
             SimplusGT.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
@@ -255,6 +255,8 @@ if InputData.Advance.EnablePlotAdmittance
     xlabel('Frequency (Hz)');
     ylabel('Magnitude (pu)');
     SimplusGT.mtit('Admittance Spectrum');
+    
+    save('Results\Yss','Yss');
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
