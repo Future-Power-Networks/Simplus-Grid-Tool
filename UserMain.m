@@ -28,7 +28,7 @@ close all;  % Close all figures, etc
 % ".xlsm" or ".xlsx" is the excel file, and ".json" is the corresponding json
 % file. Users can easily convert an Excel file to a json file by calling
 % this function: 
-ConvertExcelFile2JsonFile('UserData.xlsm');
+SimplusGT.Toolbox.ConvertExcelFile2JsonFile('UserData.xlsm');
 UserData = 'UserData.json';
 
 %%

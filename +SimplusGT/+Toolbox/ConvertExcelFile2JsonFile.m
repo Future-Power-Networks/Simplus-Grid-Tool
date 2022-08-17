@@ -12,6 +12,8 @@ function ConvertExcelFile2JsonFile(FileName)
 % Change the matlab path to the file path
 RootPath = mfilename('fullpath');        % Get the path of this file
 [RootPath,~,~]  = fileparts(RootPath);
+[RootPath,~,~]  = fileparts(RootPath);
+[RootPath,~,~]  = fileparts(RootPath);
 cd(RootPath);                            % Change the current address
 
 %%
