@@ -132,8 +132,8 @@ else
     if (max(max(abs(Bd))) < toler) && (max(max(abs(Dd))) < toler)
         Gss = ss(A_,B_,C_,D_);
     else
-        % for Yitong !!!???
         % note this is in struct not in ss form
+        error(['Error: The system is improper.']);
         Gss.A = A_;
         Gss.B = B_;
         Gss.C = C_;

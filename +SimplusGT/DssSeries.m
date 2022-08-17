@@ -28,11 +28,11 @@
 %%
 function Gdss = DssSeries(Gdss1,Gdss2)
 
-    if (~is_dss(Gdss1)) || (~is_dss(Gdss2))
+    if (~SimplusGT.is_dss(Gdss1)) || (~SimplusGT.is_dss(Gdss2))
         error(['Error: System 1 and/or 2 is not in dss form.']);
     end
-    [lx1,lu1,ly1] = dss_GetDim(Gdss1);
-    [lx2,lu2,ly2] = dss_GetDim(Gdss2);
+    [lx1,lu1,ly1] = SimplusGT.DssGetDim(Gdss1);
+    [lx2,lu2,ly2] = SimplusGT.DssGetDim(Gdss2);
     
     if ly1 ~= lu2
         error(['Error: The output dimention of system 1 does not equal to the the input dimension of system 2.']);
@@ -41,10 +41,10 @@ function Gdss = DssSeries(Gdss1,Gdss2)
     E1 = Gdss1.E;
     E2 = Gdss2.E;
     
-    Gss1 = dss2ss(Gdss1);
-    Gss2 = dss2ss(Gdss2);
+    Gdss1NoE = ss(Gdss1.A,Gdss1.B,Gdss1.C,Gdss1.D);
+    Gdss2NoE = ss(Gdss1.A,Gdss1.B,Gdss1.C,Gdss1.D);
     
-    Gss = series(Gss1,Gss2);
+    Gss = series(Gdss1NoE,Gdss2NoE);
     Gdss = Gss;
     Gdss.E = blkdiag(E2,E1);
     
