@@ -44,8 +44,8 @@ close all
 %
 % Pure ac power system examples:
 % UserData = 'SgInfiniteBus.json';              % Single synchronous generator and infinite bus
-UserData = 'GflInverterInfiniteBus.json';   	% Single grid-following inverter and infinite bus
-% UserData = 'GfmInverterInfiniteBus.json';   	% Single grid-forming inverter and infinite bus
+% UserData = 'GflInverterInfiniteBus.json';   	% Single grid-following inverter and infinite bus
+UserData = 'GfmInverterInfiniteBus.json';   	% Single grid-forming inverter and infinite bus
 % UserData = 'IEEE_14Bus.json';
 % UserData = 'IEEE_30Bus.json';
 % UserData = 'IEEE_57Bus.json';

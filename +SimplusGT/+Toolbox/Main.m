@@ -228,7 +228,7 @@ else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
-omega_p = logspace(-1,4,1e3)*2*pi;
+omega_p = logspace(-10,4,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
 % Plot admittance
@@ -247,6 +247,31 @@ if InputData.Advance.EnablePlotAdmittance
            	Yss{k}  = minreal(GsysSS(BusPort_i{k},BusPort_v{k}));
             Ysym{k} = SimplusGT.ss2sym(Yss{k});
             SimplusGT.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
+            CountLegend = CountLegend + 1;
+            VecLegend{CountLegend} = ['Bus',num2str(k)];
+        end
+    end
+    legend(VecLegend);
+    xlabel('Frequency (Hz)');
+    ylabel('Magnitude (pu)');
+    SimplusGT.mtit('Admittance Spectrum');
+    
+   fprintf('Plot complex admittance spectrum...')
+  	FigN = FigN+1;
+ 	figure(FigN);
+    CountLegend = 0;
+    VecLegend = {};
+    T = [1,1i;1,-1i];
+    for k = 1:N_Bus
+        [k1,k2] = SimplusGT.CellFind(ApparatusBus,k);
+        % Plot the active bus admittance only
+        if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
+           (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
+           (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
+           	Yss{k}  = minreal(GsysSS(BusPort_i{k},BusPort_v{k}));
+            Yss_pn{k} = T*Yss{k}*inv(T);
+            Ysym_pn{k} = SimplusGT.ss2sym(Yss_pn{k});
+            SimplusGT.bode_c(Ysym_pn{k}(1,1),1j*omega_pn,'PhaseOn',0); 
             CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)];
         end
