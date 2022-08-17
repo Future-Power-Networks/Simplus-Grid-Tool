@@ -1,8 +1,3 @@
-% Version of UserMain using json input
-%
-% Author(s) Rob Oldaker
-
-% Read me please:
 % Please read the comments in this file carefully, and use this file to run
 % toolbox.
 
@@ -30,10 +25,10 @@ close all;  % Close all figures, etc
 % generator-inverter-composite power system. Please feel free to change
 % them. 
 % 
-% ".xlsx" is the excel file, and ".json" is the corresponding json
+% ".xlsm" or ".xlsx" is the excel file, and ".json" is the corresponding json
 % file. Users can easily convert an Excel file to a json file by calling
 % this function: 
-% ConvertExcelFile2JsonFile();
+% ConvertExcelFile2JsonFile('UserData.xlsm');
 
 UserData = 'UserData.json';
 
@@ -58,35 +53,3 @@ UserData = 'UserData.json';
 %% Run toolbox
 InputData = SimplusGT.JsonDecoder(UserData);
 SimplusGT.Toolbox.Main();
-
-%% Results available to users (saved in Workspace)
-% GsysDSS;          % Whole-system port model (descriptor state space
-                    % form). Notes: The elements of state, input, and
-                    % output vectors are printed in the command window.
-                    %
-                    % A quick introduction of DSS modeling method:
-                    % https://uk.mathworks.com/help/simulink/slref/descriptorstatespace.html
-                    
-% GsysSS;           % Whole-system port model (state space form).
-                    % Notes: This model is the minimum realization of
-                    % GsysDSS, which keeps the same input and output as
-                    % GsysDSS, but reduces the order of state.
-
-% YsysDSS;          % Whole-system admittance model (descriptor state space
-                    % form). Notes: This model is derived from GsysDSS by
-                    % selecting the voltage and current ports only and
-                    % removing other input and output ports.
-                    
-% ListPowerFlow;    % Power flow
-                    % Notes: The result is in the form of
-                    % | bus | P | Q | V | angle | omega |
-                    % P and Q are in load convention, i.e., the P and Q
-                    % flowing from each bus to the active apparatus connected.
-
-% ListPowerFlow_;   % Power flow result for active apparatus only by combing 
-                    % the PQ load into the nodal admittance matrix.
-                    
-% pole_sys;         % Whole-system poles, or equivalently eigenvalues.
-
-% mymodel_v1;       % This is the simulink model generated automatically 
-                    % based on the user data.

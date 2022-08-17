@@ -1,6 +1,16 @@
 % This function converts an excel file to json file.
+%
+% Author(s): Rob Oldaker
+%
+% Modified by Yitong:
+% More comments are added.
 
 function Excel2Json(file)
+
+    fprintf('==================================\n')
+    fprintf('Start to convert "excel" to "json" \n')
+    fprintf('==================================\n')
+    fprintf('\n')
 
     %
     % Use a struct to hold the data
@@ -57,11 +67,12 @@ function Excel2Json(file)
     end
    
     disp(Data);
-    jsonFile = replace(file,'.xlsx','.json');
-    jsonFile = replace(jsonFile,'.xlsm','.json');
+    jsonFile = replace(file,'.xlsx','.json');       % For xlsx case
+    jsonFile = replace(jsonFile,'.xlsm','.json');   % For xlsm case
     if ~strcmp(jsonFile,file)
         SimplusGT.SaveAsJsonToFile(Data,jsonFile);
         fprintf('Successfully converted file: %s\n',file);
+        fprintf('\n');
     end
 
 end
