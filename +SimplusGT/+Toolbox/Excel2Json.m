@@ -8,7 +8,7 @@
 function Excel2Json(file)
 
     fprintf('==================================\n')
-    fprintf('Start to convert "excel" to "json" \n')
+    fprintf('Convert "excel" to "json" \n')
     fprintf('==================================\n')
     fprintf('\n')
 

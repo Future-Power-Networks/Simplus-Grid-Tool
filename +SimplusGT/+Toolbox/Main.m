@@ -159,15 +159,9 @@ if isproper(GsysDSS)
     fprintf('Calculate the minimum realization of the system model for later use...\n')
     % GminSS = minreal(GsysDSS);
     GsysSS = SimplusGT.dss2ss(GsysDSS);
-    % This "minreal" function only changes the element sequence of state
-    % vectors, but does not change the element sequence of input and output
-    % vectors.
     InverseOn = 0;
 else
-    error('Error: System is improper, which has more zeros than poles.')
-end
-if SimplusGT.is_dss(GsysSS)
-    error(['Error: Minimum realization is in descriptor state space (dss) form.']);
+    error('Error: GsysDSS is improper, which has more zeros than poles.')
 end
 
 % ### Print
@@ -228,16 +222,18 @@ else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
 
-omega_p = logspace(-1,4,1e3)*2*pi;
-omega_pn = [-flip(omega_p),omega_p];
+OmegaP = logspace(-1,4,1e3)*2*pi;
+OmegaPN = [-flip(OmegaP),OmegaP];
 
 % Plot admittance
 if InputData.Advance.EnablePlotAdmittance
     fprintf('Plot admittance spectrum...')
   	FigN = FigN+1;
- 	figure(FigN);
+ 	
     CountLegend = 0;
     VecLegend = {};
+    T = [1,1i;
+         1,-1i];
     for k = 1:N_Bus
         [k1,k2] = SimplusGT.CellFind(ApparatusBus,k);
         % Plot the active bus admittance only
@@ -246,15 +242,22 @@ if InputData.Advance.EnablePlotAdmittance
            (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
            	Yss{k}  = GsysSS(BusPort_i{k},BusPort_v{k});
             Ysym{k} = SimplusGT.ss2sym(Yss{k});
-            SimplusGT.bode_c(Ysym{k}(1,1),1j*omega_p,'PhaseOn',0); 
+            YssPN{k} = T*Yss{k}*T^(-1);
+            YsymPN{k} = SimplusGT.ss2sym(YssPN{k});
+            figure(FigN);
+            SimplusGT.bode_c(Ysym{k}(1,1),1j*OmegaP,'PhaseOn',1); 
+            figure(FigN+1);
+            SimplusGT.bode_c(YsymPN{k}(1,1),1j*OmegaPN,'PhaseOn',1); 
             CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)];
         end
     end
+ 	figure(FigN)
+  	SimplusGT.mtit('Y_{dd}');
     legend(VecLegend);
-    xlabel('Frequency (Hz)');
-    ylabel('Magnitude (pu)');
-    SimplusGT.mtit('Admittance Spectrum');
+  	figure(FigN+1)
+  	SimplusGT.mtit('Y_{dq+}');
+    legend(VecLegend);
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
