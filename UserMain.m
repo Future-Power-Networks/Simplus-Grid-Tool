@@ -9,9 +9,6 @@
 % Please ensure that the toolbox is installed first, by running
 % "InstallSimplusGT.m" once.
 %
-% The toolbox defaultly saves the results into Workspace, prints the key
-% results in Command Window, and plots key figures.
-%
 % For changing default user data, please use "UserData.xlsx". More examples
 % can be found in "Examples" folder.
 

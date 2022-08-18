@@ -1,3 +1,8 @@
+% Author(s): Yue Zhu
+
+% Modified by Yitong:
+% Debug the imag figure title.
+
 function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Bus,ApparatusType,modei,ApparatusSel,FreqSel,ModeSel)
 
 for k = 1:N_Bus
@@ -65,7 +70,7 @@ set(gca,'YLim',[-1,1])
 set(gca,'YTick',-1:0.5:1);
 b.FaceColor = 'flat';
 b.CData = [1,0.5,0];
-title ('Impedance Participation Level-2 Real (Normalized to 1)');
+title ('Impedance Participation Level-2 Imag (Normalized to 1)');
 % for i=1:Count
 %     text(i-0.4,Layer2.imag(i),num2str(Layer2.imag(i)));
 % end
