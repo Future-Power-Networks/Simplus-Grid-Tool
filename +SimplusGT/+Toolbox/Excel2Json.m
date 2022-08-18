@@ -2,16 +2,30 @@
 %
 % Author(s): Rob Oldaker
 %
-% Modified by Yitong:
-% More comments are added.
+% Modified by Yitong Li:
+% # More comments are added.
+% # The data operation of apparatuses is improved.
+% # Partial address is added into file name.
 
-function Excel2Json(file)
+function Excel2Json(FileName)
 
-    fprintf('==================================\n')
-    fprintf('Convert "excel" to "json" \n')
-    fprintf('==================================\n')
-    fprintf('\n')
+    fprintf('Convert "excel" to "json". \n')
 
+    %
+    % Get file name
+    %
+    RootPath = mfilename('fullpath');
+    [RootPath,~,~]  = fileparts(RootPath);
+    [RootPath,~,~]  = fileparts(RootPath);
+    [RootPath,~,~]  = fileparts(RootPath);
+    FilePath = fileparts(which(FileName));
+    FolderName = erase(FilePath,RootPath);
+    ExcelFile = [FolderName,'\',FileName];
+    if strcmp(ExcelFile(1),'\')
+        ExcelFile = ExcelFile(2:end);
+    end
+    
+    
     %
     % Use a struct to hold the data
     %
@@ -20,19 +34,19 @@ function Excel2Json(file)
     %
     % Basic settings
     %
-    ExcelBasic = xlsread(file,'Basic');
+    ExcelBasic = xlsread(ExcelFile,'Basic');
     Data.Basic = toBasic(ExcelBasic);
 
     %
     % Advanced settings
     %
-    ExcelAdvance = xlsread(file,'Advance');
+    ExcelAdvance = xlsread(ExcelFile,'Advance');
     Data.Advance = toAdv(ExcelAdvance);
 
     %
     % Buses
     %
-    ExcelBus = xlsread(file,'Bus');
+    ExcelBus = xlsread(ExcelFile,'Bus');
     Data.Bus=[];
     for i = 1:size(ExcelBus,1)
         Data.Bus = [Data.Bus toBus(ExcelBus(i,:))];
@@ -41,7 +55,7 @@ function Excel2Json(file)
     %
     % Network lines
     %
-    ExcelNetworkLine = xlsread(file,'NetworkLine');
+    ExcelNetworkLine = xlsread(ExcelFile,'NetworkLine');
     Data.NetworkLine=[];
     for i = 1:size(ExcelNetworkLine,1)
         Data.NetworkLine = [Data.NetworkLine toNetworkLine(ExcelNetworkLine(i,:))];
@@ -50,7 +64,7 @@ function Excel2Json(file)
     %
     % Network lines (IEEE)
     %
-    ExcelNetworkLineIEEE = xlsread(file,'NetworkLine_IEEE');
+    ExcelNetworkLineIEEE = xlsread(ExcelFile,'NetworkLine_IEEE');
     Data.NetworkLineIEEE=[];
     for i = 4:size(ExcelNetworkLineIEEE,1)
         Data.NetworkLineIEEE = [Data.NetworkLineIEEE toNetworkLineIEEE(ExcelNetworkLineIEEE(i,:))];
@@ -60,19 +74,18 @@ function Excel2Json(file)
     % Apparatus
     %
     Wbase = Data.Basic.Fbase*2*pi;     % (rad/s), base angular frequency
-    [ApparatusBus,ApparatusType,Para,NumApparatus] = SimplusGT.Toolbox.RearrangeListApparatus(file,Wbase,ExcelBus);
+    [ApparatusBus,ApparatusType,Para,NumApparatus] = SimplusGT.Toolbox.RearrangeListApparatus(ExcelFile,Wbase,ExcelBus);
     Data.Apparatus = [];
     for i = 1:NumApparatus
         Data.Apparatus = [Data.Apparatus toApparatus(ApparatusBus{i},ApparatusType{i},Para{i})];
     end
    
-    disp(Data);
-    jsonFile = replace(file,'.xlsx','.json');       % For xlsx case
-    jsonFile = replace(jsonFile,'.xlsm','.json');   % For xlsm case
-    if ~strcmp(jsonFile,file)
-        SimplusGT.SaveAsJsonToFile(Data,jsonFile);
-        fprintf('Successfully converted file: %s\n',file);
-        fprintf('\n');
+    % disp(Data);
+    JsonFile = replace(ExcelFile,'.xlsx','.json');       % For xlsx case
+    JsonFile = replace(JsonFile,'.xlsm','.json');           % For xlsm case
+    if ~strcmp(JsonFile,ExcelFile)
+        SimplusGT.SaveAsJsonToFile(Data,JsonFile);
+        fprintf(['Successfully convert ', ExcelFile, ' into ' JsonFile '. \n']);
     end
 
 end

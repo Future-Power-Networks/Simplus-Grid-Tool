@@ -1,18 +1,41 @@
-% This is the main function for SimplusGT.
+% Main function for SimplusGT.
 
 % Author(s): Yitong Li, Yunjie Gu
+%
+% Modified by Rob Oldaker, Yitong Li:
+% # The function supports json user data input.
+% # The function uses data by struct type.
 
-%% 
-% Notes:
-%
-% Please read "README.md" first before using the toolbox.
-%
-% Please use "Main_Customer.m" rather than this file for running the
-% toolbox.
+%% Chech the input data type and convert it to struct
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Check User Data File\n')
+fprintf('==================================\n')
+if UserDataType == 1
+    UserData = [UserDataName, '.xlsx'];
+    if isempty(which(UserData))
+        UserData = [UserDataName,'.xlsm'];
+        if isempty(which(UserData))
+            error(['Error: The Excel format of "' UserDataName '" cannot be found.'])
+        end
+    end
+    SimplusGT.Toolbox.Excel2Json(UserData);
+elseif UserDataType == 0
+else
+    error('Error: Please check the setting of "UserDataType", which should be "1" or "0".')
+end
+UserData = [UserDataName, '.json'];
+if isempty(which(UserData))
+    error(['Error: The json format of "' UserDataName '" cannot be found.'])
+end
+fprintf([UserData,' is used for analysis.\n'])
+which(UserData)
+fprintf(['\n']);
+UserDataStruct = SimplusGT.JsonDecoder(UserData);
 
 %%
 fprintf('==================================\n')
-fprintf('Start to run Simplus Grid Tool\n')
+fprintf('Start: Run Simplus Grid Tool\n')
 fprintf('==================================\n')
 
 %% 
@@ -32,16 +55,16 @@ cd(PathStr);                            % Change the current address
 fprintf('Loading data, please wait a second...\n')
 
 % ### Re-arrange basic settings
-Fs = InputData.Basic.Fs;
+Fs = UserDataStruct.Basic.Fs;
 Ts = 1/Fs;               % (s), sampling period
-Fbase = InputData.Basic.Fbase; % (Hz), base frequency
-Sbase = InputData.Basic.Sbase; % (VA), base power
-Vbase = InputData.Basic.Vbase; % (V), base voltage
+Fbase = UserDataStruct.Basic.Fbase; % (Hz), base frequency
+Sbase = UserDataStruct.Basic.Sbase; % (VA), base power
+Vbase = UserDataStruct.Basic.Vbase; % (V), base voltage
 Ibase = Sbase/Vbase;     % (A), base current
 Zbase = Vbase/Ibase;     % (Ohm), base impedance
 Ybase = 1/Zbase;         % (S), base admittance
 Wbase = Fbase*2*pi;      % (rad/s), base angular frequency
-Advance = InputData.Advance;
+Advance = UserDataStruct.Advance;
 % Notes:
 % The base values would be used in simulations, and should not be deleted
 % here.
@@ -50,18 +73,18 @@ Advance = InputData.Advance;
 FigN = 1000;
 
 % ### Re-arrange the bus netlist
-[ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBusStruct(InputData);
+[ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBusStruct(UserDataStruct);
 
 % ### Re-arrange the line netlist
-[ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLineStruct(InputData,ListBus);
+[ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLineStruct(UserDataStruct,ListBus);
 DcAreaFlag = find(ListBus(:,12)==2);
 
 % ### Re-arrange the apparatus netlist
-NumApparatus = length(InputData.Apparatus);
+NumApparatus = length(UserDataStruct.Apparatus);
 for i = 1:NumApparatus
-    ApparatusBus{i} = InputData.Apparatus(i).BusNo;
-    ApparatusType{i} = InputData.Apparatus(i).Type;
-    Para{i} = InputData.Apparatus(i).Para;
+    ApparatusBus{i} = UserDataStruct.Apparatus(i).BusNo;
+    ApparatusType{i} = UserDataStruct.Apparatus(i).Type;
+    Para{i} = UserDataStruct.Apparatus(i).Para;
 end
 % The names of "ApparatusType" and "Para" can not be changed, because they
 % will also be used in simulink model.
@@ -77,10 +100,10 @@ end
 % ### Power flow analysis
 fprintf('Do the power flow analysis...\n')
 if ~isempty(DcAreaFlag)
-    InputData.Advance.PowerFlowAlgorithm = 1;
+    UserDataStruct.Advance.PowerFlowAlgorithm = 1;
     fprintf(['Warning: Because the system has dc area(s), the Gauss-Seidel power flow method is always used.\n']);
 end
-switch InputData.Advance.PowerFlowAlgorithm
+switch UserDataStruct.Advance.PowerFlowAlgorithm
     case 1  % Gauss-Seidel 
         [PowerFlow] = SimplusGT.PowerFlow.PowerFlowGS(ListBus,ListLine,Wbase);
     case 2  % Newton-Raphson
@@ -169,7 +192,7 @@ fprintf('\n')
 fprintf('Print State-Space Model: \n')
 fprintf('Whole system port model (system object form): GsysObj\n')
 fprintf('Whole system port model (descriptor state space form): GsysDSS\n')
-if InputData.Advance.EnablePrintOutput
+if UserDataStruct.Advance.EnablePrintOutput
     [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
     fprintf('Print ports of GsysDSS:\n')
     SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObj_Cell,ZbusObj);
@@ -200,7 +223,7 @@ fprintf('\n')
 fprintf('Plot Fundamentals:\n')
 
 % Plot pole/zero map
-if InputData.Advance.EnablePlotPole
+if UserDataStruct.Advance.EnablePlotPole
     fprintf('Plot pole map...\n')
     FigN = FigN+1;
     figure(FigN);
@@ -226,7 +249,7 @@ OmegaP = logspace(-1,4,1e3)*2*pi;
 OmegaPN = [-flip(OmegaP),OmegaP];
 
 % Plot admittance
-if InputData.Advance.EnablePlotAdmittance
+if UserDataStruct.Advance.EnablePlotAdmittance
     fprintf('Plot admittance spectrum...')
   	FigN = FigN+1;
  	
@@ -271,7 +294,7 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis\n')
 fprintf('==================================\n')
-if (InputData.Advance.EnableParticipation == 1) && (isempty(DcAreaFlag))
+if (UserDataStruct.Advance.EnableParticipation == 1) && (isempty(DcAreaFlag))
     SimplusGT.Modal.ModalPreRun;
     SimplusGT.Modal.ModalAnalysis;
     fprintf('Generate GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
@@ -287,6 +310,7 @@ end
 % ==================================================
 % Synchronization analysis
 % ==================================================
+fprintf('\n')
 fprintf('==================================\n')
 fprintf('Synchronization Analysis\n')
 fprintf('==================================\n')
@@ -307,13 +331,13 @@ fprintf('Simulink Model\n')
 fprintf('=================================\n')
 
 if N_Bus>=150
-    InputData.Advance.EnableCreateSimulinkModel = 0;
+    UserDataStruct.Advance.EnableCreateSimulinkModel = 0;
     fprintf('Warning: The system has more than 150 buses;\n')
     fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
     fprintf('         The static and dynamic analysis will not be influenced.\n')
 end
 
-if InputData.Advance.EnableCreateSimulinkModel == 1
+if UserDataStruct.Advance.EnableCreateSimulinkModel == 1
     
     fprintf('Create the simulink model automatically, please wait a second...\n')
 
@@ -336,5 +360,5 @@ end
 %%
 fprintf('\n')
 fprintf('==================================\n')
-fprintf('End: run successfully.\n')
+fprintf('End: Run Successfully.\n')
 fprintf('==================================\n')

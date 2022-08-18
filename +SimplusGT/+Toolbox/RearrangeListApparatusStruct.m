@@ -1,6 +1,7 @@
 % This function re-arranges the netlist data of apparatuses.
 
 % Author(s): Yitong Li, Yunjie Gu
+% Modified by Rob
 
 %% Notes
 %
@@ -291,11 +292,7 @@ elseif floor(aData.Type/10) == 2
 elseif floor(aData.Type/10)==101
     a(3) = aData.Para.Vdc;
     a(4) = aData.Para.Cdc;
-    if isfield(aData.Para, 'wLf')
-        a(5) = aData.Para.wLf;
-    elseif isfield(aData.Para, 'wL')
-        a(5) = aData.Para.wL;
-    end
+ 	a(5) = aData.Para.wL;
     a(6) = aData.Para.R;
     a(7) = aData.Para.fi;
     a(8) = aData.Para.fvdc;
