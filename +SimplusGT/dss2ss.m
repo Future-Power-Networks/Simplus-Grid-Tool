@@ -65,12 +65,12 @@ Point2 = m+1;
 
 % Find zero elements in E matrix
 for n = 1:m
-    if DiagE(n) < 1e-12         % Detect if E is zero with tolerance
+    if DiagE(n) < 1e-12             % Detect if E is zero with tolerance
         Point2 = Point2 - 1;
-        Index(Point2) = n;
+        Index(Point2) = n;          % Put zero element into E from E(end,end)
     else
         Point1 = Point1 + 1;
-        Index(Point1) = n;        
+        Index(Point1) = n;          % Put non-zero element into E from E(1,1)
     end
 end
 

@@ -30,10 +30,10 @@ if isempty(which(UserData))
 end
 fprintf([UserData,' is used for analysis.\n'])
 which(UserData)
-fprintf(['\n']);
 UserDataStruct = SimplusGT.JsonDecoder(UserData);
 
 %%
+fprintf('\n')
 fprintf('==================================\n')
 fprintf('Start: Run Simplus Grid Tool\n')
 fprintf('==================================\n')
@@ -73,10 +73,10 @@ Advance = UserDataStruct.Advance;
 FigN = 1000;
 
 % ### Re-arrange the bus netlist
-[ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBusStruct(UserDataStruct);
+[ListBus,NumBus] = SimplusGT.Toolbox.RearrangeListBusStruct(UserDataStruct);
 
 % ### Re-arrange the line netlist
-[ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLineStruct(UserDataStruct,ListBus);
+[ListLine,~,~] = SimplusGT.Toolbox.RearrangeListLineStruct(UserDataStruct,ListBus);
 DcAreaFlag = find(ListBus(:,12)==2);
 
 % ### Re-arrange the apparatus netlist
@@ -86,6 +86,7 @@ for i = 1:NumApparatus
     ApparatusType{i} = UserDataStruct.Apparatus(i).Type;
     Para{i} = UserDataStruct.Apparatus(i).Para;
 end
+clear('i');
 % The names of "ApparatusType" and "Para" can not be changed, because they
 % will also be used in simulink model.
 
@@ -156,63 +157,67 @@ for i = 1:NumApparatus
     
     % The following data may not used in the script, but will be used in
     % simulations. So, do not delete!
-    [GmObj_Cell{i},GmDSS_Cell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
+    [GmObjCell{i},GmDssCell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
         SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{i},ApparatusType{i},ApparatusPowerFlow{i},Para{i},Ts,ListBusNew);
     x_e{i} = ApparatusEqui{i}{1};
     u_e{i} = ApparatusEqui{i}{2};
 end
+clear('i');
 
 % ### Get the appended model of all apparatuses
 fprintf('Get the appended descriptor state space model of all apparatuses...\n')
-GmObj = SimplusGT.Toolbox.ApparatusModelLink(GmObj_Cell);
+GmObj = SimplusGT.Toolbox.ApparatusModelLink(GmObjCell);
 
 % ### Get the model of whole system
 fprintf('Get the descriptor state space model of whole system...\n')
-[GsysObj,GsysDSS,Port_v,Port_i,BusPort_v,BusPort_i] = ...
-    SimplusGT.Toolbox.ConnectGmZbus(GmObj,ZbusObj,N_Bus);
+[ObjGsysDss,GsysDss,PortV,PortI,PortBusV,PortBusI] = ...
+    SimplusGT.Toolbox.ConnectGmZbus(GmObj,ZbusObj,NumBus);
 
 % ### Whole-system admittance model
-YsysObj = SimplusGT.ObjTruncate(GsysObj,Port_i,Port_v);
-YsysDSS = YsysObj.GetDSS(YsysObj);   
+ObjYsysDss = SimplusGT.ObjTruncate(ObjGsysDss,PortI,PortV);
+[~,YsysDss] = ObjYsysDss.GetDSS(ObjYsysDss); 
+ObjYsysSs = SimplusGT.ObjDss2Ss(ObjYsysDss);
+[~,YsysSs] = ObjYsysSs.GetSS(ObjYsysSs); 
 
 % ### Chech if the system is proper
 fprintf('Check if the whole system is proper:\n')
-if isproper(GsysDSS)
+if isproper(GsysDss)
     fprintf('Proper!\n');
     fprintf('Calculate the minimum realization of the system model for later use...\n')
     % GminSS = minreal(GsysDSS);
-    GsysSS = SimplusGT.dss2ss(GsysDSS);
+    ObjGsysSs = SimplusGT.ObjDss2Ss(ObjGsysDss);
+    [~,GsysSs] = ObjGsysSs.GetSS(ObjGsysSs);
     InverseOn = 0;
 else
-    error('Error: GsysDSS is improper, which has more zeros than poles.')
+    error('Error: GsysDss is improper, which has more zeros than poles.')
 end
 
 % ### Print
 fprintf('\n')
-fprintf('Print State-Space Model: \n')
-fprintf('Whole system port model (system object form): GsysObj\n')
-fprintf('Whole system port model (descriptor state space form): GsysDSS\n')
+fprintf('Print state space model: \n')
+fprintf('Whole system port model (descriptor state space): GsysDss\n')
 if UserDataStruct.Advance.EnablePrintOutput
-    [SysStateString,SysInputString,SysOutputString] = GsysObj.GetString(GsysObj);
-    fprintf('Print ports of GsysDSS:\n')
-    SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObj_Cell,ZbusObj);
+    [GsysDssStateStr,GsysDssInStr,GsysDssOutStr] = ObjGsysDss.GetString(ObjGsysDss);
+    [GsysSsStateStr,GsysSsInStr,GsysSsOutStr] = ObjGsysSs.GetString(ObjGsysSs);
+    fprintf('Print ports of GsysDss:\n')
+    SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObjCell,ZbusObj);
 end
 
-fprintf('Other models: \n')
-fprintf('Whole system port model (state space form): GminSS\n')
-fprintf('Whole system admittance model (system object form): YsysObj\n')
-fprintf('Whole system admittance model (descriptor state space form): YsysDSS\n')
+fprintf('Other models saved in workspace: \n')
+fprintf('Whole system port model (state space): GsysSs\n')
+fprintf('Whole system admittance model (descriptor state space): YsysDss\n')
+fprintf('Whole system admittance model (state space): YsysSs\n')
 
 % ### Check stability
 fprintf('\n')
 fprintf('Calculate pole/zero...\n')
 % pole_sys_ = pole(GsysDSS)/2/pi;
-[~,EigenValueSys] = eig(GsysSS.A);
-EigenValueSys = diag(EigenValueSys);
-EigenValueSys = EigenValueSys(find(real(EigenValueSys) ~= inf));
-EigenValueSys = EigenValueSys/2/pi;
+[PhiMat,EigMat] = eig(GsysSs.A);
+EigVec = diag(EigMat);
+EigVec = EigVec(find(real(EigVec) ~= inf));
+EigVecHz = EigVec/2/pi;
 fprintf('Check if the system is stable:\n')
-if isempty(find(real(EigenValueSys)>1e-6, 1))
+if isempty(find(real(EigVecHz)>1e-6, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
@@ -228,13 +233,13 @@ if UserDataStruct.Advance.EnablePlotPole
     FigN = FigN+1;
     figure(FigN);
     subplot(1,2,1)
-    scatter(real(EigenValueSys),imag(EigenValueSys),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(EigVecHz),imag(EigVecHz),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Global pole map');
     
 	subplot(1,2,2)
-    scatter(real(EigenValueSys),imag(EigenValueSys),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(EigVecHz),imag(EigVecHz),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
@@ -250,36 +255,37 @@ OmegaPN = [-flip(OmegaP),OmegaP];
 
 % Plot admittance
 if UserDataStruct.Advance.EnablePlotAdmittance
-    fprintf('Plot admittance spectrum...')
+    fprintf('Plot admittance spectrum...\n')
   	FigN = FigN+1;
  	
     CountLegend = 0;
     VecLegend = {};
     T = [1,1i;
          1,-1i];
-    for k = 1:N_Bus
+    for k = 1:NumBus
         [k1,k2] = SimplusGT.CellFind(ApparatusBus,k);
         % Plot the active bus admittance only
         if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
            (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
            (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
-           	Yss{k}  = GsysSS(BusPort_i{k},BusPort_v{k});
-            Ysym{k} = SimplusGT.ss2sym(Yss{k});
-            YssPN{k} = T*Yss{k}*T^(-1);
-            YsymPN{k} = SimplusGT.ss2sym(YssPN{k});
+           	YcellSs{k}  = GsysSs(PortBusI{k},PortBusV{k});
+            YcellSym{k} = SimplusGT.ss2sym(YcellSs{k});
+            YcellSsCplx{k} = T*YcellSs{k}*T^(-1);
+            YcellSymCplx{k} = SimplusGT.ss2sym(YcellSsCplx{k});
             figure(FigN);
-            SimplusGT.bode_c(Ysym{k}(1,1),1j*OmegaP,'PhaseOn',1); 
+            SimplusGT.bode_c(YcellSym{k}(1,1),1j*OmegaP,'PhaseOn',1); 
             figure(FigN+1);
-            SimplusGT.bode_c(YsymPN{k}(1,1),1j*OmegaPN,'PhaseOn',1); 
+            SimplusGT.bode_c(YcellSymCplx{k}(1,1),1j*OmegaPN,'PhaseOn',1); 
             CountLegend = CountLegend + 1;
             VecLegend{CountLegend} = ['Bus',num2str(k)];
         end
     end
+    clear('CountLegend');
  	figure(FigN)
-  	SimplusGT.mtit('Y_{dd}');
+  	SimplusGT.mtit('Transfer Function Matrix dq frame: Y_{dd}');
     legend(VecLegend);
   	figure(FigN+1)
-  	SimplusGT.mtit('Y_{dq+}');
+  	SimplusGT.mtit('Complex Vector dq frame: Y_{dq+}');
     legend(VecLegend);
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
@@ -292,14 +298,41 @@ end
 
 fprintf('\n')
 fprintf('==================================\n')
-fprintf('Modal Analysis\n')
+fprintf('Modal Analysis: State Space \n')
+fprintf('==================================\n')
+% dlambda_{i}/da_{kj} = psi_{ik}*phi_{ji}
+if 1
+    PsiMat = PhiMat^(-1);
+    for i = 1:length(EigVecHz)
+        for j = 1:length(GsysSs.A)
+            for k = 1:length(GsysSs.A)
+                PfMatCell{i}(k,j) = PsiMat(i,k)*PhiMat(j,i);
+            end
+        end
+    end
+    PfMat = zeros(length(GsysSs.A),0);
+    for i = 1:length(PfMatCell)
+        PfMat = [PfMat,diag(PfMatCell{i})];
+    end
+    fprintf('Participation factor full matrix: PfMatCell{i}(k,j) \n')
+    fprintf('where i -> ith eigenvalue, (k,j) -> a_ki in state matrix A. \n')
+    fprintf('Participation matrix: PfMat(i,k) \n')
+    fprintf('where i -> ith eigenvalue, k -> kth state or a_kk in state matrix A. \n')
+    clear('i','j','k');
+else
+    fprintf('Warning: This function is disabled.')
+end
+
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Modal Analysis: Transfer Function\n')
 fprintf('==================================\n')
 if (UserDataStruct.Advance.EnableParticipation == 1) && (isempty(DcAreaFlag))
     SimplusGT.Modal.ModalPreRun;
     SimplusGT.Modal.ModalAnalysis;
     fprintf('Generate GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 else
-    fprintf('Warning: The modal (participation) analysis is disabled or the power system has a dc area.\n');
+    fprintf('Warning: This function is disabled or the power system has a dc area.\n');
 end
 
 else
@@ -330,11 +363,12 @@ fprintf('=================================\n')
 fprintf('Simulink Model\n')
 fprintf('=================================\n')
 
-if N_Bus>=150
+if NumBus>=150
     UserDataStruct.Advance.EnableCreateSimulinkModel = 0;
     fprintf('Warning: The system has more than 150 buses;\n')
     fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
     fprintf('         The static and dynamic analysis will not be influenced.\n')
+    fprintf('         This would be improved later.\n')
 end
 
 if UserDataStruct.Advance.EnableCreateSimulinkModel == 1
