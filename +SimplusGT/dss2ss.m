@@ -90,13 +90,20 @@ C2 = C(:,Index2);
 
 E1 = E(Index1,Index1);
 
+% for i = 1:length(E1)
+%     A11(i,:) = A11(i,:)/E1(i,i);
+%     A12(i,:) = A12(i,:)/E1(i,i);
+%     B1(i,:) = B1(i,:)/E1(i,i);
+%     E1(i,i) = 1;
+% end
+
 if rank(A22,toler) == length(A22)
     InvA22 = A22^(-1);
 
     A_ = A11 - A12*InvA22*A21;
     B_ = B1  - A12*InvA22*B2;
     C_ = C1 - C2*InvA22*A21;
-    D_ = D;
+    D_ = D - C2*InvA22*B2;
     E_ = E1;
 
     InvE_ = E_^(-1);
