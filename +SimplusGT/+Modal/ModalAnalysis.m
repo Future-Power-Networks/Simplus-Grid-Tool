@@ -14,7 +14,7 @@
 
 %% Basic
 % Change suffix
-UserData_Modal = UserData;
+UserData_Modal = UserDataName;
 UserData_Modal = strrep(UserData_Modal,'.xlsm','');
 UserData_Modal = strrep(UserData_Modal,'.xlsx','');
 UserData_Modal = strrep(UserData_Modal,'.xls','');
@@ -31,7 +31,7 @@ clear MdMode;
 
 %read Modal config file.
 [AxisSel, ApparatusSelL12, ModeSelAll, ApparatusSelL3All,StateSel_DSS, ModeSel_DSS] = ...
-    SimplusGT.Modal.ExcelRead(FileModal, N_Bus, ApparatusType, GsysSS);
+    SimplusGT.Modal.ExcelRead(FileModal, NumBus, ApparatusType, GsysSs);
 [StatePFEnable, BodeEnable, Layer12Enable, Layer3Enable] = ...
     SimplusGT.Modal.EnablingRead(FileModal); %Enablling control.
 
@@ -42,13 +42,13 @@ SimplusGT.Modal.DataCheck(AxisSel, ApparatusSelL12, ModeSelAll, ApparatusSelL3Al
 ModeSelNum = length(ModeSelAll);
 %get ResidueAll, ZmValAll.
 [MdMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
-    SimplusGT.Modal.SSCal(GsysSS, N_Bus, ApparatusType, ModeSelAll, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr);
+    SimplusGT.Modal.SSCal(GsysSs, NumBus, ApparatusType, ModeSelAll, GmDssCell, GsysDss, ApparatusInputStr, ApparatusOutputStr);
 
 %% Impedance Participation Factor
 %Analysis.
 if BodeEnable ==1
     fprintf('plotting bode diagram for selected whole-system admittance...\n')
-    SimplusGT.Modal.BodeDraw(ApparatusSelL12, AxisSel, GsysSS, ApparatusType, ApparatusBus, N_Bus, ApparatusInputStr, ApparatusOutputStr);
+    SimplusGT.Modal.BodeDraw(ApparatusSelL12, AxisSel, GsysSs, ApparatusType, ApparatusBus, NumBus, ApparatusInputStr, ApparatusOutputStr);
 end
 
 for modei=1:ModeSelNum

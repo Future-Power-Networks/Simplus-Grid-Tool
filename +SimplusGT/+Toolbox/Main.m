@@ -138,11 +138,8 @@ if EnableStateSpaceModel
 % ### Get the model of lines
 fprintf('Get the descriptor state space model of network lines...\n')
 
-[YbusObj,YbusDSS,~] = SimplusGT.Toolbox.YbusCalcDss(ListBusNew,ListLineNew,Wbase);
-% if Enable_RemoveDuplicateStates == 1
-%     YbusObj = SimplusGT.Toolbox.RemoveYbusDuplicateStates(YbusObj);
-% end
-ZbusObj = SimplusGT.ObjSwitchInOut(YbusObj,length(YbusDSS));
+[ObjYbusDss,YbusDss,~] = SimplusGT.Toolbox.YbusCalcDss(ListBusNew,ListLineNew,Wbase);
+ObjZbusDss = SimplusGT.ObjSwitchInOut(ObjYbusDss,length(YbusDss));
 
 % ### Get the models of bus apparatuses
 fprintf('Get the descriptor state space model of bus apparatuses...\n')
@@ -157,7 +154,7 @@ for i = 1:NumApparatus
     
     % The following data may not used in the script, but will be used in
     % simulations. So, do not delete!
-    [GmObjCell{i},GmDssCell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
+    [ObjGmCell{i},GmDssCell{i},ApparatusPara{i},ApparatusEqui{i},ApparatusDiscreDamping{i},OtherInputs{i},ApparatusStateStr{i},ApparatusInputStr{i},ApparatusOutputStr{i}] = ...
         SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{i},ApparatusType{i},ApparatusPowerFlow{i},Para{i},Ts,ListBusNew);
     x_e{i} = ApparatusEqui{i}{1};
     u_e{i} = ApparatusEqui{i}{2};
@@ -166,12 +163,12 @@ clear('i');
 
 % ### Get the appended model of all apparatuses
 fprintf('Get the appended descriptor state space model of all apparatuses...\n')
-GmObj = SimplusGT.Toolbox.ApparatusModelLink(GmObjCell);
+ObjGm = SimplusGT.Toolbox.ApparatusModelLink(ObjGmCell);
 
 % ### Get the model of whole system
 fprintf('Get the descriptor state space model of whole system...\n')
 [ObjGsysDss,GsysDss,PortV,PortI,PortBusV,PortBusI] = ...
-    SimplusGT.Toolbox.ConnectGmZbus(GmObj,ZbusObj,NumBus);
+    SimplusGT.Toolbox.ConnectGmZbus(ObjGm,ObjZbusDss,NumBus);
 
 % ### Whole-system admittance model
 ObjYsysDss = SimplusGT.ObjTruncate(ObjGsysDss,PortI,PortV);
@@ -184,11 +181,9 @@ fprintf('Check if the whole system is proper:\n')
 if isproper(GsysDss)
     fprintf('Proper!\n');
     fprintf('Calculate the minimum realization of the system model for later use...\n')
-    % GminSS = minreal(GsysDSS);
     ObjGsysSs = SimplusGT.ObjDss2Ss(ObjGsysDss);
     [~,GsysSs] = ObjGsysSs.GetSS(ObjGsysSs);
     % GsysMin = minreal(GsysSs);
-    InverseOn = 0;
 else
     error('Error: GsysDss is improper, which has more zeros than poles.')
 end
@@ -201,7 +196,7 @@ if UserDataStruct.Advance.EnablePrintOutput
     [GsysDssStateStr,GsysDssInStr,GsysDssOutStr] = ObjGsysDss.GetString(ObjGsysDss);
     [GsysSsStateStr,GsysSsInStr,GsysSsOutStr] = ObjGsysSs.GetString(ObjGsysSs);
     fprintf('Print ports of GsysDss:\n')
-    SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,GmObjCell,ZbusObj);
+    SimplusGT.Toolbox.PrintSysString(ApparatusBus,ApparatusType,ObjGmCell,ObjZbusDss);
 end
 
 fprintf('Other models saved in workspace: \n')
@@ -212,7 +207,6 @@ fprintf('Whole system admittance model (state space): YsysSs\n')
 % ### Check stability
 fprintf('\n')
 fprintf('Calculate pole/zero...\n')
-% pole_sys_ = pole(GsysDSS)/2/pi;
 [PhiMat,EigMat] = eig(GsysSs.A);
 EigVec = diag(EigMat);
 EigVec = EigVec(find(real(EigVec) ~= inf));
@@ -256,24 +250,24 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis: State Space \n')
 fprintf('==================================\n')
-if 0
+if UserDataStruct.Advance.EnableParticipation == 1
     FigN = FigN + 1;
-    ModeIndex = [1,31];
+    ModeIndex = [1];
     SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN);
 else
-    fprintf('Warning: This function is disabled.')
+    fprintf('Warning: This function is disabled.\n')
 end
 
 fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis: Transfer Function \n')
 fprintf('==================================\n')
-if (UserDataStruct.Advance.EnableParticipation == 1) && (isempty(DcAreaFlag))
+if 0
     SimplusGT.Modal.ModalPreRun;
     SimplusGT.Modal.ModalAnalysis;
     fprintf('Generate GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
 else
-    fprintf('Warning: This function is disabled or the power system has a dc area.\n');
+    fprintf('Warning: This function is disabled.\n');
 end
 
 else
@@ -309,7 +303,7 @@ if NumBus>=150
     fprintf('Warning: The system has more than 150 buses;\n')
     fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
     fprintf('         The static and dynamic analysis will not be influenced.\n')
-    fprintf('         This would be improved later.\n')
+    fprintf('         This feature will be improved in the future version of SimplusGT.\n')
 end
 
 if UserDataStruct.Advance.EnableCreateSimulinkModel == 1

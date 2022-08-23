@@ -43,7 +43,7 @@ function ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN)
         fprintf(['Top ' num2str(PfMaxNum) ' largest participation factor(s): \n'])
         
         for k = 1:length(PfMaxIndex)
-            fprintf([num2str(PfMat(PfMaxIndex(k),ModeIndex(i))) ' -> ' GsysSsStateStr{PfMaxIndex(k)} '\n']);
+            fprintf([num2str(PfMat(PfMaxIndex(k),ModeIndex(i))) ' -> ' num2str(PfMaxIndex(k)) 'th state '  GsysSsStateStr{PfMaxIndex(k)} '\n']);
             PfStateStr{k} = GsysSsStateStr{PfMaxIndex(k)};
         end
 
