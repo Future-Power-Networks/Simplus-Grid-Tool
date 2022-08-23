@@ -187,6 +187,7 @@ if isproper(GsysDss)
     % GminSS = minreal(GsysDSS);
     ObjGsysSs = SimplusGT.ObjDss2Ss(ObjGsysDss);
     [~,GsysSs] = ObjGsysSs.GetSS(ObjGsysSs);
+    % GsysMin = minreal(GsysSs);
     InverseOn = 0;
 else
     error('Error: GsysDss is improper, which has more zeros than poles.')
@@ -231,62 +232,17 @@ fprintf('Plot Fundamentals:\n')
 if UserDataStruct.Advance.EnablePlotPole
     fprintf('Plot pole map...\n')
     FigN = FigN+1;
-    figure(FigN);
-    subplot(1,2,1)
-    scatter(real(EigVecHz),imag(EigVecHz),'x','LineWidth',1.5); hold on; grid on;
-    xlabel('Real Part (Hz)');
-    ylabel('Imaginary Part (Hz)');
-    title('Global pole map');
-    
-	subplot(1,2,2)
-    scatter(real(EigVecHz),imag(EigVecHz),'x','LineWidth',1.5); hold on; grid on;
-    xlabel('Real Part (Hz)');
-    ylabel('Imaginary Part (Hz)');
-    title('Zoomed pole map');
-    axis([-80,20,-150,150]);
-    
-    %SimplusGT.mtit('Pole Map');
+    PlotPoleMap(EigVecHz,FigN);
 else
     fprintf('Warning: The default plot of pole map is disabled.\n')
 end
-
-OmegaP = logspace(-1,4,1e3)*2*pi;
-OmegaPN = [-flip(OmegaP),OmegaP];
 
 % Plot admittance
 if UserDataStruct.Advance.EnablePlotAdmittance
     fprintf('Plot admittance spectrum...\n')
   	FigN = FigN+1;
- 	
-    CountLegend = 0;
-    VecLegend = {};
-    T = [1,1i;
-         1,-1i];
-    for k = 1:NumBus
-        [k1,k2] = SimplusGT.CellFind(ApparatusBus,k);
-        % Plot the active bus admittance only
-        if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
-           (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
-           (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
-           	YcellSs{k}  = GsysSs(PortBusI{k},PortBusV{k});
-            YcellSym{k} = SimplusGT.ss2sym(YcellSs{k});
-            YcellSsCplx{k} = T*YcellSs{k}*T^(-1);
-            YcellSymCplx{k} = SimplusGT.ss2sym(YcellSsCplx{k});
-            figure(FigN);
-            SimplusGT.bode_c(YcellSym{k}(1,1),1j*OmegaP,'PhaseOn',1); 
-            figure(FigN+1);
-            SimplusGT.bode_c(YcellSymCplx{k}(1,1),1j*OmegaPN,'PhaseOn',1); 
-            CountLegend = CountLegend + 1;
-            VecLegend{CountLegend} = ['Bus',num2str(k)];
-        end
-    end
-    clear('CountLegend');
- 	figure(FigN)
-  	SimplusGT.mtit('Transfer Function Matrix dq frame: Y_{dd}');
-    legend(VecLegend);
-  	figure(FigN+1)
-  	SimplusGT.mtit('Complex Vector dq frame: Y_{dq+}');
-    legend(VecLegend);
+    PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBusI,PortBusV,FigN);
+    FigN = FigN+1;
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
@@ -300,32 +256,17 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis: State Space \n')
 fprintf('==================================\n')
-% dlambda_{i}/da_{kj} = psi_{ik}*phi_{ji}
-if 1
-    PsiMat = PhiMat^(-1);
-    for i = 1:length(EigVecHz)
-        for j = 1:length(GsysSs.A)
-            for k = 1:length(GsysSs.A)
-                PfMatCell{i}(k,j) = PsiMat(i,k)*PhiMat(j,i);
-            end
-        end
-    end
-    PfMat = zeros(length(GsysSs.A),0);
-    for i = 1:length(PfMatCell)
-        PfMat = [PfMat,diag(PfMatCell{i})];
-    end
-    fprintf('Participation factor full matrix: PfMatCell{i}(k,j) \n')
-    fprintf('where i -> ith eigenvalue, (k,j) -> a_ki in state matrix A. \n')
-    fprintf('Participation matrix: PfMat(i,k) \n')
-    fprintf('where i -> ith eigenvalue, k -> kth state or a_kk in state matrix A. \n')
-    clear('i','j','k');
+if 0
+    FigN = FigN + 1;
+    ModeIndex = [1,31];
+    SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN);
 else
     fprintf('Warning: This function is disabled.')
 end
 
 fprintf('\n')
 fprintf('==================================\n')
-fprintf('Modal Analysis: Transfer Function\n')
+fprintf('Modal Analysis: Transfer Function \n')
 fprintf('==================================\n')
 if (UserDataStruct.Advance.EnableParticipation == 1) && (isempty(DcAreaFlag))
     SimplusGT.Modal.ModalPreRun;
@@ -396,3 +337,71 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('End: Run Successfully.\n')
 fprintf('==================================\n')
+
+%%
+% Author(s): Yitong Li
+
+function PlotPoleMap(EigVecHz,FigN)
+  
+    figure(FigN);
+    
+    subplot(1,2,1)
+    scatter(real(EigVecHz),imag(EigVecHz),'x','LineWidth',1.5); hold on; grid on;
+    xlabel('Real Part (Hz)');
+    ylabel('Imaginary Part (Hz)');
+    title('Global pole map');
+    
+	subplot(1,2,2)
+    scatter(real(EigVecHz),imag(EigVecHz),'x','LineWidth',1.5); hold on; grid on;
+    xlabel('Real Part (Hz)');
+    ylabel('Imaginary Part (Hz)');
+    title('Zoomed pole map');
+    axis([-80,20,-150,150]);
+end
+
+%%
+% Author(s): Yitong Li
+
+function PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBusI,PortBusV,FigN)
+
+    % Set frequency range 
+    OmegaP = logspace(-1,4,500)*2*pi;
+    OmegaPN = [-flip(OmegaP),OmegaP];
+    CountLegend = 0;
+    VecLegend = {};
+    
+    % Transform matrix from transfer function to complex vector
+    T = [1,1i;
+         1,-1i];
+     
+    for k = 1:NumBus
+        [~,k2] = SimplusGT.CellFind(ApparatusBus,k);
+        % Plot the active bus admittance only
+        if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
+           (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
+           (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
+       
+           	YcellSs{k}  = GsysSs(PortBusI{k},PortBusV{k});
+            YcellSym{k} = SimplusGT.ss2sym(YcellSs{k});
+            YcellSsCplx{k} = T*YcellSs{k}*T^(-1);
+            YcellSymCplx{k} = SimplusGT.ss2sym(YcellSsCplx{k});
+            
+            figure(FigN);
+            SimplusGT.bode_c(YcellSym{k}(1,1),1j*OmegaP,'PhaseOn',1); 
+            figure(FigN+1);
+            SimplusGT.bode_c(YcellSymCplx{k}(1,1),1j*OmegaPN,'PhaseOn',1); 
+            
+            CountLegend = CountLegend + 1;
+            VecLegend{CountLegend} = ['Bus',num2str(k)];
+        end
+    end
+ 	figure(FigN)
+  	SimplusGT.mtit('Transfer Function Matrix dq frame: Y_{dd}');
+    legend(VecLegend);
+  	figure(FigN+1)
+  	SimplusGT.mtit('Complex Vector dq frame: Y_{dq+}');
+    legend(VecLegend);
+    
+end
+
+
