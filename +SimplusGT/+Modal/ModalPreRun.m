@@ -15,7 +15,7 @@
 % users.
 
 % Change suffix
-UserData_Modal = UserData;
+UserData_Modal = UserDataName;
 UserData_Modal = strrep(UserData_Modal,'.xlsm','');
 UserData_Modal = strrep(UserData_Modal,'.xlsx','');
 UserData_Modal = strrep(UserData_Modal,'.xls','');
@@ -36,14 +36,14 @@ SimplusGT.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old con
 % Write 1 to enable auto select.
 AutoSel = 1;
 
-ZbusStateStr=ZbusObj.GetString(ZbusObj);
+ZbusStateStr=ObjZbusDss.GetString(ObjZbusDss);
 
-[AutoSelResult] = SimplusGT.Modal.ExcelWrite(N_Bus,NumApparatus,ApparatusType,...
-    ApparatusStateStr,ApparatusInputStr,ApparatusOutputStr,ZbusStateStr, GsysSS, GsysDSS, AutoSel, Fbase, FileModal);
+[AutoSelResult] = SimplusGT.Modal.ExcelWrite(NumBus,NumApparatus,ApparatusType,...
+    ApparatusStateStr,ApparatusInputStr,ApparatusOutputStr,ZbusStateStr, GsysSs, GsysDss, AutoSel, Fbase, FileModal);
 
 fprintf('%s is now ready.\nPlease open the file and select the states and apparatuses you are interested.\n',FileModal);
 fprintf('After selection, save the excel file and run Modal Analysis.m.\n');
-winopen(UserData);
+winopen(UserDataName);
 if AutoSel == 0
     winopen(FileModal);
 end
