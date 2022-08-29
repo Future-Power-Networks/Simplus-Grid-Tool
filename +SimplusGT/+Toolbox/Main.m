@@ -69,9 +69,6 @@ Advance = UserDataStruct.Advance;
 % The base values would be used in simulations, and should not be deleted
 % here.
 
-% Initialize figure index
-FigN = 1000;
-
 % ### Re-arrange the bus netlist
 [ListBus,NumBus] = SimplusGT.Toolbox.RearrangeListBusStruct(UserDataStruct);
 
@@ -225,7 +222,7 @@ fprintf('Plot Fundamentals:\n')
 % Plot pole/zero map
 if UserDataStruct.Advance.EnablePlotPole
     fprintf('Plot pole map...\n')
-    FigN = FigN+1;
+    FigN = 100;
     PlotPoleMap(EigVecHz,FigN);
 else
     fprintf('Warning: The default plot of pole map is disabled.\n')
@@ -234,9 +231,8 @@ end
 % Plot admittance
 if UserDataStruct.Advance.EnablePlotAdmittance
     fprintf('Plot admittance spectrum...\n')
-  	FigN = FigN+1;
+  	FigN = 200;
     PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBusI,PortBusV,FigN);
-    FigN = FigN+1;
 else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
@@ -251,7 +247,7 @@ fprintf('==================================\n')
 fprintf('Modal Analysis: State Space \n')
 fprintf('==================================\n')
 if UserDataStruct.Advance.EnableParticipation == 1
-    FigN = FigN + 1;
+    FigN = 300;
     ModeIndex = [1];
     SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN);
 else
