@@ -33,8 +33,9 @@ function ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN)
             PfRestValue = sum(PfVec(PfRestIndex));
             PfAllValue = [PfMaxValue;PfRestValue];
             
-            % The rest of the states that participates less than 10% in total.
-            if PfRestValue/PfVecSum<=0.1 
+            % The rest of the states that participates less than certain
+            % value.
+            if (PfRestValue/PfVecSum<=0.1) || (PfMaxNum>=10) 
                 break;
             end
         end
@@ -44,9 +45,9 @@ function ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN)
         
         for k = 1:length(PfMaxIndex)
             fprintf([num2str(PfMat(PfMaxIndex(k),ModeIndex(i))) ' -> ' num2str(PfMaxIndex(k)) 'th state '  GsysSsStateStr{PfMaxIndex(k)} '\n']);
-            PfStateStr{k} = GsysSsStateStr{PfMaxIndex(k)};
+            PfStateStr{k} = strrep(GsysSsStateStr{PfMaxIndex(k)},'_','\_');     % For print in pie chart
         end
-
+        
         % Plot pie chart
         if 1
             figure(FigN)
@@ -55,5 +56,6 @@ function ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN)
             title(['Participation of the ' num2str(ModeIndex(i)) 'th Eigenvalue (' num2str(TargetMode(i)) ' Hz)'])
             FigN = FigN+1;
         end
+        clear('PfStateStr')
     end
 end

@@ -170,6 +170,9 @@ end
 % Add bus number index to all IO ports
 InputStr = SimplusGT.AddNum2Str(InputStr,ApparatusBus);
 OutputStr = SimplusGT.AddNum2Str(OutputStr,ApparatusBus);
+if ~isempty(StateStr)
+StateStr = SimplusGT.AddNum2Str(StateStr,ApparatusBus);
+end
 % Notes: 
 % For interlink, the port number would be like vd2-3, w2-3, etc. The
 % connection between Gm and Zbus directly dependents on the IO bus number
@@ -274,7 +277,8 @@ Cw = [1;zeros(ly1_w,1)];
 Dw = [zeros(1,ly1_w);eye(ly1_w)];
 Se = ss(Aw,Bw,Cw,Dw);
 Se = series(Gm,Se);
-StateStr = [{'epsilon'},StateStr];
+StrEpsilon = SimplusGT.AddNum2Str({'epsilon'},ApparatusBus);
+StateStr = [StrEpsilon,StateStr];
 
 % Embed the frame dynamics
 Sfb = ss([],[],[],V0);
