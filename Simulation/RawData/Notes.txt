@@ -1,0 +1,5 @@
+Pole Reference:
+
+SG1, SG3, SG6: D of 10 pu.
+
+IBR8: dc-link of 10 Hz, PLL of 10 Hz, current loop of 250 Hz.
