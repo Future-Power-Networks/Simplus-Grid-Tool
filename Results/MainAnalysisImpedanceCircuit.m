@@ -18,11 +18,11 @@ Ybase = 1/Zbase;
 omega_p = logspace(-2,4,1e3)*2*pi;
 omega_pn = [-flip(omega_p),omega_p];
 
-EnablePlot = 0;
+EnablePlot = 1;
 
 %% Droop grid-forming inverter
 
-I(1) = 0+1i*0.5;
+I(1) = 0;
 I(2) = 1+1i*1;
 % I(3) = 0+1i*1;
 
