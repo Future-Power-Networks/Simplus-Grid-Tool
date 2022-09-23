@@ -160,12 +160,12 @@ clear('i');
 
 % ### Get the appended model of all apparatuses
 fprintf('Get the appended descriptor state space model of all apparatuses...\n')
-ObjGm = SimplusGT.Toolbox.ApparatusModelLink(ObjGmCell);
+ObjGmDss = SimplusGT.Toolbox.ApparatusModelLink(ObjGmCell);
 
 % ### Get the model of whole system
 fprintf('Get the descriptor state space model of whole system...\n')
 [ObjGsysDss,GsysDss,PortV,PortI,PortBusV,PortBusI] = ...
-    SimplusGT.Toolbox.ConnectGmZbus(ObjGm,ObjZbusDss,NumBus);
+    SimplusGT.Toolbox.ConnectGmZbus(ObjGmDss,ObjZbusDss,NumBus);
 
 % ### Whole-system admittance model
 ObjYsysDss = SimplusGT.ObjTruncate(ObjGsysDss,PortI,PortV);
@@ -237,7 +237,22 @@ else
     fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
 
-%
+%%
+% ==================================================
+% Grid Strength Analysis
+% ==================================================
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Grid Strength Analysis \n')
+fprintf('==================================\n')
+EnableGridStrengthAnalysis = 1;
+if EnableGridStrengthAnalysis
+    SimplusGT.GridStrength.MainGridStrength;
+else
+    fprintf('Warning: This function is disabled.\n')
+end
+
+%%
 % ==================================================
 % Modal Analysis
 % ==================================================
@@ -265,6 +280,11 @@ if 0
 else
     fprintf('Warning: This function is disabled.\n');
 end
+
+%%
+% ==================================================
+% End of descriptor state space analysis
+% ==================================================
 
 else
     fprintf('Warning: The state space modeling is disabled.\n');
