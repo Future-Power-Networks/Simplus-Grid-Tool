@@ -21,6 +21,7 @@ cd(fileparts(mfilename('fullpath')));
 % "UserData.xlsm" and "UserData.json" contain the data of an example 4-bus
 % generator-inverter-composite power system in excel and josn format
 % respectively. Please feel free to change them.
+%UserDataName = 'UserData';
 UserDataName = 'UserData';
 
 %% Set user data type

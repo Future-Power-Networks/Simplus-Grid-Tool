@@ -12,4 +12,4 @@ ObjZsysDss = SimplusGT.ObjFeedback(ObjZmDss,ObjYbusDss);
 [~,ZsysDss] = ObjZsysDss.GetDSS(ObjZsysDss);
 ZsysSs = minreal(ZsysDss);
 
-stop
+%stop
