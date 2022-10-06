@@ -37,3 +37,12 @@ fprintf('New SCR (including all other apparatus) at bus-2 is calculated from dq-
 disp('The complex dq impedance of the system at bus-2 (including all other apparatus) is:');
 disp(Zn02_dqc);
 fprintf('===========================================================================\n');
+
+SCR_5=1/sqrt(Zn02(1,2)^2+Zn02(2,2)^2);
+fprintf('SCR5 is %f. \n\n',SCR_5);
+
+
+SCR_6=1/sqrt(Zn02(1,1)^2+Zn02(2,1)^2);
+fprintf('SCR6 is %f. \n\n',SCR_6);
+
+
