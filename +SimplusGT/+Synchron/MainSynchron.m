@@ -15,7 +15,7 @@ w_PLL_LPF                       = 2*pi*100;     % Bandwidth of the PLL LPF
 Enable_Plot_Eigenvalue          = 1;    % 1/0: Plot eigenvalues.
 
 %% Fault settings
-NfaultBus = 37;
+NfaultBus = 4;
 Tfault = 1/60*3;
 
 %% Update power flow
@@ -37,7 +37,8 @@ Ybus = double(subs(Ybus,'s',1i*Wbase));
 % Ybus should statisfy: I = Ybus*V
 
 % Get Ybus during fault
-ListLineFault = SimplusGT.Synchron.GetListLineFault(NfaultBus,ListLineNew,ListBus);
+ListLineFault = SimplusGT.Synchron.GetLi
+stLineFault(NfaultBus,ListLineNew,ListBus);
 YbusFault = SimplusGT.Synchron.YbusCalcSym(ListLineFault,Wbase,'albe');
 YbusFault = double(subs(YbusFault,'s',1i*Wbase));
 
@@ -94,6 +95,8 @@ Gbus = -Gbus;  	% Change the power direction to load convention.
                 
 % For numerically calculating GbusPrime
 Gbus_ = -Gbus_;
+
+stop
 
 % Get G_prime
 % Notes: It is calculaed by numerical method

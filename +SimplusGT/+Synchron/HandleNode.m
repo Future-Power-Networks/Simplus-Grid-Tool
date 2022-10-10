@@ -29,22 +29,22 @@ end
 if Enable_VoltageNode_InnerLoop
 
 % Prepare star-delta conversion by adding new buses
-Ybus = SimplusGT.Synchron.PrepareConvertDY(Ybus,NumIbus1st,N_Bus,Ysg);
-Ybus_ = SimplusGT.Synchron.PrepareConvertDY(Ybus_,NumIbus1st,N_Bus,Ysg_);
-YbusFault = SimplusGT.Synchron.PrepareConvertDY(YbusFault,NumIbus1st,N_Bus,Ysg_);
+Ybus = SimplusGT.Synchron.PrepareConvertDY(Ybus,NumIbus1st,NumBus,Ysg);
+Ybus_ = SimplusGT.Synchron.PrepareConvertDY(Ybus_,NumIbus1st,NumBus,Ysg_);
+YbusFault = SimplusGT.Synchron.PrepareConvertDY(YbusFault,NumIbus1st,NumBus,Ysg_);
     
 % Doing the star-delta conversion.
 % Notes: Assume old voltage bus as zero current bus, and then switch the
 % current and voltage for these buses so that current becomes input, and
 % finally remove corresponding blocks because the input current is zero.
-Ybus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,N_Bus+1);
-Ybus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,N_Bus+1);
-YbusFault = SimplusGT.Synchron.HybridMatrixYZ(YbusFault,N_Bus+1);
+Ybus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,NumBus+1);
+Ybus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,NumBus+1);
+YbusFault = SimplusGT.Synchron.HybridMatrixYZ(YbusFault,NumBus+1);
 
 % Eliminate the old voltage bus, i.e., zero current bus
-Ybus = Ybus(1:N_Bus,1:N_Bus);
-Ybus_ = Ybus_(1:N_Bus,1:N_Bus);
-YbusFault = YbusFault(1:N_Bus,1:N_Bus);
+Ybus = Ybus(1:NumBus,1:NumBus);
+Ybus_ = Ybus_(1:NumBus,1:NumBus);
+YbusFault = YbusFault(1:NumBus,1:NumBus);
 
 % Update V and I
 % Notes: The steady-state voltage at voltage buses are changed if we split
@@ -52,7 +52,7 @@ YbusFault = YbusFault(1:N_Bus,1:N_Bus);
 % equivalent to the matrix form "V = inv(Ybus)*I". But this matrix form
 % would lead to wrong results in some cases when Ybus is almost
 % non-invertible.
-I = I(1:N_Bus,:);
+I = I(1:NumBus,:);
 for i = 1:(NumIbus1st-1)
     V(i) = V(i) + I(i)/Ysg{i};
 end
