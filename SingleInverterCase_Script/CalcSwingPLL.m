@@ -14,14 +14,15 @@ Wbase = 2*pi*50;
 
 %% Default parameters
 % Equilibrium
-I = -0.5;
+% I = -0.5;
+I = -1-0.33*1i;
 V = 1;   % Stable
 W = Wbase;
 % Notes:
 % The model is in load convention.
 
 % PLL Bandwidth
-w_pll = 15*2*pi;
+w_pll = 6.3*2*pi;
 
 % Line impdeance
 Xline = 0.4;
@@ -38,7 +39,7 @@ Rc = 0;
 Gdel = 1;
 
 % Current loop bandwidth
-w_i = 250*2*pi;
+w_i = 600*2*pi;
 
 % Enable
 EnableInnerLoop = 1;

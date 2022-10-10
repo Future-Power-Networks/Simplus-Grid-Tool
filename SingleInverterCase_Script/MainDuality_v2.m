@@ -44,7 +44,7 @@ SimplexPS.bode_c(Gi_cl,1j*omega_pn,2*pi,'PhaseOn',0); hold on;
 end
 
 % ### Change series impedance R+jX
-if 1
+if 0
 fn = fn+1; 
 figure(fn)
 clear('root','root_prime','XRratio','Zline','Xline','Rline');
@@ -85,7 +85,7 @@ end
 end
 
 % ### Change droop gain
-if 1
+if 0
 fn = fn+1; 
 figure(fn)
 clear('root','root_prime','XRratio','Zline','Xline','Rline');
@@ -120,7 +120,7 @@ end
 end
 
 % ### Change voltage loop gain
-if 1
+if 0
 fn = fn+1; 
 figure(fn)
 clear('root','root_prime','XRratio','Zline','Xline','Rline');
@@ -175,15 +175,15 @@ fn = fn+1;
 figure(fn)
 clear('root','root_prime','XRratio','Zline','Xline','Rline');     
 
-Xline = linspace(0.4,0.6,7);
-Rline = Xline/5;
+Xline = linspace(0.4,0.8,10);
+Rline = Xline/10;
 
-set(gcf,'units','normalized','outerposition',[0.1 0.1 0.18 0.4]);
+% set(gcf,'units','normalized','outerposition',[0.1 0.1 0.18 0.4]);
 for i = 1:length(Xline)
 	[~,~,~,~,~,root_prime{i},pole_sys{i}] = CalcSwingPLL('Xline',Xline(i),'Rline',Rline(i));
     
     subplot(2,1,1)
-    scatter(real(root_prime{i}),imag(root_prime{i}),'x','LineWidth',lw); hold on; grid on;
+    scatter(real(pole_sys{i}),imag(pole_sys{i}),'x','LineWidth',lw); hold on; grid on;
     xlabel('Real (Hz)','interpreter','latex')
     ylabel('Imaginary (Hz)','interpreter','latex')
  	xlim([-200,50]);
@@ -192,14 +192,14 @@ for i = 1:length(Xline)
     yticks([-2500,-1250,0,1250,2500]);
     
     subplot(2,1,2)
-   	scatter(real(root_prime{i}),imag(root_prime{i}),'x','LineWidth',lw); hold on; grid on;
+   	scatter(real(pole_sys{i}),imag(pole_sys{i}),'x','LineWidth',lw); hold on; grid on;
     % scatter(real(pole_sys{i}),imag(pole_sys{i}),'x','LineWidth',lw); hold on; grid on;
     xlabel('Real (Hz)','interpreter','latex')
     ylabel('Imaginary (Hz)','interpreter','latex')
     title('Zoomed-in Plot','interpreter','latex')
    	xlim([-10,5]);
-    ylim([-40,40]);
-    yticks([-40,-20,0,20,40]);
+    ylim([-60,60]);
+    % yticks([-40,-20,0,20,40]);
 end
 
 
@@ -209,7 +209,7 @@ end
 end
 
 % ### Change PLL bandwidth
-if 1
+if 0
     
 fn = fn+1; 
 figure(fn)
@@ -247,7 +247,7 @@ end
 end
 
 % ### Change current loop bandwidth
-if 1
+if 0
     
 fn = fn+1; 
 figure(fn)
