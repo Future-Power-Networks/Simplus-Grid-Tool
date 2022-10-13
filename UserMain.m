@@ -14,11 +14,13 @@ close all;  % Close all figures, etc
 % UserData = 'MultiInverter_Transient_GFM_Unstable_Data.xlsx';
 % UserData = 'MultiInverter_Transient_GFL_Data.xlsx';     
 
-UserData = 'MultiInverter_Transient_GFL_Load_Data.xlsx';     
+% UserData = 'MultiInverter_Transient_GFL_Load_Data.xlsx';     
 % UserData = 'MultiInverter_Transient_GFM_Load_Data.xlsx';  
 % Notes:
 % The stability of GFM is adjusted by changing the droop gain in excel form.
 % The stability of GFL is adjusted by changing ki_pll in "GridFollowingVSI.m".
+
+UserData = 'SingleGflTest.xlsx';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();
