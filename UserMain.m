@@ -22,7 +22,9 @@ cd(fileparts(mfilename('fullpath')));
 % generator-inverter-composite power system in excel and josn format
 % respectively. Please feel free to change them.
 %UserDataName = 'UserData';
-UserDataName = 'UserData';
+UserDataName = 'UserData_case2';
+%UserDataName = 'UserData_case2';
+%UserDataName = 'UserData_case3';
 
 %% Set user data type
 % If user data is in excel format, please set 1. If it is in json format,
