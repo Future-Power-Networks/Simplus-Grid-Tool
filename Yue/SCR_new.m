@@ -13,7 +13,7 @@ YN0=evalfr(YbusDss,sc);
 
 
 Poi=2; % interested POI.
-kp=find(OrderOld2New==2); % order of the interested POI.
+kp=find(OrderOld2New==Poi); % Number of the interested POI in the hybrid matrix
 %% SCR1:  conventional SCR: considering all sources as voltage source 
 if ApparatusSourceType(kp)==1 % voltage source
     YnetP = HN(kp*2-1: kp*2, kp*2-1: kp*2);
@@ -31,9 +31,32 @@ for i=1:NumBus
      if ApparatusSourceType(i)==1 % voltage source, GFM
          POI_IF=POI_IF + HN(kp*2-1:kp*2 , i*2-1:i*2);
      elseif ApparatusSourceType(i)==2
-         POI_IF=POI_IF + HN(kp*2-1:kp*2 , i*2-1:i*2) / norm(HN(kp*2-1: kp*2, kp*2-1: kp*2)) ; 
+         Znet_i = HN(i*2-1:i*2 , i*2-1:i*2); 
+         POI_IF=POI_IF + HN(kp*2-1:kp*2 , i*2-1:i*2) / Znet_i ; 
      end
 end
 ESCR = 1/norm(ZnetP * POI_IF);
 fprintf('ESCR at bus-%d is %f. \n',[Poi,ESCR]);
-%% SCR4: Weighted short circuit ratio (WSCR)
+%% SCR3: ESCR-NEW: including the dynamics of other apparatus
+Ypp=YA0(2*Poi-1:2*Poi, 2*Poi-1:2*Poi);
+Zpp=inv(Ypp);
+POI_IF_2=[0,0;0,0]; % interaction factor
+for i=1:NumBus
+     k=OrderOld2New(i); % the original bus number
+     if ApparatusSourceType(i)==1 % voltage source, GFM
+         YAkk=YA0(2*k-1:2*k, 2*k-1:2*k);
+         ZAkk=inv(YAkk);
+         POI_IF_2=POI_IF_2 + HN(kp*2-1:kp*2,i*2-1:i*2) + ZAkk/ZnetP;
+     elseif ApparatusSourceType(i)==2
+         YAkk=YA0(2*k-1:2*k, 2*k-1:2*k);
+         Ynetk = inv(HN(kp*2-1:kp*2,i*2-1:i*2));
+         Ynet_combine = YAkk+Ynetk;
+         Znet_combine = inv(Ynet_combine);
+         Znet_i = HN(i*2-1:i*2 , i*2-1:i*2); 
+         POI_IF_2=POI_IF_2 + Znet_combine/Znet_i ; 
+     end
+end
+ESCR_new = 1/norm(ZnetP * POI_IF_2);
+fprintf('ESCR-new at bus-%d is %f. \n',[Poi,ESCR_new]);
+
+
