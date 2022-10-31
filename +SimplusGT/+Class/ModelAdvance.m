@@ -188,10 +188,10 @@ methods(Static)
         obj.Gk = Gk;
         obj.Fk = Fk;           
     end
-    
+
     function [Ak,Bk,Ck,Dk,Wk,Qk,Gk,Fk] = CalcDynamicSS(obj,xk,uk) 
         
-        [Ak,Bk,Ck,Dk] = obj.Linearization(obj,xk,uk);
+        [Ak,Bk,Ck,Dk] = obj.Linearization(obj,xk,uk);       % Linearization of the system
         
         if obj.LinearizationTimes == 1
             if ~isempty(obj.VoidJacobStates) % null the corresponding column of A
@@ -246,14 +246,14 @@ methods(Static)
     %% Virtual resistor
     % get the virtual resistor from property obj.Gk
     function Rv = GetVirtualResistor(obj)
-        Rv = 1/obj.Gk(1,1)/1.002;
+        Rv = 1/obj.Gk(1,1)/1.002;   % ???
     end
     
     % calculate the virtual resistor from parameter
     function Rv = CalcVirtualResistor(obj)
         [x_e,u_e,~] = obj.Equilibrium(obj);
         [~,~,~,~,~,~,Gk,~] = CalcDynamicSS(obj,x_e,u_e);        
-        Rv = 1/Gk(1,1)/1.002;
+        Rv = 1/Gk(1,1)/1.002;       % ???
     end
     
 end
@@ -275,7 +275,9 @@ methods(Access = protected)
             obj.uk = 0*obj.u_e;
         end  
         
-        % Initialize A, B, C, D
+        % Initialize A, B, C, D, etc.
+        % The linearized results may not be useful in simulation if forward
+        % Eular method is used.
         if obj.LinearizationTimes == 1
             obj.SetDynamicSS(obj,obj.x_e,obj.u_e);            
         else
