@@ -46,5 +46,8 @@ UserDataType = 1;
 % Hybrid ac-dc power system examples:
 % UserDataName = 'Hybrid_test_v1';             % A 4-bus hybrid ac-dc system
 
+% UserDataName = 'GfmTest_v1';
+UserDataName = 'GflTest_v1';
+
 %% Run toolbox
 SimplusGT.Toolbox.Main();

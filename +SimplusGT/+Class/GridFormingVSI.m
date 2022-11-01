@@ -55,21 +55,12 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             Rc      = obj.Para(5);
             Xov     = obj.Para(6);
             Rov     = 0;
-            xDw     = obj.Para(7);
-            Dv      = 0.05;
-            xfdroop = obj.Para(8);
-            xfvdc   = obj.Para(9);
-            xfidq   = obj.Para(10);
             W0      = obj.Para(11);
            
             % Calculate parameters
             Lf = xwLf/W0;
             Cf = xwCf/W0;
             Lc = xwLc/W0;
-            Dw = xDw*W0;
-            wf = xfdroop*2*pi;
-            w_v_odq = xfvdc*2*pi;
-            w_i_ldq = xfidq*2*pi;
             
             v_gd = V;
             v_gq = 0;
@@ -146,12 +137,13 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             xwCf    = obj.Para(3);
             xwLc    = obj.Para(4);
             Rc      = obj.Para(5);
-            Xov     = obj.Para(6);
-            Rov     = 0;
-            xDw     = obj.Para(7);
-            Dv      = 0.05;
-            xfdroop = obj.Para(8);
-            xfvdq   = obj.Para(9);
+            % Xov     = obj.Para(6);
+            % Rov     = 0;
+            Xov = 0;
+            Rov = 0;
+            % xDw     = obj.Para(7);
+            % xfdroop = obj.Para(8);
+            % xfvdq   = obj.Para(9);
             xfidq   = obj.Para(10);
             W0      = obj.Para(11);
             
@@ -159,15 +151,24 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             Lf = xwLf/W0;
             Cf = xwCf/W0;
             Lc = xwLc/W0;
-            Dw = xDw*W0;
-            wf = xfdroop*2*pi;
-            w_v_odq = xfvdq*2*pi;
+            % Dw = xDw*W0;
+            % wf = xfdroop*2*pi;
+            Dw = 0.05*W0
+            wf = 1/(50*1e-3);
+            Dv = 0.05;
+            
+            % w_v_odq = xfvdq*2*pi;
             w_i_ldq = xfidq*2*pi;
             
             kp_i_ldq = w_i_ldq*Lf;
             ki_i_ldq = w_i_ldq^2*Lf/4;
-            kp_v_odq = w_v_odq*Cf;
-            ki_v_odq = w_v_odq^2*Cf/4*50;
+            
+            % kp_v_odq = w_v_odq*Cf
+            % ki_v_odq = w_v_odq^2*Cf/4*50
+            % ki_v_odq = w_v_odq^2*Cf/4;
+            
+            kp_v_odq = 0.00853;
+            ki_v_odq = 0.3062;
                 % This is a different way of setting voltage PI
                 % kp_v_odq = 1/(16*w_i_ldq*Lf);
                 % ki_v_odq = 1/(4*Lf);
@@ -208,8 +209,8 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                 % PF droop: w = w0 + Dw*(P0 - P*LPF)
                 % QV droop: v_od_r = v_od_0 + Dv*(Q0 - Q*LPF)
                 %           v_oq_r = v_oq_0
-                P0     = obj.P0;
-                Q0     = obj.Q0;
+                P0     = obj.P0
+                Q0     = obj.Q0
                 if 1
                     dw = (W0 + Dw*(P0 - p) - w)*wf;         % P-w droop
                 else
@@ -223,15 +224,15 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                      end
                 end
                 
-                switch 3
+                switch 1
                     case 1
                         dv_od_r = (obj.v_od_r + Dv*(Q0 - q) - v_od_r)*wf;   % Q-V droop
                         % Limitation for v_od_r
-                        if EnableSaturation
-                             if (v_od_r >= v_od_limit_H && dv_od_r >=0 ) || (v_od_r <= v_od_limit_L && dv_od_r <= 0 )
-                                dv_od_r = 0;                  
-                             end
-                        end                        
+                        %if EnableSaturation
+                        %     if (v_od_r >= v_od_limit_H && dv_od_r >=0 ) || (v_od_r <= v_od_limit_L && dv_od_r <= 0 )
+                        %        dv_od_r = 0;                  
+                        %     end
+                        %end                        
                     case 2
                         v_od_r = obj.v_od_r + Dv*(Q0 - q);                  % Q-V droop without LPF
                         dv_od_r = 0;
@@ -253,10 +254,10 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                 end
                 v_oq_r = obj.v_oq_r;
                 % Limitation for v_oq_r
-                if EnableSaturation
-                    v_oq_r = min(v_oq_r,v_oq_limit_H);
-                    v_oq_r = max(v_oq_r,v_oq_limit_L);
-                end  
+                %if EnableSaturation
+                %    v_oq_r = min(v_oq_r,v_oq_limit_H);
+                %    v_oq_r = max(v_oq_r,v_oq_limit_L);
+                %end  
                 
                 % AC voltage control
                 error_v_od = v_od_r - v_od - (i_od*Rov-i_oq*Xov)*(-1);
@@ -266,21 +267,21 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                 dv_od_i = error_v_od*ki_v_odq;
                 dv_oq_i = error_v_oq*ki_v_odq;
                 % AC voltage controller anti-windup
-                if EnableSaturation
-                     if (v_od_i >= i_ld_limit && dv_od_i >=0 ) || (v_od_i <= -i_ld_limit && dv_od_i <= 0)
-                        dv_od_i = 0;                  
-                     end
-                     if (v_oq_i >= i_lq_limit && dv_oq_i >= 0 ) || (v_oq_i <= -i_lq_limit && dv_oq_i <= 0)
-                        dv_oq_i = 0;                  
-                     end                    
-                end
+                %if EnableSaturation
+                %     if (v_od_i >= i_ld_limit && dv_od_i >=0 ) || (v_od_i <= -i_ld_limit && dv_od_i <= 0)
+                %        dv_od_i = 0;                  
+                %     end
+                %     if (v_oq_i >= i_lq_limit && dv_oq_i >= 0 ) || (v_oq_i <= -i_lq_limit && dv_oq_i <= 0)
+                %        dv_oq_i = 0;                  
+                %     end                    
+                %end
                 % Current saturation
-                if EnableSaturation
-                    i_ld_r = min(i_ld_r,i_ld_limit);
-                    i_ld_r = max(i_ld_r,-i_ld_limit);
-                    i_lq_r = min(i_lq_r,i_lq_limit);
-                    i_lq_r = max(i_lq_r,-i_lq_limit);
-                end
+                %if EnableSaturation
+                %    i_ld_r = min(i_ld_r,i_ld_limit);
+                %    i_ld_r = max(i_ld_r,-i_ld_limit);
+                %    i_lq_r = min(i_lq_r,i_lq_limit);
+                %    i_lq_r = max(i_lq_r,-i_lq_limit);
+                %end
 
                 % AC current control
                 error_i_ld = i_ld_r-i_ld;
@@ -290,21 +291,21 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                 di_ld_i = -error_i_ld*ki_i_ldq;
                 di_lq_i = -error_i_lq*ki_i_ldq;
                 % Current controller anti-windup
-                if EnableSaturation
-                     if (i_ld_i >= e_d_limit_H && di_ld_i >=0 ) || (i_ld_i <= e_d_limit_L && di_ld_i <= 0)
-                        di_ld_i = 0;
-                     end
-                     if (i_lq_i >= e_q_limit_H && di_lq_i >= 0 ) || (i_lq_i <= e_q_limit_L && di_lq_i <= 0)
-                        di_lq_i = 0;                  
-                     end                    
-                end
+                %if EnableSaturation
+                %     if (i_ld_i >= e_d_limit_H && di_ld_i >=0 ) || (i_ld_i <= e_d_limit_L && di_ld_i <= 0)
+                %        di_ld_i = 0;
+                %     end
+                %     if (i_lq_i >= e_q_limit_H && di_lq_i >= 0 ) || (i_lq_i <= e_q_limit_L && di_lq_i <= 0)
+                %     end                    
+                %end
+                
                 % Ac voltage (duty cycle) saturation
-                if EnableSaturation
-                    e_d = min(e_d,e_d_limit_H);
-                    e_d = max(e_d,e_d_limit_L);
-                    e_q = min(e_q,e_q_limit_H);
-                    e_q = max(e_q,e_q_limit_L);
-                end
+                %if EnableSaturation
+                %    e_d = min(e_d,e_d_limit_H);
+                %    e_d = max(e_d,e_d_limit_L);
+                %    e_q = min(e_q,e_q_limit_H);
+                %    e_q = max(e_q,e_q_limit_L);
+                %end
 
                 % Lf equation
                 % e_d - v_od = -(di_ld/dt*Lf + Rf*i_ld - w*Lf*i_lq)
