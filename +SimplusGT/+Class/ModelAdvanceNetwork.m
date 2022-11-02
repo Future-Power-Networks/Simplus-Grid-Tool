@@ -13,8 +13,7 @@ classdef ModelAdvanceNetwork < SimplusGT.Class.ModelBase ...
 % ### Public properties 
 % Public can be set to []
 properties
-    Ts = 1e-4;          % Sampling period (s)
-    Para = [];          % Network parameters            
+    Ts;          % Sampling period (s)            
 end
 
 % ### Nontunable publica properties
@@ -41,16 +40,7 @@ properties(Access = protected)
         
     % Steady-state operating points
    	x_e;        % State
- 	u_e;        % Input
-    
-    % Dynamic SS Model
-    Ak;
-    Bk;
-    Ck;
-    Dk;
-    
-    % Store previous input. Used for eliminate algebraic loop.
-    uk;     
+ 	u_e;        % Input  
     
     % Timer
     Timer = 0;    
@@ -76,20 +66,6 @@ methods
     end
 end
 
-% ### Static methods
-methods(Static)
-
-    %% Equilibrium
-
-    % calc equilibrium x_e and u_e from power flow
-    function [x_e, u_e] = Equilibrium(obj)
-        error('The Equilibrium method should be overloaded in subclasses.');
-        % set x_e,u_e and xi according to PowerFlow
-        % x_e and u_e are column vectors with the same dimention as x and u
-    end
-        
-end
-
 % ### Protected default methods provided by matlab
 % Notes: The following methods are used for simulink model.
 methods(Access = protected)
@@ -98,13 +74,7 @@ methods(Access = protected)
     function setupImpl(obj)
          
       	% Initialize x_e, u_e
-        obj.x_e = 0;
-        obj.u_e = 0;
-        
-        % Initialize uk
-        obj.u_k = 0;
-        
-        % Initialize A, B, C, D, etc.
+        [obj.x_e,obj.u_e] = obj.Equilibrium(obj);
         
         % Initialize Timer
         obj.Timer = 0;
@@ -114,7 +84,7 @@ methods(Access = protected)
     % Initialize / reset discrete-state properties
     function resetImpl(obj)
         % Notes: x should be a column vector
-        obj.x = zeors(length(obj.x),1);
+        obj.x = obj.x_e;
     end
     
     % ### Update discreate states
@@ -136,9 +106,6 @@ methods(Access = protected)
         
      	% ### Forward Euler
      	y = obj.StateSpaceEqu(obj,obj.x,u,2);
-                
-        obj.uk = u;                 % store the current u=u[k+1/2]
-        obj.Start = 1;        
     end
     
   	% Set direct or nondirect feedthrough status of input
