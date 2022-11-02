@@ -22,7 +22,7 @@ elseif ApparatusSourceType(kp)==2 % current source
     ZnetP = HN(kp*2-1: kp*2, kp*2-1: kp*2);
     %YnetP = inv(ZnetP);
 end
-SCR1 = 1/norm(ZnetP);
+SCR1 = 1/abs_z(ZnetP);
 fprintf('Conventional SCR at bus-%d is %f. \n',[Poi,SCR1]);
 %% SCR2: Equivalent Circuit-based Short Circuit Ratio: ESCR
 % GFL ONLY
@@ -35,7 +35,7 @@ for i=1:NumBus
          POI_IF=POI_IF + HN(kp*2-1:kp*2 , i*2-1:i*2) / Znet_i ; 
      end
 end
-ESCR = 1/norm(ZnetP * POI_IF);
+ESCR = 1/abs_z(ZnetP * POI_IF);
 fprintf('ESCR at bus-%d is %f. \n',[Poi,ESCR]);
 %% SCR3: ESCR-NEW: including the dynamics of other apparatus
 Ypp=YA0(2*Poi-1:2*Poi, 2*Poi-1:2*Poi);
@@ -56,7 +56,9 @@ for i=1:NumBus
          POI_IF_2=POI_IF_2 + Znet_combine/Znet_i ; 
      end
 end
-ESCR_new = 1/norm(ZnetP * POI_IF_2);
+ESCR_new = 1/abs_z(ZnetP * POI_IF_2);
 fprintf('ESCR-new at bus-%d is %f. \n',[Poi,ESCR_new]);
-
-
+%abs_z(X)
+function X=abs_z(G)
+    X=sqrt( (G(1,1)+G(1,2))^2 + (G(2,1)+G(2,2))^2 )/sqrt(2);
+end
