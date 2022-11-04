@@ -21,7 +21,7 @@ cd(fileparts(mfilename('fullpath')));
 % "UserData.xlsm" and "UserData.json" contain the data of an example 4-bus
 % generator-inverter-composite power system in excel and josn format
 % respectively. Please feel free to change them.
-UserDataName = 'UserData';
+% UserDataName = 'UserData';
 
 %% Set user data type
 % If user data is in excel format, please set 1. If it is in json format,
@@ -35,7 +35,7 @@ UserDataType = 1;
 % UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
 % UserDataName = 'GflInverterInfiniteBus';   	% Single grid-following inverter and infinite bus
 % UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
-% UserDataName = 'IEEE_14Bus';
+UserDataName = 'IEEE_14Bus';
 % UserDataName = 'IEEE_30Bus';
 % UserDataName = 'IEEE_57Bus';
 % UserDataName = 'NETS_NYPS_68Bus';
