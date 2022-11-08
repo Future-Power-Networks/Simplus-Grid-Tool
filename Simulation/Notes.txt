@@ -1,3 +1,0 @@
-The simulation results of conventional test is done by decimation of 30. Fault from 2.5s to 3s. Simulation from 0s to 4.5s.
-
-The simulation results of inertia-free test is done by decimation of 120, because of longer simulation time. Fault from 8.5s to 9s. Simulation from 0s to 10.5s.

@@ -1,5 +1,10 @@
-% Scope plot
+% This function for quickly testing the simulation results by plotting the
+% results of scope directly based on workspace data after running
+% simulation.
 
+% Author(s): Yitong Li
+
+close all
 clear('Time');
 clear('theta','theta_','theta__');
 
@@ -11,7 +16,8 @@ Fbus = [19,22,30,31,32,34,35,37,38,43,54,57,58,62,63,65,66];
 % NumBus = 68;
 
 NumRef = 1;
-NumBus = 16;
+% NumBus = 16;      % For GFM only
+NumBus = 26;        % For hybrid GFM and GFL.
 
 Enable_17InfBus = 0;
 

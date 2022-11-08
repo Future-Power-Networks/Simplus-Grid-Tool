@@ -36,3 +36,21 @@ SimplusGT.Toolbox.Excel2Json(file);
 
 file = 'Examples\68Bus_LowInertia_LocalMode.xlsx';
 SimplusGT.Toolbox.Excel2Json(file);
+
+% %%
+% % Add for unsymmetrical fault test
+% 
+% file = 'Examples\68Bus_MedInertia_InterAreaMode_IncreaseH.xlsx';
+% SimplusGT.Toolbox.Excel2Json(file);
+% 
+% file = 'Examples\68Bus_MedInertia_LocalMode_IncreaseH.xlsx';
+% SimplusGT.Toolbox.Excel2Json(file);
+
+file = 'Examples\68Bus_HighInertia_InterAreaMode_GFL.xlsx';
+SimplusGT.Toolbox.Excel2Json(file);
+
+file = 'Examples\68Bus_MedInertia_InterAreaMode_GFL.xlsx';
+SimplusGT.Toolbox.Excel2Json(file);
+
+file = 'Examples\68Bus_LowInertia_InterAreaMode_GFL.xlsx';
+SimplusGT.Toolbox.Excel2Json(file);
