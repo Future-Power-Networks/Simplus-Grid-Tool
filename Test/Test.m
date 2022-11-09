@@ -1,2 +1,11 @@
-A = (2*pi+1)
-B = mod(A,2*pi)
+clear all
+close all
+clc
+
+Fs = 1e3;
+Ts = 1/Fs;
+
+Fbase = 50;
+Wbase = Fbase*2*pi;
+R = 1;
+L = 1/Wbase;

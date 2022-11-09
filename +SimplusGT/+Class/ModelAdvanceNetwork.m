@@ -110,7 +110,7 @@ methods(Access = protected)
     
   	% Set direct or nondirect feedthrough status of input
     function flag = isInputDirectFeedthroughImpl(obj,u)
-        flag = 1;
+        flag = 0;
     end
     
     % Release resources, such as file handles
