@@ -2,16 +2,16 @@
 
 %% Class
 
-classdef ThreePhaseNaturalParallelGC < SimplusGT.Class.ModelAdvanceNetwork
+classdef SinglePhaseSeriesRL < SimplusGT.Class.ModelAdvanceNetwork
     
     properties
-        Conductor;          % Conductor
-        Capacitor;          % Capacitor
+        R;          % Resistor
+        L;          % Inductor
     end
     
     methods
         % Constructor
-        function obj = ThreePhaseParallelGC(varargin)
+        function obj =SinglePhaseSeriesRL(varargin)
             setProperties(obj,nargin,varargin{:});
         end
     end
@@ -21,9 +21,9 @@ classdef ThreePhaseNaturalParallelGC < SimplusGT.Class.ModelAdvanceNetwork
         % For an inductor, voltage v is input, current i is output, current
         % i is state.
         function [State,Input,Output] = SignalList(obj)
-            State  = {'va','vb','vc'};       	% x
-            Input  = {'ia','ib','ic'};          % u
-            Output = {'va','vb','vc'};       	% y
+            State  = {'i'};        	% x
+            Input  = {'v'};         % u
+            Output = {'i'};       	% y
         end
         
         % Calculate the equilibrium
@@ -32,41 +32,35 @@ classdef ThreePhaseNaturalParallelGC < SimplusGT.Class.ModelAdvanceNetwork
         % calculated by power flow, which is not useful here.
         function [x_e,u_e] = Equilibrium(obj)
             % Calculate the equilibrium
-            x_e = [0;0;0];
-            u_e = [0;0;0];
+            x_e = [0];
+            u_e = [0];
         end
         
         % State space model
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
             % Get input
-            ia = u(1);
-            ib = u(2);
-            ic = u(3);
-
+            v = u(1);
+            
             % Get state
-            va = x(1);
-            vb = x(2);
-            vc = x(3);
+            i = x(1);
             
             % Get parameter
-           	C = obj.Capacitor;
-            G = obj.Conductor;
+            L = obj.L;
+            R = obj.R;
             
             % State space equations
          	% dx/dt = f(x,u)
             % y     = g(x,u)
             if CallFlag == 1
                 % ### Call state equation: dx/dt = f(x,u)
-                dva = (ia - va*G)/C;
-                dvb = (ib - vb*G)/C;
-                dvc = (ic - vc*G)/C;
+                di = (v-i*R)/L;
                 
-                f_xu = [dva; dvb; dvc]; 
+                f_xu = [di]; 
                 Output = f_xu;
                 
             elseif CallFlag == 2
                 % ### Call output equation: y = g(x,u)
-                g_xu = [va; vb; vc]; 
+                g_xu = [i]; 
                 Output = g_xu;              
             end
             
