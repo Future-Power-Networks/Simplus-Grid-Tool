@@ -52,8 +52,10 @@ state = [w;delta;vdr;vdi;vqi;id;iq;ild;ilq;vd;vq];
 dvdi = vdr - vd;
 dvqi = vqr - vq;
 
-idr = kp*dvdi + ki*vdi;
-iqr = kp*dvqi + ki*vqi;
+% idr = kp*dvdi + ki*vdi;
+% iqr = kp*dvqi + ki*vqi;
+idr = kp*dvdi + ki*vdi - Cf*w0*vq;
+iqr = kp*dvqi + ki*vqi + Cf*w0*vd;
 
 % Current controller
 did = (idr - id)/tau;
@@ -64,10 +66,10 @@ diq = (iqr - iq)/tau;
 ddelta = w - w0;
 
 % Filter capacitor
-dvd = id/Cf;
-dvq = iq/Cf;
-% dvd = (id-ild + w0*Cf*vq)/Cf;
-% dvq = (iq-ilq - w0*Cf*vd)/Cf;
+% dvd = id/Cf;
+% dvq = iq/Cf;
+dvd = (id-ild + w0*Cf*vq)/Cf;
+dvq = (iq-ilq - w0*Cf*vd)/Cf;
 
 % Frame transformation
 % vD + j*vQ = (vd + j*vq)*e^{j*delta}
