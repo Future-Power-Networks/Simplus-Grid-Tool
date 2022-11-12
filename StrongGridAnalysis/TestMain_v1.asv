@@ -1,0 +1,154 @@
+clear all
+close all
+clc
+
+%%
+Wg = 50*2*pi;
+W0 = Wg;
+
+%% Set parameters
+
+% LC Filter
+Lf = sym('Lf');
+Cf = sym('Cf');
+
+% Line impedance
+Rg = sym('Rg');
+Lg = sym('Lg');
+
+
+
+% Droop control
+syms vqr wf Dw Dv Pr Qr Vd0 W0
+
+% Voltage controller
+syms kpv kiv real
+
+tau = 1/500;
+
+% Grid voltage
+syms vgD vgQ real wg
+
+%%
+% System states
+w = sym('w');
+delta = sym('delta');
+vdr = sym('vdr');
+vdi = sym('vdi');
+vqi = sym('vqi');
+id = sym('id');
+iq = sym('iq');
+ild = sym('ild');
+ilq = sym('ilq');
+vd = sym('vd');
+vq = sym('vq');
+
+state = [w;delta;vdr;vdi;vqi;id;iq;ild;ilq;vd;vq];
+
+%%
+% Voltage controller
+dvdi = vdr - vd;
+dvqi = vqr - vq;
+
+idr = kpv*dvdi + kiv*vdi;
+iqr = kpv*dvqi + kiv*vqi;
+% idr = kp*dvdi + ki*vdi - Cf*wg*vq;
+% iqr = kp*dvqi + ki*vqi + Cf*wg*vd;
+
+% Current controller
+did = (idr - id)/tau;
+diq = (iqr - iq)/tau;
+
+% Angle difference
+% s*delta = w - w0;
+ddelta = w - wg;
+
+% Filter capacitor
+dvd = id/Cf;
+dvq = iq/Cf;
+% dvd = (id-ild + Wg*Cf*vq)/Cf;
+% dvq = (iq-ilq - Wg*Cf*vd)/Cf;
+
+% Frame transformation
+% vD + j*vQ = (vd + j*vq)*e^{j*delta}
+vD = vd*cos(delta) - vq*sin(delta);
+vQ = vd*sin(delta) + vq*cos(delta);
+
+% Line inductor
+% vD - vgD = s*Ll*ild - w0*Ll*ilq + Rl*ild
+% vQ - vgQ = w0*Ll*ild + s*Ll*ilq + Rl*ilq;
+digd = (vD - vgD + wg*Lg*ilq - Rg*ild)/Lg;
+digq = (vQ - vgQ - wg*Lg*ild - Rg*ilq)/Lg;
+
+p = vd*ild + vq*ilq;
+q = vq*ild - vd*ilq;
+
+% (Pr - P)*Dw/(1+s/wf) = W0 + w;
+% (Qr - Q)*Dv/(1+s/wf) = Vd0 + vdr;
+dw = ((Pr-p)*Dw+W0-w)*wf;
+dvdr = ((Qr-q)*Dv+Vd0-vdr)*wf;
+
+%% Calculate the state matrix
+f_xu = [dw;ddelta;dvdr;dvdi;dvqi;did;diq;digd;digq;dvd;dvq];
+
+Amat = jacobian(f_xu,state);
+
+%%
+% Set numerical number
+Cf = 0.02/Wg;
+
+Tm = 50*1e-3;
+wf = 1/Tm;
+
+kpv = 0.00853;
+kiv = 0.3062;
+% kp = kp*10;
+% ki = ki*1000;
+
+Dw = 0.05*Wg;
+Dv = 0.05;
+
+vd = 1.0957;
+vq = 0;
+p = 1;
+q = 0.2279;
+ild = p/vd;
+ilq = -q/vd;
+delta = 25.2846/180*pi;
+
+Lg = 0.4903/Wg;
+Rg = 0.4903/5;
+
+%%
+% Replace symbolic by numerical number
+
+Amat = subs(Amat,'kpv',kpv);
+Amat = subs(Amat,'kiv',kiv);
+
+Amat = subs(Amat,'Dw',Dw);
+Amat = subs(Amat,'Dv',Dv);
+
+Amat = subs(Amat,'vd',vd);
+Amat = subs(Amat,'vq',vq);
+Amat = subs(Amat,'delta',delta);
+Amat = subs(Amat,'ild',ild);
+Amat = subs(Amat,'ilq',ilq);
+
+Amat = subs(Amat,'wf',wf);
+
+Amat = subs(Amat,'Cf',Cf);
+Amat = subs(Amat,'Lf',Lf);
+
+Amat = subs(Amat,'Rg',Rg);
+Amat = subs(Amat,'Lg',Lg);
+
+Amat = subs(Amat,'wg',Wbase);
+
+
+Amat = double(Amat)
+
+EigVec = eig(Amat);
+EigVecHz = EigVec/(2*pi);
+
+PlotPoleMap(EigVecHz,9999);
+
