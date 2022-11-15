@@ -21,7 +21,7 @@ cd(fileparts(mfilename('fullpath')));
 % "UserData.xlsm" and "UserData.json" contain the data of an example 4-bus
 % generator-inverter-composite power system in excel and josn format
 % respectively. Please feel free to change them.
-UserDataName = 'UserData';
+% UserDataName = 'UserData';
 
 %% Set user data type
 % If user data is in excel format, please set 1. If it is in json format,
@@ -45,6 +45,8 @@ UserDataType = 1;
 %
 % Hybrid ac-dc power system examples:
 % UserDataName = 'Hybrid_test_v1';             % A 4-bus hybrid ac-dc system
+
+UserDataName = 'GfmInverterInfiniteBusTest';
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();

@@ -48,17 +48,15 @@ vq = sym('vq');
 state = [w;delta;vdr;vdi;vqi;id;iq;igd;igq;vd;vq];
 
 %%
+% Power calculation
+p = vd*igd + vq*igq;
+q = vq*igd - vd*igq;
+
 % Droop control
 % (Pr - P)*Dw/(1+s/wf) = W0 + w;
 % (Qr - Q)*Dv/(1+s/wf) = Vd0 + vdr;
 dw = ((Pr-p)*Dw+W0-w)*wf;
 dvdr = ((Qr-q)*Dv+Vd0-vdr)*wf;
-
-% Filter capacitor
-dvd = id/Cf;
-dvq = iq/Cf;
-% dvd = (id-ild + Wg*Cf*vq)/Cf;
-% dvq = (iq-ilq - Wg*Cf*vd)/Cf;
 
 % Voltage controller
 dvdi = vdr - vd;
@@ -73,28 +71,26 @@ iqr = kpv*dvqi + kiv*vqi;
 did = (idr - id)/tau;
 diq = (iqr - iq)/tau;
 
+% Filter capacitor: This may also need frame transformation
+dvd = id/Cf;
+dvq = iq/Cf;
+% dvd = (id-ild + Wg*Cf*vq)/Cf;
+% dvq = (iq-ilq - Wg*Cf*vd)/Cf;
+
 % Angle difference between inverter and inf bus
 % s*delta = w - wg;
 ddelta = w - wg;
-
-% Power calculation
-p = vd*igd + vq*igq;
-q = vq*igd - vd*igq;
-
-
 
 % Frame transformation
 % vD + j*vQ = (vd + j*vq)*e^{j*delta}
 vD = vd*cos(delta) - vq*sin(delta);
 vQ = vd*sin(delta) + vq*cos(delta);
 
-% Line inductor
+% Line inductor: frame transformation for current
 % vD - vgD = s*Lg*igd - wg*Lg*igq + Rg*igd
 % vQ - vgQ = wg*Lg*igd + s*Lg*igq + Rg*igq;
 digd = (vD - vgD + wg*Lg*igq - Rg*igd)/Lg;
 digq = (vQ - vgQ - wg*Lg*igd - Rg*igq)/Lg;
-
-
 
 %% Calculate the state matrix
 f_xu = [dw;ddelta;dvdr;dvdi;dvqi;did;diq;digd;digq;dvd;dvq];

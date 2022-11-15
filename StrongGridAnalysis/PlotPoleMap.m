@@ -2,7 +2,7 @@
 
 % Author(s): Yitong Li
 
-function PlotPoleMap(EigVecHz,FigN)
+function PlotPoleMap(EigVecHz,ZoonInAxis,FigN)
   
     figure(FigN);
     
@@ -17,5 +17,5 @@ function PlotPoleMap(EigVecHz,FigN)
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
-    axis([-80,20,-150,150]);
+    axis(ZoonInAxis);
 end
