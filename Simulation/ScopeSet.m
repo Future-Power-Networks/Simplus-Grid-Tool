@@ -4,8 +4,8 @@
 % Author(s): Yitong Li
 
 % ModelName = 'Sim68BusSg';
-ModelName = 'Sim68BusCap';
-% ModelName = 'Sim68BusUnbalancedFault';
+% ModelName = 'Sim68BusCap';
+ModelName = 'Sim68BusUnbalancedFault';
 % ModelName = 'Sim68BusGFL';
 
 Fbus = [19,22,30,31,32,34,35,37,38,43,54,57,58,62,63,65,66];
@@ -19,7 +19,8 @@ for i = 1:NumBus
         myConfiguration.DataLogging = true;
         myConfiguration.DataLoggingDecimateData = true;
         % myConfiguration.DataLoggingDecimation = '30';       % For high inertia test
-        myConfiguration.DataLoggingDecimation = '60';    % For low and medieum inertia test
+        % myConfiguration.DataLoggingDecimation = '60';    % For low and medieum inertia test
+        myConfiguration.DataLoggingDecimation = '10';    % For AG-fault low-inertia zoom-in 
         myConfiguration.DataLoggingVariableName = ['Data_App' num2str(i) ];
         myConfiguration.DataLoggingSaveFormat = 'Dataset';
     end
