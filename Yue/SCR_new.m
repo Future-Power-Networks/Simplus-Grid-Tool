@@ -44,16 +44,19 @@ POI_IF_2=[0,0;0,0]; % interaction factor
 for i=1:NumBus
      k=OrderOld2New(i); % the original bus number
      if ApparatusSourceType(i)==1 % voltage source, GFM
-         YAkk=YA0(2*k-1:2*k, 2*k-1:2*k);
-         ZAkk=inv(YAkk);
-         POI_IF_2=POI_IF_2 + HN(kp*2-1:kp*2,i*2-1:i*2) + ZAkk/ZnetP;
+         YAii=YA0(2*k-1:2*k, 2*k-1:2*k);
+         ZAii=inv(YAii);
+         POI_IF_2=POI_IF_2 + HN(kp*2-1:kp*2,i*2-1:i*2);% + ZAkk/ZnetP;
      elseif ApparatusSourceType(i)==2
-         YAkk=YA0(2*k-1:2*k, 2*k-1:2*k);
-         Ynetk = inv(HN(kp*2-1:kp*2,i*2-1:i*2));
-         Ynet_combine = YAkk+Ynetk;
-         Znet_combine = inv(Ynet_combine);
-         Znet_i = HN(i*2-1:i*2 , i*2-1:i*2); 
-         POI_IF_2=POI_IF_2 + Znet_combine/Znet_i ; 
+         YAii=YA0(2*k-1:2*k, 2*k-1:2*k);
+         Zii = HN(i*2-1:i*2 , i*2-1:i*2);
+         Yii = inv(Zii);
+         POI_IF_2=POI_IF_2 + HN(kp*2-1:kp*2,i*2-1:i*2) + inv(Yii+YAii);
+         %Ynetk = inv(HN(kp*2-1:kp*2,i*2-1:i*2));
+         %Ynet_combine = YAkk+Ynetk;
+         %Znet_combine = inv(Ynet_combine);
+         %Znet_i = HN(i*2-1:i*2 , i*2-1:i*2); 
+         %POI_IF_2=POI_IF_2 + Znet_combine/Znet_i ; 
      end
 end
 ESCR_new = 1/abs_z(ZnetP * POI_IF_2);

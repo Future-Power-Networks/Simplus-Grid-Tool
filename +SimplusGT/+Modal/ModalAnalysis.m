@@ -57,7 +57,7 @@ for modei=1:ModeSelNum
     FreqSel = imag(MdMode(ModeSelAll(modei)));
     if Layer12Enable ==1
         fprintf('Calculating Modal Analysis Layer1&2 and plotting the results...\n')
-        [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,N_Bus,...
+        [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,NumBus,...
             ApparatusType,modei,ApparatusSelL12,FreqSel,MdMode(ModeSelAll(modei)));
         MdLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
         MdLayer2(modei).mode = [num2str(FreqSel),'~Hz'];

@@ -34,7 +34,7 @@ SimplusGT.Modal.ExcelPrep(FileModal); %create a new excel file, or clear old con
 % Layer-1 analysis, d-d axis for bode plot, and apparatus-1 for Layer-3
 % analysis. As well, it will select two modes with lowest damping.
 % Write 1 to enable auto select.
-AutoSel = 1;
+AutoSel = 0;
 
 ZbusStateStr=ObjZbusDss.GetString(ObjZbusDss);
 
@@ -43,7 +43,7 @@ ZbusStateStr=ObjZbusDss.GetString(ObjZbusDss);
 
 fprintf('%s is now ready.\nPlease open the file and select the states and apparatuses you are interested.\n',FileModal);
 fprintf('After selection, save the excel file and run Modal Analysis.m.\n');
-winopen(UserDataName);
+%winopen(UserDataName);
 if AutoSel == 0
     winopen(FileModal);
 end
