@@ -22,4 +22,4 @@ The comments in "UserMain.m", "UserData.xlsm", and "UserData.json" explain basic
 
 If you have any inquiries or would like to join us, please feel free to contact:
 
-Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yunjie.gu@imperial.ac.uk).
+Yitong Li (yitongli@xjtu.edu.cn), Yunjie Gu (yunjie.gu@imperial.ac.uk).
