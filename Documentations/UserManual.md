@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is the manual for toolbox users. If you have any inquires or face any problems when using the toolbox, please feel free to contact: Yitong Li (yitong.li15@imperial.ac.uk), Yunjie Gu (yg934@bath.ac.uk), and Yue Zhu (yue.zhu18@imperial.ac.uk).
+This is the manual for toolbox users. If you have any inquires or face any problems when using the toolbox, please feel free to contact: Yitong Li (yitongli@xjtu.edu.cn), Yunjie Gu (yunjie.gu@imperial.ac.uk).
 
 ## System Requirement
 
