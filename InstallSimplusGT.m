@@ -1,8 +1,10 @@
-% Read me please:
-% This file installs the toolbox on the user PC. Users do not need to read
-% or understand the codes in this file. Please just run it directly and run
-% it only ONCE. Please use "UserMain.m" in the root path to run the toolbox
-% after installation.
+% Read me:
+% This file installs SimplusGT. Users do not need to read or understand the
+% codes in this file. Please just run it directly and run it ONCE. Please
+% use "UserMain.m" in the root path to run SimplusGT after installation.
+%
+% (运行此文件，即实现SimplusGT的安装。用户无需理解此文件代码内容，只需安装一
+% 次。安装完成后，后续使用SimplusGT，请运行"UserMain.m"文件。)
 
 % Author(s): Yitong Li, Yunjie Gu
 
