@@ -50,7 +50,7 @@ addpath(genpath(RootPath));                         % Add root path
 savepath;
 
 % Convert the toolbox lib to the required version
-fprintf('Converting the toolbox library to the required Matlab version, please wait a second...\n')
+fprintf('Converting the toolbox library to the required Matlab version, please wait a minute...\n')
 warning('off','all')    % Turn off all warnings
 open_system('SimplusGT_2015a.slx');
 save_system('SimplusGT_2015a.slx','Library/SimplusGT.slx');
