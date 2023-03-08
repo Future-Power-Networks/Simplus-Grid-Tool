@@ -56,6 +56,14 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
             
             % Get parameters
             obj.Para(1);
+            % if you would like to change the parameters at 2.0s. Taking xi as an example 
+            if obj.Timer>2
+            xi =6;
+            end ;
+           
+            
+            
+            
             
             % Calculate equilibrium
             
