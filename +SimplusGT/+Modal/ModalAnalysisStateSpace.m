@@ -11,9 +11,9 @@ function ModalAnalysisStateSpace(ObjGsysSs,EigIndex,FigN)
     PsiMat = PhiMat^(-1);
     EigVec = diag(EigMat);
     EigVecHz = EigVec/2/pi;
-    fprintf('The indices of eigenvalues whose real parts are larger than -10Hz: \n')
-    IndexRiskEig = find( real(EigVecHz)>-10);
-    SimplusGT.PrintArray(IndexRiskEig,10);
+    fprintf('The indices of risky eigenvalues whose real parts are larger than -1Hz: \n')
+    IndexRiskEig = find( real(EigVecHz)>-1);
+    SimplusGT.PrintArray(IndexRiskEig,15);
     
     % Initialize the participation factor matrix
     PfMat = zeros(length(GsysSs.A),0);

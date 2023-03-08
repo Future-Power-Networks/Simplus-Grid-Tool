@@ -12,19 +12,19 @@
 [
 
 {
-"BusNo":1,"BusType":1,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
+"BusNo":1,"BusType":1,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":2,"BusType":2,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
+"BusNo":2,"BusType":2,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":3,"BusType":2,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
+"BusNo":3,"BusType":2,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":4,"BusType":3,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":-0.2,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
+"BusNo":4,"BusType":3,"Voltage":1,"Theta":0,"PGi":0.5,"QGi":-0.2,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
 }
 
 ]

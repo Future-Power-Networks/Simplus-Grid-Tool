@@ -209,32 +209,10 @@ EigVec = diag(EigMat);
 EigVec = EigVec(find(real(EigVec) ~= inf));
 EigVecHz = EigVec/2/pi;
 fprintf('Check if the system is stable:\n')
-if isempty(find(real(EigVecHz)>1e-6, 1))
+if isempty(find(real(EigVecHz)>1e-4, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
-end
-
-% ### Plot fundamentals
-fprintf('\n')
-fprintf('Plot Fundamentals:\n')
-
-% Plot pole/zero map
-if UserDataStruct.Advance.EnablePlotPole
-    fprintf('Plot pole map...\n')
-    FigN = 100;
-    PlotPoleMap(EigVecHz,FigN);
-else
-    fprintf('Warning: The default plot of pole map is disabled.\n')
-end
-
-% Plot admittance
-if UserDataStruct.Advance.EnablePlotAdmittance
-    fprintf('Plot admittance spectrum...\n')
-  	FigN = 200;
-    PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBusI,PortBusV,FigN);
-else
-    fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
 
 %
@@ -267,6 +245,33 @@ end
 
 else
     fprintf('Warning: The state space modeling is disabled.\n');
+end
+
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Plot Fundamentals \n')
+fprintf('==================================\n')
+
+% ### Plot fundamentals
+fprintf('\n')
+fprintf('Plot Fundamentals:\n')
+
+% Plot pole/zero map
+if UserDataStruct.Advance.EnablePlotPole
+    fprintf('Plot pole map...\n')
+    FigN = 100;
+    PlotPoleMap(EigVecHz,FigN);
+else
+    fprintf('Warning: The default plot of pole map is disabled.\n')
+end
+
+% Plot admittance
+if UserDataStruct.Advance.EnablePlotAdmittance
+    fprintf('Plot admittance spectrum...\n')
+  	FigN = 200;
+    PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBusI,PortBusV,FigN);
+else
+    fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
 end
 
 %%
