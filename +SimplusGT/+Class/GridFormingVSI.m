@@ -205,13 +205,15 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
 
                 % Droop controller
                 % Standard droop equations:
-                % PF droop: w = w0 + Dw*(P0 - P*LPF)
+                % PF droop: w = w0 + Dw*(P0 - P*LPF);or VSG W=1/J*(P0-P-D(W-W0))
                 % QV droop: v_od_r = v_od_0 + Dv*(Q0 - Q*LPF)
                 %           v_oq_r = v_oq_0
                 P0     = obj.P0;
                 Q0     = obj.Q0;
                 if 1
                     dw = (W0 + Dw*(P0 - p) - w)*wf;         % P-w droop
+                 %if VSG
+                  % dw = ((W0-w)*Dw + (P0 - p))/wf;         % wf equals J     
                 else
                     dw = (W0 - Dw*(P0/V - i_od) - w)*wf; 	% id-w droop
                 end
