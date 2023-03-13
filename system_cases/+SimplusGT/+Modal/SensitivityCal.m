@@ -7,7 +7,7 @@
 %          diag -> branch.
 % Author: Yue Zhu
 
-function [SensMat,Ybus_val,Ynodal_val,Yre_val] = SensitivityCal(ZminSS,Ek,lambda_rad,YbusObj)
+function [SensMat,Ybus_val,Ynodal_val,Yre_val,SensMat_exp] = SensitivityCal(ZminSS,Ek,lambda_rad,YbusObj)
 
 %GmObj_Cell=evalin('base', 'GmObj_Cell');
 %YbusObj=evalin('base', 'YbusObj');

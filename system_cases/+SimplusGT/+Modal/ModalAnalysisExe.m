@@ -162,7 +162,7 @@ for modei=1:ModeSelNum
     Mode_rad = ZMode_rad(Ek);
    
     fprintf('Calculating sensitivity matrix...\n')
-    [SensMatrix, ~, Ynodal_val, Yre_val] ...
+    [SensMatrix, ~, Ynodal_val, Yre_val, SensMat_exp] ...
         =SimplusGT.Modal.SensitivityCal(ZminSS,Ek,Mode_rad,YbusObj); % get the sensitivity matrix and some admittance matrices.        
     
     fprintf('Calculating sensitivity Layer-2...\n')
@@ -173,7 +173,17 @@ for modei=1:ModeSelNum
         Line_sel = [37];
     end
     [SensLayer3_app,SensLayer3_bus] = SimplusGT.Modal.SensLayer3(SensMatrix,Mode_rad,ApparatusSelL3All,Line_sel);
-       
+    
+    % small-signal strength
+    YMR=zeros(N_Bus,1);
+    for k=1:N_Bus
+        if ApparatusType{k} ~= 100 % not a floating bus
+            Res_k = -SensMat_exp(2*k-1:2*k, 2*k-1:2*k);
+            YA_k=evalfr(GmDSS_Cell{k}(1:2,1:2),Mode_rad);
+            YMR(k)=abs(real(Mode_rad)) / (norm(Res_k) * norm(YA_k));
+            %SimplusGT.Frobenius_norm_dq(SensMatrix(1,1))
+        end
+    end
     MdSensResult(modei).mode = [num2str(FreqSel),'~Hz'];
     MdSensResult(modei).SensMatrix = SensMatrix;
     MdSensResult(modei).Ynodal_val = Ynodal_val;
@@ -183,6 +193,7 @@ for modei=1:ModeSelNum
     MdSensResult(modei).Layer12 = Layer12;
     MdSensResult(modei).Layer3_app = SensLayer3_app;
     MdSensResult(modei).Layer3_bus = SensLayer3_bus;
+    MdSensResult(modei).YMR = YMR;
     %MdSensResult.Sen
     figure(modei+100);
     SensLayer1_val(find(SensLayer1_val==0))=nan;
@@ -196,7 +207,6 @@ for modei=1:ModeSelNum
 end
 end
 % Sensitivity Layer 1
-
 
 
 end % end of function
