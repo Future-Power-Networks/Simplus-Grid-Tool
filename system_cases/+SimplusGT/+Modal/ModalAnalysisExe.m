@@ -176,11 +176,13 @@ for modei=1:ModeSelNum
     
     % small-signal strength
     YMR=zeros(N_Bus,1);
+    YMRx=zeros(N_Bus,1);
     for k=1:N_Bus
         if ApparatusType{k} ~= 100 % not a floating bus
             Res_k = -SensMat_exp(2*k-1:2*k, 2*k-1:2*k);
             YA_k=evalfr(GmDSS_Cell{k}(1:2,1:2),Mode_rad);
             YMR(k)=abs(real(Mode_rad)) / (norm(Res_k) * norm(YA_k));
+            YMRx(k)=abs(real(Mode_rad)) / abs(real(-1*( Res_k(1,1)*YA_k(1,1) + Res_k(1,2)*YA_k(2,1) + Res_k(2,1)*YA_k(1,2) + Res_k(2,2)*YA_k(2,2) )));
             %SimplusGT.Frobenius_norm_dq(SensMatrix(1,1))
         end
     end
@@ -194,6 +196,7 @@ for modei=1:ModeSelNum
     MdSensResult(modei).Layer3_app = SensLayer3_app;
     MdSensResult(modei).Layer3_bus = SensLayer3_bus;
     MdSensResult(modei).YMR = YMR;
+    MdSensResult(modei).YMRx = YMRx;
     %MdSensResult.Sen
     figure(modei+100);
     SensLayer1_val(find(SensLayer1_val==0))=nan;

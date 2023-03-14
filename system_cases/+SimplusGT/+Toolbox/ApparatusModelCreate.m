@@ -53,6 +53,8 @@ switch floor(Type/10)
     case 1      % Type 10-19
         if Type==10
             Apparatus = SimplusGT.Class.GridFollowingVSI('ApparatusType',Type);
+        elseif Type==19
+            Apparatus = SimplusGT.Class.GridFollowingVSI_SC('ApparatusType',Type);
         elseif Type==18
             Apparatus = SimplusGT.Class.GridFollowingVSI_old('ApparatusType',Type);
         else
