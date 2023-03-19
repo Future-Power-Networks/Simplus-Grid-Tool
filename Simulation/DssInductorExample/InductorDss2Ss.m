@@ -13,4 +13,10 @@ B = [0;0;0;0;1];
 C = [0,0,0,0,1];
 D = 0;
 
-[A_,B_,C_,D_,Bd,Dd]= CallDss2Ss(A,B,C,D,E)
+[A_,B_,C_,D_,Bd,Dd]= CallDss2Ss(A,B,C,D,E);
+
+A22 = [0,-1,-1;
+       1,0,0;
+       1,0,0]
+   
+N = null(A22)
