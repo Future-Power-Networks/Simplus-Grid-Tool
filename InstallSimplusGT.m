@@ -1,4 +1,3 @@
-% Read me:
 % This file installs SimplusGT. Users do not need to read or understand the
 % codes in this file. Please just run it directly and run it ONCE. Please
 % use "UserMain.m" in the root path to run SimplusGT after installation.
@@ -8,31 +7,33 @@
 
 % Author(s): Yitong Li, Yunjie Gu
 
-%%
-% Notes for developers:
-%
-% The simulink library may need to be updated programmatically here, when
-% adding Simplus Library.
+function InstallSimplusGT()
 
-%%
-clear all
 clc
-close all
 
-%%
+%% Generate msgbox
+InstallMsg = 'Installing Simplus Grid Tool. This may take a minute...               ';
+bar = waitbar(0.3,InstallMsg,'Name','Simplus');
+bar.CloseRequestFcn = '';
+
+%% Install
 % Change the current folder
-fprintf('Changing the current folder to the toolbox folder...\n')
+fprintf('Changing the current folder to SimplusGT folder...\n')
 MfilePath = mfilename('fullpath');
 [RootPath,~,~]  = fileparts(MfilePath);
 cd(RootPath);
 
 % Check the matlab version
 fprintf('Checking the Matlab version...\n')
-MatlabVersion = version('-release');
-MatlabVersion = MatlabVersion(1:(end-1));
-MatlabVersionYear = MatlabVersion;
-if str2double(MatlabVersionYear)<2015
-    error(['Error: Please use Matlab version 2015a or later!']);
+% MatlabVersion = version('-release');
+% MatlabVersion = MatlabVersion(1:(end-1));
+% MatlabVersionYear = MatlabVersion;
+% if str2double(MatlabVersionYear)<2015
+%     error(['Error: Please use Matlab version 2015a or later!']);
+% end
+if hex2dec(version('-release')) < hex2dec('2015b')
+    error('Error: Please use Matlab version 2015a or later!');
+    return;
 end
 
 % Check if a previous version of SimplusGT has been installed
@@ -49,29 +50,26 @@ addpath(genpath([RootPath,'/Documentations']));   	% Add "Documentations" folder
 addpath(genpath(RootPath));                         % Add root path
 savepath;
 
-% Convert the toolbox lib to the required version
-fprintf('Converting the toolbox library to the required Matlab version, please wait a minute...\n')
+% Convert the lib to the required version of matlab
+fprintf('Converting SimplusGT library to the required Matlab version, please wait a minute...\n')
 warning('off','all')    % Turn off all warnings
-open_system('SimplusGT_2015a.slx');
+load_system('SimplusGT_2015a.slx');
 save_system('SimplusGT_2015a.slx','Library/SimplusGT.slx');
 close_system('SimplusGT.slx');
 warning('on','all')     % Turn on all warnings
-clc
-
-%%
-% % Installation is completed
-% DlgTitle = 'Congratulations!';
-% DlgQuestion = 'The toolbox is installed successfully! Do you want to run "UserMain.m" to experience it NOW?';
-% choice = questdlg(DlgQuestion,DlgTitle,'Yes','No','Yes');
-% if strcmp(choice,'Yes')
-%     open('UserMain.m');
-%     run('UserMain.m');
-% else
-%  	msgbox('The installation is completed. Please run "UserMain.m" later in the root path for using the toolbox.');
-% end
 
 %%
 fprintf('Congratulations!\n')
-fprintf('The installation is completed.\n')
-fprintf('Please run "UserMain.m" later in the root path for using the toolbox!\n')
-fprintf('Please read manuals in the "Documentations" folder if you want to know more details.\n')
+fprintf('Simplus Grid Tool successfully installed!\n')
+fprintf('Please run "UserMain.m" later in the root path for using SimplusGT.\n')
+fprintf('Please read manuals in the "Documentations" folder for more information.\n')
+
+%% Remove msgbox
+beep;
+waitbar(1,bar,InstallMsg,'Name','Simplus');
+pause(1);
+delete(bar);
+
+msgbox('Simplus Grid Tool successfully installed!','Simplus');
+
+end
