@@ -22,7 +22,8 @@ cd(fileparts(mfilename('fullpath')));
 % generator-inverter-composite power system in excel and josn format
 % respectively. Please feel free to change them.
 %UserDataName = 'UserData';
-UserDataName = 'UserData_case2';
+UserDataName = 'UserData_case_4bus_2';
+%UserDataName = 'UserData_case1';
 %UserDataName = 'UserData_case2';
 %UserDataName = 'UserData_case3';
 
