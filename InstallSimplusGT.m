@@ -12,7 +12,7 @@ function InstallSimplusGT()
 clc
 
 %% Generate msgbox
-InstallMsg = 'Installing Simplus Grid Tool. This may take a minute...               ';
+InstallMsg = 'Installing Simplus Grid Tool. This may take one minute...               ';
 bar = waitbar(0.3,InstallMsg,'Name','Simplus');
 bar.CloseRequestFcn = '';
 
@@ -32,14 +32,17 @@ fprintf('Checking the Matlab version...\n')
 %     error(['Error: Please use Matlab version 2015a or later!']);
 % end
 if hex2dec(version('-release')) < hex2dec('2015b')
-    error('Error: Please use Matlab version 2015a or later!');
+    delete(bar);
+    StopInstall('Error: Please use Matlab 2015a or later version!');
     return;
 end
 
 % Check if a previous version of SimplusGT has been installed
 fprintf('Checking if the toolbox has been installed before...\n')
 if exist('SimplusGT')~=0
-    error(['Error: The toolbox has been installed on this PC/laptop before. Please unstall the old version first!']);
+    delete(bar);
+    StopInstall(['Error: SimplusGT has been installed on this PC before or SimplusGT lib is opened. Please uninstall the old version first or close the SimplusGT lib.']);
+    return;
 end
 
 % Add folder to path
@@ -49,6 +52,9 @@ addpath(genpath([RootPath,'/Library']));          	% Add "Library" folder
 addpath(genpath([RootPath,'/Documentations']));   	% Add "Documentations" folder
 addpath(genpath(RootPath));                         % Add root path
 savepath;
+
+% Waitbar
+waitbar(0.6,bar,InstallMsg,'Name','Simplus');
 
 % Convert the lib to the required version of matlab
 fprintf('Converting SimplusGT library to the required Matlab version, please wait a minute...\n')
@@ -72,4 +78,9 @@ delete(bar);
 
 msgbox('Simplus Grid Tool successfully installed!','Simplus');
 
+end
+
+function StopInstall(msg)
+    beep;
+    uiwait(msgbox(msg,'Simplus','warn','modal'));
 end
