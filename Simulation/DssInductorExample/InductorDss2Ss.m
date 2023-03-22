@@ -15,12 +15,17 @@ D = 0;
 
 [A_,B_,C_,D_,Bd,Dd]= CallDss2Ss(A,B,C,D,E);
 
-A22 = [0,-1,-1;
-       1,0,0;
-       1,0,0]
+A22 = [8,-99,-2;
+       5,0,0;
+       1,0,0];
    
-N = null(A22.')
-N = N.'
-N_ = null(A22)
+R = rank(A22);
 
-[t1,t2,t3] = svd(A22)
+N = NullRight(A22);
+t1 = A22*N
+
+N_ = NullLeft(A22);
+N_ = N_.'
+t2 = N_*A22
+
+% [t1,t2,t3] = svd(A22)
