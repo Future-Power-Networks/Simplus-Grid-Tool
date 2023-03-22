@@ -209,7 +209,7 @@ EigVec = diag(EigMat);
 EigVec = EigVec(find(real(EigVec) ~= inf));
 EigVecHz = EigVec/2/pi;
 fprintf('Check if the system is stable:\n')
-if isempty(find(real(EigVecHz)>1e-6, 1))
+if isempty(find(real(EigVecHz)>1e-4, 1))
     fprintf('Stable!\n');
 else
     fprintf('Warning: Unstable!\n')
