@@ -171,6 +171,8 @@ for modei=1:ModeSelNum
     Line_sel = [15];% See ListLineNew!.
     if CaseStudy>=4 && CaseStudy<=6
         Line_sel = [37];
+    elseif CaseStudy>6
+        Line_sel = [2];
     end
     [SensLayer3_app,SensLayer3_bus] = SimplusGT.Modal.SensLayer3(SensMatrix,Mode_rad,ApparatusSelL3All,Line_sel);
     
