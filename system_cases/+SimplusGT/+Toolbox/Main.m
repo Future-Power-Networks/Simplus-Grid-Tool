@@ -53,6 +53,8 @@ Enable_Participation        = ListAdvance(10);
 % ### Re-arrange the bus netlist
 [ListBus,N_Bus] = SimplusGT.Toolbox.RearrangeListBus(UserData);
 
+ListBus_=ListBus; % temparary added by Yue to save the original data
+
 % ### Re-arrange the line netlist
 [ListLine,N_Branch.N_Bus_] = SimplusGT.Toolbox.RearrangeListLine(UserData,ListBus);
 DcAreaFlag = find(ListBus(:,12)==2);

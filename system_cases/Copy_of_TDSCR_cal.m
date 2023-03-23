@@ -35,9 +35,9 @@ for k=1:N_Bus
     if ApparatusSourceType(k)==1 % if bus-k connects a voltage source
         for i=1:N_Bus
                 if ApparatusSourceType(i)==1 && i~=k % if bus-i connects a voltage source
-                    TDIF(k,i) = norm( GN(2*i-1:2*i,2*k-1:2*k) / GN(2*k-1:2*k,2*k-1:2*k) ) ;               
+                    TDIF(k,i) = norm( GN(2*k-1:2*k,2*i-1:2*i) / GN(2*k-1:2*k,2*k-1:2*k) ) ;               
                 elseif ApparatusSourceType(i)==2 && i~=k % if bus-i connects a current source
-                    TDIF(k,i) = norm( GN(2*k-1:2*k,2*i-1:2*i) );
+                    TDIF(k,i) = norm( GN(2*i-1:2*i,2*k-1:2*k) );
                 end
                 TDIF_sum(k) = TDIF_sum(k) + TDIF(k,i)*Prat_h(i);
         end
@@ -48,9 +48,9 @@ for k=1:N_Bus
     elseif ApparatusSourceType(k)==2 % if bus-k connects a current source       
         for i=1:N_Bus
                 if ApparatusSourceType(i)==1 && i~=k % if bus-i connects a voltage source
-                    TDIF(k,i) = norm( HN(2*k-1:2*k,2*i-1:2*i) );          
+                    TDIF(k,i) = norm( HN(2*i-1:2*i,2*k-1:2*k) );          
                 elseif ApparatusSourceType(i)==2 && i~=k % if bus-i connects a current source
-                    TDIF(k,i) = norm( HN(2*i-1:2*i,2*k-1:2*k) /  HN(2*k-1:2*k,2*k-1:2*k) ) ; 
+                    TDIF(k,i) = norm( HN(2*k-1:2*k,2*i-1:2*i) / HN(2*k-1:2*k,2*k-1:2*k) ) ; 
                 end
                 TDIF_sum(k) = TDIF_sum(k) + TDIF(k,i)*Prat_h(i);
         end      
