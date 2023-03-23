@@ -200,15 +200,8 @@ kii = Lf*(wi^2)/4;
 Dw = 0.05*Wbase/Sbase;
 Dv = 0;
 
-% vd = 0.707;
-% vq = 0.707;
-% vgD = 0.707;
-% vgQ = 0.707;
 vd = 1;
 vq = 0;
-vgD = 1;
-vgQ = 0;
-
 P = 0.5;
 Q = 0;
 igd = P/vd;
@@ -227,7 +220,8 @@ Xg = 0.2;
 Lg = Xg/Wbase;
 Rg = Xg*RatioRX;
 
-
+vgD = 1;
+vgQ = 0;
 
 % 
 Pr = P;

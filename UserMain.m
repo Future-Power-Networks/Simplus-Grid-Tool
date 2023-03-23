@@ -12,7 +12,7 @@
 %% Clear matlab
 clear all;  % Clear Matlab workspace
 clc;        % Clear Matlab command window
-close all;  % Close all figures, etc
+% close all;  % Close all figures, etc
 
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));
@@ -46,7 +46,7 @@ UserDataType = 1;
 % Hybrid ac-dc power system examples:
 % UserDataName = 'Hybrid_test_v1';             % A 4-bus hybrid ac-dc system
 
-UserDataName = 'GfmInverterInfiniteBusTest';
+UserDataName = 'TestSingleGfl';
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();
