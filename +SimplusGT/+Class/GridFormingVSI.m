@@ -80,8 +80,14 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             i_odq = i_od + 1i*i_oq;
             v_odq = v_gdq - i_odq*(Rc + 1i*w*Lc);
             i_cdq = v_odq*(1i*w*Cf);
-            i_ldq = i_odq - i_cdq;
-            e_dq  = v_odq - i_ldq*(Rf + 1i*w*Lf);
+            i_ldq = i_odq - i_cdq
+            e_dq  = v_odq - i_ldq*(Rf + 1i*w*Lf)
+            % e_dq_abs = abs(e_dq);
+            
+            % i_ldq = 0 + 1i*0;
+            % i_odq = 0 + 1i*0;
+            % v_odq = 1;
+            % e_dq = 1;
             
             i_ld = real(i_ldq);
             i_lq = imag(i_ldq);
@@ -167,13 +173,13 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             kp_i_ldq = w_i_ldq*Lf;
             ki_i_ldq = w_i_ldq^2*Lf/4;
             kp_v_odq = w_v_odq*Cf;
-            ki_v_odq = w_v_odq^2*Cf/4*50;
+            ki_v_odq = w_v_odq^2*Cf/4*25;
                 % This is a different way of setting voltage PI
                 % kp_v_odq = 1/(16*w_i_ldq*Lf);
                 % ki_v_odq = 1/(4*Lf);
             
             % Saturation setting
-            EnableSaturation = 1;
+            EnableSaturation = 0;
             
             % Frequency limit and saturation
             w_limit_H = W0*1.1;

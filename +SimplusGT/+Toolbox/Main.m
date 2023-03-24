@@ -346,7 +346,7 @@ function PlotPoleMap(EigVecHz,FigN)
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
-    axis([-20,15,-150,150]);
+    axis([-20,15,-60,60]);
 end
 
 %%
