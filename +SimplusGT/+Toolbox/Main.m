@@ -204,6 +204,7 @@ fprintf('Whole system admittance model (state space): YsysSs\n')
 % ### Check stability
 fprintf('\n')
 fprintf('Calculate pole/zero...\n')
+% GsysMin = minreal(GsysSs,1e-14);
 [PhiMat,EigMat] = eig(GsysSs.A);
 EigVec = diag(EigMat);
 EigVec = EigVec(find(real(EigVec) ~= inf));
@@ -248,7 +249,7 @@ fprintf('Modal Analysis: State Space \n')
 fprintf('==================================\n')
 if UserDataStruct.Advance.EnableParticipation == 1
     FigN = 300;
-    ModeIndex = [1];
+    ModeIndex = [241,243];
     SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,ModeIndex,FigN);
 else
     fprintf('Warning: This function is disabled.\n')

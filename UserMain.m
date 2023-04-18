@@ -20,8 +20,8 @@ cd(fileparts(mfilename('fullpath')));
 %% Set user data name
 UserDataType = 1;
 % UserDataName = 'Data14Bus';
-% UserDataName = 'Data68Bus';
-UserDataName = 'Data68Bus_VirtualRC';
+UserDataName = 'Data68Bus';
+% UserDataName = 'Data68Bus_VirtualRC';
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();
