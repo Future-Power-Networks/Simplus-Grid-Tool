@@ -80,8 +80,8 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             i_odq = i_od + 1i*i_oq;
             v_odq = v_gdq - i_odq*(Rc + 1i*w*Lc);
             i_cdq = v_odq*(1i*w*Cf);
-            i_ldq = i_odq - i_cdq
-            e_dq  = v_odq - i_ldq*(Rf + 1i*w*Lf)
+            i_ldq = i_odq - i_cdq;
+            e_dq  = v_odq - i_ldq*(Rf + 1i*w*Lf);
             % e_dq_abs = abs(e_dq);
             
             % i_ldq = 0 + 1i*0;
@@ -95,8 +95,8 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             i_lq_i = imag(e_dq);
             v_od = real(v_odq);
             v_oq = imag(v_odq);
-            v_od_i = i_ld;
-            v_oq_i = i_lq;
+            v_od_i = -i_ld;
+            v_oq_i = -i_lq;
             i_od = real(i_od);
             i_oq = imag(i_oq);
             theta = xi;
