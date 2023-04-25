@@ -28,3 +28,7 @@ Y_GFL_pn = [Ip,-Ip;
             -In,In];
         
 Y_GFL = T^(-1)*Y_GFL_pn*T
+
+% Notes:
+% Just be careful about the convention and the reference direction of
+% currents.
