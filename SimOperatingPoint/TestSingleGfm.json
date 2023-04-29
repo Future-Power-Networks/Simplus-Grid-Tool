@@ -16,7 +16,7 @@
 }
 ,
 {
-"BusNo":2,"BusType":3,"Voltage":1,"Theta":0,"PGi":0,"QGi":-0.5,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
+"BusNo":2,"BusType":3,"Voltage":1,"Theta":0,"PGi":-0.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
 }
 
 ]

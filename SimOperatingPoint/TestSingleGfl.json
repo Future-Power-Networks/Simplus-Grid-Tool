@@ -12,11 +12,11 @@
 [
 
 {
-"BusNo":1,"BusType":1,"Voltage":1,"Theta":0,"PGi":0,"QGi":0,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
+"BusNo":1,"BusType":1,"Voltage":0.8,"Theta":0,"PGi":0,"QGi":0,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":2,"BusType":3,"Voltage":1,"Theta":0,"PGi":0,"QGi":-0.2,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
+"BusNo":2,"BusType":3,"Voltage":1,"Theta":0,"PGi":0,"QGi":0.5,"PLi":0,"QLi":0,"Qmin":-999,"Qmax":999,"AreaNo":1,"AcDc":1
 }
 
 ]
@@ -28,7 +28,7 @@
 }
 ,
 {
-"FromBus":2,"ToBus":2,"R":"NaN","wL":"NaN","wC":0.02,"G":0,"TurnsRatio":1
+"FromBus":2,"ToBus":2,"R":"NaN","wL":"NaN","wC":2E-9,"G":0,"TurnsRatio":1
 }
 
 ]
@@ -50,7 +50,7 @@
 {
 "BusNo":2,"Type":11,"Para":
 {
-"V_dc":2.5,"C_dc":1.25,"f_v_dc":20,"wLf":0.05,"R":0.001,"f_pll":20,"f_tau_pll":300,"f_i_dq":250,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":1.25,"f_v_dc":20,"wLf":0.05,"R":0.01,"f_pll":20,"f_tau_pll":300,"f_i_dq":200,"w0":314.15926535897933
 }
 
 }

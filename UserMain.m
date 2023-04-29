@@ -10,8 +10,9 @@ cd(fileparts(mfilename('fullpath')));
 UserDataType = 1;
 
 %%
-% UserDataName = 'TestSingleGfl';
-UserDataName = 'TestSingleGfm';
+UserDataName = 'TestSingleGfl';
+% UserDataName = 'TestSingleGfm';
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();
+

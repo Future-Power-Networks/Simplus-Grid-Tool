@@ -15,23 +15,24 @@ Wbase = 2*pi*50;
 
 %% Default parameters
 % Equilibrium
-I = -0.5 + 1i*(0);
+I = -0.5 + 1i*(-0);
 V = 1;   % Stable
 W = Wbase;
 % Notes:
 % The model is in load convention.
 
 % PLL Bandwidth
-w_pll = 30*2*pi;
+w_pll = 20*2*pi;
 
 % Line impdeance
-Xline = 0.7;
+Xline = 0.5;
 Rline = Xline/5;
 
 % LCL Filter
 Lf = 0.05/W;
 Rf = 0.05/10;
-Cf = 0.02/W;
+% Cf = 0.02/W;
+Cf = 0;
 Lc = 0/W;
 Rc = 0;
 
@@ -93,14 +94,31 @@ Ztot_prime = inv(Ytot_prime);
 pole_sys = pole(minreal(Ztot_prime));
 pole_sys = pole_sys/2/pi;
 
-ZoomInAxis = [-20,10,-60,60];
-PlotPoleMap(pole_sys,ZoomInAxis,9999);
+figure(9999)
+PlotPole(pole_sys);
 
-% %% Swing analysis
-% % Swing equation: voltage-angle
-% Svt = s/G_PLL + 1/2*(V + conj(V));
-% Y_PLL = 1/(2*Svt)*[I,        -I;
-%                    -conj(I), conj(I)];
+%%
+% Swing analysis
+% Swing equation: voltage-angle
+Svt = s/G_PLL + 1/2*(V + conj(V));
+Ys = 1/(2*Svt)*[I,        -I;
+                -conj(I), conj(I)];
+% Zc = [Zline,0;
+%       0,conj(Zline)];
+% Yc = inv(Zc);
+Ctest = 0.05/W;
+% Yc = [(s+1i*W)*Ctest,   0;
+%       0,                (s-1i*W)*Ctest];
+Yc = [s*Ctest,0;
+      0,s*Ctest];
+Yt = Ys + Yc;
+Zt = inv(Yt);
+root = pole(minreal(Zt));
+root = root/2/pi;
+                
+figure(8888)
+PlotPole(root);
+
 % % Svt_prime = Ytot_prime/Svt;
 % Svt_prime = Ytot_prime*Zline_m;
 % 
@@ -111,3 +129,11 @@ PlotPoleMap(pole_sys,ZoomInAxis,9999);
 % % Convert rad/s to Hz.
 % root = root/2/pi;
 % root_prime = root_prime/2/pi;
+
+%%
+function PlotPole(Eigvalue)
+    scatter(real(Eigvalue),imag(Eigvalue),'x','LineWidth',1.5); hold on; grid on;
+    xlabel('Real Part (Hz)');
+    ylabel('Imaginary Part (Hz)');
+    axis([-20,10,-60,60]);
+end
