@@ -291,17 +291,22 @@ if Enable_PlotPole
     fprintf('Plotting pole map...\n')
     figure_n = figure_n+1;
     figure(figure_n);
-    subplot(1,2,1)
+    subplot(1,3,1)
     scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Global pole map');
     
-	subplot(1,2,2)
+   subplot(1,3,2)
     scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
-    title('Zoomed pole map');
+    axis([-200,20,-300,300]);
+    
+	subplot(1,3,3)
+    scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
+    xlabel('Real Part (Hz)');
+    ylabel('Imaginary Part (Hz)');
     axis([-80,20,-150,150]);
     
     %SimplexPS.mtit('Pole Map');

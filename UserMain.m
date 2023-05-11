@@ -1,7 +1,7 @@
 %% Clear matlab
 clear all;  % Clear matlab workspace
 clc;        % Clear matlab command window
-close all;  % Close all figures, etc
+% close all;  % Close all figures, etc
 
 %% Set user data
 % K analysis
