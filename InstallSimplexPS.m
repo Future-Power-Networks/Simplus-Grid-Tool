@@ -43,7 +43,7 @@ savepath;
 % Convert the toolbox lib to the required version
 fprintf('Converting the toolbox library to the required Matlab version, please wait a second...\n')
 warning('off','all')    % Turn off all warnings
-open_system('SimplexPS_2015a.slx');
+load_system('SimplexPS_2015a.slx');
 save_system('SimplexPS_2015a.slx','Library/SimplexPS.slx');
 close_system('SimplexPS.slx');
 warning('on','all')     % Turn on all warnings
