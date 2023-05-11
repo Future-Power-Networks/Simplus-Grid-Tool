@@ -1,6 +1,6 @@
 # SimplexPowerSystems (Version: v2021-APR-20)
 
-This is an old version of toolbox for obtaining the results of ``power-communication-isomorphism''.
+This is an very old version of toolbox for obtaining the results of ``power-communication-isomorphism''. Please check the master branch if you want to use the latest version of toolbox.
 
 ## System Requirement
 
