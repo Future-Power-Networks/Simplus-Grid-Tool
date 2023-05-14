@@ -143,6 +143,8 @@ if isproper(GsysDSS)
     % vectors, but does not change the element sequence of input and output
     % vectors.
     InverseOn = 0;
+    % GminSS = minreal(GminSS);       % Calculate the minimum realization,
+    % only enabled to GFL PLL dynamics test.
 else
     error('Error: System is improper, which has more zeros than poles.')
 end
@@ -292,19 +294,20 @@ if Enable_PlotPole
     figure_n = figure_n+1;
     figure(figure_n);
     subplot(1,3,1)
-    scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_ss),imag(pole_ss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     title('Global pole map');
     
    subplot(1,3,2)
-    scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_ss),imag(pole_ss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     axis([-200,20,-300,300]);
     
 	subplot(1,3,3)
-    scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
+    % scatter(real(pole_dss),imag(pole_dss),'x','LineWidth',1.5); hold on; grid on;
+    scatter(real(pole_ss),imag(pole_ss),'x','LineWidth',1.5); hold on; grid on;
     xlabel('Real Part (Hz)');
     ylabel('Imaginary Part (Hz)');
     axis([-80,20,-150,150]);

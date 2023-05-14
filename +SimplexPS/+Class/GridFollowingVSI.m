@@ -202,7 +202,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
           	% Notes:
             % "- ang_r" gives the reference in load convention, like the Tw
             % port.
-            switch 4                                                                % ?????? 
+            switch 2                                                          % ?????? 
                 case 1                                  % theta-PLL
                     e_ang = atan2(v_q,v_d) - ang_r;
                 case 2                                  % vq-PLL
@@ -241,8 +241,8 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     % target, so that Q-Q0=0 at steady state.
                 case 4
                     v_dq = v_d + 1i*v_q;
-                    v_m = abs(v_dq);
-                    theta_v = angle(v_dq);
+%                     v_m = abs(v_dq);
+%                     theta_v = angle(v_dq);
                     i_dq_r = i_d_r + 1i*i_q_r;
                     i_m = abs(i_dq_r);
                     theta_i = angle(i_dq_r);
@@ -250,7 +250,21 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                     W = S*exp(-1i* (pi/2 - theta_i) );
                     W = real(W);
                     W = W/i_m;
-                    e_ang = W/i_m  - ang_r;
+                    e_ang = W  - ang_r;
+                    % Notes: This method is equivalent to vq-PLL.
+                case 5
+                    v_dq = v_d + 1i*v_q;
+%                     v_m = abs(v_dq);
+%                     theta_v = angle(v_dq);
+                    i_dq = i_d + 1i*i_q;
+                    i_m = abs(i_dq);
+                    i_m = max(i_m,1e-3);
+                    theta_i = angle(i_dq);
+                    S = v_dq*conj(i_dq);
+                    W = S*exp(-1i* (pi/2 - theta_i) );
+                    W = real(W);
+                    W = W/i_m;
+                    e_ang = W  - ang_r;
                     % Notes: This method is equivalent to vq-PLL.
                 otherwise
                     error(['Error']);
