@@ -24,7 +24,11 @@ ImagMax = 60;                           % Hz, the upper limit of the selected mo
 ImagMin = 10;                           % Hz, the lower limit of the selected mode
                   
 % Synchronization of GFL test
-UserData = 'Test_SingleGflInfBus';
+% UserData = 'Test_SingleGflInfBus';
+
+% Test AVC
+% UserData = 'Test_AVC';
+UserData = 'K_68Bus_IBR_Load_AVC';
 
 %% Run toolbox
 SimplexPS.Toolbox.Main();

@@ -1,4 +1,4 @@
-% Gird-following inverter: AVC
+% Gird-following inverter: WPLL
 
 % Author(s): Yitong Li, Yunjie Gu
 
@@ -109,21 +109,20 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
            	% Get parameters
             C_dc    = obj.Para(1);
             v_dc_r  = obj.Para(2);
-            kp_v_dc = obj.Para(3)*0;      % v_dc, P
-            ki_v_dc = obj.Para(4)*0;      % v_dc, I
+            kp_v_dc = obj.Para(3);      % v_dc, P
+            ki_v_dc = obj.Para(4);      % v_dc, I
             kp_pll  = obj.Para(5);      % PLL, P
-            ki_pll  = obj.Para(6)*0;
-            % if (obj.Timer >= 2.5) && (obj.Timer <= 3)                                   % ????????
-            %     ki_pll  = obj.Para(6);      % PLL, I
-            % end
+            ki_pll  = obj.Para(6)*0;      % PLL, I
+            % tau_pll = obj.Para(7);
             tau_pll = 1/(100*2*pi);
+            % tau_pll = 1/(20*2*pi);
 
                 % Notes:
                 % This setting will make the PLL controller become:
                 % kp/(1+s/w_tau)
                 
             kp_i    = obj.Para(8);    	% i, P
-            ki_i    = obj.Para(9);  
+            ki_i    = obj.Para(9);                                                  % ??????
             k_pf    = obj.Para(10);
             L       = obj.Para(11);     % L filter
             R       = obj.Para(12);     % L filter's inner resistance
@@ -190,19 +189,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
             end
             % i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
             
-            k_AVC = 0.5;
-          	if obj.Timer >= 2.5
-                k_AVC = k_AVC*10;
-            end
-            % i_q_r = obj.i_q_r - (1 - sqrt(v_d^2+v_q^2))*k_AVC;                                          %???????
-            i_q_r = obj.i_q_r - (1 - v_d)*k_AVC;
-            
-            % i_q_r = obj.i_q_r; 
-            
-%             if (obj.Timer >= 2.5) && (obj.Timer <= 3)
-%                 i_d_r = i_d_r/2;
-%                 i_q_r = i_q_r/2;
-%             end
+            i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
 
          	% Current saturation
             if EnableSaturation
@@ -216,7 +203,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
           	% Notes:
             % "- ang_r" gives the reference in load convention, like the Tw
             % port.
-            switch 2
+            switch 2                                                          % ?????? 
                 case 1                                  % theta-PLL
                     e_ang = atan2(v_q,v_d) - ang_r;
                 case 2                                  % vq-PLL
@@ -293,7 +280,7 @@ classdef GridFollowingVSI < SimplexPS.Class.ModelAdvance
                  end
             end 
             
-            if 1 
+            if 1                                                                            % ??????
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
                 % dw = (0 + e_ang*ki_pll*10000/(kp_pll*100) - w)*kp_pll*100;      % The equivalent LPF is ki/kp*1/(1+s/kp);
                 % dw = (w_pll_i/1000 + e_ang*ki_pll*100/(kp_pll*10) - w)*kp_pll*10;      % The equivalent LPF is ki/kp*1/(1+s/kp);
