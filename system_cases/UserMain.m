@@ -17,7 +17,8 @@ switch CaseStudy
     case 6; UserData = 'NETS_NYPS_68_modified_tuned'; % 68 bus tuned model.
     case 7; UserData = 'NETS_NYPS_68_modified_tuned_inter_area'; % 68 bus tuned to stabilise the 0.65Hz interarea mode.
     case 8; UserData = 'IEEE_14Bus_Cyprus_modified_SSS2.xlsx'; % for small-signal strength
-    case 9; UserData = '4bus_case4.xlsx'; % for large-signal strength
+    case 9; UserData = '4bus_case6.xlsx'; % for large-signal strength 
+        % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
 %% Step 2: Run toolbox, get solutions of the system.

@@ -16,6 +16,7 @@ SCR=zeros(1,N_Bus);
 for i=1:N_Bus
     if ApparatusType{i}~=100 %not a load bus
         SCR(i)=1/ norm(ZN(i*2-1:i*2, i*2-1:i*2)) / Prat(i) ;
+        %SCR(i)=1/ norm(ZN(i*2-1:i*2, i*2-1:i*2)) / Prat(i) ;
     else
         SCR(i)=NaN;
     end
@@ -41,7 +42,8 @@ for k=1:N_Bus
                 end
                 TDIF_sum(k) = TDIF_sum(k) + TDIF(k,i)*Prat_h(i);
         end
-        TDscr_x(k)=1/norm(GN(k*2-1:k*2,k*2-1:k*2))/Prat_h(k);
+        TDscr_x(k)=norm(HN(k*2-1:k*2,k*2-1:k*2))/Prat_h(k);
+        %TDscr_x(k)=1/norm(GN(k*2-1:k*2,k*2-1:k*2))/Prat_h(k);
         TDescr_x(k)=1/norm(GN(k*2-1:k*2,k*2-1:k*2))/(Prat_h(k)+TDIF_sum(k));
         
         

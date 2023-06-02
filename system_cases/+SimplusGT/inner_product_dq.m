@@ -1,5 +1,5 @@
 % Frobinus inner product of a and b^H
-% ^H:conjugate transpose of A. 
+% ^H:conjugate transpose. 
 % Author: Yue Zhu
 
 

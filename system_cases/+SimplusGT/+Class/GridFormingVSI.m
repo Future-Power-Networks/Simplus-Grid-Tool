@@ -89,8 +89,8 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             i_lq_i = imag(e_dq);
             v_od = real(v_odq);
             v_oq = imag(v_odq);
-            v_od_i = i_ld;
-            v_oq_i = i_lq;
+            v_od_i = -i_ld;
+            v_oq_i = -i_lq;
             i_od = real(i_od);
             i_oq = imag(i_oq);
             theta = xi;

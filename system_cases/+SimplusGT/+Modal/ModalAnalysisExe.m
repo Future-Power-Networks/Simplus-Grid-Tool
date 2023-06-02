@@ -177,14 +177,24 @@ for modei=1:ModeSelNum
     [SensLayer3_app,SensLayer3_bus] = SimplusGT.Modal.SensLayer3(SensMatrix,Mode_rad,ApparatusSelL3All,Line_sel);
     
     % small-signal strength
-    YMR=zeros(N_Bus,1);
-    YMRx=zeros(N_Bus,1);
+    ZmVal = ZmValAll{modei};
+    ResidueY = ResidueAll{modei};
+    AMR=zeros(N_Bus,1);
+    IMR=zeros(N_Bus,1);
+    IMRx=zeros(N_Bus,1);
+    Z_layer2=zeros(N_Bus,1);
+    SigmaMag= abs(real(Mode_rad));
     for k=1:N_Bus
         if ApparatusType{k} ~= 100 % not a floating bus
             Res_k = -SensMat_exp(2*k-1:2*k, 2*k-1:2*k);
             YA_k=evalfr(GmDSS_Cell{k}(1:2,1:2),Mode_rad);
-            YMR(k)=abs(real(Mode_rad)) / (norm(Res_k) * norm(YA_k));
-            YMRx(k)=abs(real(Mode_rad)) / abs(real(-1*( Res_k(1,1)*YA_k(1,1) + Res_k(1,2)*YA_k(2,1) + Res_k(2,1)*YA_k(1,2) + Res_k(2,2)*YA_k(2,2) )));
+            AMR(k)=SigmaMag / abs(-1*( Res_k(1,1)*YA_k(1,1) + Res_k(1,2)*YA_k(2,1) + Res_k(2,1)*YA_k(1,2) + Res_k(2,2)*YA_k(2,2) ));
+            %AMR(k)= 1+SigmaMag / (norm(Res_k,'fro')*norm(YA_k,'fro'));
+            %IMR(k) = SigmaMag / (SimplusGT.Frobenius_norm_dq(ResidueY(k)) * SimplusGT.Frobenius_norm_dq(ZmVal(k)));
+            %IMRx(k) = SigmaMag / (abs(-1*SimplusGT.inner_product_dq(ResidueY(k),ZmVal(k))));
+            IMR(k)= SigmaMag/abs(-1*SimplusGT.inner_product_dq(ResidueY(k),ZmVal(k)));    
+            %Y_layer2(k)= -1*( Res_k(1,1)*YA_k(1,1) + Res_k(1,2)*YA_k(2,1) + Res_k(2,1)*YA_k(1,2) + Res_k(2,2)*YA_k(2,2) );
+            %Z_layer2(k)= -1*SimplusGT.inner_product_dq(ResidueY(k),ZmVal(k));
             %SimplusGT.Frobenius_norm_dq(SensMatrix(1,1))
         end
     end
@@ -197,17 +207,19 @@ for modei=1:ModeSelNum
     MdSensResult(modei).Layer12 = Layer12;
     MdSensResult(modei).Layer3_app = SensLayer3_app;
     MdSensResult(modei).Layer3_bus = SensLayer3_bus;
-    MdSensResult(modei).YMR = YMR;
-    MdSensResult(modei).YMRx = YMRx;
+    MdSensResult(modei).AMR = AMR;
+    MdSensResult(modei).IMR= IMR;
+    MdSensResult(modei).IMRx=IMRx;
+    %MdSensResult(modei).Z_Layer2=Z_layer2;
     %MdSensResult.Sen
-    figure(modei+100);
-    SensLayer1_val(find(SensLayer1_val==0))=nan;
-    heatmap(SensLayer1_val);
-    title('Heatmap of Grey-box Layer-1')
-    figure(modei+101);
-    SensLayer2_val(find(SensLayer2_val==0))=nan;
-    heatmap(real(SensLayer2_val));
-    title('Heatmap of Grey-box Layer-2 real part (damping)')
+%     figure(modei+100);
+%     SensLayer1_val(find(SensLayer1_val==0))=nan;
+%     heatmap(SensLayer1_val);
+%     title('Heatmap of Grey-box Layer-1')
+%     figure(modei+101);
+%     SensLayer2_val(find(SensLayer2_val==0))=nan;
+%     heatmap(real(SensLayer2_val));
+%     title('Heatmap of Grey-box Layer-2 real part (damping)')
     
 end
 end
