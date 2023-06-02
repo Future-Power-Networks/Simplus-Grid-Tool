@@ -2,11 +2,8 @@
 %
 % Default 4-bus power system user data is saved in "UserData.xlsm" and
 % "UserData.json". More examples can be found in "Examples" folder.
-% (默认用户数据见"UserData.xlsm"和"UserData.json".更多案例系统见
-% "Examples"文件夹.)
 %
 % More manuals are available in the "Documentations" folder.
-% (更多手册见"Documentations"文件夹.)
 
 %% Clear matlab
 clear all; clc; close all; 
@@ -34,7 +31,6 @@ UserDataName = 'UserData';      % Default 4-bus system
 
 %% Participation analysis
 EigenvalueIndex = [1,26,31];	% Choose the index of eigenvalue for participation analysis
-                                % (选择特征值编号，进行参与因子分析)
 
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));
@@ -42,7 +38,6 @@ cd(fileparts(mfilename('fullpath')));
 %% Set user data type
 % If user data is in excel format, please set 1. If it is in json format,
 % please set 0.
-%(若用户数据是Excel形式,请设置1.若用户数据为json形式，请设置0。）
 UserDataType = 1;
 
 %% Run toolbox

@@ -1,5 +1,4 @@
 % This file uninstalls the SimplusGT.
-% (运行此文件卸载SimplusGT)
 
 % Author(s): Yitong Li
 
