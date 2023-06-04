@@ -273,6 +273,9 @@ if Enable_PlotPole
     ylabel('Imaginary Part (Hz)');
     title('Zoomed pole map');
     axis([-80,20,-150,150]);
+    plot([-80,0], [-80,0]*10, '--k','LineWidth',2,'Color','blue')
+    plot([-80,0], [80,0]*10, '--k','LineWidth',2,'Color','blue')
+    legend('mode','10% damping line')
     
     %SimplusGT.mtit('Pole Map');
 else
