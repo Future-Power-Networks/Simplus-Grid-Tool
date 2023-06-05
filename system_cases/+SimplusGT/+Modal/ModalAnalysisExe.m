@@ -155,9 +155,12 @@ for modei=1:ModeSelNum
             Ek = n;
         end
         if n == length(ZMode_Hz) && abs(lambda_sel-ZMode_Hz(n))>m_tol && Ek == 0 % not matched
-            error('eigenvalue mismatch')
+            error('eigenvalue mismatch');
         end
-    end  
+    end
+    if Ek==0
+        error('eigenvalue mismatch');
+    end
     FreqSel = imag(ZMode_Hz(Ek));
     Mode_rad = ZMode_rad(Ek);
    

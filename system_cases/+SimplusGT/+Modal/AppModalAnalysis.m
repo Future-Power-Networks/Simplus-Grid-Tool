@@ -1,5 +1,5 @@
 
-function AppMDResults=AppModalAnalysis(ModeSelect)
+function AppMDResults=AppModalAnalysis(ModeSelect, AppSelect, TuneENA)
 
 N_Apparatus = evalin('base', 'N_Apparatus');
 N_Bus = evalin('base', 'N_Bus');
@@ -46,6 +46,7 @@ for modei=1:ModeSelNum
     FreqSel = imag(MdMode(ModeSelAll(modei)));
     [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus,...
         ApparatusType,modei,ApparatusSelL12,FreqSel,MdMode(ModeSelAll(modei)));
+    close(2011) %close the original figure (only show it in the app)
     MdLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
     MdLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
     for count = 1: length(ApparatusSelL12)
@@ -74,5 +75,13 @@ AppMDResults.Layer1=MdLayer1;
 AppMDResults.Layer2=MdLayer2;
 AppMDResults.IMR=IMR;
 
-return
+if(TuneENA==0)
+    % layer1,2 only
+else % for Layer-3 calculation
+    MdLayer3(modei).mode = [num2str(FreqSel),'~Hz'];
+    Mode_Hz = MdMode(ModeSelAll(modei));
+    MdLayer3(modei).result = SimplusGT.Modal.MdLayer3(Residue,ZmVal,Mode_Hz,ApparatusType,...
+            AppSelect,Para,ApparatusPowerFlow,Ts,ApparatusBus,ListBus);
+    AppMDResults.Layer3=MdLayer3;
+end
 end
