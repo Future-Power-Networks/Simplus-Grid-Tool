@@ -1,5 +1,6 @@
 function Layer1PieChart(axes,data,legend)
-    p=pie(axes, data);
+    explode=ones(1,length(data));
+    p=pie(axes, data,explode);
     pText = findobj(p,'Type','text');
     percentValues = get(pText,'String'); 
     for i=1:length(data)
