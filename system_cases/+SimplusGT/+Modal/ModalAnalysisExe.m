@@ -134,8 +134,12 @@ end
 % Ynodal: nodal admittance matrix with apparatus
 % Yre: a rearranged admittance: diagonal---node element admittance;
 %                               off-diagonal------branch element admittance
-MdSensResult=[];
+ZminSS = SimplusGT.WholeSysZ_cal(GmObj,YbusObj,Port_i, Port_v);
+if SensEnable==0
+    MdSensResult=0;
+end
 
+MdSensResult=[];
 if SensEnable == 1 % if enable
 fprintf('Calculating whole-system eigenvalue sensitivity...\n')
 ZminSS = SimplusGT.WholeSysZ_cal(GmObj,YbusObj,Port_i, Port_v);

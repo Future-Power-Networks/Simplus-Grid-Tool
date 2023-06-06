@@ -142,7 +142,11 @@ fprintf('Getting the descriptor state space model of whole system...\n')
 
 % ### Whole-system admittance model
 YsysObj = SimplusGT.ObjTruncate(GsysObj,Port_i,Port_v);
-YsysDSS = YsysObj.GetDSS(YsysObj);   
+YsysDSS = YsysObj.GetDSS(YsysObj);
+
+% SS string
+GminSSObj = SimplusGT.ObjDss2Ss(GsysObj);
+[GminStateStr,~,~]=GminSSObj.GetString(GminSSObj);
 
 % ### Chech if the system is proper
 fprintf('Checking if the whole system is proper:\n')

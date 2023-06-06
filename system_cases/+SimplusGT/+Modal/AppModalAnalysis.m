@@ -1,5 +1,5 @@
 
-function AppMDResults=AppModalAnalysis(ModeSelect, AppSelect, TuneENA)
+function [AppMDResults,MdDataSave]=AppModalAnalysis(ModeSelect)
 
 N_Apparatus = evalin('base', 'N_Apparatus');
 N_Bus = evalin('base', 'N_Bus');
@@ -8,7 +8,7 @@ ApparatusBus = evalin('base', 'ApparatusBus');
 ApparatusInputStr = evalin('base', 'ApparatusInputStr');
 ApparatusOutputStr = evalin('base', 'ApparatusOutputStr');
 ApparatusStateStr=evalin('base', 'ApparatusStateStr');
-SysStateString=evalin('base', 'SysStateString');
+GminStateStr=evalin('base', 'GminStateStr');
 GminSS = evalin('base', 'GminSS');
 GmDSS_Cell = evalin('base', 'GmDSS_Cell');
 GsysDSS = evalin('base', 'GsysDSS');
@@ -75,13 +75,15 @@ AppMDResults.Layer1=MdLayer1;
 AppMDResults.Layer2=MdLayer2;
 AppMDResults.IMR=IMR;
 
-if(TuneENA==0)
-    % layer1,2 only
-else % for Layer-3 calculation
-    MdLayer3(modei).mode = [num2str(FreqSel),'~Hz'];
-    Mode_Hz = MdMode(ModeSelAll(modei));
-    MdLayer3(modei).result = SimplusGT.Modal.MdLayer3(Residue,ZmVal,Mode_Hz,ApparatusType,...
-            AppSelect,Para,ApparatusPowerFlow,Ts,ApparatusBus,ListBus);
-    AppMDResults.Layer3=MdLayer3;
-end
+%% state-space participation factor
+StatePF=SimplusGT.Modal.StatePFCal(GminSS, ModeSelect);
+AppMDResults.StatePF.Val=StatePF;
+AppMDResults.StatePF.StateString=GminStateStr;
+
+%% save some data for layer-3
+MdDataSave.ResidueAll=ResidueAll;
+MdDataSave.ZmValAll=ZmValAll;
+MdDataSave.MdMode=MdMode;
+MdDataSave.ModeSelAll=ModeSelAll;
+
 end
