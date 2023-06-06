@@ -34,11 +34,19 @@ EigenvalueIndex = [1,26,31];	% Choose the index of eigenvalue for participation 
 
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));
-
 %% Set user data type
 % If user data is in excel format, please set 1. If it is in json format,
 % please set 0.
 UserDataType = 1;
 
-%% Run toolbox
-SimplusGT.Toolbox.Main();
+%% check toolbox
+v=ver;
+if(~any(strcmp('Symbolic Math Toolbox', {v.Name})))
+    error('please install Symbolic Math Toolbox in Matlab Add-Ons')
+elseif (~any(strcmp('Statistics and Machine Learning Toolbox', {v.Name})))
+    error('please install Statistics and Machine Learning Toolbox in Matlab Add-Ons')
+else
+    %% Run toolbox
+    SimplusGT.Toolbox.Main();    
+    ModalAnalysisAPP
+end
