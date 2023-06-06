@@ -224,12 +224,12 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Modal Analysis: State Space \n')
 fprintf('==================================\n')
-if UserDataStruct.Advance.EnableParticipation == 1
-    FigN = 300;
-    SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,EigenvalueIndex,FigN);
-else
+% if UserDataStruct.Advance.EnableParticipation == 1
+%     FigN = 300;
+%     SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,EigenvalueIndex,FigN);
+% else
     fprintf('Warning: This function is disabled.\n')
-end
+%end
 
 fprintf('\n')
 fprintf('==================================\n')
