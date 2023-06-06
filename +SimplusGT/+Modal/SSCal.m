@@ -1,14 +1,14 @@
 %calculate modes, residues from state-space, based on the modes and
 %apparatuses the user selected.
 %Author: Yue Zhu
-function [GbMode,ResidueAll,ZmValAll,ModeTotalNum,ModeDSS,Phi_DSS, IndexSS]=...
-    SSCal(GminSS, N_Apparatus, ApparatusType, ModeSelAll, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr)
+function [Mode,ResidueAll,ZmValAll]=...
+    SSCal(GminSS, N_Apparatus, ApparatusType, ModeSelect, GmDSS_Cell, ApparatusInputStr, ApparatusOutputStr)
 
 %% for state PF, use GsysDSS
-[GsysSS, IndexSS] = SimplusGT.dss2ss(GsysDSS);
-[Phi_DSS,D]=eig(GsysSS.A);
-D=D/(2*pi);
-ModeDSS=diag(D);
+%[GsysSS, IndexSS] = SimplusGT.dss2ss(GsysDSS);
+%[Phi_DSS,D]=eig(GsysSS.A);
+%D=D/(2*pi);
+%ModeDSS=diag(D);
 
 %% for impedance PF, use GminSS
 A=GminSS.A;
@@ -17,17 +17,15 @@ C=GminSS.C;
 [Phi,D]=eig(A);
 D=D/(2*pi);
 Psi=inv(Phi); 
-GbMode=diag(D);
+Mode=diag(D);
 
-ModeTotalNum = length(GbMode);
-ModeSelNum = length(ModeSelAll);
+ModeSelNum = length(ModeSelect);
 ResidueAll = cell(1,ModeSelNum);
 ZmValAll = cell(1,ModeSelNum);
 
 for modei=1:ModeSelNum
-    ModeSel = ModeSelAll(modei);
-    FreqSel = imag(GbMode(ModeSel));
-    lambda = GbMode(ModeSel)*2*pi;
+    ModeSel = ModeSelect(modei);
+    lambda = Mode(ModeSel)*2*pi;
     pin=1;
     pout=1;
     for k =1: N_Apparatus
@@ -49,15 +47,12 @@ for modei=1:ModeSelNum
             ZmValAll{modei}(k).dq = Zm(1,2);
             ZmValAll{modei}(k).qd = Zm(2,1);
             ZmValAll{modei}(k).qq = Zm(2,2);
-            pin = pin + length(ApparatusInputStr{k});    %4 inputs and 5 outputs.
-            pout = pout + length(ApparatusOutputStr{k});
-            
         else %floating bus and passive load: not considered           
             ResidueAll{modei}(k).dd=[];
             ZmValAll{modei}(k).dd=[];
-            pin = pin + length(ApparatusInputStr{k});
-            pout = pout + length(ApparatusOutputStr{k});
         end
+        pin = pin + length(ApparatusInputStr{k});    %4 inputs and 5 outputs.
+        pout = pout + length(ApparatusOutputStr{k});
     end
 end
 

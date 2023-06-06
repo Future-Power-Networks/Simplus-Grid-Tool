@@ -15,9 +15,9 @@ end
 
 %%
 %%diagrams drawing
-close(figure(2010+modei));
-h=figure(2010+modei);
-set(h,'position',[254.6,151.4,976.8,556]);
+%close(figure(2010+modei));
+%h=figure(2010+modei);
+%set(h,'position',[254.6,151.4,976.8,556]);
 Count=0;
 Layer2RealSum=0;
 Layer2ImagSum=0;
@@ -43,34 +43,34 @@ for k = 1:N_Apparatus
        c(Count) = categorical({['Apparatus',num2str(ApparatusBus{k})]});
    end
 end
-clear title
-subplot(2,2,[1,3]);
-pie(Layer1);
-title ('Impedance Participation Level-1');
-legend(VecLegend,'Location',[0.0486,0.121,0.1038,0.2437]);
-
-subplot(2,2,2);
-b=bar(c, Layer2.real_pu);
-set(gca,'YLim',[-1,1]);
-set(gca,'YTick',-1:0.5:1);
-set(gca,'XTickLabel',[]);
-title ('Impedance Participation Level-2 Real (Normalized to 1)');
-% for i=1:Count
-%     text(i-0.4,Layer2.real(i),num2str(Layer2.real(i)));
-% end
-
-subplot(2,2,4);
-b=bar(c, Layer2.imag_pu);
-set(gca,'YLim',[-1,1])
-set(gca,'YTick',-1:0.5:1);
-b.FaceColor = 'flat';
-b.CData = [1,0.5,0];
-title ('Impedance Participation Level-2 Imaginary (Normalized to 1)');
-% for i=1:Count
-%     text(i-0.4,Layer2.imag(i),num2str(Layer2.imag(i)));
-% end
-
-TitStr = ['Mode: ',num2str(ModeSel,'%.2f'), ' Hz'];
-SimplusGT.mtit(TitStr, 'color',[1 0 0], 'xoff', -0.3);
+% clear title
+% subplot(2,2,[1,3]);
+% pie(Layer1);
+% title ('Impedance Participation Level-1');
+% legend(VecLegend,'Location',[0.0486,0.121,0.1038,0.2437]);
+% 
+% subplot(2,2,2);
+% b=bar(c, Layer2.real_pu);
+% set(gca,'YLim',[-1,1]);
+% set(gca,'YTick',-1:0.5:1);
+% set(gca,'XTickLabel',[]);
+% title ('Impedance Participation Level-2 Real (Normalized to 1)');
+% % for i=1:Count
+% %     text(i-0.4,Layer2.real(i),num2str(Layer2.real(i)));
+% % end
+% 
+% subplot(2,2,4);
+% b=bar(c, Layer2.imag_pu);
+% set(gca,'YLim',[-1,1])
+% set(gca,'YTick',-1:0.5:1);
+% b.FaceColor = 'flat';
+% b.CData = [1,0.5,0];
+% title ('Impedance Participation Level-2 Imaginary (Normalized to 1)');
+% % for i=1:Count
+% %     text(i-0.4,Layer2.imag(i),num2str(Layer2.imag(i)));
+% % end
+% 
+% TitStr = ['Mode: ',num2str(ModeSel,'%.2f'), ' Hz'];
+% SimplusGT.mtit(TitStr, 'color',[1 0 0], 'xoff', -0.3);
 
 end
