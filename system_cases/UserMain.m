@@ -25,7 +25,7 @@ end
 %% Step 2: Run toolbox, get solutions of the system.
 tic
 SimplusGT.Toolbox.Main();
-toc
+%toc
 %ModalAnalysisAPP;
 
 %% Step 3: Modal analysis: participation and eigenvalue sensitivity
