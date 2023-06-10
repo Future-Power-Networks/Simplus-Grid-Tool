@@ -1,6 +1,6 @@
 % This class defines the model of grid-following VSI
 
-% Author(s): Yitong Li, Yunjie Gu
+% Author(s): Yitong Li, Yunjie Gu, modified by Yue
 
 %% Notes
 %
@@ -64,19 +64,21 @@ classdef GridFollowingVSI_old < SimplusGT.Class.ModelAdvance
               fvdc_x= obj.Para(3);
               fpll_x= obj.Para(4);
               fidq_x= obj.Para(6);
+              Sbase = obj.Para(10);
               W0=w;
               obj.W0=W0;             
               V_dc = Vdc_x;
-              C_dc = Cdc_x;
-              L = wL_x/w;
-              R = R_x;
+              C_dc = Cdc_x*Sbase;
+              L = wL_x/w/Sbase;
+              R = R_x/Sbase;
+
               kp_v_dc = V_dc*C_dc*(fvdc_x*2*pi);
               ki_v_dc = kp_v_dc * (fvdc_x*2*pi)/4;
               kp_pll = fpll_x*2*pi;
               ki_pll = kp_pll*fpll_x*2*pi/4;
               kp_i_dq = L*fidq_x*2*pi;
               ki_i_dq = kp_i_dq*fidq_x*2*pi/4;
-              tau_pll = 1/(200*2*pi);
+              tau_pll = 1/(200*2*pi);   % (Hz) bandwidth, PLL low pass filter
               k_pf = 0;
               Gi_cd = 0;
                             
@@ -126,20 +128,6 @@ classdef GridFollowingVSI_old < SimplusGT.Class.ModelAdvance
             w   = obj.PowerFlow(5);
             
            	% Get parameters
-%             C_dc    = obj.Para(1);
-%             v_dc_r  = obj.Para(2);
-%             kp_v_dc = obj.Para(3);      % v_dc, P
-%             ki_v_dc = obj.Para(4);      % v_dc, I
-%             kp_pll  = obj.Para(5);      % PLL, P
-%             ki_pll  = obj.Para(6);      % PLL, I
-%             tau_pll = obj.Para(7);
-%             kp_i_dq = obj.Para(8);      % i_dq, P
-%             ki_i_dq = obj.Para(9);      % i_dq, I
-%             k_pf    = obj.Para(10);
-%             L       = obj.Para(11);     % L filter
-%             R       = obj.Para(12);     % L filter's inner resistance
-%             W0      = obj.Para(13);
-%             Gi_cd   = obj.Para(14);     % Current cross-decouping gain
               Vdc_x = obj.Para(2);
               Cdc_x = obj.Para(1);
               wL_x  = obj.Para(7);
@@ -147,12 +135,15 @@ classdef GridFollowingVSI_old < SimplusGT.Class.ModelAdvance
               fvdc_x= obj.Para(3);
               fpll_x= obj.Para(4);
               fidq_x= obj.Para(6);
+              Sbase = obj.Para(10);
+              
               W0=obj.W0;
+              
               v_dc_r = Vdc_x;
               V_dc = Vdc_x;
-              C_dc = Cdc_x;
-              L = wL_x/w;
-              R = R_x;
+              C_dc = Cdc_x*Sbase;
+              L = wL_x/w/Sbase;
+              R = R_x/Sbase;
               kp_v_dc = V_dc*C_dc*(fvdc_x*2*pi);
               ki_v_dc = kp_v_dc * (fvdc_x*2*pi)/4;
               kp_pll = fpll_x*2*pi;
@@ -162,21 +153,6 @@ classdef GridFollowingVSI_old < SimplusGT.Class.ModelAdvance
               tau_pll = 1/(200*2*pi);
               k_pf = 0;
               Gi_cd = 0;
-              
-%             C_dc    = obj.Para(1);
-%             v_dc_r  = obj.Para(2);
-%             kp_v_dc = obj.Para(3);      % v_dc, P
-%             ki_v_dc = obj.Para(4);      % v_dc, I
-%             kp_pll  = obj.Para(5);      % PLL, P
-%             ki_pll  = obj.Para(6);      % PLL, I
-%             tau_pll = obj.Para(7);
-%             kp_i_dq = obj.Para(8);      % i_dq, P
-%             ki_i_dq = obj.Para(9);      % i_dq, I
-%             k_pf    = obj.Para(10);
-%             L       = obj.Para(11);     % L filter
-%             R       = obj.Para(12);     % L filter's inner resistance
-%             W0      = obj.Para(13);
-%             Gi_cd   = obj.Para(14);     % Current cross-decouping gain
             
             % Get states
           	i_d   	= x(1);

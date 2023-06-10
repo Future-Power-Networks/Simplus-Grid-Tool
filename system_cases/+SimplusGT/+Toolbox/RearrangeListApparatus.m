@@ -142,7 +142,8 @@ Para0010.f_tau_pll  = 300;          % (Hz) bandwidth, PLL low pass filter
 
 % Current loop
 Para0010.f_i_dq     = 600;      	% (Hz) bandwidth, idq
-Para0010.w0         = W0;   
+Para0010.w0         = W0;
+Para0010.Sbase      = 1;
 
 % ======================================
 % Grid-forming VSI (Droop-Controlled)
@@ -157,7 +158,8 @@ Para0020.Dw     =0.05;
 Para0020.fdroop =5;    % (Hz) droop control bandwidth
 Para0020.fvdq   =300;   % (Hz) vdc bandwidth
 Para0020.fidq   =600;   % current control bandwidth
-Para0020.w0     = W0;
+%Para0020.w0     = W0;
+Para0020.Sbase = 1;
 
 % ======================================
 % Synchronous generato ----- Full Model
@@ -384,11 +386,12 @@ for i = 1:length(row)
         switch SwitchFlag
             case 1; ParaCell{row(i)}.V_dc   = UserValue;
             case 2; ParaCell{row(i)}.C_dc   = UserValue;
-            case 3; ParaCell{row(i)}.wLf     = UserValue;
+            case 3; ParaCell{row(i)}.wLf    = UserValue;
             case 4; ParaCell{row(i)}.R      = UserValue;
             case 5; ParaCell{row(i)}.f_v_dc = UserValue;
             case 6; ParaCell{row(i)}.f_pll  = UserValue;
             case 7; ParaCell{row(i)}.f_i_dq = UserValue;
+            case 8; ParaCell{row(i)}.Sbase  = UserValue;    
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
@@ -404,6 +407,7 @@ for i = 1:length(row)
             case 8;  ParaCell{row(i)}.fdroop  = UserValue;
           	case 9;  ParaCell{row(i)}.fvdq    = UserValue;
           	case 10; ParaCell{row(i)}.fidq    = UserValue; 
+            case 11; ParaCell{row(i)}.Sbase   = UserValue;
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end

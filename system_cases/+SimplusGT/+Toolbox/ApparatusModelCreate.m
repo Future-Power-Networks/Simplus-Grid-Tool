@@ -68,7 +68,8 @@ switch floor(Type/10)
                         Para.f_i_dq;
                         Para.wLf;
                         Para.R;
-                        Para.w0];
+                        Para.w0;
+                        Para.Sbase];
                    
     % ### Grid-forming inverter
     case 2  % Type 20-29
@@ -87,7 +88,7 @@ switch floor(Type/10)
                         Para.fdroop;
                         Para.fvdq;
                         Para.fidq;
-                        Para.w0];
+                        Para.Sbase];
                  
     % full models for 68 bus.
     case 3  % Type 30-39
