@@ -39,6 +39,8 @@ classdef GridFormingVSI_old < SimplusGT.Class.ModelAdvance
         
         % Calculate the equilibrium
         function [x_e,u_e,xi] = Equilibrium(obj)
+            Sbase = obj.Para(11); % inverter base power
+
          	% Get the power PowerFlow values
             P 	= obj.PowerFlow(1);
             Q	= obj.PowerFlow(2);
@@ -57,7 +59,7 @@ classdef GridFormingVSI_old < SimplusGT.Class.ModelAdvance
             xfdroop = obj.Para(8);
             xfvdc = obj.Para(9);
             xfidq = obj.Para(10);
-            Sbase = obj.Para(11); % inverter base power
+            
             W0=w;
             obj.W0=W0;
             
@@ -110,6 +112,7 @@ classdef GridFormingVSI_old < SimplusGT.Class.ModelAdvance
         
         % State space model
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
+            Sbase = obj.Para(11); % inverter base power
         	% Get the power PowerFlow values
             V	= obj.PowerFlow(3);
             
@@ -143,7 +146,6 @@ classdef GridFormingVSI_old < SimplusGT.Class.ModelAdvance
             xfdroop = obj.Para(8);
             xfvdc = obj.Para(9);
             xfidq = obj.Para(10);
-            Sbase = obj.Para(11); % inverter base power
 
             w0=obj.W0;
             Lf = xwLf/Sbase/w0;

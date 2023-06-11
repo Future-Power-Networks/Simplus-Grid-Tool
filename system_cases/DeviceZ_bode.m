@@ -1,7 +1,10 @@
+% 
+% GmDSS_Cell_base = GmDSS_Cell;
+% save('GmDSS_Cell_base.mat', 'GmDSS_Cell_base');
 
 load('GmDSS_Cell_base.mat');
 
-k=15;
+k=12;
 figure(3);
 clf;
 grid on;
@@ -16,7 +19,7 @@ bode(Zmk(1,1),P);
 hold on;
 bode(Zmk_base(1,1),P);
 title('impedance compare: dd axis')
-legend(['Sbase=3';'Sbase=1'])
+legend(['Sbase=8';'Sbase=6'])
 
 subplot(2,2,2);
 bode(Zmk(1,2),P);
@@ -43,4 +46,4 @@ bode(GmDSS_Cell{k}(1,1),P);
 hold on;
 bode(GmDSS_Cell_base{k}(1,1),P);
 title('admittance compare: dd axis')
-legend(['Sbase=3';'Sbase=1'])
+legend(['Sbase=8';'Sbase=6'])
