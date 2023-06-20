@@ -10,9 +10,9 @@ end
 % Get the apparatus source type:
 % Notes: Remember to include other kinds of apparatuses later
 for i = 1:NumBus
-    if ApparatusType{i}==0 || ApparatusType{i}==1 || ApparatusType{i}==20 || ApparatusType{i}==41 || ApparatusType{i}==42
+    if ApparatusType{i}==0 || ApparatusType{i}==1 || ApparatusType{i}==20 || ApparatusType{i}==41 || ApparatusType{i}==42 || ApparatusType{i}==28 || ApparatusType{i}==30
       	ApparatusSourceType(i) = 1;    % Voltage node
-    elseif ApparatusType{i}==10 || ApparatusType{i}==11
+    elseif ApparatusType{i}==10 || ApparatusType{i}==11 || ApparatusType{i}==18
     	ApparatusSourceType(i) = 2;    % Current node
     elseif ApparatusType{i}==100
         ApparatusSourceType(i) = 3;    % Floating node     
