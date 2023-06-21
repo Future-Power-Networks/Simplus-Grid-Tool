@@ -1,10 +1,11 @@
-%% Traditional SCR: from Thevenin impedance
-f_low=0.2; % analysed frequency point
 
+f_low=0.1; % analysed frequency point
+
+%% Traditional SCR: from Thevenin impedance
 % impedance of apparatus: in positive sequency, with frequency coupling
 % effect (FCE) removed
 for i=1:length(ApparatusType)
-    Ym_matrix(i*2-1:i*2, i*2-1:i*2) = GmDSS_Cell{i}(1:2,1:2);
+    %Ym_matrix(i*2-1:i*2, i*2-1:i*2) = GmDSS_Cell{i}(1:2,1:2);
     if ApparatusType{i}>=90 % floating bus: impedance is set as 1e7, a large value
         Zm0(i*2-1:i*2, i*2-1:i*2) = 1e7;
         Zm0_svd(i,1:2) = 1e7;
@@ -12,45 +13,69 @@ for i=1:length(ApparatusType)
         Zm0(i*2-1:i*2, i*2-1:i*2) = inv(evalfr(GmDSS_Cell{i}(1:2,1:2), 1i*2*pi*f_low));
         Zm0_svd(i,1:2) = svd(Zm0(i*2-1:i*2, i*2-1:i*2)).';
     end
-    Zm0_mat_p(i,i) = Zm0_svd(i,2);
 end
-
-
 % Ybus to positive sequence value, with FCE parts removed
 Ybus0 = evalfr(YbusDSS, 1i*2*pi*f_low);
-for i=1:N_Bus
-    for j=1:N_Bus
-        bus_svd=svd(Ybus0(i*2-1:i*2,j*2-1:j*2));
-        Ybus0_p(i,j)=bus_svd(1);
-    end
-end
-
-Ysys_p = (eye(N_Bus)+Ybus0_p*Zm0_mat_p) \ Ybus0_p ;
+%Ysys_p = (eye(N_Bus)+Ybus0_p*Zm0_mat_p) \ Ybus0_p ;
+Ysys0 = inv(eye(2*N_Bus)+Ybus0*Zm0) * Ybus0 ;
 
 for i=1:N_Bus
     if ApparatusType{i}>=90 % floating bus
-        Zth_(i) = 1/(Ysys_p(i,i));
+        Zth{i} = inv(Ysys0(i*2-1:i*2, i*2-1:i*2));
+        %Zth_(i) = 1/(Ysys_p(i,i));
     else
-        Zth_(i) = 1/(Ysys_p(i,i)) - Zm0_mat_p(i,i);
+        Zth{i} = inv(Ysys0(i*2-1:i*2, i*2-1:i*2)) - Zm0(i*2-1:i*2, i*2-1:i*2);
     end
+    Zth_svd(i,:) = svd(Zth{i}).';
+    SCC(i) = 1/Zth_svd(i,2)
 end
-Zm0_mat_p
-Zth_
-SCC_ = 1./Zth_
+%Zth_
+Zth_svd
+SCC
 %Zth_p
 
-[HN, OrderOld2New, ApparatusSourceType] = HybridMatrix_ps(Ysys_p, ListBus, ApparatusType, N_Bus);
+%% Type depedent
+% switch in&out for nodal admittance matrix
+[HN, OrderOld2New, ApparatusSourceType] = HybridMatrix(Ybus0, ListBus, ApparatusType, N_Bus);
+% switch impedance - admittance for machine impedance
 for i=1:N_Bus
     if ApparatusSourceType(i) == 1 % voltage type
-        SCC_H(i) = 1/(1/(HN(i,i)) - Zm0_mat_p(i,i));
+        HM(i*2-1:i*2,i*2-1:i*2) = Zm0(i*2-1:i*2,i*2-1:i*2);
     elseif ApparatusSourceType(i) == 2 % current type
-        SCC_H(i) = 1/(HN(i,i)-Zm0_mat_p(i,i));
-    elseif ApparatusSourceType(i) == 3 % floating bus
-        SCC_H(i) = 'NAN';
+        HM(i*2-1:i*2,i*2-1:i*2) = inv(Zm0(i*2-1:i*2,i*2-1:i*2));
+    elseif ApparatusSourceType(i) == 3 % floating bus: zero admittance
+        HM(i*2-1:i*2,i*2-1:i*2) = 0;
     end
 end
-%HN
-SCC_H
+Hsys = inv(eye(2*N_Bus)+HN*HM) * HN;
+
+for i=1:N_Bus
+    if ApparatusSourceType(i) == 1 % voltage type
+        TDZth{i} = inv(Hsys(i*2-1:i*2,i*2-1:i*2))-Zm0(i*2-1:i*2, i*2-1:i*2);
+    elseif ApparatusSourceType(i) == 2 % current type
+        TDZth{i} = inv( inv(Hsys(i*2-1:i*2,i*2-1:i*2)) - inv(Zm0(i*2-1:i*2, i*2-1:i*2)) )
+    elseif ApparatusSourceType(i) == 3 % floating bus: zero admittance
+        TDZth{i} = zeros(2);
+    end
+    TDZth_svd(i,:) = svd(TDZth{i}).';
+    TDSCC(i) = 1/TDZth_svd(i,2);
+end
+TDZth_svd
+TDSCC
+% for i=1:N_Bus
+%     if ApparatusSourceType(i) == 1 % voltage type
+%         SCC_H(i) = 1/(1/(HN(i,i)) - Zm0_mat_p(i,i));
+%     elseif ApparatusSourceType(i) == 2 % current type
+%         SCC_H(i) = 1/HN(i,i) - 1/Zm0_mat_p(i,i); %1/(HN(i,i)-Zm0_mat_p(i,i));
+%     elseif ApparatusSourceType(i) == 3 % floating bus
+%         SCC_H(i) = 'NAN';
+%     end
+% end
+% %HN
+% SCC_H
+% 
+% Zm0_mat_p
+% HN
 % Prat_h = Prat(OrderOld2New); % rated power in new order
 
 %Ysys0 = evalfr(YsysDSS, 1i*2*pi*f_low);

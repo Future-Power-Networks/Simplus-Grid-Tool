@@ -25,7 +25,7 @@ Yp21 = Ynodal0_re((vs_num+1):end, 1:vs_num);
 Yp22 = Ynodal0_re((vs_num+1):end, (vs_num+1):end);
 
 % get the hybrid matrix. Attention: the order of the buses is changed now
-HNM = [Yp11 - Yp12*inv(Yp22)*Yp21, Yp12*inv(Yp22);...
+HNM = [Yp11 - Yp21/Yp22*Yp12, Yp12/Yp22;...
             -inv(Yp22)*Yp21,            inv(Yp22)];
 
 end
