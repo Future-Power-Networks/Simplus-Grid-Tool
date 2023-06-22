@@ -6,9 +6,9 @@ f_low=0.1; % analysed frequency point
 % effect (FCE) removed
 for i=1:length(ApparatusType)
     %Ym_matrix(i*2-1:i*2, i*2-1:i*2) = GmDSS_Cell{i}(1:2,1:2);
-    if ApparatusType{i}>=90 % floating bus: impedance is set as 1e7, a large value
-        Zm0(i*2-1:i*2, i*2-1:i*2) = 1e7;
-        Zm0_svd(i,1:2) = 1e7;
+    if ApparatusType{i}==100 % floating bus: machine impedance is set as 0
+        Zm0(i*2-1:i*2, i*2-1:i*2) = 0;
+        Zm0_svd(i,1:2) = 0;
     else
         Zm0(i*2-1:i*2, i*2-1:i*2) = inv(evalfr(GmDSS_Cell{i}(1:2,1:2), 1i*2*pi*f_low));
         Zm0_svd(i,1:2) = svd(Zm0(i*2-1:i*2, i*2-1:i*2)).';
@@ -27,41 +27,65 @@ for i=1:N_Bus
         Zth{i} = inv(Ysys0(i*2-1:i*2, i*2-1:i*2)) - Zm0(i*2-1:i*2, i*2-1:i*2);
     end
     Zth_svd(i,:) = svd(Zth{i}).';
-    SCC(i) = 1/Zth_svd(i,2)
+    SCC(i) = 1/Zth_svd(i,2);
 end
 %Zth_
 Zth_svd
 SCC
 %Zth_p
 
-%% Type depedent
-% switch in&out for nodal admittance matrix
-[HN, OrderOld2New, ApparatusSourceType] = HybridMatrix(Ybus0, ListBus, ApparatusType, N_Bus);
-% switch impedance - admittance for machine impedance
-for i=1:N_Bus
-    if ApparatusSourceType(i) == 1 % voltage type
-        HM(i*2-1:i*2,i*2-1:i*2) = Zm0(i*2-1:i*2,i*2-1:i*2);
-    elseif ApparatusSourceType(i) == 2 % current type
-        HM(i*2-1:i*2,i*2-1:i*2) = inv(Zm0(i*2-1:i*2,i*2-1:i*2));
-    elseif ApparatusSourceType(i) == 3 % floating bus: zero admittance
-        HM(i*2-1:i*2,i*2-1:i*2) = 0;
+%% strength to connect: only for 
+if CaseStudy==13
+    bus_tc=[3,4]; % bus going to connect (only support floating bus for now)
+    for i=1:length(bus_tc)
+        for j=1:length(bus_tc)
+            Ystc(i*2-1:i*2, j*2-1:j*2) = Ysys0(bus_tc(i)*2-1:bus_tc(i)*2, bus_tc(j)*2-1:bus_tc(j)*2);
+            Ystc_svd=svd(Ystc(i*2-1:i*2, j*2-1:j*2));
+            Ystc0(i,j) = Ystc_svd(1);
+        end
     end
+    Ystc0
+    Yp11 = Ystc0(1,1);
+    Yp12 = Ystc0(1,2);
+    Yp21 = Ystc0(2,1);
+    Yp22 = Ystc0(2,2);
+    
+    % get the hybrid matrix. Attention: the order of the buses is changed now
+    Hstc = [Yp11 - Yp21/Yp22*Yp12, Yp12/Yp22;...
+                -inv(Yp22)*Yp21,            inv(Yp22)];
+    Hstc
 end
-Hsys = inv(eye(2*N_Bus)+HN*HM) * HN;
+%%
 
-for i=1:N_Bus
-    if ApparatusSourceType(i) == 1 % voltage type
-        TDZth{i} = inv(Hsys(i*2-1:i*2,i*2-1:i*2))-Zm0(i*2-1:i*2, i*2-1:i*2);
-    elseif ApparatusSourceType(i) == 2 % current type
-        TDZth{i} = inv( inv(Hsys(i*2-1:i*2,i*2-1:i*2)) - inv(Zm0(i*2-1:i*2, i*2-1:i*2)) )
-    elseif ApparatusSourceType(i) == 3 % floating bus: zero admittance
-        TDZth{i} = zeros(2);
-    end
-    TDZth_svd(i,:) = svd(TDZth{i}).';
-    TDSCC(i) = 1/TDZth_svd(i,2);
-end
-TDZth_svd
-TDSCC
+
+% %% Type depedent
+% % switch in&out for nodal admittance matrix
+% [HN, OrderOld2New, ApparatusSourceType] = HybridMatrix(Ybus0, ListBus, ApparatusType, N_Bus);
+% % switch impedance - admittance for machine impedance
+% for i=1:N_Bus
+%     if ApparatusSourceType(i) == 1 % voltage type
+%         HM(i*2-1:i*2,i*2-1:i*2) = Zm0(i*2-1:i*2,i*2-1:i*2);
+%     elseif ApparatusSourceType(i) == 2 % current type
+%         HM(i*2-1:i*2,i*2-1:i*2) = inv(Zm0(i*2-1:i*2,i*2-1:i*2));
+%     elseif ApparatusSourceType(i) == 3 % floating bus: zero admittance
+%         HM(i*2-1:i*2,i*2-1:i*2) = 0;
+%     end
+% end
+% Hsys = inv(eye(2*N_Bus)+HN*HM) * HN;
+% 
+% for i=1:N_Bus
+%     if ApparatusSourceType(i) == 1 % voltage type
+%         TDZth{i} = inv(Hsys(i*2-1:i*2,i*2-1:i*2))-Zm0(i*2-1:i*2, i*2-1:i*2);
+%     elseif ApparatusSourceType(i) == 2 % current type
+%         TDZth{i} = inv( inv(Hsys(i*2-1:i*2,i*2-1:i*2)) - inv(Zm0(i*2-1:i*2, i*2-1:i*2)) )
+%     elseif ApparatusSourceType(i) == 3 % floating bus: zero admittance
+%         TDZth{i} = zeros(2);
+%     end
+%     TDZth_svd(i,:) = svd(TDZth{i}).';
+%     TDSCC(i) = 1/TDZth_svd(i,2);
+% end
+% TDZth_svd
+% TDSCC
 % for i=1:N_Bus
 %     if ApparatusSourceType(i) == 1 % voltage type
 %         SCC_H(i) = 1/(1/(HN(i,i)) - Zm0_mat_p(i,i));

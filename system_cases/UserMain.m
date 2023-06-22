@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=10;
+CaseStudy=13;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -17,10 +17,11 @@ switch CaseStudy
     case 6; UserData = 'NETS_NYPS_68_modified_tuned'; % 68 bus tuned model.
     case 7; UserData = 'NETS_NYPS_68_modified_tuned_inter_area'; % 68 bus tuned to stabilise the 0.65Hz interarea mode.
     case 8; UserData = 'IEEE_14Bus_Cyprus_modified_SSS2.xlsx'; % for small-signal strength
-    case 9; UserData = '4bus_case_a.xlsx'; % for large-signal strength
-    case 10; UserData = '4bus_case_b.xlsx'; % for large-signal strength 
+    case 9; UserData = '4bus_case_a.xlsx'; % for large-signal strength: whole-system strength a
+    case 10; UserData = '4bus_case_b.xlsx'; % for large-signal strength: whole-system strength  b
     case 11; UserData = 'NETS_NYPS_68_modified2.xlsx';
     case 12; UserData = 'TwoSG.xlsx';
+    case 13; UserData = '4bus_case_c.xlsx'; % for large-signal strength: strength to connect
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
