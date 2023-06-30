@@ -65,7 +65,8 @@ for modei=1:ModeSelNum
     for k=1:N_Bus
         if ApparatusType{k} ~= 100 % not a floating bus
             IMR.Type(count) = ApparatusType{k};
-            IMR.IMRVal(count) = SigmaMag/abs(-1*SimplusGT.inner_product_dq(Residue(k),ZmVal(k)));
+            %IMR.IMRVal(count) = SigmaMag/abs(-1*SimplusGT.inner_product_dq(Residue(k),ZmVal(k)));
+            IMR.IMRVal(count) = SigmaMag/(SimplusGT.Frobenius_norm_dq(Residue(k))*SimplusGT.Frobenius_norm_dq(ZmVal(k)));
             count=count+1;
         end
     end

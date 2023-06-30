@@ -199,7 +199,8 @@ for modei=1:ModeSelNum
             %AMR(k)= 1+SigmaMag / (norm(Res_k,'fro')*norm(YA_k,'fro'));
             %IMR(k) = SigmaMag / (SimplusGT.Frobenius_norm_dq(ResidueY(k)) * SimplusGT.Frobenius_norm_dq(ZmVal(k)));
             %IMRx(k) = SigmaMag / (abs(-1*SimplusGT.inner_product_dq(ResidueY(k),ZmVal(k))));
-            IMR(k)= SigmaMag/abs(-1*SimplusGT.inner_product_dq(ResidueY(k),ZmVal(k)));    
+            IMR(k)= SigmaMag/abs(-1*SimplusGT.inner_product_dq(ResidueY(k),ZmVal(k)));  
+            IMRx(k) = SigmaMag/(norm(ResidueY(k))*norm(ZmVal(k)));
             %Y_layer2(k)= -1*( Res_k(1,1)*YA_k(1,1) + Res_k(1,2)*YA_k(2,1) + Res_k(2,1)*YA_k(1,2) + Res_k(2,2)*YA_k(2,2) );
             %Z_layer2(k)= -1*SimplusGT.inner_product_dq(ResidueY(k),ZmVal(k));
             %SimplusGT.Frobenius_norm_dq(SensMatrix(1,1))
