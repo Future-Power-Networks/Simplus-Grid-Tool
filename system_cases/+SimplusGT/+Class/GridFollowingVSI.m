@@ -33,7 +33,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % The "_i" in "i_d_i", "i_q_i", "v_dc_i" means integral. These
             % states appear because PI controllers are used
             % correspondingly.
-            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
+            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
             elseif obj.ApparatusType == 11
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
@@ -85,7 +85,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
 
             % Get equilibrium
             x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
-            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
+            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 x_e = [x_e_1; v_dc; v_dc_i];
             elseif obj.ApparatusType == 11
                 x_e = x_e_1;
@@ -114,6 +114,9 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             R           = obj.Para(8);
             W0          = obj.Para(9);
             
+            if obj.ApparatusType==17 && obj.Timer>=10
+                f_i_dq=160;
+            end
             % Filter inductor
             Lf = wLf/W0;
             
@@ -148,7 +151,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             w_pll_i = x(5);
             w       = x(6);
             theta   = x(7);
-            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
+            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 v_dc  	= x(8);
                 v_dc_i 	= x(9);
             elseif obj.ApparatusType == 11
@@ -165,7 +168,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             P_dc   = u(4);
             
             % Saturation setting
-            EnableSaturation = 0;
+            EnableSaturation = 1;
             
             % Frequency limit and saturation
             w_limit_H = W0*1.1;
@@ -180,7 +183,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             e_q_limit_L = -1.5;
             
             % Get current reference
-            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
+            if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 % DC-link control
                 i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
             elseif obj.ApparatusType == 11
@@ -320,7 +323,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             end
             
             % Dc link control
-          	if obj.ApparatusType == 10
+          	if obj.ApparatusType == 10 || obj.ApparatusType == 17
                 dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc;       % C_dc
                 dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
                 if EnableSaturation
@@ -355,7 +358,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             if CallFlag == 1    
             % ### Call state equation: dx/dt = f(x,u)
                 f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
-                if (obj.ApparatusType == 10) || (obj.ApparatusType == 12)
+                if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
                 elseif obj.ApparatusType == 11
                     f_xu = f_xu_1;

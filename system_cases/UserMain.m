@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=13;
+CaseStudy=14;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -22,10 +22,11 @@ switch CaseStudy
     case 11; UserData = 'NETS_NYPS_68_modified2.xlsx';
     case 12; UserData = 'TwoSG.xlsx';
     case 13; UserData = '4bus_case_c.xlsx'; % for large-signal strength: strength to connect
+    case 14; UserData = 'IEEE_14Bus_Cyprus_modified_July.xlsx';
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
-%UserData = '4bus_case_c.xlsx'; % for large-signal strength 
+%UserData = 'SgInfiniteBus.xlsx'; % for large-signal strength 
 
 %% Step 2: Run toolbox, get solutions of the system.
 tic
