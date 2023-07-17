@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=14;
+CaseStudy=12;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -27,7 +27,8 @@ switch CaseStudy
 end
 
 %UserData = 'SgInfiniteBus.xlsx'; % for large-signal strength 
-UserData = 'SgInfiniteBus_FO.xlsx';
+UserData = 'SgInfiniteBus_FO2.xlsx';
+
 %% Step 2: Run toolbox, get solutions of the system.
 tic
 SimplusGT.Toolbox.Main();

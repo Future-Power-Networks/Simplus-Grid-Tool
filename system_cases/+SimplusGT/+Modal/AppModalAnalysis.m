@@ -30,7 +30,7 @@ SelIndex = 1;
 ApparatusSel12 = 0;
 ApparatusIndex = 1;
 for k = 1:N_Apparatus
-    if ApparatusType{k} ~= 100 %not a floating bus)
+    if ApparatusType{k} ~= 100 && ApparatusType{k} ~= 90 %not a floating bus)
         ApparatusSelL12(SelIndex) = k;
         SelIndex = SelIndex +1;
         ApparatusIndex = ApparatusIndex +1;
@@ -63,10 +63,10 @@ for modei=1:ModeSelNum
     SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; %MdMode is in the unite of Hz, so needs to be changed to rad.
     count=1;
     for k=1:N_Bus
-        if ApparatusType{k} ~= 100 % not a floating bus
+        if ApparatusType{k} ~= 100 && ApparatusType{k} ~= 90% not a floating bus, or an infinite bus
             IMR.Type(count) = ApparatusType{k};
-            %IMR.IMRVal(count) = SigmaMag/abs(-1*SimplusGT.inner_product_dq(Residue(k),ZmVal(k)));
-            IMR.IMRVal(count) = SigmaMag/(SimplusGT.Frobenius_norm_dq(Residue(k))*SimplusGT.Frobenius_norm_dq(ZmVal(k)));
+            IMR.IMRVal(count) = SigmaMag/abs(-1*SimplusGT.inner_product_dq(Residue(k),ZmVal(k)));
+            %IMR.IMRVal(count) = SigmaMag/(SimplusGT.Frobenius_norm_dq(Residue(k))*SimplusGT.Frobenius_norm_dq(ZmVal(k)));
             count=count+1;
         end
     end
