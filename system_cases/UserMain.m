@@ -27,7 +27,7 @@ switch CaseStudy
 end
 
 %UserData = 'SgInfiniteBus.xlsx'; % for large-signal strength 
-
+UserData = 'SgInfiniteBus_FO.xlsx';
 %% Step 2: Run toolbox, get solutions of the system.
 tic
 SimplusGT.Toolbox.Main();
