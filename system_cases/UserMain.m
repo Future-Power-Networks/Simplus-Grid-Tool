@@ -27,7 +27,7 @@ switch CaseStudy
 end
 
 %UserData = 'SgInfiniteBus.xlsx'; % for large-signal strength 
-UserData = 'SgInfiniteBus_FO2.xlsx';
+UserData = 'DEF_2SG.xlsx';
 
 %% Step 2: Run toolbox, get solutions of the system.
 tic
