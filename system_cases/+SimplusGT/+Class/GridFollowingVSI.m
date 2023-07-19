@@ -114,8 +114,8 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             R           = obj.Para(8);
             W0          = obj.Para(9);
             
-            if obj.ApparatusType==17 && obj.Timer>=10
-                f_i_dq=160;
+            if obj.ApparatusType==17 && obj.Timer>=5
+                f_i_dq=180; %% for self-excited oscillation
             end
             % Filter inductor
             Lf = wLf/W0;

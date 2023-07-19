@@ -22,12 +22,13 @@ switch CaseStudy
     case 11; UserData = 'NETS_NYPS_68_modified2.xlsx';
     case 12; UserData = 'TwoSG.xlsx';
     case 13; UserData = '4bus_case_c.xlsx'; % for large-signal strength: strength to connect
-    case 14; UserData = 'IEEE_14Bus_Cyprus_modified_July.xlsx';
-        % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
+    % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
 %UserData = 'SgInfiniteBus.xlsx'; % for large-signal strength 
-UserData = 'DEF_2SG.xlsx';
+%UserData = 'DEF_2SG.xlsx';
+UserData = 'DEF_2SG_SEO.xlsx';
+UserData = 'IEEE_14Bus_modified_SEO';
 
 %% Step 2: Run toolbox, get solutions of the system.
 tic
