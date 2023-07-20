@@ -25,10 +25,10 @@ switch CaseStudy
     % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
-%UserData = 'SgInfiniteBus.xlsx'; % for large-signal strength 
-%UserData = 'DEF_2SG.xlsx';
-UserData = 'DEF_2SG_SEO.xlsx';
-UserData = 'IEEE_14Bus_modified_SEO';
+%% case study for Disspating Energy Flow (DEF) method
+%UserData = 'DEF_2SG_FO.xlsx'; % forced oscillation in 2 generation system
+%UserData = 'DEF_IEEE14_case1.xlsx'; % a 8.8 Hz self-excited mode caused by delibarately detuned IBR current loop: DEF is effective
+UserData = 'DEF_IEEE14_case2.xlsx'; % a 1.5 Hz self-excited mode caused by high power output of IBR with low system strength: DEF fails
 
 %% Step 2: Run toolbox, get solutions of the system.
 tic

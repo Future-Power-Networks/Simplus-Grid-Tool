@@ -35,7 +35,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             % correspondingly.
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i'};
-            elseif obj.ApparatusType == 11
+            elseif obj.ApparatusType == 11 || obj.ApparatusType==16
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta'};
             else
                 error('Error: Invalid ApparatusType.');
@@ -80,6 +80,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             ang_r = 0;
             theta = xi;
             
+
             % ??? Temp
             obj.i_q_r = i_q_r;
 
@@ -87,7 +88,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             x_e_1 = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta];
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 x_e = [x_e_1; v_dc; v_dc_i];
-            elseif obj.ApparatusType == 11
+            elseif obj.ApparatusType == 11 || obj.ApparatusType==16
                 x_e = x_e_1;
             else
                 error('Error: Invalid ApparatusType.');
@@ -115,7 +116,8 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             W0          = obj.Para(9);
             
             if obj.ApparatusType==17 && obj.Timer>=5
-                f_i_dq=180; %% for self-excited oscillation
+                % save
+                %v_dc_r=v_dc_r*1.01; %% for self-excited oscillation
             end
             % Filter inductor
             Lf = wLf/W0;
@@ -154,7 +156,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 v_dc  	= x(8);
                 v_dc_i 	= x(9);
-            elseif obj.ApparatusType == 11
+            elseif obj.ApparatusType == 11 || obj.ApparatusType==16
                 v_dc    = v_dc_r;
                 v_dc_i  = 0;
             else
@@ -174,8 +176,8 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             w_limit_H = W0*1.1;
             w_limit_L = W0*0.9;
             % Current reference limit
-            i_d_limit = 1.5;
-            i_q_limit = 1.5;
+            i_d_limit = 1.4;
+            i_q_limit = 0.1;
             % Ac voltage limit
             e_d_limit_H = 1.5;
             e_d_limit_L = -1.5;
@@ -186,14 +188,19 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                 % DC-link control
                 i_d_r = (v_dc_r - v_dc)*kp_v_dc + v_dc_i;
+                i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
             elseif obj.ApparatusType == 11
                 % % Active power control                                           
                 i_d_r = P0/V0;
+                i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
+            elseif obj.ApparatusType==16
+                % P-Q control
+                i_d_r=(P0*v_d-Q0*v_q)/(v_d^2+v_q^2);
+                i_q_r=-(P0*v_q+Q0*v_d)/(v_d^2+v_q^2);
             else
                error('Invalid ApparatusType.');
             end
             % i_q_r = i_d_r * -k_pf;  % Constant pf control, PQ node in power flow
-            i_q_r = obj.i_q_r;    % Constant iq control, PQ/PV node in power flow
 
             % Current saturation
             if EnableSaturation
@@ -323,7 +330,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             end
             
             % Dc link control
-          	if obj.ApparatusType == 10 || obj.ApparatusType == 17
+          	if obj.ApparatusType == 10 || obj.ApparatusType == 17 || obj.ApparatusType==16
                 dv_dc = (e_d*i_d + e_q*i_q - P_dc)/v_dc/C_dc;       % C_dc
                 dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;                  % v_dc I
                 if EnableSaturation
@@ -342,7 +349,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                         dv_dc_i = 0;
                     end
                 end   
-            elseif obj.ApparatusType == 11
+            elseif obj.ApparatusType == 11 || obj.ApparatusType==16
                 % No dc link control
             else
                 error('Invalid ApparatusType.');
@@ -360,7 +367,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
                 f_xu_1 = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta];
                 if (obj.ApparatusType == 10) || (obj.ApparatusType == 12) || (obj.ApparatusType==17)
                     f_xu = [f_xu_1; dv_dc; dv_dc_i];
-                elseif obj.ApparatusType == 11
+                elseif obj.ApparatusType == 11 || obj.ApparatusType==16
                     f_xu = f_xu_1;
                 else
                     error('Invalid ApparatusType.');
