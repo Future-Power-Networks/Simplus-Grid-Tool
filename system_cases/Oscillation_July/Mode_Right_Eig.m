@@ -5,8 +5,12 @@ A=GminSS.A;
 [Phi,D]=eig(A);
 Psi=inv(Phi); 
 
-ModeSel = 158;
+%ModeSel = 158; % case1
+%ModeSel = 206; % case2
+
 Phi_vec=Phi(:,ModeSel);
+
+Psi_vec=Psi(ModeSel,:).';
 
 StateString=GminStateStr;
 
@@ -14,6 +18,7 @@ i=1; sp=1;
 for k =1: N_Apparatus
     if ApparatusType{k} <= 89  %apparatus
         Phi_vec_trim(i:i+1) = Phi_vec(sp+1:sp+2,1);
+        Psi_vec_trim(i:i+1) = Psi_vec(sp+1:sp+2,1);
         sp = sp+length(ApparatusStateStr{k});
         i = i+2;      
     else %floating bus and passive load: not considered           
@@ -21,6 +26,7 @@ for k =1: N_Apparatus
 end
 
 Phi_vec_trim = Phi_vec_trim.'; % non-conjugate transpose.
+Psi_vec_trim = Psi_vec_trim.';
 
 Mode_Rad = D(ModeSel, ModeSel);
 Mode_Hz = Mode_Rad/2/pi;
