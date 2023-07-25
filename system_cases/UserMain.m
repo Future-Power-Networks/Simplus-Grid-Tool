@@ -26,11 +26,14 @@ switch CaseStudy
 end
 
 %% case study for Disspating Energy Flow (DEF) method
-%UserData = 'DEF_2SG_FO.xlsx'; % forced oscillation in 2 generation system
-UserData = 'DEF_IEEE14_case1.xlsx'; % a 8.8 Hz self-excited mode caused by delibarately detuned IBR current loop: DEF is effective
-%UserData = 'DEF_IEEE14_case2.xlsx'; % a 1.5 Hz self-excited mode caused by high power output of IBR with low system strength: DEF fails
-%UserData = 'DEF_IEEE14_case3.xlsx'; % 
-
+DEF_case=3;
+if DEF_case == 1
+    UserData = 'DEF_2SG_FO.xlsx'; % forced oscillation in 2 generation system
+elseif DEF_case == 2
+    UserData = 'DEF_IEEE14_case1.xlsx'; % a 8.8 Hz self-excited mode caused by delibarately detuned IBR current loop: DEF is effective
+elseif DEF_case == 3
+    UserData = 'DEF_IEEE14_case2.xlsx'; % a 1.5 Hz self-excited mode caused by high power output of IBR with low system strength: DEF fails
+end
 %% Step 2: Run toolbox, get solutions of the system.
 tic
 SimplusGT.Toolbox.Main();
