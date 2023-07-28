@@ -5,35 +5,32 @@ clear all;  % Clear Matlab workspace
 clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
-%% Step 1: choose the avaliable case study.
-CaseStudy=12;
-
-switch CaseStudy
-    case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
-    case 2; UserData = 'IEEE_14Bus_Cyprus_modified.xlsx';   % IEEE-14 Detuned model
-    case 3; UserData = 'IEEE_14Bus_Cyprus_modified2.xlsx'; % IEEE-14 Tuned model
-    case 4; UserData = 'NETS_NYPS_68_original'; % 68 bus original model.
-    case 5; UserData = 'NETS_NYPS_68_modified_detuned'; % 68 bus detuned model.
-    case 6; UserData = 'NETS_NYPS_68_modified_tuned'; % 68 bus tuned model.
-    case 7; UserData = 'NETS_NYPS_68_modified_tuned_inter_area'; % 68 bus tuned to stabilise the 0.65Hz interarea mode.
-    case 8; UserData = 'IEEE_14Bus_Cyprus_modified_SSS2.xlsx'; % for small-signal strength
-    case 9; UserData = '4bus_case_a.xlsx'; % for large-signal strength: whole-system strength a
-    case 10; UserData = '4bus_case_b.xlsx'; % for large-signal strength: whole-system strength  b
-    case 11; UserData = 'NETS_NYPS_68_modified2.xlsx';
-    case 12; UserData = 'TwoSG.xlsx';
-    case 13; UserData = '4bus_case_c.xlsx'; % for large-signal strength: strength to connect
-    % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
-end
-
 %% case study for Disspating Energy Flow (DEF) method
-DEF_case=3;
+
+DEF_case=2;
 if DEF_case == 1
-    UserData = 'DEF_2SG_FO.xlsx'; % forced oscillation in 2 generation system
+    UserData = 'DEF_2SG.xlsx'; % forced oscillation in 2 generation system
 elseif DEF_case == 2
     UserData = 'DEF_IEEE14_case1.xlsx'; % a 8.8 Hz self-excited mode caused by delibarately detuned IBR current loop: DEF is effective
 elseif DEF_case == 3
     UserData = 'DEF_IEEE14_case2.xlsx'; % a 1.5 Hz self-excited mode caused by high power output of IBR with low system strength: DEF fails
+elseif DEF_case == 4
+    UserData = 'DEF_2IBR_yue.xlsx'; % forced oscillation in 2 IBR system
+elseif DEF_case == 5
+    UserData = 'DEF_2GFL_Eugenie.xlsx';  % forced oscillation in 2 IBR system, including Lingling Fan's method
+elseif DEF_case == 0 
+    % not applied
 end
+% note-1: IBR curent satuation is set as 1.5/1.5 pu in case 1 and 4, and is set
+% as 1.4/0.1 pu in case 2 and 3.
+% note-2: for case 4, user could change IBR type from 10 to 11 for a constant PQ
+% note-3: DEF method is included in the simulink model, and the calculation
+% of ModeShape is in ModeShape_IEEE.slx model, which uses the recorded idq
+% data from the original model. The data is not archieved in Github so
+% users should un DEF_IEEE_casex.slx first which will record and save the
+% data needed for mode-shape calcuation.
+
+
 %% Step 2: Run toolbox, get solutions of the system.
 tic
 SimplusGT.Toolbox.Main();

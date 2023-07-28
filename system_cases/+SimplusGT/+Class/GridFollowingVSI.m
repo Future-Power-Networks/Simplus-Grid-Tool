@@ -176,8 +176,13 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             w_limit_H = W0*1.1;
             w_limit_L = W0*0.9;
             % Current reference limit
-            i_d_limit = 1.4;
-            i_q_limit = 0.1;
+            if obj.ApparatusType==17
+                i_d_limit = 1.4;%1.5;
+                i_q_limit = 0.1;%1.5;
+            else
+                i_d_limit = 1.5;
+                i_q_limit = 1.5;
+            end
             % Ac voltage limit
             e_d_limit_H = 1.5;
             e_d_limit_L = -1.5;
