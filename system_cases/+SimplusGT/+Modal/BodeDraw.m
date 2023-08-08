@@ -40,9 +40,12 @@ for k = 1:N_Apparatus
         if (ismember(k,ApparatusSel)) %if selected
             bode(GminSS(pout+poutBias, pin+pinBias),P)
             CountLegend = CountLegend + 1;
-            VecLegend{CountLegend} = ['Node',num2str(ApparatusBus{k})];
+            VecLegend{CountLegend} = ['POI-',num2str(ApparatusBus{k})];
             hold on;
         end
+        pin = pin + length(ApparatusInputStr{k});
+        pout = pout + length(ApparatusOutputStr{k});
+    else
         pin = pin + length(ApparatusInputStr{k});
         pout = pout + length(ApparatusOutputStr{k});
     end

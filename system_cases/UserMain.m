@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=14;
+CaseStudy=16;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -23,11 +23,13 @@ switch CaseStudy
     case 12; UserData = 'TwoSG.xlsx';
     case 13; UserData = '4bus_case_c.xlsx'; % for large-signal strength: strength to connect
     case 14; UserData = 'IEEE_14Bus_Cyprus_modified_July.xlsx';
+    case 15; UserData = '2IBR_A2_detuned.xlsx';
+    case 16; UserData = '2IBR_same_tuned.xlsx';
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
 %UserData = 'SgInfiniteBus.xlsx'; % for large-signal strength 
-UserData = 'SgInfiniteBus_FO.xlsx';
+%UserData = 'SgInfiniteBus_FO.xlsx';
 %% Step 2: Run toolbox, get solutions of the system.
 tic
 SimplusGT.Toolbox.Main();
