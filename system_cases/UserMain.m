@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=16;
+CaseStudy=19;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -25,6 +25,9 @@ switch CaseStudy
     case 14; UserData = 'IEEE_14Bus_Cyprus_modified_July.xlsx';
     case 15; UserData = '2IBR_A2_detuned.xlsx';
     case 16; UserData = '2IBR_same_tuned.xlsx';
+    case 17; UserData = 'IEEE68_good.xlsx';
+    case 18; UserData = 'IEEE68_bad.xlsx';
+    case 19; UserData = 'IEEE68_verybad.xlsx';
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
