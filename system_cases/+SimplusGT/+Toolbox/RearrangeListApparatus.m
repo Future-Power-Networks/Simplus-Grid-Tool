@@ -206,9 +206,9 @@ Para0030.T32=0.04;
 Para0030.VSSmax=0.2;
 Para0030.VSSmin=-0.05;
 Para0030.Rgov=0.05;
-Para0030.T1gov=0.8;
-Para0030.T2gov=1.8;
-Para0030.T3gov=6;
+Para0030.T1gov=0.1;
+Para0030.T2gov=1.6;
+Para0030.T3gov=10;
 Para0030.Dtgov=0.2;
 
 % ======================================
