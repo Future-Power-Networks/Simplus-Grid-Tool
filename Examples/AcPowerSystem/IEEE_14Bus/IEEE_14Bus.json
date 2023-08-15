@@ -6,7 +6,7 @@
 }
 ,"Advance":
 {
-"DiscretizationMethod":2,"LinearizationTimes":1,"DiscretizationDampingFlag":1,"DirectFeedthrough":0,"PowerFlowAlgorithm":2,"EnableCreateSimulinkModel":1,"EnablePlotPole":1,"EnablePlotAdmittance":1,"EnablePrintOutput":1,"EnableParticipation":0
+"DiscretizationMethod":2,"LinearizationTimes":1,"DiscretizationDampingFlag":1,"DirectFeedthrough":0,"PowerFlowAlgorithm":2,"EnableCreateSimulinkModel":1,"EnablePlotPole":1,"EnablePlotAdmittance":1,"EnablePrintOutput":1
 }
 ,"Bus":
 [
