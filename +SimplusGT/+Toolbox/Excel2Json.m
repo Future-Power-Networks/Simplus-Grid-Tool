@@ -6,6 +6,7 @@
 % # More comments are added.
 % # The data operation of apparatuses is improved.
 % # Partial address is added into file name.
+% # Remove the advance setting of "participation analysis" in excel.
 
 function Excel2Json(FileName)
 
@@ -125,7 +126,7 @@ function [Advance]=toAdv(a)
     Advance.EnablePlotPole           	= a(7);
     Advance.EnablePlotAdmittance     	= a(8);
     Advance.EnablePrintOutput       	= a(9);
-    Advance.EnableParticipation         = a(10);
+    % Advance.EnableParticipation         = a(10);
 end
 
 function [Apparatus]=toApparatus(busNo,type,para)

@@ -29,9 +29,6 @@ UserDataName = 'UserData';      % Default 4-bus system
 % Hybrid ac-dc power system examples:
 % UserDataName = 'Hybrid_test_v1';             % A 4-bus hybrid ac-dc system
 
-%% Participation analysis
-EigenvalueIndex = [1,26,31];	% Choose the index of eigenvalue for participation analysis
-
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));
 
@@ -41,4 +38,7 @@ cd(fileparts(mfilename('fullpath')));
 UserDataType = 1;
 
 %% Run toolbox
-SimplusGT.Toolbox.Main();
+SimplusGT.Toolbox.Main();  
+
+%% Matlab App
+if 1; ModalAnalysisAPP; end      % Modal analysis

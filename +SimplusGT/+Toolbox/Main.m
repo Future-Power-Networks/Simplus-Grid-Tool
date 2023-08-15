@@ -5,6 +5,18 @@
 % Modified by Rob Oldaker, Yitong Li:
 % # The function supports json user data input.
 % # The function uses data by struct type.
+%
+% Modified by Yue Zhu, Yitong Li:
+% # Check the version and matlab add-ons toolbox 
+
+%% Check toolbox version
+v=ver;
+if(~any(strcmp('Symbolic Math Toolbox', {v.Name})))
+    error('Error: Please install Symbolic Math Toolbox in Matlab Add-Ons')
+end
+if (~any(strcmp('Statistics and Machine Learning Toolbox', {v.Name})))
+    error('Error: Please install Statistics and Machine Learning Toolbox in Matlab Add-Ons')
+end
 
 %% Chech the input data type and convert it to struct
 fprintf('\n')
@@ -215,33 +227,34 @@ else
     fprintf('Warning: Unstable!\n')
 end
 
-%
-% ==================================================
-% Modal Analysis
-% ==================================================
-
-fprintf('\n')
-fprintf('==================================\n')
-fprintf('Modal Analysis: State Space \n')
-fprintf('==================================\n')
-if UserDataStruct.Advance.EnableParticipation == 1
-    FigN = 300;
-    SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,EigenvalueIndex,FigN);
-else
-    fprintf('Warning: This function is disabled.\n')
-end
-
-fprintf('\n')
-fprintf('==================================\n')
-fprintf('Modal Analysis: Transfer Function \n')
-fprintf('==================================\n')
-if 0
-    SimplusGT.Modal.ModalPreRun;
-    SimplusGT.Modal.ModalAnalysis;
-    fprintf('Generate GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
-else
-    fprintf('Warning: This function is disabled.\n');
-end
+% %
+% % ==================================================
+% % Modal Analysis
+% % ==================================================
+% 
+% fprintf('\n')
+% fprintf('==================================\n')
+% fprintf('Modal Analysis: State Space \n')
+% fprintf('==================================\n')
+% if UserDataStruct.Advance.EnableParticipation == 1
+%     FigN = 300;
+%     EigenvalueIndex = [1,26,31];	% Choose the index of eigenvalue for participation analysis
+%     SimplusGT.Modal.ModalAnalysisStateSpace(ObjGsysSs,EigenvalueIndex,FigN);
+% else
+%     fprintf('Warning: This function is disabled.\n')
+% end
+% 
+% fprintf('\n')
+% fprintf('==================================\n')
+% fprintf('Modal Analysis: Transfer Function \n')
+% fprintf('==================================\n')
+% if 0
+%     SimplusGT.Modal.ModalPreRun;
+%     SimplusGT.Modal.ModalAnalysis;
+%     fprintf('Generate GreyboxConfg.xlsx for user to config Greybox analysis.\n');    
+% else
+%     fprintf('Warning: This function is disabled.\n');
+% end
 
 else
     fprintf('Warning: The state space modeling is disabled.\n');

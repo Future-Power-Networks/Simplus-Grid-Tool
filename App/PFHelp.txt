@@ -1,0 +1,22 @@
+The Greybox Approach
+
+Reference: 
+Y. Zhu, Y. Gu, Y. Li, T. C. Green, “Participation Analysis in Impedance Models: TheGrey-Box Approach for Power System Stability” in IEEE Transactions on Power Systems, vol. 37, no. 1, pp. 343-353, Jan. 2022, doi: 10.1109/TPWRS.2021.3088345.
+
+
+Layer 1 (Apparatus Participation Factor): 
+
+This layer helps you quickly determine the potential participants of the selected mode.
+
+Layer 2 (Damping and Frequency Sensitivity): 
+This layer shows the variation of the mode in both real and imaginary part when increasing the impedance of the apparatus (equivilently as scaling down). 
+General principle: if a positive bar is found in damping plot,  it implies that scaling up the corresponding apparatus connected at the node tends to stabilize the system , and vice versa. 
+All values are normalised to 1.
+
+Layer 3 (Parameter Sensitivity):
+This layer tells you how to tune the paramters to shift the mode leftwards.
+
+Small-signal Strength:
+Value of impedance margin ratio (IMR) gives you the small-signal system strength at different locations.
+
+Contact: yue.zhu18@imperial.ac.uk
