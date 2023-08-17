@@ -8,12 +8,12 @@
 %% Clear matlab
 clear all; clc; close all; 
 
-%% Other examples
+%% User data
 UserDataName = 'UserData';      % Default 4-bus system
 
-% Other example power systems in "Examples" folder:
+% Example power systems in "Examples" folder:
 %
-% Pure ac power system examples:
+% Ac power system examples:
 % UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
 % UserDataName = 'GflInverterInfiniteBus';   	% Single grid-following inverter and infinite bus
 % UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
@@ -21,9 +21,10 @@ UserDataName = 'UserData';      % Default 4-bus system
 % UserDataName = 'IEEE_30Bus';
 % UserDataName = 'IEEE_39Bus';
 % UserDataName = 'IEEE_57Bus';
+% UserDataName = 'AU14Gen_59Bus';
 % UserDataName = 'NETS_NYPS_68Bus';
 %
-% Pure dc power system examples:
+% Dc power system examples:
 % UserDataName = 'GfdBuckInfiniteBus';         % Single grid-feeding buck converter and infinite bus
 %
 % Hybrid ac-dc power system examples:
@@ -40,5 +41,5 @@ UserDataType = 1;
 %% Run toolbox
 SimplusGT.Toolbox.Main();  
 
-%% Matlab App
-if 1; ModalAnalysisAPP; end      % Modal analysis
+%% Matlab app
+if 1; ModalAnalysisApp; end      % Modal analysis
