@@ -42,4 +42,4 @@ UserDataType = 1;
 SimplusGT.Toolbox.Main();  
 
 %% Matlab app
-if 1; ModalAnalysisApp; end      % Modal analysis
+if 1; ModalAnalysisAPP; end      % Modal analysis
