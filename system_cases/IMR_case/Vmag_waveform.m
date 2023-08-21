@@ -1,4 +1,4 @@
-data_sel = 1;
+data_sel = 2;
 switch data_sel
     case 1; load out_68_good.mat; data = out_68_good;
     case 2; load out_68_bad.mat; data = out_68_bad;
@@ -19,11 +19,11 @@ drange = (tstart*fs : tend*fs-1);
 t = (tstart:ts:tend-ts);
 figure(3)
 clf;
-plot(t, v28(drange),"LineWidth",1.2);
+plot(t, v28(drange),"LineWidth",2);
 hold on;
-plot(t, v39(drange),"LineWidth",1.2);
+plot(t, v39(drange),"LineWidth",2);
 hold on;
-plot(t, v59(drange),"LineWidth",1.2);
+plot(t, v59(drange),"LineWidth",2);
 ylim([0.8 1.1])
 xlabel('time (s)')
 
@@ -32,5 +32,5 @@ legend('Vmag28','Vmag39','Vmag59')
 grid on;
 
 %%
-FigSize = [0.1 0.1 0.5 0.6]*0.5;
+FigSize = [0.2125,0.239814814814815,0.259895833333333,0.396296296296296]*1;
 set(gcf,'units','normalized','outerposition',FigSize);

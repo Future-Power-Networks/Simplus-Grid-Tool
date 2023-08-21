@@ -29,6 +29,7 @@ FigSize = [0.1 0.1 0.5 0.75]*0.5;
 
 FigNum = FigNum + 1;
 figure(FigNum)
+clf;
 set(gcf,'units','normalized','outerposition',FigSize);
 
 %% Plot graph
@@ -38,7 +39,7 @@ GraphFigure = plot(GraphData); grid on; hold on;
 highlight(GraphFigure,GraphData,'EdgeColor',[0,0,0],'LineWidth',1.1);       % Change all edges to black by default
 highlight(GraphFigure,GraphData,'NodeColor',[0,0,0]);                    	% Change all nodes to black by default
 highlight(GraphFigure,GraphData,'MarkerSize',4.5);
-highlight(GraphFigure,GraphData,'NodeFontSize',8);
+highlight(GraphFigure,GraphData,'NodeFontSize',9);
 highlight(GraphFigure,GraphData,'NodeFontWeight','bold');
 
 %% sort out SG-bus, IBR-bus and floating bus
@@ -108,7 +109,7 @@ h.Label.VerticalAlignment = "cap";
 h.Label.FontWeight = 'bold';
 h.Label.Position = [0.5656,2.2133,0];
 h.Ticks = [-2,-1,0,1,2];
-h.TickLabels = {'-2 very weak','-1 weak','0 normal','1 strong','2 very strong'};
+h.TickLabels = {'-2','-1','0','1','2'};
 
 %colorbar('Ticks',[-2,-1,0,1,2],...
          %'TickLabels',{'-2 very weak','-1 weak','0 normal','1 strong','2 very strong'}, 'FontWeight','bold');
