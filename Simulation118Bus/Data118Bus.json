@@ -2,17 +2,17 @@
 {
 "Basic":
 {
-"Fs":25000,"Fbase":50,"Sbase":1,"Vbase":1
+"Fs":30000,"Fbase":60,"Sbase":1,"Vbase":1
 }
 ,"Advance":
 {
-"DiscretizationMethod":2,"LinearizationTimes":1,"DiscretizationDampingFlag":1,"DirectFeedthrough":0,"PowerFlowAlgorithm":2,"EnableCreateSimulinkModel":0,"EnablePlotPole":1,"EnablePlotAdmittance":0,"EnablePrintOutput":1,"EnableParticipation":0
+"DiscretizationMethod":2,"LinearizationTimes":1,"DiscretizationDampingFlag":1,"DirectFeedthrough":0,"PowerFlowAlgorithm":2,"EnableCreateSimulinkModel":1,"EnablePlotPole":1,"EnablePlotAdmittance":0,"EnablePrintOutput":1,"EnableParticipation":0
 }
 ,"Bus":
 [
 
 {
-"BusNo":1,"BusType":1,"Voltage":1.035,"Theta":0,"PGi":5.164,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":1,"BusType":1,"Voltage":1.035,"Theta":0,"PGi":5.164,"QGi":0,"PLi":0,"QLi":0,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -24,7 +24,7 @@
 }
 ,
 {
-"BusNo":4,"BusType":2,"Voltage":0.998,"Theta":0,"PGi":-0.09,"QGi":0,"PLi":0.3,"QLi":0.12,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":4,"BusType":2,"Voltage":0.998,"Theta":0,"PGi":-0.09,"QGi":0,"PLi":0.3,"QLi":0.12,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -32,7 +32,7 @@
 }
 ,
 {
-"BusNo":6,"BusType":2,"Voltage":0.99,"Theta":0,"PGi":0,"QGi":0,"PLi":0.52,"QLi":0.22,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":6,"BusType":2,"Voltage":0.99,"Theta":0,"PGi":0,"QGi":0,"PLi":0.52,"QLi":0.22,"Qmin":-0.13,"Qmax":0.5,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -40,7 +40,7 @@
 }
 ,
 {
-"BusNo":8,"BusType":2,"Voltage":1.015,"Theta":0,"PGi":-0.28,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":8,"BusType":2,"Voltage":1.015,"Theta":0,"PGi":-0.28,"QGi":0,"PLi":0,"QLi":0,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -48,7 +48,7 @@
 }
 ,
 {
-"BusNo":10,"BusType":2,"Voltage":1.05,"Theta":0,"PGi":4.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":10,"BusType":2,"Voltage":1.05,"Theta":0,"PGi":4.5,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1.47,"Qmax":2,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -56,7 +56,7 @@
 }
 ,
 {
-"BusNo":12,"BusType":2,"Voltage":0.99,"Theta":0,"PGi":0.85,"QGi":0,"PLi":0.47,"QLi":0.1,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":12,"BusType":2,"Voltage":0.99,"Theta":0,"PGi":0.85,"QGi":0,"PLi":0.47,"QLi":0.1,"Qmin":-0.35,"Qmax":1.2,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -68,7 +68,7 @@
 }
 ,
 {
-"BusNo":15,"BusType":2,"Voltage":0.97,"Theta":0,"PGi":0,"QGi":0,"PLi":0.9,"QLi":0.3,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":15,"BusType":2,"Voltage":0.97,"Theta":0,"PGi":0,"QGi":0,"PLi":0.9,"QLi":0.3,"Qmin":-0.1,"Qmax":0.3,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -80,11 +80,11 @@
 }
 ,
 {
-"BusNo":18,"BusType":2,"Voltage":0.973,"Theta":0,"PGi":0,"QGi":0,"PLi":0.6,"QLi":0.34,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":18,"BusType":2,"Voltage":0.973,"Theta":0,"PGi":0,"QGi":0,"PLi":0.6,"QLi":0.34,"Qmin":-0.16,"Qmax":0.5,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":19,"BusType":2,"Voltage":0.963,"Theta":0,"PGi":0,"QGi":0,"PLi":0.45,"QLi":0.25,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":19,"BusType":2,"Voltage":0.963,"Theta":0,"PGi":0,"QGi":0,"PLi":0.45,"QLi":0.25,"Qmin":-0.08,"Qmax":0.24,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -104,19 +104,19 @@
 }
 ,
 {
-"BusNo":24,"BusType":2,"Voltage":0.992,"Theta":0,"PGi":-0.13,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":24,"BusType":2,"Voltage":0.992,"Theta":0,"PGi":-0.13,"QGi":0,"PLi":0,"QLi":0,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":25,"BusType":2,"Voltage":1.05,"Theta":0,"PGi":2.2,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":25,"BusType":2,"Voltage":1.05,"Theta":0,"PGi":2.2,"QGi":0,"PLi":0,"QLi":0,"Qmin":-0.47,"Qmax":1.4,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":26,"BusType":2,"Voltage":1.015,"Theta":0,"PGi":3.14,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":26,"BusType":2,"Voltage":1.015,"Theta":0,"PGi":3.14,"QGi":0,"PLi":0,"QLi":0,"Qmin":-10,"Qmax":10,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":27,"BusType":2,"Voltage":0.968,"Theta":0,"PGi":-0.09,"QGi":0,"PLi":0.62,"QLi":0.13,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":27,"BusType":2,"Voltage":0.968,"Theta":0,"PGi":-0.09,"QGi":0,"PLi":0.62,"QLi":0.13,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -132,11 +132,11 @@
 }
 ,
 {
-"BusNo":31,"BusType":2,"Voltage":0.967,"Theta":0,"PGi":0.07,"QGi":0,"PLi":0.43,"QLi":0.27,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":31,"BusType":2,"Voltage":0.967,"Theta":0,"PGi":0.07,"QGi":0,"PLi":0.43,"QLi":0.27,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":32,"BusType":2,"Voltage":0.964,"Theta":0,"PGi":0,"QGi":0,"PLi":0.59,"QLi":0.23,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":32,"BusType":2,"Voltage":0.964,"Theta":0,"PGi":0,"QGi":0,"PLi":0.59,"QLi":0.23,"Qmin":-0.14,"Qmax":0.42,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -144,7 +144,7 @@
 }
 ,
 {
-"BusNo":34,"BusType":2,"Voltage":0.986,"Theta":0,"PGi":0,"QGi":0,"PLi":0.59,"QLi":0.26,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":34,"BusType":2,"Voltage":0.986,"Theta":0,"PGi":0,"QGi":0,"PLi":0.59,"QLi":0.26,"Qmin":-0.08,"Qmax":0.24,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -152,7 +152,7 @@
 }
 ,
 {
-"BusNo":36,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":0,"QGi":0,"PLi":0.31,"QLi":0.17,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":36,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":0,"QGi":0,"PLi":0.31,"QLi":0.17,"Qmin":-0.08,"Qmax":0.24,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -168,7 +168,7 @@
 }
 ,
 {
-"BusNo":40,"BusType":2,"Voltage":0.97,"Theta":0,"PGi":-0.46,"QGi":0,"PLi":0.2,"QLi":0.23,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":40,"BusType":2,"Voltage":0.97,"Theta":0,"PGi":-0.46,"QGi":0,"PLi":0.2,"QLi":0.23,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -176,7 +176,7 @@
 }
 ,
 {
-"BusNo":42,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":-0.59,"QGi":0,"PLi":0.37,"QLi":0.23,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":42,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":-0.59,"QGi":0,"PLi":0.37,"QLi":0.23,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -192,7 +192,7 @@
 }
 ,
 {
-"BusNo":46,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":0.19,"QGi":0,"PLi":0.28,"QLi":0.1,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":46,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":0.19,"QGi":0,"PLi":0.28,"QLi":0.1,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -204,7 +204,7 @@
 }
 ,
 {
-"BusNo":49,"BusType":2,"Voltage":1.025,"Theta":0,"PGi":2.04,"QGi":0,"PLi":0.87,"QLi":0.3,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":49,"BusType":2,"Voltage":1.025,"Theta":0,"PGi":2.04,"QGi":0,"PLi":0.87,"QLi":0.3,"Qmin":-0.85,"Qmax":2.1,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -224,15 +224,15 @@
 }
 ,
 {
-"BusNo":54,"BusType":2,"Voltage":0.955,"Theta":0,"PGi":0.48,"QGi":0,"PLi":1.13,"QLi":0.32,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":54,"BusType":2,"Voltage":0.955,"Theta":0,"PGi":0.48,"QGi":0,"PLi":1.13,"QLi":0.32,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":55,"BusType":2,"Voltage":0.952,"Theta":0,"PGi":0,"QGi":0,"PLi":0.63,"QLi":0.22,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":55,"BusType":2,"Voltage":0.952,"Theta":0,"PGi":0,"QGi":0,"PLi":0.63,"QLi":0.22,"Qmin":-0.08,"Qmax":0.23,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":56,"BusType":2,"Voltage":0.954,"Theta":0,"PGi":0,"QGi":0,"PLi":0.84,"QLi":0.18,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":56,"BusType":2,"Voltage":0.954,"Theta":0,"PGi":0,"QGi":0,"PLi":0.84,"QLi":0.18,"Qmin":-0.08,"Qmax":0.15,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -244,7 +244,7 @@
 }
 ,
 {
-"BusNo":59,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":1.55,"QGi":0,"PLi":2.77,"QLi":1.13,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":59,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":1.55,"QGi":0,"PLi":2.77,"QLi":1.13,"Qmin":-0.6,"Qmax":1.8,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -252,11 +252,11 @@
 }
 ,
 {
-"BusNo":61,"BusType":2,"Voltage":0.995,"Theta":0,"PGi":1.6,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":61,"BusType":2,"Voltage":0.995,"Theta":0,"PGi":1.6,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":62,"BusType":2,"Voltage":0.998,"Theta":0,"PGi":0,"QGi":0,"PLi":0.77,"QLi":0.14,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":62,"BusType":2,"Voltage":0.998,"Theta":0,"PGi":0,"QGi":0,"PLi":0.77,"QLi":0.14,"Qmin":-0.2,"Qmax":0.2,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -268,11 +268,11 @@
 }
 ,
 {
-"BusNo":65,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":3.91,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":65,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":3.91,"QGi":0,"PLi":0,"QLi":0,"Qmin":-0.67,"Qmax":2,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":66,"BusType":2,"Voltage":1.05,"Theta":0,"PGi":3.92,"QGi":0,"PLi":0.39,"QLi":0.18,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":66,"BusType":2,"Voltage":1.05,"Theta":0,"PGi":3.92,"QGi":0,"PLi":0.39,"QLi":0.18,"Qmin":-0.67,"Qmax":2,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -284,11 +284,11 @@
 }
 ,
 {
-"BusNo":69,"BusType":2,"Voltage":0.955,"Theta":0,"PGi":0,"QGi":0,"PLi":0.51,"QLi":0.27,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":69,"BusType":2,"Voltage":0.955,"Theta":0,"PGi":0,"QGi":0,"PLi":0.51,"QLi":0.27,"Qmin":-0.05,"Qmax":0.15,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":70,"BusType":2,"Voltage":0.984,"Theta":0,"PGi":0,"QGi":0,"PLi":0.66,"QLi":0.2,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":70,"BusType":2,"Voltage":0.984,"Theta":0,"PGi":0,"QGi":0,"PLi":0.66,"QLi":0.2,"Qmin":-0.1,"Qmax":0.32,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -296,15 +296,15 @@
 }
 ,
 {
-"BusNo":72,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":-0.12,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":72,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":-0.12,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":73,"BusType":2,"Voltage":0.991,"Theta":0,"PGi":-0.06,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":73,"BusType":2,"Voltage":0.991,"Theta":0,"PGi":-0.06,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":74,"BusType":2,"Voltage":0.958,"Theta":0,"PGi":0,"QGi":0,"PLi":0.68,"QLi":0.27,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":74,"BusType":2,"Voltage":0.958,"Theta":0,"PGi":0,"QGi":0,"PLi":0.68,"QLi":0.27,"Qmin":-0.06,"Qmax":0.09,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -312,11 +312,11 @@
 }
 ,
 {
-"BusNo":76,"BusType":2,"Voltage":0.943,"Theta":0,"PGi":0,"QGi":0,"PLi":0.68,"QLi":0.36,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":76,"BusType":2,"Voltage":0.943,"Theta":0,"PGi":0,"QGi":0,"PLi":0.68,"QLi":0.36,"Qmin":-0.08,"Qmax":0.23,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":77,"BusType":2,"Voltage":1.006,"Theta":0,"PGi":0,"QGi":0,"PLi":0.61,"QLi":0.28,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":77,"BusType":2,"Voltage":1.006,"Theta":0,"PGi":0,"QGi":0,"PLi":0.61,"QLi":0.28,"Qmin":-0.2,"Qmax":0.7,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -328,7 +328,7 @@
 }
 ,
 {
-"BusNo":80,"BusType":2,"Voltage":1.04,"Theta":0,"PGi":4.77,"QGi":0,"PLi":1.3,"QLi":0.26,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":80,"BusType":2,"Voltage":1.04,"Theta":0,"PGi":4.77,"QGi":0,"PLi":1.3,"QLi":0.26,"Qmin":-1.65,"Qmax":2.8,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -348,7 +348,7 @@
 }
 ,
 {
-"BusNo":85,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":0,"QGi":0,"PLi":0.24,"QLi":0.15,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":85,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":0,"QGi":0,"PLi":0.24,"QLi":0.15,"Qmin":-0.08,"Qmax":0.23,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -356,7 +356,7 @@
 }
 ,
 {
-"BusNo":87,"BusType":2,"Voltage":1.015,"Theta":0,"PGi":0.04,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":87,"BusType":2,"Voltage":1.015,"Theta":0,"PGi":0.04,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":10,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -364,19 +364,19 @@
 }
 ,
 {
-"BusNo":89,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":6.07,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":89,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":6.07,"QGi":0,"PLi":0,"QLi":0,"Qmin":-2.1,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":90,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":-0.85,"QGi":0,"PLi":0.78,"QLi":0.42,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":90,"BusType":2,"Voltage":0.985,"Theta":0,"PGi":-0.85,"QGi":0,"PLi":0.78,"QLi":0.42,"Qmin":-3,"Qmax":3,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":91,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":-0.1,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":91,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":-0.1,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":92,"BusType":2,"Voltage":0.993,"Theta":0,"PGi":0,"QGi":0,"PLi":0.65,"QLi":0.1,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":92,"BusType":2,"Voltage":0.993,"Theta":0,"PGi":0,"QGi":0,"PLi":0.65,"QLi":0.1,"Qmin":-0.03,"Qmax":0.09,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -404,11 +404,11 @@
 }
 ,
 {
-"BusNo":99,"BusType":2,"Voltage":1.01,"Theta":0,"PGi":-0.42,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":99,"BusType":2,"Voltage":1.01,"Theta":0,"PGi":-0.42,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":1,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":100,"BusType":2,"Voltage":1.017,"Theta":0,"PGi":2.52,"QGi":0,"PLi":0.37,"QLi":0.18,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":100,"BusType":2,"Voltage":1.017,"Theta":0,"PGi":2.52,"QGi":0,"PLi":0.37,"QLi":0.18,"Qmin":-0.5,"Qmax":1.55,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -420,15 +420,15 @@
 }
 ,
 {
-"BusNo":103,"BusType":2,"Voltage":1.001,"Theta":0,"PGi":0.4,"QGi":0,"PLi":0.23,"QLi":0.16,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":103,"BusType":2,"Voltage":1.001,"Theta":0,"PGi":0.4,"QGi":0,"PLi":0.23,"QLi":0.16,"Qmin":-0.15,"Qmax":0.4,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":104,"BusType":2,"Voltage":0.971,"Theta":0,"PGi":0,"QGi":0,"PLi":0.38,"QLi":0.25,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":104,"BusType":2,"Voltage":0.971,"Theta":0,"PGi":0,"QGi":0,"PLi":0.38,"QLi":0.25,"Qmin":-0.08,"Qmax":0.23,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":105,"BusType":2,"Voltage":0.965,"Theta":0,"PGi":0,"QGi":0,"PLi":0.31,"QLi":0.26,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":105,"BusType":2,"Voltage":0.965,"Theta":0,"PGi":0,"QGi":0,"PLi":0.31,"QLi":0.26,"Qmin":-0.08,"Qmax":0.23,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -436,7 +436,7 @@
 }
 ,
 {
-"BusNo":107,"BusType":2,"Voltage":0.952,"Theta":0,"PGi":-0.22,"QGi":0,"PLi":0.28,"QLi":0.12,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":107,"BusType":2,"Voltage":0.952,"Theta":0,"PGi":-0.22,"QGi":0,"PLi":0.28,"QLi":0.12,"Qmin":-2,"Qmax":2,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -448,19 +448,19 @@
 }
 ,
 {
-"BusNo":110,"BusType":2,"Voltage":0.973,"Theta":0,"PGi":0,"QGi":0,"PLi":0.39,"QLi":0.3,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":110,"BusType":2,"Voltage":0.973,"Theta":0,"PGi":0,"QGi":0,"PLi":0.39,"QLi":0.3,"Qmin":-0.08,"Qmax":0.23,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":111,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":0.36,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":111,"BusType":2,"Voltage":0.98,"Theta":0,"PGi":0.36,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":10,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":112,"BusType":2,"Voltage":0.975,"Theta":0,"PGi":-0.43,"QGi":0,"PLi":0.25,"QLi":0.13,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":112,"BusType":2,"Voltage":0.975,"Theta":0,"PGi":-0.43,"QGi":0,"PLi":0.25,"QLi":0.13,"Qmin":-1,"Qmax":10,"AreaNo":1,"AcDc":1
 }
 ,
 {
-"BusNo":113,"BusType":2,"Voltage":0.993,"Theta":0,"PGi":-0.06,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":113,"BusType":2,"Voltage":0.993,"Theta":0,"PGi":-0.06,"QGi":0,"PLi":0,"QLi":0,"Qmin":-1,"Qmax":2,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -472,7 +472,7 @@
 }
 ,
 {
-"BusNo":116,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":-1.84,"QGi":0,"PLi":0,"QLi":0,"Qmin":-9999,"Qmax":9999,"AreaNo":1,"AcDc":1
+"BusNo":116,"BusType":2,"Voltage":1.005,"Theta":0,"PGi":-1.84,"QGi":0,"PLi":0,"QLi":0,"Qmin":-10,"Qmax":10,"AreaNo":1,"AcDc":1
 }
 ,
 {
@@ -1242,7 +1242,7 @@
 {
 "BusNo":1,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1266,7 +1266,7 @@
 {
 "BusNo":4,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1280,9 +1280,9 @@
 }
 ,
 {
-"BusNo":6,"Type":0,"Para":
+"BusNo":6,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1298,7 +1298,7 @@
 {
 "BusNo":8,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1312,9 +1312,9 @@
 }
 ,
 {
-"BusNo":10,"Type":0,"Para":
+"BusNo":10,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1328,9 +1328,9 @@
 }
 ,
 {
-"BusNo":12,"Type":0,"Para":
+"BusNo":12,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1354,7 +1354,7 @@
 {
 "BusNo":15,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1378,15 +1378,15 @@
 {
 "BusNo":18,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":19,"Type":0,"Para":
+"BusNo":19,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1426,7 +1426,7 @@
 {
 "BusNo":24,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1434,23 +1434,23 @@
 {
 "BusNo":25,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":26,"Type":0,"Para":
+"BusNo":26,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":27,"Type":0,"Para":
+"BusNo":27,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1482,15 +1482,15 @@
 {
 "BusNo":31,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":32,"Type":0,"Para":
+"BusNo":32,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1506,7 +1506,7 @@
 {
 "BusNo":34,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1522,7 +1522,7 @@
 {
 "BusNo":36,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1554,7 +1554,7 @@
 {
 "BusNo":40,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1568,9 +1568,9 @@
 }
 ,
 {
-"BusNo":42,"Type":0,"Para":
+"BusNo":42,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1602,7 +1602,7 @@
 {
 "BusNo":46,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1626,7 +1626,7 @@
 {
 "BusNo":49,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1666,7 +1666,7 @@
 {
 "BusNo":54,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1674,15 +1674,15 @@
 {
 "BusNo":55,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":56,"Type":0,"Para":
+"BusNo":56,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1706,7 +1706,7 @@
 {
 "BusNo":59,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1722,15 +1722,15 @@
 {
 "BusNo":61,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":62,"Type":0,"Para":
+"BusNo":62,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1754,15 +1754,15 @@
 {
 "BusNo":65,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":66,"Type":0,"Para":
+"BusNo":66,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1786,15 +1786,15 @@
 {
 "BusNo":69,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":70,"Type":0,"Para":
+"BusNo":70,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1810,7 +1810,7 @@
 {
 "BusNo":72,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1818,15 +1818,15 @@
 {
 "BusNo":73,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":74,"Type":0,"Para":
+"BusNo":74,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1842,15 +1842,15 @@
 {
 "BusNo":76,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":77,"Type":0,"Para":
+"BusNo":77,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1874,7 +1874,7 @@
 {
 "BusNo":80,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1912,9 +1912,9 @@
 }
 ,
 {
-"BusNo":85,"Type":0,"Para":
+"BusNo":85,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -1930,7 +1930,7 @@
 {
 "BusNo":87,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1946,7 +1946,7 @@
 {
 "BusNo":89,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -1954,23 +1954,23 @@
 {
 "BusNo":90,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":91,"Type":0,"Para":
+"BusNo":91,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":92,"Type":0,"Para":
+"BusNo":92,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -2026,7 +2026,7 @@
 {
 "BusNo":99,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -2034,7 +2034,7 @@
 {
 "BusNo":100,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -2058,7 +2058,7 @@
 {
 "BusNo":103,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -2066,15 +2066,15 @@
 {
 "BusNo":104,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":105,"Type":0,"Para":
+"BusNo":105,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -2090,7 +2090,7 @@
 {
 "BusNo":107,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -2114,7 +2114,7 @@
 {
 "BusNo":110,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
@@ -2122,23 +2122,23 @@
 {
 "BusNo":111,"Type":0,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"J":50,"D":50,"wL":0.005,"R":0.001,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":112,"Type":0,"Para":
+"BusNo":112,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
 ,
 {
-"BusNo":113,"Type":0,"Para":
+"BusNo":113,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
@@ -2160,9 +2160,9 @@
 }
 ,
 {
-"BusNo":116,"Type":0,"Para":
+"BusNo":116,"Type":10,"Para":
 {
-"J":50,"D":50,"wL":0.005,"R":0.001,"w0":314.15926535897933
+"V_dc":2.5,"C_dc":0.002,"f_v_dc":10,"wLf":0.005,"R":0.0005,"f_pll":10,"f_tau_pll":300,"f_i_dq":400,"w0":376.99111843077515
 }
 
 }
