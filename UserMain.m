@@ -23,6 +23,12 @@ UserDataType = 1;
 % UserDataName = 'Data68Bus';
 % UserDataName = 'Data68Bus_VirtualRC';
 UserDataName = 'Data118Bus';
+% UserDataName = 'Data118Bus_VirtualRC';
+% UserDataName = 'Data118Bus_Sg';
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();
+
+%% Find mode
+% ModeIndex = intersect(find(imag(EigVecHz)<40),find(imag(EigVecHz)>20)) 
+% EigVecHz(ModeIndex)

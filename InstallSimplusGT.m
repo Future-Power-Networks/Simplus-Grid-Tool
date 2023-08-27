@@ -46,6 +46,7 @@ addpath(genpath([RootPath,'/Library']));          	% Add "Library" folder
 addpath(genpath([RootPath,'/Documentations']));   	% Add "Documentations" folder
 addpath(genpath([RootPath,'/Simulation14Bus']))
 addpath(genpath([RootPath,'/Simulation68Bus']))
+addpath(genpath([RootPath,'/Simulation118Bus']))
 addpath(genpath([RootPath,'/SimulationDssInductorExample']))
 addpath(genpath(RootPath));                         % Add root path
 savepath;
