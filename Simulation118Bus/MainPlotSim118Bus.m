@@ -44,7 +44,7 @@ set(gcf,'units','normalized','outerposition',[0.1 0.1 0.25 0.55]);
     xlabel('Time (s)')
  end
  
- if 0 
+ if 1
  print(gcf,['Simulation118Bus\Sim118Bus_SimEmt.png'],'-dpng','-r600');
  end
  
