@@ -1,4 +1,4 @@
-function figo = PlotHeatMap(x,y,v,fig)
+function figo = PlotHeatMap(x,y,v,fig, climt)
 
     % Find the figure
     try
@@ -66,7 +66,7 @@ function figo = PlotHeatMap(x,y,v,fig)
     %colormap(gx);
     %fig.Colormap = colormap(flipud(jet));%[GradRed GradGreen GradBlue];
     fig.Colormap = colormap(gx);
-    clim([-2 2])
+    clim(climt)
    	%figure;
     %mesh(xq,yq,vq);
     %hold on;

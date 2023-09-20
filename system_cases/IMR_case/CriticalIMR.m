@@ -49,43 +49,28 @@ end
 [MdMode,ResidueAll,ZmValAll,~,~,~, ~]=...
     SimplusGT.Modal.SSCal(GminSS, N_Apparatus, ApparatusType, ModeSelect, GmDSS_Cell, GsysDSS, ApparatusInputStr, ApparatusOutputStr);
 
-j=1; j2=1;
+%% config C-IMR: Floating bus with maximum IMR value, SG with no effect on heat map, and IBR has the critical effect.
+j=1;
 clear CIMR CIMR2;
 for k=1:N_Bus
-    %if ApparatusType{k} ~= 100 && ApparatusType{k} ~= 90% not a floating bus or an infinite bus
-    if ApparatusType{k} >= 10 && ApparatusType{k} <30 % not a floating bus or an infinite bus
-        CIMR(j).device = k;
-        CIMR(j).name = strcat('A',num2str(k));
-        CIMR(j).value = 10;
-        CIMR(j).mode = 0;
-        j=j+1;
-    end
     if ApparatusType{k}<30 || ApparatusType{k}>=40
-        CIMR2(j2).device = k;
-        CIMR2(j2).value = log10(100);
-        CIMR2(j2).mode = 0;
-        j2=j2+1;
+        CIMR2(j).device = k;
+        CIMR2(j).value = log10(100);
+        CIMR2(j).mode = 0;
+        j=j+1;
     end
 end
 
+%% sweep the mode
 for modei=1:length(ModeSelect)
     Residue = ResidueAll{modei};
     ZmVal = ZmValAll{modei};
     SigmaMag = abs(real(MdMode(ModeSelect(modei))))*2*pi; %MdMode is in the unite of Hz, so needs to be changed to rad.
-    for j=1:length(CIMR)
-        k=CIMR(j).device;
-        IMR = SigmaMag/(SimplusGT.Frobenius_norm_dq(Residue(k))*SimplusGT.Frobenius_norm_dq(ZmVal(k)));
-        if IMR<CIMR(j).value
-            CIMR(j).value=IMR;
-            CIMR(j).mode = MdMode(ModeSelect(modei));
-        else
-        end
-    end
 
     for j=1:length(CIMR2)
         k=CIMR2(j).device;
         if ApparatusType{k} ~= 100
-        IMR = SigmaMag/(SimplusGT.Frobenius_norm_dq(Residue(k))*SimplusGT.Frobenius_norm_dq(ZmVal(k)));
+            IMR = SigmaMag/(SimplusGT.Frobenius_norm_dq(Residue(k))*SimplusGT.Frobenius_norm_dq(ZmVal(k)));
         if IMR<0.01
             IMR = log10(0.01);
         else
@@ -103,4 +88,5 @@ end
 % figure(3);
 % clf;
 % bar([CIMR(:).value]);
-run Main_K_Plot.m;
+Main_K_Plot(CIMR2,1);
+title('Small-Signal System Strength Heatmap');

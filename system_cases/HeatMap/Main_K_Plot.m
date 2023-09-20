@@ -1,4 +1,5 @@
 
+function Main_K_Plot(CIMR2,imr_case)
 %% Load map data
 % DataName = 'K_68Bus_IBR_Load_Data';
 % DataName = 'K_68Bus_IBR_Data';
@@ -43,6 +44,8 @@ highlight(GraphFigure,GraphData,'NodeFontSize',9);
 highlight(GraphFigure,GraphData,'NodeFontWeight','bold');
 
 %% sort out SG-bus, IBR-bus and floating bus
+N_Bus = evalin('base', 'N_Bus');
+ApparatusType = evalin('base', 'ApparatusType');
 k1=1;
 k2=1;
 k3=1;
@@ -82,7 +85,11 @@ XData = [XData.', 1.3, 1.7, -2.7, 2.5, 3.6, 3.7, 1.8].';
 YData = [YData.', -0.8, -0.4, 0.8, 3.7, 2.6, 0.4, -0.9].';
 ZData = [ZData.', 2, 2, 2, 2, 2, 2, 2].';
 % Plot heat map
-PlotHeatMap(XData,YData,ZData,1);
+if imr_case==1 % small-signal IMR
+    PlotHeatMap(XData,YData,ZData,1,[-2,2]);
+elseif imr_case==2 %large-signal IMR
+    PlotHeatMap(XData,YData,ZData,1,[0,1]);
+end
 % Get the max
 ZDataMax = max(ZData);
 
@@ -114,3 +121,4 @@ h.TickLabels = {'-2','-1','0','1','2'};
 %colorbar('Ticks',[-2,-1,0,1,2],...
          %'TickLabels',{'-2 very weak','-1 weak','0 normal','1 strong','2 very strong'}, 'FontWeight','bold');
 title('Small-Signal System Strength Heatmap');
+end
