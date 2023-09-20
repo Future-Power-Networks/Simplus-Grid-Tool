@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=20;
+CaseStudy=15;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -29,6 +29,7 @@ switch CaseStudy
     case 18; UserData = 'IEEE68_bad.xlsx';
     case 19; UserData = 'IEEE68_verybad.xlsx';
     case 20; UserData = 'IEEE68_LIMR.xlsx';
+    case 21; UserData = 'Dome_2IBR_A2_detuned';
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
@@ -38,7 +39,7 @@ end
 tic
 SimplusGT.Toolbox.Main();
 %toc
-%ModalAnalysisAPP;
+ModalAnalysisAPP;
 
 %% Step 3: Modal analysis: participation and eigenvalue sensitivity
 % Step 3.1: run 'ModalInitialise.m'. 
