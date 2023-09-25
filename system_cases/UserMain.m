@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=15;
+CaseStudy=22;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -23,13 +23,14 @@ switch CaseStudy
     case 12; UserData = 'TwoSG.xlsx';
     case 13; UserData = '4bus_case_c.xlsx'; % for large-signal strength: strength to connect
     case 14; UserData = 'IEEE_14Bus_Cyprus_modified_July.xlsx';
-    case 15; UserData = '2IBR_A2_detuned.xlsx';
-    case 16; UserData = '2IBR_same_tuned.xlsx';
-    case 17; UserData = 'IEEE68_good.xlsx';
-    case 18; UserData = 'IEEE68_bad.xlsx';
-    case 19; UserData = 'IEEE68_verybad.xlsx';
-    case 20; UserData = 'IEEE68_LIMR.xlsx';
-    case 21; UserData = 'Dome_2IBR_A2_detuned';
+    case 15; UserData = '2IBR_A2_detuned.xlsx'; % IMR case study
+    case 16; UserData = '2IBR_same_tuned.xlsx'; % IMR case study
+    case 17; UserData = 'IEEE68_good.xlsx'; % IMR case study
+    case 18; UserData = 'IEEE68_bad.xlsx'; % IMR case study
+    case 19; UserData = 'IEEE68_verybad.xlsx'; % IMR case study
+    case 20; UserData = 'IEEE68_LIMR.xlsx'; % Based on case 17, increase active power output of A26, 27, 28 29
+    case 21; UserData = 'IEEE68_LIMR_tuned.xlsx'; % Based on case 20, tuned A26, 27, 28, 29
+    case 22; UserData = 'Dome_2IBR_A2_detuned'; % Based on case 20, 
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
@@ -39,7 +40,7 @@ end
 tic
 SimplusGT.Toolbox.Main();
 %toc
-ModalAnalysisAPP;
+%ModalAnalysisAPP;
 
 %% Step 3: Modal analysis: participation and eigenvalue sensitivity
 % Step 3.1: run 'ModalInitialise.m'. 
