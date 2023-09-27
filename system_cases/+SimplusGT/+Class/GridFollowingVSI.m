@@ -168,7 +168,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             P_dc   = u(4);
             
             % Saturation setting
-            EnableSaturation = 1;
+            EnableSaturation = 0;
             
             % Frequency limit and saturation
             w_limit_H = W0*1.1;

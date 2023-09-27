@@ -3,7 +3,7 @@ f_low=0.5; % analysed frequency point
 %% Calculation of Thevenin impedance
 for i=1:length(ApparatusType)
     %Ym_matrix(i*2-1:i*2, i*2-1:i*2) = GmDSS_Cell{i}(1:2,1:2);
-    if ApparatusType{i}==100 % floating bus: machine impedance is set as 0
+    if ApparatusType{i}==100 || ApparatusType{i}==90 % floating bus: machine impedance is set as 0
         Zm0(i*2-1:i*2, i*2-1:i*2) = 0;
         Zm0_svd(i,1:2) = 0;
     else
@@ -22,7 +22,7 @@ j=1;
 
 for i=1:N_Bus
     if ApparatusType{i}<30 || ApparatusType{i}>=40
-        if ApparatusType{i}==100 % floating bus
+        if ApparatusType{i}==100 || ApparatusType{i}==90% floating bus or infinite bus
             %Zth{i} = 'NaN';%inv(Ysys0(i*2-1:i*2, i*2-1:i*2));
             %Zth_(i) = 1/(Ysys_p(i,i));
             LIMR(j).device = i;
@@ -39,5 +39,5 @@ for i=1:N_Bus
     %Zth_svd(i,:) = svd(Zth{i}).';
     %SCC(i) = 1/Zth_svd(i,2);
 end
-Main_K_Plot(LIMR,2);
-title('Large-Signal System Strength Heatmap');
+%Main_K_Plot(LIMR,2);
+%title('Large-Signal System Strength Heatmap');

@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=22;
+CaseStudy=23;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -31,6 +31,7 @@ switch CaseStudy
     case 20; UserData = 'IEEE68_LIMR.xlsx'; % Based on case 17, increase active power output of A26, 27, 28 29
     case 21; UserData = 'IEEE68_LIMR_tuned.xlsx'; % Based on case 20, tuned A26, 27, 28, 29
     case 22; UserData = 'Dome_2IBR_A2_detuned'; % Based on case 20, 
+    case 23; UserData = '2IBR_same_tuned_LIMR';
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 
