@@ -22,15 +22,9 @@ cd(RootPath);
 
 % Check the matlab version
 fprintf('Checking the Matlab version...\n')
-% MatlabVersion = version('-release');
-% MatlabVersion = MatlabVersion(1:(end-1));
-% MatlabVersionYear = MatlabVersion;
-% if str2double(MatlabVersionYear)<2015
-%     error(['Error: Please use Matlab version 2015a or later!']);
-% end
-if hex2dec(version('-release')) < hex2dec('2015b')
+if hex2dec(version('-release')) < hex2dec('2016b')
     delete(bar);
-    StopInstall('Error: Please use Matlab 2015a or later version!');
+    StopInstall('Error: Please use Matlab 2016a or later version!');
     return;
 end
 
@@ -57,8 +51,8 @@ waitbar(0.6,bar,InstallMsg,'Name','Simplus');
 % Convert the lib to the required version of matlab
 fprintf('Converting SimplusGT library to the required Matlab version, please wait a minute...\n')
 warning('off','all')    % Turn off all warnings
-load_system('SimplusGT_2015a.slx');
-save_system('SimplusGT_2015a.slx','Library/SimplusGT.slx');
+load_system('SimplusGT_2016a.slx');
+save_system('SimplusGT_2016a.slx','Library/SimplusGT.slx');
 close_system('SimplusGT.slx');
 warning('on','all')     % Turn on all warnings
 
