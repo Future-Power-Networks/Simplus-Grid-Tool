@@ -9,7 +9,7 @@
 clear all; clc; close all; 
 
 %% User data
-UserDataName = 'UserData';      % Default 4-bus system
+% UserDataName = 'UserData';      % Default 4-bus system
 
 % Example power systems in "Examples" folder:
 %
@@ -29,6 +29,9 @@ UserDataName = 'UserData';      % Default 4-bus system
 %
 % Hybrid ac-dc power system examples:
 % UserDataName = 'Hybrid_test_v1';             % A 4-bus hybrid ac-dc system
+
+% UserDataName = 'GfmSupportGfl_1';           % Original two-GFL system
+UserDataName = 'GfmSupportGfl_2';         % GFM-GFL system.
 
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));
