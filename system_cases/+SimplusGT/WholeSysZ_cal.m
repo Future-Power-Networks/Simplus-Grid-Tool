@@ -11,7 +11,8 @@ function Zsys_SS = WholeSysZ_cal(GmObj,YbusObj,Port_i,Port_v)
 [~,Gm_dss] = GmObj.GetDSS(GmObj);
 [~,YbusDSS] = YbusObj.GetDSS(YbusObj);
 Gm_dss_trim = Gm_dss(Port_i,Port_v);
-Zm_dss = inv(Gm_dss_trim);
+Zm_dss = SimplusGT.DssSwitchInOut(Gm_dss_trim,length(Port_i));
+%Zm_dss = inv(Gm_dss_trim);
 Zsys_dss = feedback(Zm_dss,YbusDSS);
 Zsys_SS = SimplusGT.dss2ss(Zsys_dss);
 
