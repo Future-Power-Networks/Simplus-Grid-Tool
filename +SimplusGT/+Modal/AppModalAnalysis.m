@@ -1,3 +1,7 @@
+% This function is for the API of participation analysis of layers 1 and 2.
+
+% Author(s): Yue Zhu
+% Modified by: Yitong Li
 
 function [AppMDResults,MdDataSave]=AppModalAnalysis(ModeSelect)
 
@@ -38,7 +42,7 @@ for modei=1:ModeSelNum
     Residue = ResidueAll{modei};
     ZmVal = ZmValAll{modei};
     FreqSel = imag(MdMode(ModeSelAll(modei)));
-    [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus,...
+    [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus,...  % Key function is here
         ApparatusType,modei,ApparatusSelL12,FreqSel,MdMode(ModeSelAll(modei)));
     MdLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
     MdLayer2(modei).mode = [num2str(FreqSel),'~Hz'];

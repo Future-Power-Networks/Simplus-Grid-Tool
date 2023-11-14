@@ -1,3 +1,8 @@
+% This function is for the API of layer 3.
+% 
+% Author(s): Yue Zhu
+% Modified by: Yitong Li
+
 function MdLayer3=AppModalLayer3(AppSelect, MdDataSave)
 
 ApparatusType = evalin('base', 'ApparatusType');
