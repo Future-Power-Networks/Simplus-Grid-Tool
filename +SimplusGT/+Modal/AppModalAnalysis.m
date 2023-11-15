@@ -63,6 +63,10 @@ for modei=1:ModeSelNum
             % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
             IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
             count=count+1;
+        elseif ApparatusType{k} ==90 % infinite bus: let IMR=inf
+            IMR.Type(count) = ApparatusType{k};
+            IMR.IMRVal(count)=inf;
+            count=count+1;
         elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatus
             IMR.Type(count) = ApparatusType{k};
             % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
@@ -73,8 +77,8 @@ for modei=1:ModeSelNum
             % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
             IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
             count=count+1;
-        % else
-        % error('Error: The impedance margin ratio only supports ac system analysis.')
+        else
+             error('Error: The impedance margin ratio does not support this type yet.')
         end
     end
 end
