@@ -26,9 +26,11 @@ UserDataName = 'UserData';      % Default 4-bus system
 %
 % Dc power system examples:
 % UserDataName = 'GfdBuckInfiniteBus';         % Single grid-feeding buck converter and infinite bus
+% UserDataName = 'TwoBusGfdBuck';              % Two buck converters
 %
 % Hybrid ac-dc power system examples:
 % UserDataName = 'Hybrid_test_v1';             % A 4-bus hybrid ac-dc system
+% UserDataName = 'Hybrid_28_bus';
 
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));

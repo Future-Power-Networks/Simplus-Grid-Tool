@@ -6,7 +6,6 @@
 function [AppMdResults,MdDataSave]=AppModalAnalysis(ModeSelect)
 
 N_Apparatus = evalin('base', 'NumApparatus');
-N_Bus = evalin('base', 'NumBus');
 ApparatusType = evalin('base', 'ApparatusType');
 ApparatusBus = evalin('base', 'ApparatusBus');
 ApparatusInputStr = evalin('base', 'ApparatusInputStr');
@@ -42,7 +41,7 @@ for modei=1:ModeSelNum
     ZmVal = ZmValAll{modei};
     FreqSel = imag(MdMode(ModeSelAll(modei)));
     [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus,...  % Key function is here
-        ApparatusType,modei,ApparatusSelL12,FreqSel,MdMode(ModeSelAll(modei)));
+        ApparatusType,ApparatusSelL12);
     MdLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
     MdLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
     for count = 1: length(ApparatusSelL12)
@@ -58,8 +57,18 @@ for modei=1:ModeSelNum
     % Calculate the impedance margin ratio
     SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; % MdMode is in the unite of Hz, so needs to be changed to rad.
     count=1;
-    for k=1:N_Bus
+    for k=1:length(ApparatusType)
         if ApparatusType{k} <= 89 % Ac apparatus
+            IMR.Type(count) = ApparatusType{k};
+            % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
+            IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
+            count=count+1;
+        elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatus
+            IMR.Type(count) = ApparatusType{k};
+            % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
+            IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
+            count=count+1;
+        elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % Interlink apparatus
             IMR.Type(count) = ApparatusType{k};
             % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
             IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;

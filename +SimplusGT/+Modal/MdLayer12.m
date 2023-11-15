@@ -3,34 +3,16 @@
 % Author(s): Yue Zhu
 % Modified by: Yitong Li, Qipeng Zheng
 
-function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus, ApparatusType,modei,ApparatusSel,FreqSel,ModeSel)
+function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus, ApparatusType,ApparatusSel)
 
 for k = 1:N_Apparatus
-    if ApparatusType{k} <= 89  %only consider apparatus
+    if (ApparatusType{k} <= 89) || (ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089) || (ApparatusType{k} >= 2000 && ApparatusType{k} <= 2089)  % only consider apparatus
+        % k
+        % Residue{k}
+        % ZmVal{k}
         Layer1All(k) = norm(Residue{k},"fro") * norm(ZmVal{k},"fro");
         % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
         Layer2All(k) = -1 * conj(sum(dot(Residue{k},ZmVal{k}')));
-    elseif ApparatusType{k} >= 1010 && ApparatusType{k} <= 1089 % DC apparatuses
-        Layer1All(k) = sqrt( Residue(k).dd*conj(Residue(k).dd));
-        Layer2All(k) = -1 * ( Residue(k).dd* ZmVal(k).dd )/sqrt( ZmVal(k).dd*conj(ZmVal(k).dd) );
-    elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % IC apparatuses
-        Layer1All(k) = sqrt( Residue(k).dd*conj(Residue(k).dd) + Residue(k).dq*conj(Residue(k).dq)...
-            +Residue(k).qd*conj(Residue(k).qd) +Residue(k).qq*conj(Residue(k).qq) ...
-            +Residue(k).d_dc*conj(Residue(k).d_dc) +Residue(k).q_dc*conj(Residue(k).q_dc)...
-            +Residue(k).dc_d*conj(Residue(k).dc_d) +Residue(k).dc_q*conj(Residue(k).dc_q)...
-            +Residue(k).dc_dc*conj(Residue(k).dc_dc));
-
-        Layer2All(k) = -1 * ( Residue(k).dd*ZmVal(k).dd + Residue(k).qd*ZmVal(k).dq ...
-                    + Residue(k).dq*ZmVal(k).qd + Residue(k).qq*ZmVal(k).qq...
-                    + Residue(k).d_dc*ZmVal(k).dc_d + Residue(k).q_dc*ZmVal(k).dc_q...
-                    + Residue(k).dc_d*ZmVal(k).d_dc + Residue(k).dc_q*ZmVal(k).q_dc...
-                    + Residue(k).dc_dc*ZmVal(k).dc_dc)/...
-                    sqrt( ZmVal(k).dd*conj(ZmVal(k).dd) + ZmVal(k).dq*conj(ZmVal(k).dq)...
-            + ZmVal(k).qd*conj(ZmVal(k).qd) + ZmVal(k).qq*conj(ZmVal(k).qq) ...
-            + ZmVal(k).d_dc*conj(ZmVal(k).d_dc) + ZmVal(k).q_dc*conj(ZmVal(k).q_dc) ...
-            + ZmVal(k).dc_d*conj(ZmVal(k).dc_d) + ZmVal(k).dc_q*conj(ZmVal(k).dc_q) ...
-            + ZmVal(k).dc_dc*conj(ZmVal(k).dc_dc));  
-
    end
 end
 
@@ -56,8 +38,8 @@ for k = 1:N_Apparatus
        Layer2.imag(Count) = imag(Layer2All(k));
        Layer2.real_pu(Count) = real(Layer2All(k))/Layer2RealSum;
        Layer2.imag_pu(Count) = imag(Layer2All(k))/Layer2ImagSum;
-       VecLegend{Count} = ['Apparatus',num2str(ApparatusBus{k})];
-       c(Count) = categorical({['Apparatus',num2str(ApparatusBus{k})]});
+       VecLegend{Count} = ['Apparatus',num2str(ApparatusBus{k}(1,1))];
+       c(Count) = categorical({['Apparatus',num2str(ApparatusBus{k}(1,1))]});
    end
 end
 

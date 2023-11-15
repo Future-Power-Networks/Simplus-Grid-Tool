@@ -37,24 +37,24 @@ for modei=1:ModeSelNum
             ResidueAll{modei}{k}(2,1)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
             ResidueAll{modei}{k}(2,2)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);           
             
-        elseif ApparatusType{k} >= 1010 && ApparatusType{k} <= 1089 % Dc apparatuses
-            ResidueAll{modei}(k).dd=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
+        elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatuses
+            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
 
         elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % Interlink apparatuses
 
-            ResidueAll{modei}(k).dd=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}(k).dq=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);
-            ResidueAll{modei}(k).qd=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}(k).qq=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
+            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
+            ResidueAll{modei}{k}(1,2)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);
+            ResidueAll{modei}{k}(2,1)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
+            ResidueAll{modei}{k}(2,2)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
 
-            ResidueAll{modei}(k).d_dc=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
-            ResidueAll{modei}(k).q_dc=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
-            ResidueAll{modei}(k).dc_d=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}(k).dc_q=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
-            ResidueAll{modei}(k).dc_dc=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2); 
+            ResidueAll{modei}{k}(1,3)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
+            ResidueAll{modei}{k}(2,3)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
+            ResidueAll{modei}{k}(3,1)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
+            ResidueAll{modei}{k}(3,2)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
+            ResidueAll{modei}{k}(3,3)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2); 
 
         else % Floating bus and passive load: not considered           
-            ResidueAll{modei}(k).dd=[];
+            ResidueAll{modei}{k} = [];
         end
         pin = pin + length(ApparatusInputStr{k}); 
         pout = pout + length(ApparatusOutputStr{k});
