@@ -3,7 +3,7 @@
 % Author(s): Yue Zhu
 % Modified by: Yitong Li
 
-function [AppMDResults,MdDataSave]=AppModalAnalysis(ModeSelect)
+function [AppMdResults,MdDataSave]=AppModalAnalysis(ModeSelect)
 
 N_Apparatus = evalin('base', 'NumApparatus');
 N_Bus = evalin('base', 'NumBus');
@@ -22,7 +22,6 @@ ListBus = evalin('base', 'ListBus');
 % calculation of residues and device impedance values, at the selected mode
 [MdMode,ResidueAll,ZmValAll]=...
     SimplusGT.Modal.SSCal(GsysSs, N_Apparatus, ApparatusType, ModeSelect, GmDSS_Cell, ApparatusInputStr, ApparatusOutputStr);
-
 
 SelIndex = 1;
 ApparatusSelL12 = 0;
@@ -56,26 +55,28 @@ for modei=1:ModeSelNum
         MdLayer2(modei).result(count).DeltaLambdaImagpu=Layer2.imag_pu(count);
     end
 
-    %IMR=zeros(N_Bus,1);
-    SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; %MdMode is in the unite of Hz, so needs to be changed to rad.
+    % Calculate the impedance margin ratio
+    SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; % MdMode is in the unite of Hz, so needs to be changed to rad.
     count=1;
     for k=1:N_Bus
-        if ApparatusType{k} ~= 100 % not a floating bus
+        if ApparatusType{k} <= 89 % Ac apparatus
             IMR.Type(count) = ApparatusType{k};
             IMR.IMRVal(count) = SigmaMag/abs(-1*SimplusGT.inner_product_dq(Residue(k),ZmVal(k)));
             count=count+1;
+        % else
+        % error('Error: The impedance margin ratio only supports ac system analysis.')
         end
     end
 end
 
-AppMDResults.Layer1=MdLayer1;
-AppMDResults.Layer2=MdLayer2;
-AppMDResults.IMR=IMR;
+AppMdResults.Layer1=MdLayer1;
+AppMdResults.Layer2=MdLayer2;
+AppMdResults.IMR=IMR;
 
 %% state-space participation factor
 StatePF=SimplusGT.Modal.StatePFCal(GsysSs, ModeSelect);
-AppMDResults.StatePF.Val=StatePF;
-AppMDResults.StatePF.StateString=GsysSsStateStr;
+AppMdResults.StatePF.Val=StatePF;
+AppMdResults.StatePF.StateString=GsysSsStateStr;
 
 %% save some data for layer-3
 MdDataSave.ResidueAll=ResidueAll;

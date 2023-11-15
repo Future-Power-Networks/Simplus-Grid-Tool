@@ -1,23 +1,44 @@
+% Impedance participation analysis of layers 1 and 2.
+%
+% Author(s): Yue Zhu
+% Modified by: Yitong Li, Qipeng Zheng
+
 function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus, ApparatusType,modei,ApparatusSel,FreqSel,ModeSel)
 
 for k = 1:N_Apparatus
     if ApparatusType{k} <= 89  %only consider apparatus
-        %Modal layer 1
         Layer1All(k) = sqrt( Residue(k).dd*conj(Residue(k).dd) + Residue(k).dq*conj(Residue(k).dq)...
             +Residue(k).qd*conj(Residue(k).qd) +Residue(k).qq*conj(Residue(k).qq) )...
             * sqrt( ZmVal(k).dd*conj(ZmVal(k).dd) + ZmVal(k).dq*conj(ZmVal(k).dq)...
             + ZmVal(k).qd*conj(ZmVal(k).qd) + ZmVal(k).qq*conj(ZmVal(k).qq) );
-        %Modal layer 2
+        
         Layer2All(k) = -1 * ( Residue(k).dd*ZmVal(k).dd + Residue(k).qd*ZmVal(k).dq ...
                     + Residue(k).dq*ZmVal(k).qd + Residue(k).qq*ZmVal(k).qq ) ;       
+    elseif ApparatusType{k} >= 1010 && ApparatusType{k} <= 1089 % DC apparatuses
+        Layer1All(k) = sqrt( Residue(k).dd*conj(Residue(k).dd));
+        Layer2All(k) = -1 * ( Residue(k).dd* ZmVal(k).dd )/sqrt( ZmVal(k).dd*conj(ZmVal(k).dd) );
+    elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % IC apparatuses
+        Layer1All(k) = sqrt( Residue(k).dd*conj(Residue(k).dd) + Residue(k).dq*conj(Residue(k).dq)...
+            +Residue(k).qd*conj(Residue(k).qd) +Residue(k).qq*conj(Residue(k).qq) ...
+            +Residue(k).d_dc*conj(Residue(k).d_dc) +Residue(k).q_dc*conj(Residue(k).q_dc)...
+            +Residue(k).dc_d*conj(Residue(k).dc_d) +Residue(k).dc_q*conj(Residue(k).dc_q)...
+            +Residue(k).dc_dc*conj(Residue(k).dc_dc));
+
+        Layer2All(k) = -1 * ( Residue(k).dd*ZmVal(k).dd + Residue(k).qd*ZmVal(k).dq ...
+                    + Residue(k).dq*ZmVal(k).qd + Residue(k).qq*ZmVal(k).qq...
+                    + Residue(k).d_dc*ZmVal(k).dc_d + Residue(k).q_dc*ZmVal(k).dc_q...
+                    + Residue(k).dc_d*ZmVal(k).d_dc + Residue(k).dc_q*ZmVal(k).q_dc...
+                    + Residue(k).dc_dc*ZmVal(k).dc_dc)/...
+                    sqrt( ZmVal(k).dd*conj(ZmVal(k).dd) + ZmVal(k).dq*conj(ZmVal(k).dq)...
+            + ZmVal(k).qd*conj(ZmVal(k).qd) + ZmVal(k).qq*conj(ZmVal(k).qq) ...
+            + ZmVal(k).d_dc*conj(ZmVal(k).d_dc) + ZmVal(k).q_dc*conj(ZmVal(k).q_dc) ...
+            + ZmVal(k).dc_d*conj(ZmVal(k).dc_d) + ZmVal(k).dc_q*conj(ZmVal(k).dc_q) ...
+            + ZmVal(k).dc_dc*conj(ZmVal(k).dc_dc));  
+
    end
 end
 
 %%
-%%diagrams drawing
-%close(figure(2010+modei));
-%h=figure(2010+modei);
-%set(h,'position',[254.6,151.4,976.8,556]);
 Count=0;
 Layer2RealSum=0;
 Layer2ImagSum=0;
@@ -43,34 +64,5 @@ for k = 1:N_Apparatus
        c(Count) = categorical({['Apparatus',num2str(ApparatusBus{k})]});
    end
 end
-% clear title
-% subplot(2,2,[1,3]);
-% pie(Layer1);
-% title ('Impedance Participation Level-1');
-% legend(VecLegend,'Location',[0.0486,0.121,0.1038,0.2437]);
-% 
-% subplot(2,2,2);
-% b=bar(c, Layer2.real_pu);
-% set(gca,'YLim',[-1,1]);
-% set(gca,'YTick',-1:0.5:1);
-% set(gca,'XTickLabel',[]);
-% title ('Impedance Participation Level-2 Real (Normalized to 1)');
-% % for i=1:Count
-% %     text(i-0.4,Layer2.real(i),num2str(Layer2.real(i)));
-% % end
-% 
-% subplot(2,2,4);
-% b=bar(c, Layer2.imag_pu);
-% set(gca,'YLim',[-1,1])
-% set(gca,'YTick',-1:0.5:1);
-% b.FaceColor = 'flat';
-% b.CData = [1,0.5,0];
-% title ('Impedance Participation Level-2 Imaginary (Normalized to 1)');
-% % for i=1:Count
-% %     text(i-0.4,Layer2.imag(i),num2str(Layer2.imag(i)));
-% % end
-% 
-% TitStr = ['Mode: ',num2str(ModeSel,'%.2f'), ' Hz'];
-% SimplusGT.mtit(TitStr, 'color',[1 0 0], 'xoff', -0.3);
 
 end
