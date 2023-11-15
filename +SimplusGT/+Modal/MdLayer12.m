@@ -7,15 +7,9 @@ function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus, Ap
 
 for k = 1:N_Apparatus
     if ApparatusType{k} <= 89  %only consider apparatus
-        Layer1All(k) = sqrt( Residue{k}(1,1)*conj(Residue{k}(1,1)) + Residue{k}(1,2)*conj(Residue{k}(1,2))...
-            +Residue{k}(2,1)*conj(Residue{k}(2,1)) +Residue{k}(2,2)*conj(Residue{k}(2,2)) )...
-            * sqrt( ZmVal{k}(1,1)*conj(ZmVal{k}(1,1)) + ZmVal{k}(1,2)*conj(ZmVal{k}(1,2))...
-            + ZmVal{k}(2,1)*conj(ZmVal{k}(2,1)) + ZmVal{k}(2,2)*conj(ZmVal{k}(2,2)) );
-        % Layer1All(k) = sqrt(sum(dot( Residue{k},conj(Residue{k}) ))) * sqrt(sum(dot( ZmVal{k},conj(ZmVal{k}) )));
-
-        Layer2All(k) = -1 * ( Residue{k}(1,1)*ZmVal{k}(1,1) + Residue{k}(2,1)*ZmVal{k}(1,2) ...
-                    + Residue{k}(1,2)*ZmVal{k}(2,1) + Residue{k}(2,2)*ZmVal{k}(2,2) ) ;  
-        % Layer2All(k) = -1 * sum(dot(Residue{k},transpose(ZmVal{k})));
+        Layer1All(k) = norm(Residue{k},"fro") * norm(ZmVal{k},"fro");
+        % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
+        Layer2All(k) = -1 * conj(sum(dot(Residue{k},ZmVal{k}')));
     elseif ApparatusType{k} >= 1010 && ApparatusType{k} <= 1089 % DC apparatuses
         Layer1All(k) = sqrt( Residue(k).dd*conj(Residue(k).dd));
         Layer2All(k) = -1 * ( Residue(k).dd* ZmVal(k).dd )/sqrt( ZmVal(k).dd*conj(ZmVal(k).dd) );

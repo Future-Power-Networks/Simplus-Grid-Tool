@@ -42,13 +42,8 @@ for ApparatusCount = 1:ApparatusSelNum
 
         if ApparatusType{ApparatusSelL3} <= 89 % Ac apparatus
             Layer3Result(ApparatusCount).Result(k).DeltaZ = (ZmValNew- ZmValOrig)/(delta_para);
-            
-              Layer3Result(ApparatusCount).Result(k).DLambda_rad = -1*(...
-                 Layer3Result(ApparatusCount).Result(k).DeltaZ(1,1) * Residue_(1,1)...
-                + Layer3Result(ApparatusCount).Result(k).DeltaZ(1,2) * Residue_(2,1) ...
-                + Layer3Result(ApparatusCount).Result(k).DeltaZ(2,1) * Residue_(1,2) ...
-                + Layer3Result(ApparatusCount).Result(k).DeltaZ(2,2) * Residue_(2,2));
-            % Layer3Result(ApparatusCount).Result(k).DLambda_rad = -1*sum(dot(Layer3Result(ApparatusCount).Result(k).DeltaZ,transpose(Residue_)));
+            % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
+            Layer3Result(ApparatusCount).Result(k).DLambda_rad = -1*conj(sum(dot(Layer3Result(ApparatusCount).Result(k).DeltaZ,Residue_')));
             DLambda_Hz=Layer3Result(ApparatusCount).Result(k).DLambda_rad/(2*pi);
             Layer3Result(ApparatusCount).Result(k).DLambdaRho_Hz=DLambda_Hz;
             Layer3Result(ApparatusCount).Result(k).DLambdaRho_pu_Hz=DLambda_Hz*ParaSel;
