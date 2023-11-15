@@ -61,7 +61,9 @@ for modei=1:ModeSelNum
     for k=1:N_Bus
         if ApparatusType{k} <= 89 % Ac apparatus
             IMR.Type(count) = ApparatusType{k};
-            IMR.IMRVal(count) = SigmaMag/abs(-1*SimplusGT.inner_product_dq(Residue(k),ZmVal(k)));
+            % IMR.IMRVal(count) = SigmaMag/abs(-1*SimplusGT.inner_product_dq(Residue(k),ZmVal(k)));
+            % IMR.IMRVal(count) = SigmaMag/abs(-1 * sum(dot( Residue{k}, conj(transpose(ZmVal{k})) )) );
+            IMR.IMRVal(count) = SigmaMag/abs( -1 * ( Residue{k}(1,1)*ZmVal{k}(1,1) + Residue{k}(1,2)*ZmVal{k}(2,1) + Residue{k}(2,1)*ZmVal{k}(1,2) + Residue{k}(2,2)*ZmVal{k}(2,2) )) ;
             count=count+1;
         % else
         % error('Error: The impedance margin ratio only supports ac system analysis.')
