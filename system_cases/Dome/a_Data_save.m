@@ -1,6 +1,6 @@
 t_start = 3; % start time
 t_end =5; % end time
-fs_new = 240; % new sample rate
+fs_new = 1200; % new sample rate
 
 trim = (t_start*Fs+1):t_end*Fs;
 
@@ -22,7 +22,7 @@ vd_rt=retime(vd_t,'regular','SampleRate', fs_new); % reconfigure sample rate
 vq_rt=retime(vq_t,'regular','SampleRate', fs_new);
 id_rt=retime(id_t,'regular','SampleRate', fs_new);
 iq_rt=retime(iq_t,'regular','SampleRate', fs_new);
-save("Dome/vd_rt","vd_rt"); % save the data vd, vq, id, ia
+save("Dome/vd_rt","vd_rt"); % save the data vd, vq, id, iq
 save("Dome/vq_rt","vq_rt");
 save("Dome/id_rt","id_rt");
 save("Dome/iq_rt","iq_rt");

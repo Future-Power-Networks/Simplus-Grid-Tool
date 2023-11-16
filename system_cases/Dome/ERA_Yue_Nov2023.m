@@ -1,74 +1,67 @@
-clear y_data_rt;
+clear vd2_rt;
+era_order=12;
+f_sample_new=1200;
 
-t_start = 3; % start of impluse
-t_length =1;
+t_start = 3; % start of step
+t_length =0.2;
 
 trim = t_start*Fs+1:(t_start+t_length)*Fs;
 
-y_data_all = timeseries2timetable(out.vd_rec{1}.Values);
+vd2_all = timeseries2timetable(out.vdq{1}.Values);
+vq2_all = timeseries2timetable(out.vdq{2}.Values);
 
-y_data_trim = y_data_all(trim,:);
-f_sample_new=1200;
-y_data_rt = retime(y_data_trim,'regular','SampleRate', f_sample_new);
+vd2_trim = vd2_all(trim,:);
+vq2_trim = vq2_all(trim,:);
+vd2_rt = retime(vd2_trim,'regular','SampleRate', f_sample_new);
+vq2_rt = retime(vq2_trim,'regular','SampleRate', f_sample_new);
 
-u_amp=1/((13.8626)*Zbase*5); %current impulse amplitude: 1/(10*R）
+vd2_rt.vd2=vd2_rt.vd2-vd2_all.vd2(2.8*Fs); % remove steady-state: very important for ERA!!
+vq2_rt.Data = vq2_rt.Data-vq2_all.Data(2.8*Fs);
+
+%u_amp=0.015*ListPowerFlowNew(2,4);
+v_bus2=ListPowerFlowNew(2,4);
+u_amp = v_bus2/((13.8626)*Zbase*5); %current step
 s = tf('s');
-u_tf=u_amp*(1-exp(1)^(-0.1)); % 0.1s duration
-
-%u_tf=1*u_amp/s;
+u_tf_step=-u_amp/s;
 
 figure(1);clf;
-plot(y_data_rt.Time,y_data_rt.Data);
+subplot(2,1,1);
+plot(vd2_rt.Time,vd2_rt.vd2);
+subplot(2,1,2);
+plot(vq2_rt.Time, vq2_rt.Data);
 
+G_vdr=era(vd2_rt,era_order);
+G_vqr=era(vq2_rt,era_order);
 
-G_era=era(y_data_rt,20);
-y_tf_d=(tf(G_era));
-y_tf = d2c(y_tf_d);
+vd_tf_d=(tf(G_vdr));
+vd_tf = d2c(vd_tf_d);
+vq_tf_d=tf(G_vqr);
+vq_tf=d2c(vq_tf_d);
 %u_tf_d=c2d(u_tf,1/f_sample_new,'zoh');
 
-zdd1=y_tf/u_tf;%y_tf_d/u_tf_d;
+%zdd1=y_tf_d/u_tf_d;%y_tf_d/u_tf_d;
+zdd1=vd_tf/u_tf_step;
+zqd1=vq_tf/u_tf_step;
+%zdd1=y_tf/u_tf_impulse;
+%ydd1=u_tf_d/y_tf_d;
 
-P=bodeoptions;
-P.Grid='on';
-P.XLim={[0.1 1e3]};
-P.FreqUnits='Hz';
-figure(2);clf;
-bode(zdd1,P);
+ P=bodeoptions;
+ P.Grid='on';
+ P.XLim={[0.1 f_sample_new/2]};
+ P.FreqUnits='Hz';
+% figure(2);clf;
+% bode(ydd1,P);
+% hold on;
+% bode(GminSS(6,5),P);
 
 Zsys_SS = SimplusGT.WholeSysZ_cal(GmObj,YbusObj,Port_i,Port_v);
 figure(3);clf;
+subplot(2,1,1);
+bode(zdd1,P);
+hold on;
 bode(Zsys_SS(3,3),P);
-
-%e = eig(G_era.A);
-%%
-%figure(3);
-%subplot(1,2,1)
-%scatter(real(pole_sys),imag(pole_sys),'x','LineWidth',1.5); hold on; grid on;
-%scatter(real(e),imag(e),'o','LineWidth',1.5);
-%xlabel('Real Part (Hz)');
-%ylabel('Imaginary Part (Hz)');
-%title('Global pole map');
-
-
-%y_data_trim = y_data_all(t_start*Fs+1:(t_start+1)*Fs);
-%figure(2);
-%plot(y_data_trim); % plot the impulse response
-
-%G_era = era(y_data_trim);
-
-
-
-% V2 = timeseries2timetable(out.V_log{1}.Values);
-% V2 = V2(5988000:6036000,:);%6120000
-% V2.Properties.VariableNames(1) = "data";
-% V2.data = 1000000*(V2.data - V2.data(1));
-% V2 = V2(12000:end,:);
-% 
-% figure
-% plot(V2.Time,V2.data)
-% hold on
-% 
-% f_sample_new = 1600;
-% V2_rt = retime(V2,'regular','SampleRate',f_sample_new);
-% V2_rt.data(1) = 0;
-% % plot(V2_rt.Time,V2_rt.data)
+subplot(2,1,2);
+bode(zqd1,P);
+hold on;
+bode(Zsys_SS(4,3));
+%bode(GminSS(Port_i(3),Port_v(3)),P);
