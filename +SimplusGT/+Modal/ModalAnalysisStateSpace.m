@@ -1,3 +1,5 @@
+% This function does the modal analysis based on state space method.
+%
 % Author(s): Yitong Li
 
 function ModalAnalysisStateSpace(ObjGsysSs,EigIndex,FigN)
