@@ -13,10 +13,6 @@ ApparatusOutputStr = evalin('base', 'ApparatusOutputStr');
 GsysSsStateStr=evalin('base', 'GsysSsStateStr');
 GsysSs = evalin('base', 'GsysSs');
 GmDSS_Cell = evalin('base', 'GmDssCell');
-Para = evalin('base', 'Para');
-ApparatusPowerFlow = evalin('base', 'ApparatusPowerFlow');
-Ts = evalin('base', 'Ts');
-ListBus = evalin('base', 'ListBus');
 
 % calculation of residues and device impedance values, at the selected mode
 [MdMode,ResidueAll,ZmValAll]=...
@@ -54,7 +50,7 @@ for modei=1:ModeSelNum
         MdLayer2(modei).result(count).DeltaLambdaImagpu=Layer2.imag_pu(count);
     end
 
-    % Calculate the impedance margin ratio
+    % Calculate the impedance margin ratio (IMR)
     SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; % MdMode is in the unite of Hz, so needs to be changed to rad.
     count=1;
     for k=1:length(ApparatusType)
@@ -62,22 +58,20 @@ for modei=1:ModeSelNum
             IMR.Type(count) = ApparatusType{k};
             % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
             IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
-            count=count+1;
+            count = count+1;
         elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatus
             IMR.Type(count) = ApparatusType{k};
             IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
-            count=count+1;
+            count = count+1;
         elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % Interlink apparatus
             IMR.Type(count) = ApparatusType{k};
             IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
-            count=count+1;
-        elseif (ApparatusType{k} ==90) || (ApparatusType{k} == 1090) % infinite bus: let IMR=inf
+            count = count+1;
+        elseif  ApparatusType{k} == 90 || ApparatusType{k} == 1090   % infinite bus: let IMR=inf
             IMR.Type(count) = ApparatusType{k};
             IMR.IMRVal(count)=inf;
-            count=count+1;
-        else
-             error('Error: The impedance margin ratio does not support this type yet.')
-        end
+            count = count+1;
+        else    % floating bus, do nothing
     end
 end
 
