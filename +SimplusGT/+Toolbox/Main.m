@@ -1,21 +1,16 @@
 % Main function for SimplusGT.
-
+%
 % Author(s): Yitong Li, Yunjie Gu
 %
-% Modified by Rob Oldaker, Yitong Li:
-% # The function supports json user data input.
-% # The function uses data by struct type.
-%
-% Modified by Yue Zhu, Yitong Li:
-% # Check the version and matlab add-ons toolbox 
+% Modified by Rob Oldaker, Yitong Li, Yue Zhu
 
 %% Check toolbox version
 v=ver;
 if(~any(strcmp('Symbolic Math Toolbox', {v.Name})))
-    error('Error: Please install Symbolic Math Toolbox in Matlab Add-Ons')
+    error('Error: Please install "Symbolic Math Toolbox" in Matlab Add-Ons')
 end
 if (~any(strcmp('Statistics and Machine Learning Toolbox', {v.Name})))
-    error('Error: Please install Statistics and Machine Learning Toolbox in Matlab Add-Ons')
+    error('Error: Please install "Statistics and Machine Learning Toolbox" in Matlab Add-Ons')
 end
 
 %% Chech the input data type and convert it to struct
@@ -86,7 +81,7 @@ Advance = UserDataStruct.Advance;
 
 % ### Re-arrange the line netlist
 [ListLine,~,~] = SimplusGT.Toolbox.RearrangeListLineStruct(UserDataStruct,ListBus);
-DcAreaFlag = find(ListBus(:,12)==2);
+FlagDcArea = find(ListBus(:,12)==2);        % Check dc area
 
 % ### Re-arrange the apparatus netlist
 NumApparatus = length(UserDataStruct.Apparatus);
@@ -109,7 +104,7 @@ clear('i');
 
 % ### Power flow analysis
 fprintf('Do the power flow analysis...\n')
-if ~isempty(DcAreaFlag)
+if ~isempty(FlagDcArea)
     UserDataStruct.Advance.PowerFlowAlgorithm = 1;
     fprintf(['Warning: Because the system has dc area(s), the Gauss-Seidel power flow method is always used.\n']);
 end
@@ -275,7 +270,7 @@ if UserDataStruct.Advance.EnablePlotPole
     FigN = 100;
     PlotPoleMap(EigVecHz,FigN);
 else
-    fprintf('Warning: The default plot of pole map is disabled.\n')
+    fprintf('Warning: The plot of pole map is disabled.\n')
 end
 
 % Plot admittance
@@ -284,7 +279,26 @@ if UserDataStruct.Advance.EnablePlotAdmittance
   	FigN = 200;
     PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBusI,PortBusV,FigN);
 else
-    fprintf('Warning: The default plot of admittance spectrum is disabled.\n')
+    fprintf('Warning: The plot of admittance spectrum is disabled.\n')
+end
+
+%%
+% ==================================================
+% Grid Strength Analysis
+% ==================================================
+%
+% Only support ac system analysis at this stage.
+%
+fprintf('\n')
+fprintf('==================================\n')
+fprintf('Grid Strength Analysis\n')
+fprintf('==================================\n')
+if isempty(FlagDcArea)
+    fprintf('Plot grid strength.\n')
+    FigN = 300;
+    PlotGridStrength(ApparatusType,ListLineNew,FigN);
+else
+    fprintf('Warning: The plot of grid strength is disabled.\n')
 end
 
 %%
@@ -311,7 +325,7 @@ fprintf('=================================\n')
 fprintf('Simulink Model\n')
 fprintf('=================================\n')
 
-if NumBus>=150
+if NumBus >= 150
     UserDataStruct.Advance.EnableCreateSimulinkModel = 0;
     fprintf('Warning: The system has more than 150 buses;\n')
     fprintf('         The simulink model can not be created because of the limited size of GUI.\n')
@@ -345,7 +359,20 @@ fprintf('==================================\n')
 fprintf('End: Run Successfully.\n')
 fprintf('==================================\n')
 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+
 %%
+% Plot pole map
+%
 % Author(s): Yitong Li
 
 function PlotPoleMap(EigVecHz,FigN)
@@ -367,6 +394,8 @@ function PlotPoleMap(EigVecHz,FigN)
 end
 
 %%
+% Plot impedance spectrum
+%
 % Author(s): Yitong Li
 
 function PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBusI,PortBusV,FigN)
@@ -411,4 +440,29 @@ function PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBus
     
 end
 
+%%
+% Plot grid strength
+%
+% Author(s): Yitong Li
 
+function PlotGridStrength(ApparatusType,ListLine,FigN)
+
+    figure(FigN);
+
+    [Ydiag,Ybus] = SimplusGT.Strength.BusStrength(ApparatusType,ListLine);
+    [~,~,GraphFigure] = SimplusGT.Strength.PlotLayoutGraph(Ybus);
+    [vbus,ibus,fbus] = SimplusGT.Strength.BusTypeVIF(ApparatusType);
+
+    highlight(GraphFigure,vbus,'NodeColor','green');
+    highlight(GraphFigure,ibus,'NodeColor','red'); 
+    highlight(GraphFigure,fbus,'NodeColor',[0.7,0.7,0.7]);   	% gray
+
+    SimplusGT.Strength.PlotHeatMap(GraphFigure.XData',GraphFigure.YData',log10(abs(Ydiag))')
+    uistack(GraphFigure,'top');
+
+    h = colorbar;
+    h.Label.String = "log_{10}(Bus Admittance)";
+
+    title('Grid Strength')
+
+end
