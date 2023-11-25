@@ -2,9 +2,9 @@
 %
 % Author(s): Jialu Yuan, Yitong Li
 
-function [Ydiag,Ybus] = BusImpedance(ApparatusType,ListLine)
+function [Ydiag,Ybus] = BusStrength(ApparatusType,ListLine)
 
-[vbus,ibus,fbus] = SimplusGT.Strength.BusTypeVIF(ApparatusType);
+[vbus,ibus,fbus] = SimplusGT.Toolbox.BusTypeVIF(ApparatusType);
 
 % Calculate Ybus
 Ybus = SimplusGT.PowerFlow.YbusCalc(ListLine); 

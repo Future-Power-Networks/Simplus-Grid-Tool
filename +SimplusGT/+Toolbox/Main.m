@@ -449,15 +449,19 @@ function PlotGridStrength(ApparatusType,ListLine,FigN)
 
     figure(FigN);
 
-    [Ydiag,Ybus] = SimplusGT.Strength.BusStrength(ApparatusType,ListLine);
-    [~,~,GraphFigure] = SimplusGT.Strength.PlotLayoutGraph(Ybus);
-    [vbus,ibus,fbus] = SimplusGT.Strength.BusTypeVIF(ApparatusType);
+    [Ydiag,Ybus] = SimplusGT.Toolbox.BusStrength(ApparatusType,ListLine);
+    [~,~,GraphFigure] = SimplusGT.Toolbox.PlotLayoutGraph(Ybus);
+    [vbus,ibus,fbus] = SimplusGT.Toolbox.BusTypeVIF(ApparatusType);
 
     highlight(GraphFigure,vbus,'NodeColor','green');
     highlight(GraphFigure,ibus,'NodeColor','red'); 
     highlight(GraphFigure,fbus,'NodeColor',[0.7,0.7,0.7]);   	% gray
 
-    SimplusGT.Strength.PlotHeatMap(GraphFigure.XData',GraphFigure.YData',log10(abs(Ydiag))')
+    x = GraphFigure.XData';
+    y = GraphFigure.YData';
+    z = log10(abs(Ydiag))';
+
+    SimplusGT.Strength.PlotHeatMap(x,y,z);
     uistack(GraphFigure,'top');
 
     h = colorbar;
