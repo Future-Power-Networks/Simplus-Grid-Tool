@@ -461,7 +461,7 @@ function PlotGridStrength(ApparatusType,ListLine,FigN)
     y = GraphFigure.YData';
     z = log10(abs(Ydiag))';
 
-    SimplusGT.Strength.PlotHeatMap(x,y,z);
+    SimplusGT.Toolbox.PlotHeatMap(x,y,z);
     uistack(GraphFigure,'top');
 
     h = colorbar;

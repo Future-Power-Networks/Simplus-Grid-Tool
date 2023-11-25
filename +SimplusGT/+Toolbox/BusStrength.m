@@ -14,7 +14,7 @@ Ybus_1 = Ybus([vbus,ibus,fbus],:);
 YbusSort = Ybus_1(:,[vbus,ibus,fbus]);
 
 % Calculate Hbus
-HbusSort = SimplusGT.Strength.Y2H(YbusSort,length(vbus));
+HbusSort = SimplusGT.MatrixTwist(YbusSort,length(vbus));
 
 % Sort Hbus
 Hbus_1 ([vbus,ibus,fbus],:) = HbusSort(:,:);
