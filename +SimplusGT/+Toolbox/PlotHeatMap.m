@@ -4,11 +4,24 @@
 
 function PlotHeatMap(x,y,z)
 
-    % Interpolant
-    Delta = max(max(x)-min(x),max(y)-min(y));
-    xyLimit = max(max(abs(x)),max(abs(y))) + Delta*0.1;
-    [xmesh,ymesh] = meshgrid(linspace(-xyLimit,xyLimit,100));
+    Center = [(max(x)+min(x))/2, (max(y)+min(y))/2];
+    Delta = max(max(x)-min(x),max(y)-min(y))/2;
+
+    [xDelta,yDelta] = meshgrid(linspace(-Delta*1.2,Delta*1.2,500));
+    xmesh = xDelta + Center(1);
+    ymesh = yDelta + Center(2);
     
+    % Interpolant
+    if unique(x) == 1
+        x = [x; x(1)+Delta*0.01; x(1)-Delta*0.01];
+        y = [y; y(1); y(1)];
+        z = [z; z(1); z(1)];
+    end
+    if unique(y) == 1
+        x = [x; x(1); x(1)];
+        y = [y; y(1)+Delta*0.01; y(1)-Delta*0.01];
+        z = [z; z(1); z(1)];
+    end
     F = scatteredInterpolant(x,y,z);
     F.Method = 'natural';
     zmesh = F(xmesh,ymesh);
@@ -39,7 +52,11 @@ function PlotHeatMap(x,y,z)
     colormap(gx);
 
     % Limit the graph z data
-    climt = [min(z), max(z)];
+    if min(z) < max(z)
+        climt = [min(z), max(z)];
+    else
+        climt = [max(z)*0.9, max(z)*1.1];
+    end
     clim(climt);
 
 end
