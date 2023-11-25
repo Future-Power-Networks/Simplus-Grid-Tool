@@ -1,6 +1,6 @@
-% Find the voltage and current buses
+% Find the voltage, current, floating buses
 %
-% Author(s): Yitong Li
+% Author(s): Jialu Yuan, Yitong Li
 %
 % Notes:
 % Voltage bus (vbus): GFM inverter, SG, inf bus, etc.
