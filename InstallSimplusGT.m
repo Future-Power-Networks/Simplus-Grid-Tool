@@ -30,9 +30,9 @@ end
 
 % Check if a previous version of SimplusGT has been installed
 fprintf('Checking if the toolbox has been installed before...\n')
-if exist('SimplusGT')~=0
+if exist('SimplusGT.slx')~=0
     delete(bar);
-    StopInstall(['Error: SimplusGT has been installed on this PC before or SimplusGT lib is opened. Please uninstall the old version first or close the SimplusGT lib.']);
+    StopInstall(['Error: SimplusGT has been installed on this PC before, or SimplusGT lib is opened. Please uninstall the old version first, or close the SimplusGT lib.']);
     return;
 end
 

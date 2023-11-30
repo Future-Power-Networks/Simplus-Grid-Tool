@@ -22,7 +22,7 @@ Hbus(:,[vbus,ibus,fbus]) = Hbus_1(:,:);
 
 % Calculate bus impedance
 for i = 1:length(Hbus)
-    if (find(vbus,i))
+    if ismember(i,vbus)
         Ydiag(i) = Hbus(i,i);
     else
         Ydiag(i) = 1/Hbus(i,i);
