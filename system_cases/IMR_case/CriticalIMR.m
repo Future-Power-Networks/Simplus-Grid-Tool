@@ -71,6 +71,7 @@ for modei=1:length(ModeSelect)
         k=CIMR2(j).device;
         if ApparatusType{k} ~= 100
             IMR = SigmaMag/(SimplusGT.Frobenius_norm_dq(Residue(k))*SimplusGT.Frobenius_norm_dq(ZmVal(k)));
+            IMR_o=IMR;
         if IMR<0.01
             IMR = log10(0.01);
         else
@@ -80,6 +81,7 @@ for modei=1:length(ModeSelect)
         if IMR<CIMR2(j).value
             CIMR2(j).value=IMR;
             CIMR2(j).mode = MdMode(ModeSelect(modei));
+            CIMR2(j).value_orig=IMR_o;
         end
         end
     end
@@ -88,5 +90,5 @@ end
 % figure(3);
 % clf;
 % bar([CIMR(:).value]);
-Main_K_Plot(CIMR2,1);
+%Main_K_Plot(CIMR2,1);
 title('Small-Signal System Strength Heatmap');
