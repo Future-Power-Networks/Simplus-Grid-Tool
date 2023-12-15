@@ -19,7 +19,6 @@ UserDataName = 'UserData';      % Default 4-bus system
 % UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
 % UserDataName = 'IEEE_14Bus';
 % UserDataName = 'IEEE_30Bus';
-% UserDataName = 'IEEE_39Bus';
 % UserDataName = 'IEEE_57Bus';
 % UserDataName = 'AU14Gen_59Bus';
 % UserDataName = 'NETS_NYPS_68Bus';
