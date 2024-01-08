@@ -2,9 +2,12 @@
 % inverter with double-loop voltage control.
 %
 % Author(s): Yitong Li
+%
+% The results of this function exactly coincide with the results of
+% "GfmModeling_Swing_All.m", which is good.
 
 clear all
-close all
+% close all
 clc
 
 %% Base value
@@ -115,7 +118,7 @@ wf = 2*pi*10;
 
 wv = 250*2*pi;
 kpv = Cf*wv;
-kiv = Cf*wv^2/4*20;
+kiv = Cf*wv^2/4*50;
 
 wi = 1000*2*pi;
 kpi = Lf*wi;
@@ -124,12 +127,10 @@ kii = Lf*(wi^2)/4;
 Dw = 0.05*Wbase/Sbase;
 Dv = 0;
 
-% Dw = Dw*10;
-
-vd = 1.1509;
+vd = 1;
 vq = 0;
 P = 0.5;
-Q = 0.5;
+Q = 0.2;
 igd = P/vd;
 igq = -Q/vd;
 igD = igd;
@@ -138,7 +139,7 @@ id = igd;
 iq = igq;
 vm = vd;
 
-delta = 5.9874/180*pi;
+delta = 5/180*pi;
 
 Xg = 0.3;
 Lg = Xg/Wbase;
@@ -148,7 +149,6 @@ vgD = 1;
 vgQ = 0;
 
 %% Replace symbolic by numerical number
-
 Amat = subs(Amat,'kpi',kpi);
 Amat = subs(Amat,'kii',kii);
 
@@ -179,30 +179,16 @@ Amat = subs(Amat,'Rf',Rf);
 Amat = subs(Amat,'w',Wbase);
 Amat = subs(Amat,'wg',Wbase);
 
-%% Sweep parameters
 Amat = subs(Amat,'Rg',Rg);
 Amat = subs(Amat,'Lg',Lg);
 
 Amat = subs(Amat,'kpv',kpv);
 Amat = subs(Amat,'kiv',kiv);
 
+%% Sweep parameters
+Amat = double(Amat)
+
 EigVec = eig(Amat);
 EigVecHz = EigVec/(2*pi);
 ZoomInAxis = [-20,10,-60,60];
 PlotPoleMap(EigVecHz,ZoomInAxis,9999);
-
-
-% ScaleFactor = logspace(-1,2,10);
-% for i = 1:length(ScaleFactor)
-% Amat_ = subs(Amat,'kiv',kiv*ScaleFactor(i));
-% 
-% Amat_ = double(Amat_);
-% 
-% % Calculate poles
-% EigVec = eig(Amat_);
-% EigVecHz = EigVec/(2*pi);
-% 
-% % Plot poles
-% ZoomInAxis = [-20,10,-60,60];
-% PlotPoleMap(EigVecHz,ZoomInAxis,9999);
-% end

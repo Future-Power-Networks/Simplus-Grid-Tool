@@ -255,6 +255,8 @@ Amat = subs(Amat,'kiv',kiv);
 
 
 %% Sweep parameters
+Amat = double(Amat)
+
 EigVec = eig(Amat);
 EigVecHz = EigVec/(2*pi);
 ZoomInAxis = [-20,10,-60,60];

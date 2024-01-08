@@ -252,7 +252,7 @@ classdef GridFollowingVSI < SimplusGT.Class.ModelAdvance
             end 
             
             
-            if 1                                                                          
+            if 0                                                                          
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;  	% LPF
                 % Notes:
                 % This introduces an additional state w.
