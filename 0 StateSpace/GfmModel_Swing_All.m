@@ -1,20 +1,7 @@
-% This function analyzes the interaction between synchronization loop,
-% voltage loop, and grid impedance for GFM inverter.
-
+% This function conducts the state space analysis of a grid-forming
+% inverter.
+%
 % Author(s): Yitong Li
-
-% Two different perspectives:
-% 1. v-i perspective: voltage loop and grid impedance.
-% 2. P-w perspective: Synchronization loop.
-% For theoratical analysis:
-% 1. All v-i perspective: Transform synchronization loop into virtual
-% impedance, and analyze it together with voltage loop and grid impedance.
-% The instability is caused by negative impedance (i.e., amplitude frame
-% damping) in this case.
-% 2. All P-w perspective: Transform voltage loop and grid impedance into
-% synchronizing and damping power, and analyze them together with
-% synchronization loop. The instability is caused by the negative damping
-% torque (i.e., phase frame damping) in this case.
 
 clear all
 % close all
@@ -179,9 +166,8 @@ switch CaseResistor
 end
 
 Cf = 0.02/Wbase;
-Xf = 0.05;
-Lf = Xf/Wbase;
-Rf = Xf*RatioRX;
+Lf = 0.05/Wbase;
+Rf = 0.05*RatioRX;
 
 switch CaseInertia
     case 'Yes';     wf = 2*pi*10;
@@ -191,7 +177,7 @@ end
 
 wv = 250*2*pi;
 kpv = Cf*wv;
-kiv = Cf*wv^2/4*20;
+kiv = Cf*wv^2/4*50;
 
 wi = 1000*2*pi;
 kpi = Lf*wi;
@@ -200,17 +186,13 @@ kii = Lf*(wi^2)/4;
 Dw = 0.05*Wbase/Sbase;
 Dv = 0;
 
-% vd = 0.707;
-% vq = 0.707;
-% vgD = 0.707;
-% vgQ = 0.707;
 vd = 1;
 vq = 0;
 vgD = 1;
 vgQ = 0;
 
 P = 0.5;
-Q = 0;
+Q = 0.2;
 igd = P/vd;
 igq = -Q/vd;
 igD = igd;
@@ -221,15 +203,12 @@ iq = igq;
 vdr = vd;
 vqr = vq;
 
-delta = 0/180*pi;
+delta = 5/180*pi;
 
-Xg = 0.2;
+Xg = 0.3;
 Lg = Xg/Wbase;
 Rg = Xg*RatioRX;
 
-
-
-% 
 Pr = P;
 W0 = Wbase;
 w = Wbase;
@@ -280,18 +259,3 @@ EigVec = eig(Amat);
 EigVecHz = EigVec/(2*pi);
 ZoomInAxis = [-20,10,-60,60];
 PlotPoleMap(EigVecHz,ZoomInAxis,9999);
-
-% ScaleFactor = logspace(-1,2,10);
-% for i = 1:length(ScaleFactor)
-% Amat_ = subs(Amat,'kiv',kiv*ScaleFactor(i));
-% 
-% Amat_ = double(Amat_);
-% 
-% % Calculate poles
-% EigVec = eig(Amat_);
-% EigVecHz = EigVec/(2*pi);
-% 
-% % Plot poles
-% ZoomInAxis = [-20,10,-60,60];
-% PlotPoleMap(EigVecHz,ZoomInAxis,9999);
-% end

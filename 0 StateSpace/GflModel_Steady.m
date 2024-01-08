@@ -1,15 +1,18 @@
+% This function conducts the state space analysis of grid-following
+% inverter.
+%
+% The analysis is done in steady-frame-based, i.e., DQ frame.
+%
+% This function has not been properly tested.
+%
+% Author(s): Yitong Li
+
 clear all
 close all
 clc
 
 %% Base value
-Fbase = 50;
-Wbase = 2*pi*Fbase;
-Vbase = 1;
-Sbase = 1;
-Ibase = Sbase/Vbase;
-Zbase = Vbase/Ibase;
-Ybase = 1/Zbase;
+BaseValue();
 
 %% Set parameters
 % Grid voltage
@@ -21,25 +24,22 @@ syms Lg Rg
 % LC Filter
 syms Lf Cf Rf
 
-% Droop control
-syms vm wf Dw Dv Pr Qr V0 W0
+% PLL
+syms w0
 
-% Voltage controller
-syms kpv kiv
+% PLL controller
+syms kp_pll ki_pll
 
 % Current controller
-syms kpi kii
+syms kpi kii idr iqr
 
 % Cross-decoupling gain
 Fcdv = 0;
 Fcdi = 0;
 
 %% System states
-% Droop controller
-syms w delta
-
-% Voltage controller
-syms vdi vqi
+% PLL
+syms delta vqi
 
 % Current controller
 syms idi iqi
@@ -59,25 +59,15 @@ igq = -igD*sin(delta) + igQ*cos(delta);
 vd = vD*cos(delta) + vQ*sin(delta);
 vq = -vD*sin(delta) + vQ*cos(delta);
 
-% Power calculation
-p = vd*igd + vq*igq;
-q = vq*igd - vd*igq;
-
-% Droop control
-dw = ((Pr-p)*Dw + W0 - w)*wf;
-% dvm = ((Qr-q)*Dv + V0 - vm)*wf;
+% PLL
+dvqi = vq;
+w = (kp_pll*vq + ki_pll*vqi) + w0;
+% w_ = (kp_pll + ki_pll*vqi) + w0;
+% dw = (w_ - w)*wc;
 
 % Angle difference between inverter and inf bus
 % s*delta = w - wg;
 ddelta = w - wg;
-dethata = w;
-
-% Voltage controller
-% dvdi = vm - vd;
-dvdi = vm - vd;
-dvqi = 0 - vq;
-idr = kpv*dvdi + kiv*vdi - Fcdv*Cf*Wbase*vq;
-iqr = kpv*dvqi + kiv*vqi + Fcdv*Cf*Wbase*vd;
 
 % Current controller
 didi = idr - id;
@@ -103,8 +93,8 @@ digD = (vD - vgD + wg*Lg*igQ - Rg*igD)/Lg;
 digQ = (vQ - vgQ - wg*Lg*igD - Rg*igQ)/Lg;
 
 %% Calculate the state matrix
-state = [vdi; vqi; idi; iqi; iD; iQ; vD; vQ; igD; igQ; w; delta];
-f_xu = [dvdi; dvqi; didi; diqi; diD; diQ; dvD; dvQ; digD; digQ; dw; ddelta];
+state = [idi; iqi; iD; iQ; vD; vQ; igD; igQ; vqi; delta];
+f_xu = [didi; diqi; diD; diQ; dvD; dvQ; digD; digQ; dvqi; ddelta];
 
 Amat = jacobian(f_xu,state);
 
@@ -113,22 +103,15 @@ Cf = 0.02/Wbase;
 Lf = 0.05/Wbase;
 Rf = 0.01;
 
-wf = 2*pi*10;
-
-wv = 250*2*pi;
-kpv = Cf*wv;
-kiv = Cf*wv^2/4*50;
-
-wi = 1000*2*pi;
+wi = 500*2*pi;
 kpi = Lf*wi;
 kii = Lf*(wi^2)/4;
 
-Dw = 0.05*Wbase/Sbase;
-Dv = 0;
+wpll = 10*2*pi;
+kp_pll = wpll;
+ki_pll = wpll^2/4;
 
-Dw = Dw*10;
-
-vd = 1.1509;
+vd = 1;
 vq = 0;
 vD = vd;
 vQ = vq;
@@ -140,13 +123,15 @@ igd = P/vd;
 igq = -Q/vd;
 igD = igd;
 igQ = igq;
+idr = igD;
+iqr = igQ;
 
 id = igd;
 iq = igq;
 iD = id;
 iQ = iq;
 
-delta = 5.9874/180*pi;
+delta = 0/180*pi;
 
 Xg = 0.3;
 Lg = Xg/Wbase;
@@ -163,29 +148,17 @@ eq = vq;
 idi = ed/kii;
 iqi = eq/kii;
 
-vdi = id/kiv;
-vqi = iq/kiv;
-
-vm = vd;
-
 %% Replace symbolic by numerical number
-
-Amat = subs(Amat,'kpv',kpv);
-Amat = subs(Amat,'kiv',kiv);
 
 Amat = subs(Amat,'kpi',kpi);
 Amat = subs(Amat,'kii',kii);
 
-Amat = subs(Amat,'vdi',vdi);
-Amat = subs(Amat,'vqi',vqi);
 Amat = subs(Amat,'idi',idi);
 Amat = subs(Amat,'iqi',iqi);
-Amat = subs(Amat,'vm',vm);
 
+Amat = subs(Amat,'kp_pll',kp_pll);
+Amat = subs(Amat,'ki_pll',ki_pll);
 Amat = subs(Amat,'delta',delta);
-
-Amat = subs(Amat,'Dw',Dw);
-Amat = subs(Amat,'Dv',Dv);
 
 Amat = subs(Amat,'id',id);
 Amat = subs(Amat,'iq',iq);
@@ -201,8 +174,8 @@ Amat = subs(Amat,'igd',igd);
 Amat = subs(Amat,'igq',igq);
 Amat = subs(Amat,'igD',igD);
 Amat = subs(Amat,'igQ',igQ);
-
-Amat = subs(Amat,'wf',wf);
+Amat = subs(Amat,'idr',idr);
+Amat = subs(Amat,'iqr',iqr);
 
 Amat = subs(Amat,'Cf',Cf);
 Amat = subs(Amat,'Lf',Lf);
@@ -211,14 +184,17 @@ Amat = subs(Amat,'Rf',Rf);
 Amat = subs(Amat,'Rg',Rg);
 Amat = subs(Amat,'Lg',Lg);
 
+Amat = subs(Amat,'w0',Wbase);
 Amat = subs(Amat,'w',Wbase);
 Amat = subs(Amat,'wg',Wbase);
 
 %% Calculate pole
+Amat
 Amat = double(Amat)
 
 EigVec = eig(Amat);
 EigVecHz = EigVec/(2*pi);
 
-PlotPoleMap(EigVecHz,9999);
+ZoomInAxis = [-20,10,-60,60];
+PlotPoleMap(EigVecHz,ZoomInAxis,9999);
 
