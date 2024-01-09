@@ -6,7 +6,7 @@ clc;        % Clear Matlab command window
 close all;  % Close all figures, etc
 
 %% Step 1: choose the avaliable case study.
-CaseStudy=26;
+CaseStudy=22;
 
 switch CaseStudy
     case 1; UserData = 'IEEE_14Bus_Cyprus_original.xlsx';  % IEEE-14 original model
@@ -34,7 +34,7 @@ switch CaseStudy
     case 23; UserData = '2IBR_same_tuned_LIMR';
     case 24; UserData = '2IBR_4_bus_case1.xlsx'; % IMR 4-bus: same well tuned
     case 25; UserData = '2IBR_4_bus_case2.xlsx'; % IMR 4-bus: based on 24, higher PLL bandwidth to create control interactions
-    case 26; UserData = '2IBR_4_bus_case3.xlsx'; % IMR 4-bus: based on 25, lower current control bandwidth for IBR-2 to 
+    case 26; UserData = '2IBR_4_bus_case3.xlsx'; % IMR 4-bus: based on 24, lower current control bandwidth for IBR-2 to 
         % 4bus_case5: SG+SG+GFM+ GFL; case6: SG+SG+GFL+GFL
 end
 

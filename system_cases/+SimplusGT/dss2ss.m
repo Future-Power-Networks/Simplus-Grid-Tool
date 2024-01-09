@@ -132,6 +132,7 @@ else
     else
         % for Yitong !!!???
         % note this is in struct not in ss form
+        error("improper system");
         Gss.A = A_;
         Gss.B = B_;
         Gss.C = C_;
