@@ -51,12 +51,12 @@ function PlotHeatMap(x,y,z)
 
     colormap(gx);
 
-    % Limit the graph z data
-    if min(z) < max(z)
-        climt = [min(z), max(z)];
-    else
-        climt = [max(z)*0.9, max(z)*1.1];
-    end
-    clim(climt);
+    % % Limit the graph z data
+    % if min(z) < max(z)
+    %     climt = [min(z), max(z)];
+    % else
+    %     climt = [max(z)*0.9, max(z)*1.1];
+    % end
+    % clim(climt);
 
 end
