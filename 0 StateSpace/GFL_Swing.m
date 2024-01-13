@@ -63,8 +63,6 @@ ed = kpi*didi + kii*idi;
 eq = kpi*diqi + kii*iqi;
 
 % Inverter-side inductor
-% ed - vd = s*Lf*id - w*Lf*iq + Rf*id
-% eq - vq = w*Lf*id + s*Lf*iq + Rf*iq
 did = (ed - vd + w*Lf*iq - Rf*id)/Lf;
 diq = (eq - vq - w*Lf*id - Rf*iq)/Lf;
 
@@ -73,8 +71,6 @@ dvd = (id-igd + w*Cf*vq)/Cf;
 dvq = (iq-igq - w*Cf*vd)/Cf;
 
 % Grid-side inductor
-% vD - vgD = s*Lg*igD - wg*Lg*igQ + Rg*igD
-% vQ - vgQ = wg*Lg*igD + s*Lg*igQ + Rg*igQ
 digd = (vd - vgd + w*Lg*igq - Rg*igd)/Lg;
 digq = (vq - vgq - w*Lg*igd - Rg*igq)/Lg;
 
