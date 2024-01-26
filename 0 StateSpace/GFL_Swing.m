@@ -151,9 +151,6 @@ Amat = subs(Amat,'wg',Wbase);
 Amat = subs(Amat,'Rg',Rg);
 Amat = subs(Amat,'Lg',Lg);
 
-Amat = subs(Amat,'kpv',kp_pll);
-Amat = subs(Amat,'kiv',ki_pll);
-
 %% Plot
 Amat = double(Amat)
 
