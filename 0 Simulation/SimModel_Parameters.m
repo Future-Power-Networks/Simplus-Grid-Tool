@@ -12,8 +12,8 @@ t0 = 2;
 dt = 0.2;
 
 %% Fundamental parameters
-Fs = 10;             % (kHz)
-Fs = Fs*1e3;
+Fs = 10*1e3;                                  % For average model
+% Fs = 1000*1e3; Fsw = 10*1e3; Tsw = 1/Fsw;       % For switching model
 Ts = 1/Fs;
 
 %% Base values
@@ -23,6 +23,9 @@ Sbase = 1;
 Ibase = Sbase/Vbase;
 Zbase = Vbase/Ibase;
 Ybase = 1/Zbase;
+
+%% DC side
+vdc = 2; % (pu)
 
 %% AC filter parameters
 Lf = 0.05;
