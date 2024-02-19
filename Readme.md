@@ -1,15 +1,12 @@
-Here are the three case studies in our paper. I am using Matlab 2018b. But other versions should also be fine.
+# Simplus Grid Tool (Version: v2021-Jun-25)
 
-* Three-node circuit:
- add the foler 'three_node_circuit' into the path of Matlab, then run 'Case_SimpleCircuit_3nodes.m', results are saved in the variables in the workspace.
+This branch is archieved for the case studies in the paper "Impedance Margin Ratio: a New Metric for Small-Signal System Strength" in IEEE Transactions on Power Systems. For more functions, please refer to the main branch of [Simplus Grid Tool](https://github.com/Future-Power-Networks/Simplus-Grid-Tool).
 
-* IEEE 14-bus system:
-The original dynamic model comes from [here](https://www2.kios.ucy.ac.cy/testsystems/index.php/ieee-14-bus-modified-test-system/), which is built in DigSLIENT PowerFactory. Here I transplanted the model into Simplus Grid-tool, and the two are compared to be nearly the same for small-signal dynamics (the pole-maps are the same). Three additional IBRs are further added in my model to verify the sensitivity method in our paper.
-Instructions:
-add the folder 'system_cases' folder into the path, including all subfolders, then in 'UserMain.m' select the case index and run the script. You can read those comments in the scripts for more information. If you are going to build your own model using Simplus Grid-tool, it is recommonded that you fork from 'master' branch of this repo.
+Contact: [Yue Zhu](yue.zhu18@imperial.ac.uk)
 
-* NETS-NYPS 68-bus system:
-add the folder 'system_cases' folder into the path, including all subfolders, then in 'UserMain.m' select the case index and run the script.
+## Quick Start
 
-
-Contact: yue.zhu18@imperial.ac.uk
+1) Open Matlab, and include all folders and subfolders of this repo in Matlab's path.
+2) Open UserMain.m in the root path of the repo, select the case, and click run.
+3) Results can be viewed from workspace, or more conviently, from the newly designed Modal Analysis APP.
+4) Simulink model for time-domain simulation can be found in 'Simplus-Grid-Tool\IMR_case'.
