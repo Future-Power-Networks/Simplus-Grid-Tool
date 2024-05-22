@@ -1,0 +1,6 @@
+%implements s456_b0_unvih_ModuleConstants "C"
+
+%function ModuleConstants(block) Output
+
+#define IEEE_39_IBR_Simplified_period (5.0E-5)
+%endfunction
