@@ -1,12 +1,4 @@
-% This function conducts the state space analysis of grid-following
-% inverter.
-%
 % Author(s): Yitong Li
-%
-% The analysis is done in steady-frame-based, i.e., DQ frame.
-%
-% The results of this function are still slightly different from the
-% results of "GflModel_Swing.m". The reason is still unknown.
 
 clear all
 % close all

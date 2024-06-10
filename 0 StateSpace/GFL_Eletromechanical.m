@@ -1,9 +1,3 @@
-% This function conducts the state space analysis of a grid-forming
-% inverter with double-loop voltage control.
-%
-% By test, the results of this function almost exactly coincide with the
-% results of toolbox.
-%
 % Author(s): Yitong Li
 
 clear all
