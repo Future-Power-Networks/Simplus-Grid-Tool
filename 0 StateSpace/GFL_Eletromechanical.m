@@ -1,5 +1,3 @@
-% Author(s): Yitong Li
-
 clear all
 % close all
 clc
@@ -14,24 +12,21 @@ syms vgD vgQ wg
 % Line impedance
 syms Lg Rg
 
-% LC Filter
-syms Lf Cf Rf
+% CL Filter
+syms Cf Rd
 
 % PLL controller
 syms kp_pll ki_pll W0
 
 % Current controller
-syms kpi kii idr iqr
+syms wi  idr iqr 
 
 %% System states
 % PLL controller
-syms delta vqi
-
-% Current controller
-syms idi iqi
+syms delta vqi w
 
 % Passive component
-syms id iq vd vq igd igq
+syms id iq igd igq vcd vcq
 
 %%
 % Inverse frame transformation
@@ -39,32 +34,22 @@ syms id iq vd vq igd igq
 vgd = vgD*cos(delta) + vgQ*sin(delta);
 vgq = -vgD*sin(delta) + vgQ*cos(delta);
 
-% PLL control
-% Equations:
-% w = w0 + vq*(kp_pll + ki_pll/s)
-dvqi = vq;
-w = (kp_pll*vq + ki_pll*vqi) + W0;
-
 % Angle difference between inverter and inf bus
 % s*delta = w - wg;
 ddelta = w - wg;
 % dtheta = w;
 
 % Current controller
-didi = idr - id;
-diqi = iqr - iq;
-ed = kpi*didi + kii*idi;
-eq = kpi*diqi + kii*iqi;
-
-% Inverter-side inductor
-% ed - vd = s*Lf*id - w*Lf*iq + Rf*id
-% eq - vq = w*Lf*id + s*Lf*iq + Rf*iq
-did = (ed - vd + w*Lf*iq - Rf*id)/Lf;
-diq = (eq - vq - w*Lf*id - Rf*iq)/Lf;
+did=(idr-id)*wi;
+diq=(iqr-iq)*wi;
 
 % Filter capacitor
-dvd = (id-igd + w*Cf*vq)/Cf;
-dvq = (iq-igq - w*Cf*vd)/Cf;
+icd = id - igd;
+icq = iq - igq;
+dvcd = (icd + w*Cf*vcq)/Cf;
+dvcq = (icq - w*Cf*vcd)/Cf;
+vd = vcd + icd*Rd;
+vq = vcq + icq*Rd;
 
 % Grid-side inductor
 % vD - vgD = s*Lg*igD - wg*Lg*igQ + Rg*igD
@@ -72,20 +57,25 @@ dvq = (iq-igq - w*Cf*vd)/Cf;
 digd = (vd - vgd + w*Lg*igq - Rg*igd)/Lg;
 digq = (vq - vgq - w*Lg*igd - Rg*igq)/Lg;
 
+% PLL control
+% Equations:
+% w = w0 + vq*(kp_pll + ki_pll/s)
+dvqi = vq;
+w_ = (kp_pll*vq + ki_pll*vqi) + W0;
+wc = 2*pi*1000;
+dw = (w_-w)*wc;
+
 %% Calculate the state matrix
-state = [idi; iqi; id; iq; vd; vq; igd; igq; vqi; delta];
-f_xu = [didi; diqi; did; diq; dvd; dvq; digd; digq; dvqi; ddelta];
+state = [ id; iq; vcd; vcq; igd; igq; vqi; delta; w];
+f_xu = [ did; diq; dvcd; dvcq;  digd; digq; dvqi; ddelta; dw];
 
 Amat = jacobian(f_xu,state);
 
 %% Set numerical number
 Cf = 0.02/Wbase;
-Lf = 0.05/Wbase;
-Rf = 0.01;
+Rd = 1e-2;
 
 wi = 500*2*pi;
-kpi = Lf*wi;
-kii = Lf*(wi^2)/4;
 
 wpll = 10*2*pi;
 kp_pll = wpll;
@@ -95,6 +85,11 @@ vd = 1.0817;
 vq = 0;
 vgD = 1;
 vgQ = 0;
+vcd = 1;
+vcq = 0;
+
+Pr=0.5;
+Qr=0.2;
 
 P = 0.5;
 Q = 0.2;
@@ -116,17 +111,19 @@ vqi = 0;
 %% Replace symbolic by numerical number
 
 Amat = subs(Amat,'W0',Wbase);
-Amat = subs(Amat,'vqi',vqi);
+
+Amat = subs(Amat,'wi',wi);
 
 Amat = subs(Amat,'kp_pll',kp_pll);
 Amat = subs(Amat,'ki_pll',ki_pll);
 
-Amat = subs(Amat,'kpi',kpi);
-Amat = subs(Amat,'kii',kii);
+Amat = subs(Amat,'vqi',vqi);
 
 Amat = subs(Amat,'vd',vd);
 Amat = subs(Amat,'vq',vq);
 Amat = subs(Amat,'delta',delta);
+Amat = subs(Amat,'vcd',vcd);
+Amat = subs(Amat,'vcq',vcq);
 
 Amat = subs(Amat,'igd',igd);
 Amat = subs(Amat,'igq',igq);
@@ -140,14 +137,14 @@ Amat = subs(Amat,'id',id);
 Amat = subs(Amat,'iq',iq);
 
 Amat = subs(Amat,'Cf',Cf);
-Amat = subs(Amat,'Lf',Lf);
-Amat = subs(Amat,'Rf',Rf);
+Amat = subs(Amat,'Rd',Rd);
 
 Amat = subs(Amat,'w',Wbase);
 Amat = subs(Amat,'wg',Wbase);
 
 Amat = subs(Amat,'Rg',Rg);
 Amat = subs(Amat,'Lg',Lg);
+
 
 %% Plot
 Amat = double(Amat)
@@ -156,3 +153,4 @@ EigVec = eig(Amat);
 EigVecHz = EigVec/(2*pi);
 ZoomInAxis = [-20,10,-60,60];
 PlotPoleMap(EigVecHz,ZoomInAxis,100);
+
