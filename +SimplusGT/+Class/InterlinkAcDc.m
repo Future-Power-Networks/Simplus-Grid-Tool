@@ -2,8 +2,6 @@
 
 % Author(s): Yitong Li
 
-% This file is NOT ready for use!
-
 %% Notes
 %
 % The model is in 
