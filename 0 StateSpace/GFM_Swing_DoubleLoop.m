@@ -58,7 +58,7 @@ vgq = -vgD*sin(delta) + vgQ*cos(delta);
 % Power calculation
 % p = vd*igd + vq*igq;
 q = vq*igd - vd*igq;
-p = vd*id + vq*iq;
+p = vd*igd + vq*igq;
 
 % Droop control
 % Equations:
