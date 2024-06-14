@@ -110,6 +110,7 @@ f_xu = [dvdi; dvqi; didi; diqi; did; diq; dvd; dvq; digd; digq; dw; ddelta];
 Amat = jacobian(f_xu,state);
 
 %% Set numerical number
+% Just be careful that the equilibrium may be calculated approximately
 Cf = 0.02/Wbase;
 Lf = 0.05/Wbase;
 Rf = 0.01;

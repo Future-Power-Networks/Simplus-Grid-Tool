@@ -156,6 +156,7 @@ end
 Amat = jacobian(f_xu,state);
 
 %% Set numerical number
+% Just be careful that the equilibrium may be calculated approximately
 switch CaseResistor
     case 'Yes'
         RatioRX = 1/5;
