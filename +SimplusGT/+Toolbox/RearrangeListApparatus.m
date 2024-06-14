@@ -30,7 +30,6 @@ end
 %% Prepare
 if NewExcel == 1
     ListApp = ListApp(3:end,:);       % Remove the first two lines
-    ListApp = ListApp(:,[1:2,4:end]); % Remove the 3rd colomn of subtype
     [rmax,cmax] = size(ListApp);
     ListAppNew = NaN(rmax/2,cmax);
     for r = 1:(rmax/2)

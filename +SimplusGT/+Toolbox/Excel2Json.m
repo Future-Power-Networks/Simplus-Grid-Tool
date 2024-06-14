@@ -67,7 +67,7 @@ function Excel2Json(FileName)
     %
     ExcelNetworkLineIEEE = xlsread(ExcelFile,'NetworkLine_IEEE');
     Data.NetworkLineIEEE=[];
-    for i = 4:size(ExcelNetworkLineIEEE,1)
+    for i = 4:size(ExcelNetworkLineIEEE,1)      % It has an "enable" option, therefore i starts from 4 rather than 1.
         Data.NetworkLineIEEE = [Data.NetworkLineIEEE toNetworkLineIEEE(ExcelNetworkLineIEEE(i,:))];
     end
 
@@ -90,6 +90,8 @@ function Excel2Json(FileName)
     end
 
 end
+
+%%
 
 function [bus]=toBus(dBus)
     bus = struct;
