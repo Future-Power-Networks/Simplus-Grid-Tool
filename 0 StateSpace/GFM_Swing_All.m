@@ -100,7 +100,7 @@ switch CaseVoltageControl
         didi = idr - id;
         diqi = iqr - iq;
         ed = kpi*didi + kii*idi - Fcdi*Lf*Wbase*iq;
-        eq = kpi*diqi + kii*iqi + Fcdi*Lf*Wbase*iq;
+        eq = kpi*diqi + kii*iqi + Fcdi*Lf*Wbase*id;
         
     case 'SingleLoop'
         % ###

@@ -63,7 +63,7 @@ ddelta = w - wg;
 didi = idr - id;
 diqi = iqr - iq;
 ed = kpi*didi + kii*idi - Fcdi*Lf*Wbase*iq;
-eq = kpi*diqi + kii*iqi + Fcdi*Lf*Wbase*iq;
+eq = kpi*diqi + kii*iqi + Fcdi*Lf*Wbase*id;
 
 % Frame transformation
 % eDQ = edq * e^{j*delta}
