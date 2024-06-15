@@ -37,9 +37,9 @@ YbusFault = SimplusGT.Synchron.PrepareConvertDY(YbusFault,NumIbus1st,NumBus,Ysg_
 % Notes: Assume old voltage bus as zero current bus, and then switch the
 % current and voltage for these buses so that current becomes input, and
 % finally remove corresponding blocks because the input current is zero.
-Ybus = SimplusGT.MatrixTwist(Ybus,NumBus+1);
-Ybus_ = SimplusGT.MatrixTwist(Ybus_,NumBus+1);
-YbusFault = SimplusGT.MatrixTwist(YbusFault,NumBus+1);
+Ybus = SimplusGT.MatrixTwist(Ybus,NumBus);
+Ybus_ = SimplusGT.MatrixTwist(Ybus_,NumBus);
+YbusFault = SimplusGT.MatrixTwist(YbusFault,NumBus);
 
 % Eliminate the old voltage bus, i.e., zero current bus
 Ybus = Ybus(1:NumBus,1:NumBus);
@@ -143,9 +143,9 @@ fprintf('Eliminate floating node...\n')
 
 % YbusVIF = Ybus;
 
-Ybus = SimplusGT.MatrixTwist(Ybus,NumFbus1st);
-Ybus_ = SimplusGT.MatrixTwist(Ybus_,NumFbus1st);
-YbusFault = SimplusGT.MatrixTwist(YbusFault,NumFbus1st);
+Ybus = SimplusGT.MatrixTwist(Ybus,NumFbus1st-1);
+Ybus_ = SimplusGT.MatrixTwist(Ybus_,NumFbus1st-1);
+YbusFault = SimplusGT.MatrixTwist(YbusFault,NumFbus1st-1);
 Ybus = Ybus(1:N_Node,1:N_Node);
 Ybus_ = Ybus_(1:N_Node,1:N_Node);
 YbusFault = YbusFault(1:N_Node,1:N_Node);
