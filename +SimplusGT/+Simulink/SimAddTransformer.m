@@ -15,7 +15,7 @@ Name_Trans{1} = [];
 
 % Add transformer
 for i = 1:N_Branch
-    if AreaType == 1        % Add transformer for ac branch only
+    if AreaType(i) == 1        % Add transformer for ac branch only
         if FB(i)~= TB(i)
             if Tbr(i) ~= 1
                 Pos_Trans{i} = [Pos_Bus{TB(i)}(1),Pos_Bus{FB(i)}(2)];
