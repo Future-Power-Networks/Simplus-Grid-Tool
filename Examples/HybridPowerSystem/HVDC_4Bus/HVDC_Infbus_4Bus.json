@@ -1,0 +1,286 @@
+
+{
+
+  "Basic": 
+{
+
+    "Fs": 50000,
+    "Fbase": 50,
+    "Sbase": 1,
+    "Vbase": 1
+  
+}
+,
+  "Advance": 
+{
+
+    "DiscretizationMethod": 2,
+    "LinearizationTimes": 1,
+    "DiscretizationDampingFlag": 1,
+    "DirectFeedthrough": 0,
+    "PowerFlowAlgorithm": 1,
+    "EnableCreateSimulinkModel": 1,
+    "EnablePlotPole": 1,
+    "EnablePlotAdmittance": 0,
+    "EnablePrintOutput": 1
+  
+}
+,
+  "Bus": 
+[
+
+    
+{
+
+      "BusNo": 1,
+      "BusType": 1,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0.5,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 1,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 2,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": -0.5,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 1,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 3,
+      "BusType": 1,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0.5,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 2,
+      "AcDc": 2
+    
+}
+,
+    
+{
+
+      "BusNo": 4,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.5,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 2,
+      "AcDc": 2
+    
+}
+,
+    
+{
+
+      "BusNo": 5,
+      "BusType": 1,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0.5,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 3,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 6,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0.5,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 3,
+      "AcDc": 1
+    
+}
+
+  
+]
+,
+  "NetworkLine": 
+[
+
+    
+{
+
+      "FromBus": 1,
+      "ToBus": 2,
+      "R": 0.03,
+      "wL": 0.3,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 3,
+      "ToBus": 4,
+      "R": 0.03,
+      "wL": 0.3,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 5,
+      "ToBus": 6,
+      "R": 0.03,
+      "wL": 0.3,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+
+  
+]
+,
+  "NetworkLineIEEE": 
+[
+
+]
+,
+  "Apparatus": 
+[
+
+    
+{
+
+      "BusNo": 1,
+      "Type": 90,
+      "Para": 
+[
+
+]
+
+    
+}
+,
+    
+{
+
+      "BusNo": 
+[
+
+        2,
+        3
+      
+]
+,
+      "Type": 2001,
+      "Para": 
+{
+
+        "C_dc": 1.6,
+        "wL_ac": 0.05,
+        "R_ac": 0.01,
+        "wL_dc": 0.02,
+        "R_dc": 0.004,
+        "fidq": 600,
+        "fvdc": 5,
+        "fpll": 5,
+        "w0": 314.15926535897933
+      
+}
+
+    
+}
+,
+    
+{
+
+      "BusNo": 
+[
+
+        5,
+        4
+      
+]
+,
+      "Type": 2000,
+      "Para": 
+{
+
+        "C_dc": 1.6,
+        "wL_ac": 0.05,
+        "R_ac": 0.01,
+        "wL_dc": 0.02,
+        "R_dc": 0.004,
+        "fidq": 600,
+        "fvdc": 5,
+        "fpll": 5,
+        "w0": 314.15926535897933
+      
+}
+
+    
+}
+,
+    
+{
+
+      "BusNo": 6,
+      "Type": 90,
+      "Para": 
+[
+
+]
+
+    
+}
+
+  
+]
+
+
+}
