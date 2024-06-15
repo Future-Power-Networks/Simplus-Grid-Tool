@@ -76,12 +76,12 @@ SimplusGT.Synchron.HandleNode();
 fprintf('Calculate network matrix: hybrid admittance/impedance matrix, or equivalently channel gain...\n')
 
 % Convert the nodol admittance matrix to hybrid admittance/impedance matrix
-Gbus = SimplusGT.Synchron.HybridMatrixYZ(Ybus,NumIbus1st);
+Gbus = SimplusGT.MatrixTwist(Ybus,NumIbus1st-1);
 % GbusVI  = Gbus;
-% GbusVIF = SimplusGT.Synchron.HybridMatrixYZ(YbusVIF,NumIbus1st);
+% GbusVIF = SimplusGT.MatrixTwist(YbusVIF,NumIbus1st-1);
 
 % For numerically calculating GbusPrime later
-Gbus_ = SimplusGT.Synchron.HybridMatrixYZ(Ybus_,NumIbus1st);
+Gbus_ = SimplusGT.MatrixTwist(Ybus_,NumIbus1st-1);
 
 % Notes:
 % It should be ensured that the buses are listed in the form like this:
@@ -100,7 +100,7 @@ Gbus_ = -Gbus_;
 GbusPrime = (Gbus_ - Gbus)/(1i*dW);         	% Consider
 
 % Get fault Gbus
-GbusFault = SimplusGT.Synchron.HybridMatrixYZ(YbusFault,NumIbus1st);
+GbusFault = SimplusGT.MatrixTwist(YbusFault,NumIbus1st-1);
 GbusFault = - GbusFault;
 
 %% 
