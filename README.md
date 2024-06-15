@@ -6,7 +6,7 @@ Simplus Grid Tool (SimplusGT in short) is an open-source tool for dynamic analys
 
 ## System Requirement
 
-Matlab 2018a or later, with Simulink, Simscape/PowerSystem.
+Matlab 2020a or later, with Simulink, Simscape/PowerSystem.
 
 ## Quick Start
 
