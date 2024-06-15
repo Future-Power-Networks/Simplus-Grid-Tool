@@ -33,8 +33,6 @@ UserDataName = 'UserData';      % Default 4-bus system
 % UserDataName = 'HVDC_Infbus_4Bus';        % HVDC system connected to inf buses
 % UserDataName = 'HVDC_SG_4Bus';            % HVDC system connected to equivalent SG buses
 
-UserDataName = 'Test_68Bus_NETS_NYPS';
-
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));
 

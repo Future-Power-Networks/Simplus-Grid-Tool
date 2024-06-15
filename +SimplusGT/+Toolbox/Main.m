@@ -309,7 +309,7 @@ fprintf('\n')
 fprintf('==================================\n')
 fprintf('Synchronization Analysis\n')
 fprintf('==================================\n')
-EnableSynchronisationAnalysis = 1;
+EnableSynchronisationAnalysis = 0;
 if EnableSynchronisationAnalysis
     SimplusGT.Synchron.MainSynchron();
 else
