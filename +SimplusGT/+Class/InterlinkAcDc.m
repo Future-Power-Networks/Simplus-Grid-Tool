@@ -94,7 +94,7 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             v = Vg_dc;
             i = P_dc/Vg_dc;
             
-            v_dc = Vg_dc + i*R_dc;
+            v_dc = Vg_dc - i*R_dc;
             
             ang_r = 0;
             

@@ -58,11 +58,8 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
             obj.Para(1);
             % if you would like to change the parameters at 2.0s. Taking xi as an example 
             if obj.Timer>2
-            xi =6;
-            end ;
-           
-            
-            
+                xi =6;
+            end
             
             
             % Calculate equilibrium
@@ -104,7 +101,9 @@ classdef ModelTemplate < SimplusGT.Class.ModelAdvance
                 Output = f_xu;
             elseif CallFlag == 2
                 % ### Call output equation: y = g(x,u)
-                
+                % Just be careful that the input and output must coincide
+                % with the signal sequence as well as the ports in simulink model.
+
                 g_xu = [];
                 Output = g_xu;
             end
