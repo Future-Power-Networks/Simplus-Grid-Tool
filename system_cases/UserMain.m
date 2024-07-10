@@ -7,7 +7,7 @@ close all;  % Close all figures, etc
 
 %% case study for Disspating Energy Flow (DEF) method
 
-DEF_case=2;
+DEF_case=3;
 if DEF_case == 1
     UserData = 'DEF_2SG.xlsx'; % forced oscillation in 2 generation system
 elseif DEF_case == 2
