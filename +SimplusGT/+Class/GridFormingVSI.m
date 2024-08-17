@@ -1,6 +1,8 @@
 % This class defines the model of a grid-forming voltage source inverter.
 
 % Author(s): Yitong Li
+%
+% Modified by: Yifan Zhang, Yao Qin
 
 %% Notes
 %
@@ -91,8 +93,8 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
             v_oq = imag(v_odq);
             v_od_i = -i_ld;
             v_oq_i = -i_lq;
-            i_od = real(i_od);
-            i_oq = imag(i_oq);
+            i_od = real(i_odq);
+            i_oq = imag(i_odq);
             theta = xi;
             
             obj.P0 = P*(-1);
