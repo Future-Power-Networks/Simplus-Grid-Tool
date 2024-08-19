@@ -1,4 +1,4 @@
-% bode plot for complex transfer function
+% Bode plot for complex transfer function
 % plot max singular value for transfer function matrix
 
 % Authors(s): Yunjie Gu, Yitong Li
@@ -12,12 +12,13 @@
 %
 % Input of this function:
 % X        - target system with symbolic Laplace operator "s"
-% sbd      - frequency range
-% wbase    - base angular frequency
+% sbd      - frequency range (jw)
 % varargin - Variable length input argument list, for advanced settings
 %
-% The vertical axis is not in dB, instead, it is the actual magnitude, but
-% shown in log-scaled axis.
+% The vertical axis is not in "dB", instead, it is the actual magnitude,
+% but shown in log-scaled axis.
+%
+% The horizental axis is in "Hz".
 
 %%
 function Xw = bode_c(X,sbd,varargin)
