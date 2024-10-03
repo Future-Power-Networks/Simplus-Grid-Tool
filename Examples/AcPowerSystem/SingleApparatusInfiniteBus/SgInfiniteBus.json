@@ -21,7 +21,7 @@
     "PowerFlowAlgorithm": 1,
     "EnableCreateSimulinkModel": 1,
     "EnablePlotPole": 1,
-    "EnablePlotAdmittance": 1,
+    "EnablePlotAdmittance": 0,
     "EnablePrintOutput": 1
   
 }
@@ -73,8 +73,8 @@
 
     "FromBus": 1,
     "ToBus": 2,
-    "R": 0,
-    "wL": 0.65,
+    "R": 0.02,
+    "wL": 0.00,
     "wC": 0,
     "G": 0,
     "TurnsRatio": 1
@@ -106,15 +106,31 @@
 {
 
       "BusNo": 2,
-      "Type": 0,
+      "Type": 30,
       "Para": 
 {
 
-        "J": 3.5,
-        "D": 10,
-        "wL": 0.3,
-        "R": 0.003,
-        "w0": 376.99111843077515
+        "x_d": 1.5,
+        "x_dd": 0.5,
+        "x_ddd": 0.32,
+        "x_q": 1,
+        "x_qd": 1,
+        "x_qdd": 0.45,
+        "x_l": 0.2,
+        "R_a": 0.02,
+        "T_dd": 9,
+        "T_ddd": 0.05,
+        "T_qd": 2,
+        "T_qdd": 0.09,
+        "H": 2.1028,
+        "SaturationA": 1,
+        "SaturationB": 0.103,
+        "SaturationN": 10.6599,
+        "D": 0.02056,
+        "SpeedPara": 200,
+        "K_A": 20,
+        "EnableSaturation": 0,
+        "wb": 376.99111843077515
       
 }
 

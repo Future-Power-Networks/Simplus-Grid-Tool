@@ -26,7 +26,7 @@ classdef ModelAdvance < SimplusGT.Class.ModelBase ...
 % ### Public properties 
 % Public can be set to []
 properties
-    Ts = 1e-4;          % Sampling period (s)
+    Ts = 1e-6;          % Sampling period (s)
     Para = [];          % Apparatus parameters            
 end
 

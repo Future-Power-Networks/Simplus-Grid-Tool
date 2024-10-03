@@ -289,32 +289,32 @@ end
 %
 % Only support ac system analysis at this stage.
 %
-fprintf('\n')
-fprintf('==================================\n')
-fprintf('Grid Strength Analysis\n')
-fprintf('==================================\n')
-if isempty(FlagDcArea)
-    fprintf('Plot grid strength.\n')
-    FigN = 300;
-    PlotGridStrength(ApparatusType,ListLineNew,FigN);
-else
-    fprintf('Warning: The plot of grid strength is disabled.\n')
-end
+% fprintf('\n')
+% fprintf('==================================\n')
+% fprintf('Grid Strength Analysis\n')
+% fprintf('==================================\n')
+% if isempty(FlagDcArea)
+%     fprintf('Plot grid strength.\n')
+%     FigN = 300;
+%     PlotGridStrength(ApparatusType,ListLineNew,FigN);
+% else
+%     fprintf('Warning: The plot of grid strength is disabled.\n')
+% end
 
 %%
 % ==================================================
 % Synchronization analysis
 % ==================================================
-fprintf('\n')
-fprintf('==================================\n')
-fprintf('Synchronization Analysis\n')
-fprintf('==================================\n')
-EnableSynchronisationAnalysis = 0;
-if EnableSynchronisationAnalysis
-    SimplusGT.Synchron.MainSynchron();
-else
-    fprintf('Warning: The synchronisation analysis is disabled.\n')
-end
+% fprintf('\n')
+% fprintf('==================================\n')
+% fprintf('Synchronization Analysis\n')
+% fprintf('==================================\n')
+% EnableSynchronisationAnalysis = 0;
+% if EnableSynchronisationAnalysis
+%     SimplusGT.Synchron.MainSynchron();
+% else
+%     fprintf('Warning: The synchronisation analysis is disabled.\n')
+% end
 
 %%
 % ==================================================
@@ -445,28 +445,28 @@ end
 %
 % Author(s): Yitong Li
 
-function PlotGridStrength(ApparatusType,ListLine,FigN)
+% function PlotGridStrength(ApparatusType,ListLine,FigN)
+% 
+%     figure(FigN);
+% 
+%     [Ydiag,Ybus] = SimplusGT.Toolbox.BusStrength(ApparatusType,ListLine);
+%     [~,~,GraphFigure] = SimplusGT.Toolbox.PlotLayoutGraph(Ybus);
+%     [vbus,ibus,fbus] = SimplusGT.Toolbox.BusTypeVIF(ApparatusType);
 
-    figure(FigN);
-
-    [Ydiag,Ybus] = SimplusGT.Toolbox.BusStrength(ApparatusType,ListLine);
-    [~,~,GraphFigure] = SimplusGT.Toolbox.PlotLayoutGraph(Ybus);
-    [vbus,ibus,fbus] = SimplusGT.Toolbox.BusTypeVIF(ApparatusType);
-
-    highlight(GraphFigure,vbus,'NodeColor','green');
-    highlight(GraphFigure,ibus,'NodeColor','red'); 
-    highlight(GraphFigure,fbus,'NodeColor',[0.7,0.7,0.7]);   	% gray
-
-    x = GraphFigure.XData';
-    y = GraphFigure.YData';
-    z = log10(abs(Ydiag))';
-
-    SimplusGT.Toolbox.PlotHeatMap(x,y,z);
-    uistack(GraphFigure,'top');
-
-    h = colorbar;
-    h.Label.String = "log_{10}(Bus Admittance)";
-
-    title('Grid Strength')
-
-end
+%     highlight(GraphFigure,vbus,'NodeColor','green');
+%     highlight(GraphFigure,ibus,'NodeColor','red'); 
+%     highlight(GraphFigure,fbus,'NodeColor',[0.7,0.7,0.7]);   	% gray
+% 
+%     x = GraphFigure.XData';
+%     y = GraphFigure.YData';
+%     z = log10(abs(Ydiag))';
+% 
+%     SimplusGT.Toolbox.PlotHeatMap(x,y,z);
+%     uistack(GraphFigure,'top');
+% 
+%     h = colorbar;
+%     h.Label.String = "log_{10}(Bus Admittance)";
+% 
+%     title('Grid Strength')
+% 
+% end

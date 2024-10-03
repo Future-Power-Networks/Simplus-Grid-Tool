@@ -1,3 +1,9 @@
 /Library/SimplexPS.slx
 /Library/SimplusPS.slx
 /Library/SimplusGT.slx
+/slprj
+/+SimplusGT/+Simulink/slprj
+/+SimplusGT/+Class/slprj
+/Examples/AcPowerSystem/SingleApparatusInfiniteBus/slprj
+/Examples/AcPowerSystem/IEEE_14Bus/slprj
+/Library/slprj

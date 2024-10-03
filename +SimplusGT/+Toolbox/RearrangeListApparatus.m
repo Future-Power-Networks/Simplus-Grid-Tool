@@ -104,7 +104,7 @@ for m = 1:N_Bus
 end
 
 % Error check
-if (ColumnMax_Apparatus>12)
+if (ColumnMax_Apparatus>25)
     error(['Error: Apparatus data overflow.']); 
 end
 
@@ -157,6 +157,42 @@ Para0020.fdroop =5;    % (Hz) droop control bandwidth
 Para0020.fvdq   =300;   % (Hz) vdc bandwidth
 Para0020.fidq   =600;   % current control bandwidth
 Para0020.w0     = W0;
+
+% ======================================
+% Detailed Synchronous generator
+% ======================================
+Para0030.x_d              = 1.50;
+Para0030.x_dd             = 0.50;      % X_dd represents Xd'
+Para0030.x_ddd            = 0.32;
+Para0030.x_q              = 1.00;
+Para0030.x_qd             = 1.00;      % X_qd represents Xq'
+Para0030.x_qdd            = 0.45;
+Para0030.x_l              = 0.20;      % or x_2, x_ls in some practical cases
+Para0030.R_a              = 0.02;
+
+Para0030.T_dd             = 9.00;      % T_dd represents Td'
+Para0030.T_ddd            = 0.05;
+Para0030.T_qd             = 2.00;
+Para0030.T_qdd            = 0.09;
+
+Para0030.H                = 2.1028;    % Inertial constant
+
+Para0030.SaturationA      = 1;
+Para0030.SaturationB      = 0.1030;
+Para0030.SaturationN      = 10.6599;
+
+Para0030.D                = 0.02056;   % Damp constant
+Para0030.SpeedPara        = 200;       % simplified governor parameters
+Para0030.K_A              = 20;        % exciter parameters
+
+Para0030.EnableSaturation = 0;         % Saturation setting
+Para0030.wb               = W0;
+
+% ======================================
+% Doubly-fed Induction Generator
+% ======================================
+
+% Para0060.
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)
@@ -224,7 +260,7 @@ for i = 1:N_App
       	case 2
             ParaCell{i} = Para0020;     % Grid-forming inverter
         case 3
-            % Yue's Full-Order Machine
+            ParaCell{i} = Para0030;     % Detailed synchronous machine
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
         case 10
