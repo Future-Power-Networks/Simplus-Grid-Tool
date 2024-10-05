@@ -14,11 +14,12 @@ clear all; clc; close all;
 % Example power systems in "Examples" folder:
 %
 % Ac power system examples:
-UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
+% UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
 % UserDataName = 'GflInverterInfiniteBus';   	% Single grid-following inverter and infinite bus
 % UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
 % UserDataName = 'Kundar_TwoAreaSystem';
-% UserDataName = 'IEEE_14Bus';
+UserDataName = 'IEEE_14Bus';
+% UserDataName = 'IEEE_14BusFullOrder';
 % UserDataName = 'IEEE_30Bus';
 % UserDataName = 'IEEE_57Bus';
 % UserDataName = 'AU14Gen_59Bus';
@@ -40,7 +41,7 @@ cd(fileparts(mfilename('fullpath')));
 %% Set user data type
 % If user data is in excel format, please set 1. If it is in json format,
 % please set 0.
-UserDataType = 0;
+UserDataType = 1;
 
 %% Run toolbox
 SimplusGT.Toolbox.Main();  
