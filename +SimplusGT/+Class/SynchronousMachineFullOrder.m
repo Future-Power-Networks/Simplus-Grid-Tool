@@ -12,13 +12,12 @@
 % stator: d and q axis
 % rotor: d-axis field winding (fd), d-axis damper (1d), 2 q-axis dampers (gq, kq), 
 %
-% 
 % 1. q-axis leads the d-axis (IEEE standard)
 % 2. rotor angle with regard to q-axis
-% 3. the model is in load convention
+% 3. the whole model is in load convention, 
+% but the equations below are in generator convention 
 % 4. 0-axis is omitted
 % 5. w is not in p.u.
-%
 %
 
 %% Class
@@ -87,9 +86,9 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
             S_A   = obj.Para(14);  % Saturation parameters
             S_B   = obj.Para(15);
             S_N   = obj.Para(16);
-            D     = obj.Para(17);       % Damp constant
-            SpeedPara   = obj.Para(18); % simplified governor parameters
-            K_A   = obj.Para(19);       % simplified exciter parameters
+            D     = obj.Para(17);            % Damp constant
+            SpeedPara   = obj.Para(18);      % simplified governor parameters
+            K_A   = obj.Para(19);            % simplified exciter parameters
             EnableSaturation = obj.Para(20); % Saturation setting
             wb    = obj.Para(21);
             
@@ -115,7 +114,12 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
             xq_frac = xqd_diff/xql_diff^2;
             
             % Calculate equilibrium
-            S_D0 = -P/V;
+            % We calculate the equilibrium by solving the algebra equations
+            % directly. By doing so, we need to import symbol variable, which
+            % can only be applied in the simulink when the interpretable
+            % execution is used! (setting in the MATLAB system)
+
+            S_D0 = -P/V;  % The equations below are in generator convention
             S_Q0 = -Q/V;
             S_DQ0 = S_D0 + 1j*S_Q0;
             i_abs = abs(S_DQ0);
@@ -145,6 +149,11 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
             
             T_e = psi_d*i_q - psi_q*i_d;
             U_mag = sqrt((R_a*i_d+(w/wb)*psi_q)^2+(-R_a*i_q+(w/wb)*psi_d)^2);
+
+            % The equations below come from the differential equations.
+            % The theta will be governed by current constraints: eqn12 and eqn13,
+            % bringing two solutions for us. But only one is small-signal stable.
+
             eqn1 = -wb*(-v_d - (w/wb)*psi_q - R_a*i_d) == 0; % state1
             eqn2 = -wb*(-v_q + (w/wb)*psi_d - R_a*i_q) == 0; % state2
             eqn3 = (1/T_dd)*(E_fd - psi_fd...
@@ -167,13 +176,15 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
             eqn13 = i_q + (1/x_qdd)*(psi_q -...
                              -psi_kq*(xqd_diff/xql_diff) +...
                              psi_gq*(xqql_diff/xql_diff)) == 0;
+            % The theta will be governed by current constraints: eqn12 and eqn13.
             w = wb;
             [psi_d psi_q psi_fd psi_1d psi_gq psi_kq T_m R_f V_f E_fd V_ref theta]...
                       = solve(eval([eqn1, eqn2, eqn3, eqn4, eqn5, eqn6, eqn7,...
                       eqn9, eqn10, eqn11, eqn12, eqn13]),...
                       [psi_d psi_q psi_fd psi_1d psi_gq psi_kq T_m R_f V_f E_fd V_ref theta]);
             sol = 2;
-            psi_d  = vpa(psi_d(sol), 16);
+            % We have two solutions here, sol = 1 is unstable.
+            psi_d  = vpa(psi_d(sol), 16);  % 16 digits remain here
             psi_q  = vpa(psi_q(sol), 16);
             psi_fd = vpa(psi_fd(sol), 16);
             psi_1d = vpa(psi_1d(sol), 16);
@@ -240,7 +251,10 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
             T_4 = 0.05;     % Phase Compensator 2
             T_w = 10;       % Washout
             K_s = 2;        % PSS Gain
-% 
+
+%           you can change the paramters in the simulation, to observe some
+%           influences from the parameters.
+%
 %             if obj.Timer>5
 %             % Get parameters in pu
 %             x_d   = 0.2;   %
@@ -380,7 +394,7 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
 
                 end
 
-                % Flux saturation considered
+                % Flux saturation considered in the future
                 if EnableSaturation
                     % pass
                 end
@@ -403,7 +417,8 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
                 T_e = psi_d*i_q - psi_q*i_d;
                 U_mag = abs(-(R_a*i_d+(w/wb)*psi_q)+...
                         (-R_a*i_q+(w/wb)*psi_d)*1i);
-
+                % We need to change the direction of the current to make it a
+                % load convention.
                 g_xu = [-i_d; -i_q; w; theta-pi/2; T_e; U_mag; psi_d; psi_q; psi_fd; psi_1d; psi_gq; psi_kq];
                 Output = g_xu;
 

@@ -113,11 +113,21 @@ switch floor(Type/10)
 
                         Para.EnableSaturation; % Saturation setting
                         Para.wb;  
-                        ];       % (21)
+                        ];       % (21 parameters)
     
     % ### Doubly-fed Induction Generator
-%     case 6  % Type 60-69
-        % pass
+    case 6  % Type 60-69
+        Apparatus = SimplusGT.Class.DoublyFedInductionGenerator('ApparatusType',Type);
+        Apparatus.Para = [Para.f;        % Default frequency (Hz) 
+                          Para.Sbase;    % Rated Capacity
+                          Para.Vbase;    % Rated Voltage
+                          Para.Vdc_ref;  % Voltage of the DC Capacitor
+                          Para.Igq_ref;  % The Q from the GSC
+                          Para.rPLLp;    % p in the RSC PLL
+                          Para.rPLLi;    % I in the RSC PLL
+                          Para.gPLLp;
+                          Para.gPLLi;
+                        ];       % (9)
                    
     % ### Ac infinite bus
     case 9
@@ -253,6 +263,9 @@ if (Type>=90 && Type<1000)
     % No need for frame dynamics embedding
 elseif (Type>=1000 && Type<2000)
     % No need for frame dynamics embedding
+elseif (Type == 60)
+    % For DFIG with RSC and GSC, global dynamic is chosen.
+    
 else    
     
 %% Frame transformation: local swing frame dq -> local steady frame d'q'

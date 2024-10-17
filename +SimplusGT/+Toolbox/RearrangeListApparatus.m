@@ -192,7 +192,15 @@ Para0030.wb               = W0;
 % Doubly-fed Induction Generator
 % ======================================
 
-% Para0060.
+Para0060.f                = 60;       % Default frequency (Hz) 
+Para0060.Sbase            = 2e6;      % Rated Capacity
+Para0060.Vbase            = 690;      % Rated Voltage
+Para0060.Vdc_ref          = 1200;     % Voltage of the DC Capacitor
+Para0060.Igq_ref          = 0;        % The Q from the GSC
+Para0060.rPLLp            = 220;      % p in the RSC PLL
+Para0060.rPLLi            = 4500;     % i in the RSC PLL
+Para0060.gPLLp            = 250;
+Para0060.gPLLi            = 3200;
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)
@@ -261,6 +269,8 @@ for i = 1:N_App
             ParaCell{i} = Para0020;     % Grid-forming inverter
         case 3
             ParaCell{i} = Para0030;     % Detailed synchronous machine
+        case 6
+            ParaCell{i} = Para0060;     % Doubly-fed induction generator
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
         case 10
