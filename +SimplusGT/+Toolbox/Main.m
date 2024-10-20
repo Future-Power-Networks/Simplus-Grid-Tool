@@ -162,8 +162,6 @@ for i = 1:NumApparatus
         SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{i},ApparatusType{i},ApparatusPowerFlow{i},Para{i},Ts,ListBusNew);
     x_e{i} = ApparatusEqui{i}{1};
     u_e{i} = ApparatusEqui{i}{2};
-    disp("Here!")
-    disp(OtherInputs{i})
 end
 clear('i');
 

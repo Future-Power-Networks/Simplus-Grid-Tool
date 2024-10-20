@@ -197,10 +197,10 @@ Para0060.Sbase            = 2e6;      % Rated Capacity
 Para0060.Vbase            = 690;      % Rated Voltage
 Para0060.Vdc_ref          = 1200;     % Voltage of the DC Capacitor
 Para0060.Igq_ref          = 0;        % The Q from the GSC
-Para0060.rPLLp            = 220;      % p in the RSC PLL
-Para0060.rPLLi            = 4500;     % i in the RSC PLL
-Para0060.gPLLp            = 250;
-Para0060.gPLLi            = 3200;
+Para0060.rPLLp            = 800;      % p in the RSC PLL
+Para0060.rPLLi            = 16000;    % i in the RSC PLL
+Para0060.gPLLp            = 800;
+Para0060.gPLLi            = 16000;
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)

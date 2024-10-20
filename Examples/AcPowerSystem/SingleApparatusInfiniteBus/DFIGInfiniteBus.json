@@ -21,7 +21,7 @@
     "PowerFlowAlgorithm": 1,
     "EnableCreateSimulinkModel": 1,
     "EnablePlotPole": 1,
-    "EnablePlotAdmittance": 0,
+    "EnablePlotAdmittance": 1,
     "EnablePrintOutput": 1
   
 }
@@ -74,7 +74,7 @@
     "FromBus": 1,
     "ToBus": 2,
     "R": 0.02,
-    "wL": 0.65,
+    "wL": 0.00,
     "wC": 0,
     "G": 0,
     "TurnsRatio": 1
@@ -115,10 +115,10 @@
         "Vbase": 690,
         "Vdc_ref": 1200,
         "Igq_ref": 0,
-        "rPLLp": 220,
-        "rPLLi": 4500,
-        "gPLLp": 250,
-        "gPLLi": 3200
+        "rPLLp": 800,
+        "rPLLi": 16000,
+        "gPLLp": 800,
+        "gPLLi": 16000
       
 }
 
