@@ -44,7 +44,8 @@ classdef DoublyFedInductionGenerator < SimplusGT.Class.ModelAdvance
                       'w_m', 'V_dc','T_e',...
                       'theta_r', 'theta_g',...
                       'u_rd', 'u_rq', 'I_rd', 'I_rq',...
-                      'vrefd', 'vrefq', 'i_gd', 'i_gq'};                
+                      'vrefd', 'vrefq', 'i_gd', 'i_gq'...
+                      'u_sd', 'u_sq', 'u_gd', 'u_gq'};                
         end
         
         % Calculate the equilibrium
@@ -161,11 +162,7 @@ classdef DoublyFedInductionGenerator < SimplusGT.Class.ModelAdvance
             u_sq = vr_dq_real(2);
             u_gd = vg_dq_real(1);
             u_gq = vg_dq_real(2);
-%             eqnd = u_sq/Vbase - V == 0;
-%             eqnq = u_gd/Vbase - V == 0;
-%             [pllr pllg] = solve(eval([eqnd, eqnq]),[theta_pllr theta_pllg]);
-%             theta_pllr = real(vpa(pllr(2)));
-%             theta_pllg = real(vpa(pllg(2)));
+
             theta_pllr = xi;
             theta_pllg = xi;
             Phipllr = wbase;
@@ -480,8 +477,21 @@ classdef DoublyFedInductionGenerator < SimplusGT.Class.ModelAdvance
                 i_d = is_dq_pu(1) - ig_dq_pu(1);
                 i_q = is_dq_pu(2) - ig_dq_pu(2);
 
+                Tr_DQdq = [cos(theta_pllr+3*pi/2) sin(theta_pllr+3*pi/2);...
+                -sin(theta_pllr+3*pi/2) cos(theta_pllr+3*pi/2)];
+                vr_dq_real = Vbase*Tr_DQdq*[v_d;v_q]; % RSC PLL
+                Tg_DQdq = [cos(theta_pllg) sin(theta_pllg);...
+                -sin(theta_pllg) cos(theta_pllg)];
+                vg_dq_real = Vbase*Tg_DQdq*[v_d;v_q]; % GSC PLL
+
+                u_sd = vr_dq_real(1);
+                u_sq = vr_dq_real(2);
+                u_gd = vg_dq_real(1);
+                u_gq = vg_dq_real(2);
+
                 g_xu = [i_d; i_q; w_m; V_dc; T_e; theta_pllr; theta_pllg;...
-                        u_rd; u_rq; I_rd; I_rq; vrefd; vrefq; i_gd; i_gq];
+                        u_rd; u_rq; I_rd; I_rq; vrefd; vrefq; i_gd; i_gq;...
+                        u_sd; u_sq; u_gd; u_gq];
                 Output = g_xu;
             end
         end

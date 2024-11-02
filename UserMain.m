@@ -14,15 +14,17 @@ clear all; clc; close all;
 % Example power systems in "Examples" folder:
 %
 % Ac power system examples:
-% UserDataName = 'SgDetailedInfiniteBus';
-UserDataName = 'DFIGInfiniteBus';
+% UserDataName = 'SgDetailedInfiniteBus';       % Single detailed synchronous generator and infinite bus
+UserDataName = 'DFIGInfiniteBus';             % Single DFIG and infinite bus
 % UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
 % UserDataName = 'GflInverterInfiniteBus';   	% Single grid-following inverter and infinite bus
 % UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
 % UserDataName = 'Kundar_TwoAreaSystem';
 % UserDataName = 'IEEE_14Bus';
 % UserDataName = 'IEEE_14BusFullOrder';
+% UserDataName = 'IEEE_14BusDFIG';
 % UserDataName = 'IEEE_30Bus';
+% UserDataName = 'IEEE_39BusFullOrder';
 % UserDataName = 'IEEE_57Bus';
 % UserDataName = 'AU14Gen_59Bus';
 % UserDataName = 'NETS_NYPS_68Bus';

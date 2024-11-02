@@ -343,6 +343,45 @@ for i = 1:length(row)
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
+    elseif floor(AppType/10) == 3                % Detailed Synchronous machine
+    switch SwitchFlag
+        case 1;  ParaCell{row(i)}.x_d      = UserValue;
+      	case 2;  ParaCell{row(i)}.x_dd     = UserValue;
+      	case 3;  ParaCell{row(i)}.x_ddd    = UserValue;
+       	case 4;  ParaCell{row(i)}.x_q  	   = UserValue;
+     	case 5;  ParaCell{row(i)}.x_qd     = UserValue;
+       	case 6;  ParaCell{row(i)}.x_qdd    = UserValue;
+        case 7;  ParaCell{row(i)}.x_l      = UserValue;
+        case 8;  ParaCell{row(i)}.R_a      = UserValue;
+      	case 9;  ParaCell{row(i)}.T_dd     = UserValue;
+      	case 10; ParaCell{row(i)}.T_ddd    = UserValue; 
+        case 11;  ParaCell{row(i)}.T_qd    = UserValue;
+      	case 12; ParaCell{row(i)}.T_qdd    = UserValue; 
+        case 13;  ParaCell{row(i)}.H   	 	   	    = UserValue;
+       	case 14;  ParaCell{row(i)}.SaturationA      = UserValue;
+        case 15;  ParaCell{row(i)}.SaturationB      = UserValue;
+        case 16;  ParaCell{row(i)}.SaturationN      = UserValue;
+      	case 17;  ParaCell{row(i)}.D                = UserValue;
+      	case 18; ParaCell{row(i)}.SpeedPara         = UserValue; 
+        case 19;  ParaCell{row(i)}.K_A              = UserValue;
+      	case 20; ParaCell{row(i)}.EnableSaturation  = UserValue; 
+        otherwise
+            error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+        end
+    elseif floor(AppType/10) == 6                % Doubly-fed Induction Generator
+    switch SwitchFlag
+        case 1;  ParaCell{row(i)}.f       = UserValue;
+        case 2;  ParaCell{row(i)}.Sbase   = UserValue;
+        case 3;  ParaCell{row(i)}.Vbase   = UserValue;
+        case 4;  ParaCell{row(i)}.Vdc_ref = UserValue;
+        case 5;  ParaCell{row(i)}.Igq_ref = UserValue;
+       	case 6;  ParaCell{row(i)}.rPLLp   = UserValue;
+        case 7;  ParaCell{row(i)}.rPLLi   = UserValue;
+        case 8;  ParaCell{row(i)}.gPLLp   = UserValue;
+      	case 9;  ParaCell{row(i)}.gPLLi   = UserValue;
+        otherwise
+            error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+        end
     elseif floor(AppType/10) == 101 % Grid-feeding buck
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.Vdc   = UserValue;

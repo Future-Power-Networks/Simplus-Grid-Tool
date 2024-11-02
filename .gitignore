@@ -7,3 +7,8 @@
 /Examples/AcPowerSystem/SingleApparatusInfiniteBus/slprj
 /Examples/AcPowerSystem/IEEE_14Bus/slprj
 /Library/slprj
+*.autosave
+*.asv
+*.autosave
+*.autosave
+mymodel_v1.slx.autosave
