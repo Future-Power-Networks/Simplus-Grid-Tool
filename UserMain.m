@@ -9,13 +9,13 @@
 clear all; clc; close all; 
 
 %% User data
-% UserDataName = 'UserData';      % Default 4-bus system
+UserDataName = 'UserData';      % Default 4-bus system
 
 % Example power systems in "Examples" folder:
 %
 % Ac power system examples:
 % UserDataName = 'SgDetailedInfiniteBus';       % Single detailed synchronous generator and infinite bus
-UserDataName = 'DFIGInfiniteBus';             % Single DFIG and infinite bus
+% UserDataName = 'DFIGInfiniteBus';               % Single DFIG and infinite bus
 % UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
 % UserDataName = 'GflInverterInfiniteBus';   	% Single grid-following inverter and infinite bus
 % UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
