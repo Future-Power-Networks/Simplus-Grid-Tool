@@ -49,11 +49,7 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
                       'w',...                % angular rotation speed (rad/s)
                       'theta',...            % rotor angle
                       'T_e',...              % EM torque
-                      'U_mag',...            % voltage magnitude
-                      'psi_d',...
-                      'psi_q',...
-                      'psi_fd','psi_1d',...
-                      'psi_gq','psi_kq'}; 
+                      'U_mag'};              % voltage magnitude
         end
 
 
@@ -419,7 +415,7 @@ classdef SynchronousMachineFullOrder < SimplusGT.Class.ModelAdvance
                         (-R_a*i_q+(w/wb)*psi_d)*1i);
                 % We need to change the direction of the current to make it a
                 % load convention.
-                g_xu = [-i_d; -i_q; w; theta-pi/2; T_e; U_mag; psi_d; psi_q; psi_fd; psi_1d; psi_gq; psi_kq];
+                g_xu = [-i_d; -i_q; w; theta-pi/2; T_e; U_mag];
                 Output = g_xu;
 
             end

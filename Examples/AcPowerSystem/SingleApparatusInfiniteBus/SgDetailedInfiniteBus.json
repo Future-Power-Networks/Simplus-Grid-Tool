@@ -74,7 +74,7 @@
     "FromBus": 1,
     "ToBus": 2,
     "R": 0.02,
-    "wL": 0.00,
+    "wL": 0.65,
     "wC": 0,
     "G": 0,
     "TurnsRatio": 1
@@ -125,7 +125,7 @@
         "H": 2.1028,
         "SaturationA": 1,
         "SaturationB": 0.103,
-        "SaturationN": 10.6599,
+        "SaturationN": 10.659857,
         "D": 0.02056,
         "SpeedPara": 200,
         "K_A": 20,

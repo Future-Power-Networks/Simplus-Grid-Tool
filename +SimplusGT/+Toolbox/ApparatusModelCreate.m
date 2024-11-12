@@ -42,16 +42,13 @@ switch floor(Type/10)
     % =======================================
     % ### Synchronous generator
     case 0      % Type 0-9
-
-        if Type ~= 6
-            Apparatus = SimplusGT.Class.SynchronousMachine('ApparatusType',Type);
-            Apparatus.Para = [ Para.J;
-                            Para.D;
-                            Para.wL;
-                            Para.R;
-                            Para.w0];       % (5)
-        end
-                    
+        Apparatus = SimplusGT.Class.SynchronousMachine('ApparatusType',Type);
+        Apparatus.Para = [ Para.J;
+                        Para.D;
+                        Para.wL;
+                        Para.R;
+                        Para.w0];       % (5)
+         
     % ### Grid-following inverter
     case 1      % Type 10-19
         if Type~=19
@@ -114,21 +111,7 @@ switch floor(Type/10)
                         Para.EnableSaturation; % Saturation setting
                         Para.wb;  
                         ];       % (21 parameters)
-    
-    % ### Doubly-fed Induction Generator
-    case 6  % Type 60-69
-        Apparatus = SimplusGT.Class.DoublyFedInductionGenerator('ApparatusType',Type);
-        Apparatus.Para = [Para.f;        % Default frequency (Hz) 
-                          Para.Sbase;    % Rated Capacity
-                          Para.Vbase;    % Rated Voltage
-                          Para.Vdc_ref;  % Voltage of the DC Capacitor
-                          Para.Igq_ref;  % The Q from the GSC
-                          Para.rPLLp;    % p in the RSC PLL
-                          Para.rPLLi;    % I in the RSC PLL
-                          Para.gPLLp;
-                          Para.gPLLi;
-                        ];       % (9)
-                   
+      
     % ### Ac infinite bus
     case 9
         Apparatus = SimplusGT.Class.InfiniteBusAc;
@@ -263,9 +246,6 @@ if (Type>=90 && Type<1000)
     % No need for frame dynamics embedding
 elseif (Type>=1000 && Type<2000)
     % No need for frame dynamics embedding
-elseif (Type == 60)
-    % For DFIG with RSC and GSC, global dynamic is chosen.
-    
 else    
     
 %% Frame transformation: local swing frame dq -> local steady frame d'q'

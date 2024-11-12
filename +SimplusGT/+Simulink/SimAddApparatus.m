@@ -41,10 +41,6 @@ for i = 1:N_Apparatus
                 Name_Apparatus{i} = ['SM-Detailed' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
                 add_block([Name_LibFile '/Synchronous Machine Full Order (dq-Frame System Object)'],FullName_Apparatus{i});
-            case 006
-                Name_Apparatus{i} = ['DFIG' num2str(Bus)];
-                FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
-                add_block([Name_LibFile '/Doubly-fed Induction Generator (dq-Frame System Object)'],FullName_Apparatus{i});
             case 009
             	Name_Apparatus{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
