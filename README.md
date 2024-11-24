@@ -1,6 +1,6 @@
 # Simplus Grid Tool (Version: v2024-Aug-19)
 
-This branch is for the simulation and analysis of an IEEE 68 bus system. The codes are based on Simplus Grid Tool (SimplusGT in short), which is an open-source tool for dynamic analysis and time-domain simulation of power systems (large-scale 100+ bus systems, SG-IBR-composite systems, AC or DC or hybrid AC-DC systems, HVDC systems, etc).
+This branch is for the simulation and analysis of IEEE 68 bus systems in a project. The codes are based on Simplus Grid Tool (SimplusGT in short), which is an open-source tool for dynamic analysis and time-domain simulation of power systems (large-scale 100+ bus systems, SG-IBR-composite systems, AC or DC or hybrid AC-DC systems, HVDC systems, etc).
 
 ## System Requirement
 
