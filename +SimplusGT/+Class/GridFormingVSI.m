@@ -291,6 +291,11 @@ classdef GridFormingVSI < SimplusGT.Class.ModelAdvance
                 error_i_lq = i_lq_r-i_lq;
                 e_d = -error_i_ld*kp_i_ldq + i_ld_i;
                 e_q = -error_i_lq*kp_i_ldq + i_lq_i;
+
+                % Open loop voltage control
+                e_d = v_od_r;
+                e_q = obj.v_oq_r;
+
                 di_ld_i = -error_i_ld*ki_i_ldq;
                 di_lq_i = -error_i_lq*ki_i_ldq;
                 % Current controller anti-windup

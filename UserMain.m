@@ -9,29 +9,13 @@
 clear all; clc; close all; 
 
 %% User data
-UserDataName = 'UserData';      % Default 4-bus system
+% UserDataName = 'UserData';      % Default 4-bus system
 
 % Example power systems in "Examples" folder:
 %
-% Ac power system examples:
-% UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
-% UserDataName = 'GflInverterInfiniteBus';   	% Single grid-following inverter and infinite bus
-% UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
-% UserDataName = 'IEEE_14Bus';
-% UserDataName = 'IEEE_30Bus';
-% UserDataName = 'IEEE_57Bus';
-% UserDataName = 'AU14Gen_59Bus';
-% UserDataName = 'NETS_NYPS_68Bus';
-%
-% Dc power system examples:
-% UserDataName = 'GfdBuckInfiniteBus';         % Single grid-feeding buck converter and infinite bus
-% UserDataName = 'TwoBusGfdBuck';              % Two buck converters
-%
-% Hybrid ac-dc power system examples:
-% UserDataName = 'Hybrid_4Bus';             % A 4-bus hybrid ac-dc system
-% UserDataName = 'Hybrid_28Bus';
-% UserDataName = 'HVDC_Infbus_4Bus';        % HVDC system connected to inf buses
-% UserDataName = 'HVDC_SG_4Bus';            % HVDC system connected to equivalent SG buses
+UserDataName = 'IEEE68BusSG';       % IEEE 68 bus system with synchronous machines
+% UserDataName = 'IEEE68BusGFMGFL';   % IEEE 68 bus system with grid-forming and grid-following inverters
+
 
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));

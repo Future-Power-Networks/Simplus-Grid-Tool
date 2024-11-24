@@ -54,7 +54,7 @@ warning('off','all')    % Turn off all warnings
 load_system('SimplusGT_2020a.slx');
 save_system('SimplusGT_2020a.slx','Library/SimplusGT.slx');
 close_system('SimplusGT.slx');
-warning('on','all')     % Turn on all warnings
+% warning('on','all')     % Turn on all warnings
 
 %%
 fprintf('Congratulations!\n')
