@@ -29,6 +29,9 @@ for i = 1:N_Apparatus
         elseif 2000<=ApparatusType{i} && ApparatusType{i}<=2090
             Output_DS_Bus = ['v_dq,i_dq,v_abc,i_abc,w,theta,pq_ac,v,i,p_dc'];
             Length_D_Measurement = 10;
+        elseif 2100<=ApparatusType{i} && ApparatusType{i}<=2190
+            Output_DS_Bus = ['v_dq,i_dq,v_abc,i_abc,w,theta,pq_ac,v,i,p_dc'];
+            Length_D_Measurement = 10;
         end
         
         set_param(gcb,'OutputSignals',Output_DS_Bus);

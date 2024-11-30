@@ -58,6 +58,12 @@ for i = 1:N_Apparatus
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
                 add_block([Name_LibFile '/Interlink AC-DC (System Object)'],FullName_Apparatus{i});
                 
+            % ### Interlink
+            case 210
+              	Name_Apparatus{i} = ['InterlinkMatching' num2str(Bus(1)) '-' num2str(Bus(2))];
+                FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                add_block([Name_LibFile '/InterlinkMatching AC-DC (System Object)'],FullName_Apparatus{i});
+
           	% ### Error check
             otherwise
                 error(['Error: ApparatusType ' num2str(ApparatusType{i}) '.']);
@@ -77,6 +83,10 @@ for i = 1:N_Apparatus
             % For interlink apparatuses: larger
             Pos_Apparatus{i} = Pos_Bus{Bus(1)} + Shift_Apparatus;
             set_param(FullName_Apparatus{i},'position',[Pos_Apparatus{i},Pos_Apparatus{i}+Size_Apparatus+[0,40]]);
+        elseif 2100<=ApparatusType{i} && ApparatusType{i}<=2190
+            % For interlinkMatching apparatuses: larger
+            Pos_Apparatus{i} = Pos_Bus{Bus(1)} + Shift_Apparatus;
+            set_param(FullName_Apparatus{i},'position',[Pos_Apparatus{i},Pos_Apparatus{i}+Size_Apparatus+[0,40]]);
         end
         set_param(FullName_Apparatus{i},'Orientation','left');
         
@@ -86,14 +96,15 @@ for i = 1:N_Apparatus
         set_param(gcb,'Ts','Ts');
         
         % For ac apparatus only
-        if (ApparatusType{i}<1000) || (2000<=ApparatusType{i} && ApparatusType{i}<=2090)
+        if (ApparatusType{i}<1000) || (2000<=ApparatusType{i} && ApparatusType{i}<=2090) || (2100<=ApparatusType{i} && ApparatusType{i}<=2190) 
             set_param(gcb,'Wbase','Wbase');
         end
         
         % For active apparatus only
         if (0<=ApparatusType{i} && ApparatusType{i}<90) || ...
            (1000<=ApparatusType{i} && ApparatusType{i}<1090) || ...
-           (2000<=ApparatusType{i} && ApparatusType{i}<2090)
+           (2000<=ApparatusType{i} && ApparatusType{i}<2090) || ...
+           (2100<=ApparatusType{i} && ApparatusType{i}<2190) 
             
             % Set system object parameters
             set_param(gcb,'ApparatusType',['ApparatusType{' num2str(i) '}']);

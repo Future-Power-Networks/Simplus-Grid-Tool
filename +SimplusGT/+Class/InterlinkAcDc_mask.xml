@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Mask SelfModifiable="on">
+  <Type>SimplusGT.Class.InterlinkAcDc</Type>
+  <SourceCheckSum>829F0FCF59B3E3F840CAC7798D9708B6-7684547931ACB5053D1702E3BB8CA22A-5453C05017B1F77A0C9AF13F052CBA13</SourceCheckSum>
+  <Display IconOpaque="transparent" RunInitForIconRedraw="off">disp(&apos;InterlinkAcDc&apos;);
+port_label(&apos;input&apos;,1,&apos;u&apos;);
+port_label(&apos;output&apos;,1,&apos;y&apos;);
+</Display>
+  <Description>Model of an ac-dc converter for inter-linking ac and dc grids.</Description>
+  <Initialization>matlab.system.MLSysBlockIconAndPortLabelsInfo.updateMLSysBlockIconAndPortLabels(gcbh)</Initialization>
+  <MaskParameter Name="Ts" Type="edit">
+    <Prompt>Sampling period (s):</Prompt>
+    <Value>Ts</Value>
+  </MaskParameter>
+  <MaskParameter Name="Para" Type="edit">
+    <Prompt>Apparatus parameters:</Prompt>
+    <Value>ApparatusPara</Value>
+  </MaskParameter>
+  <MaskParameter Name="ApparatusType" Type="edit" Tunable="off">
+    <Prompt>Apparatus type:</Prompt>
+    <Value>ApparatusType</Value>
+  </MaskParameter>
+  <MaskParameter Name="PowerFlow" Type="edit" Tunable="off">
+    <Prompt>Power flow parameters:</Prompt>
+    <Value>PowerFlow</Value>
+  </MaskParameter>
+  <MaskParameter Name="x0" Type="edit" Tunable="off">
+    <Prompt>Initial state:</Prompt>
+    <Value>x0</Value>
+  </MaskParameter>
+  <MaskParameter Name="DiscreMethod" Type="edit" Tunable="off">
+    <Prompt>Discretization methods:</Prompt>
+    <Value>DiscreMethod</Value>
+  </MaskParameter>
+  <MaskParameter Name="LinearizationTimes" Type="edit" Tunable="off">
+    <Prompt>Jacobian calculation:</Prompt>
+    <Value>LinearizationTimes</Value>
+  </MaskParameter>
+  <MaskParameter Name="DirectFeedthrough" Type="edit" Tunable="off">
+    <Prompt>Direct Feedthrough:</Prompt>
+    <Value>DirectFeedthrough</Value>
+  </MaskParameter>
+  <MaskParameter Name="VirtualResistor" Type="edit" Tunable="off">
+    <Prompt>Virtual Resistor:</Prompt>
+    <Value>DiscreDampingFlag</Value>
+  </MaskParameter>
+  <MaskParameter Name="EquiInitial" Type="edit" Tunable="off">
+    <Prompt>Initialize to steady-state:</Prompt>
+    <Value>true</Value>
+  </MaskParameter>
+  <MaskParameter Name="ElecPortIOs" Type="edit" Tunable="off">
+    <Prompt>Electrical ports:</Prompt>
+    <Value>[ 1, 2, 3 ]</Value>
+  </MaskParameter>
+  <MaskParameter Name="SimulateUsing" Type="popup" Evaluate="off" Tunable="off">
+    <Prompt>SystemBlock:MATLABSystem:SimulateUsing</Prompt>
+    <Value>Code generation</Value>
+    <TypeOptions>
+      <Option>SystemBlock:MATLABSystem:SimulateUsingCodeGeneration</Option>
+      <Option>SystemBlock:MATLABSystem:SimulateUsingInterpretedExecution</Option>
+    </TypeOptions>
+  </MaskParameter>
+  <DialogControl Type="Group" Name="DescGroupVar">
+    <Prompt>InterlinkAcDc</Prompt>
+    <DialogControl Type="Text" Name="DescTextVar">
+      <Prompt>%&lt;MaskDescription&gt;</Prompt>
+    </DialogControl>
+    <DialogControl Type="Hyperlink" Name="SourceCodeLink">
+      <Prompt>源代码</Prompt>
+      <Callback>edit(&apos;SimplusGT.Class.InterlinkAcDc&apos;);</Callback>
+    </DialogControl>
+  </DialogControl>
+  <DialogControl Type="Group" Name="SectionGroup0_Section1">
+    <Prompt>Simulink:studio:ToolBarParametersMenu</Prompt>
+    <ControlOptions AlignPrompts="on"/>
+    <DialogControl Type="Edit" Name="Ts">
+      <Prompt>Sampling period (s):</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="Para">
+      <Prompt>Apparatus parameters:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="ApparatusType">
+      <Prompt>Apparatus type:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="PowerFlow">
+      <Prompt>Power flow parameters:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="x0">
+      <Prompt>Initial state:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="DiscreMethod">
+      <Prompt>Discretization methods:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="LinearizationTimes">
+      <Prompt>Jacobian calculation:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="DirectFeedthrough">
+      <Prompt>Direct Feedthrough:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="VirtualResistor">
+      <Prompt>Virtual Resistor:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="EquiInitial">
+      <Prompt>Initialize to steady-state:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+    <DialogControl Type="Edit" Name="ElecPortIOs">
+      <Prompt>Electrical ports:</Prompt>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+  </DialogControl>
+  <DialogControl Type="Panel" Name="SectionGroup0_Section2">
+    <ControlOptions AlignPrompts="on"/>
+    <DialogControl Type="Popup" Name="SimulateUsing">
+      <Prompt>仿真方式:</Prompt>
+      <Tooltip>SystemBlock:MATLABSystem:SimulateUsingDescription</Tooltip>
+      <ControlOptions PromptLocation="left"/>
+    </DialogControl>
+  </DialogControl>
+</Mask>

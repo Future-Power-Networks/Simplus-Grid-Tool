@@ -135,6 +135,19 @@ switch floor(Type/10)
                         Para.fpll;
                         Para.w0];
     
+    % ### Grid feeding buck converter
+    case 210
+        Apparatus = SimplusGT.Class.InterlinkAcDcMatching('ApparatusType',Type);
+        Apparatus.Para = [ Para.C_dc;
+                        Para.wL_ac;
+                        Para.R_ac;
+                        Para.wL_dc;
+                        Para.R_dc;
+                        Para.w0;
+                        Para.R;
+                        Para.K;
+                        Para.N];
+    
     % ### Otherwise
     otherwise
         error(['Error: apparatus type']);
@@ -201,7 +214,7 @@ ApparatusPara = Apparatus.Para;
 ApparatusEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if Type<90 || (1000<=Type && Type<1090) || (2000<=Type && Type<2090)
+if Type<90 || (1000<=Type && Type<1090) || (2000<=Type && Type<2090) || (2100<=Type && Type<2190)
     % CalcRv_old();
     
     Apparatus.SetDynamicSS(Apparatus,x_e,u_e);
