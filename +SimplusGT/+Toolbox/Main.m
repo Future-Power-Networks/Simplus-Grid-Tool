@@ -415,7 +415,8 @@ function PlotAdmittanceSpectrum(NumBus,ApparatusBus,ApparatusType,GsysSs,PortBus
         % Plot the active bus admittance only
         if (0<=ApparatusType{k2} && ApparatusType{k2}<90) || ...
            (1000<=ApparatusType{k2} && ApparatusType{k2}<1090) || ...
-           (2000<=ApparatusType{k2} && ApparatusType{k2}<2090)
+           (2000<=ApparatusType{k2} && ApparatusType{k2}<2090) || ...
+           (2100<=ApparatusType{k2} && ApparatusType{k2}<2190)
        
            	YcellSs{k}  = GsysSs(PortBusI{k},PortBusV{k});
             YcellSym{k} = SimplusGT.ss2sym(YcellSs{k});

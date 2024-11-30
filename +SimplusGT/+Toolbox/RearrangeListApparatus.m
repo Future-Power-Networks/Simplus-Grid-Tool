@@ -204,6 +204,20 @@ Para2000.fvdc   = 5;
 Para2000.fpll   = 5;
 Para2000.w0     = W0;   
 
+% ======================================
+% InterlinkMatching Control ac-dc converter
+% ======================================
+Para2100.C_dc   = 1.6;
+Para2100.wL_ac  = 0.05;
+Para2100.R_ac   = 0.01;
+Para2100.wL_dc  = 0.02;
+Para2100.R_dc   = 0.02/5;
+
+Para2100.w0     = W0;   
+Para2100.R      = 0.05;
+Para2100.K      = 1;
+Para2100.N      = 1;
+
 %% Re-arrange apparatus data
 
 % Find the index of user-defined data
@@ -241,7 +255,11 @@ for i = 1:N_App
         % ### Hybrid ac-dc apparatuses
         case 200
             ParaCell{i} = Para2000;     % Interlinking ac-dc converter
-            
+
+        % ### Hybrid ac-dc apparatuses Matching Control
+         case 210
+            ParaCell{i} = Para2100;     % Interlinking ac-dc converter   
+
         % ### Error check
         otherwise
             error(['Error: apparatus type, bus ' num2str(AppBus) ' type ' num2str(AppType) '.']);
