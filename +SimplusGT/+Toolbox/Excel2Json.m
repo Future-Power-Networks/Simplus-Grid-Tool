@@ -21,8 +21,8 @@ function Excel2Json(FileName)
     [RootPath,~,~]  = fileparts(RootPath);
     FilePath = fileparts(which(FileName));
     FolderName = erase(FilePath,RootPath);
-    ExcelFile = [FolderName,'\',FileName];
-    if strcmp(ExcelFile(1),'\')
+    ExcelFile = [FolderName,'/',FileName];      % We use "/" rather than "\", to enable OS including Windows, Mac, etc.
+    if strcmp(ExcelFile(1),'/')
         ExcelFile = ExcelFile(2:end);
     end
     

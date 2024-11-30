@@ -1,4 +1,4 @@
-# Simplus Grid Tool (Version: v2024-Aug-19)
+# Simplus Grid Tool (Version: v2024-Nov-30)
 
 Simplus Grid Tool (SimplusGT in short) is an open-source tool for dynamic analysis and time-domain simulation of power systems (large-scale 100+ bus systems, SG-IBR-composite systems, AC or DC or hybrid AC-DC systems, HVDC systems, etc). The tool is based on Matlab/Simulink.
 
@@ -24,4 +24,4 @@ We would be very grateful if you could cite the toolbox when you used it in your
 
 ## Contact
 
-Yitong Li (yitongli@xjtu.edu.cn).
+Yitong Li (yitongli@xjtu.edu.cn), Yunjie Gu (yunjie.gu@imperial.ac.uk).
