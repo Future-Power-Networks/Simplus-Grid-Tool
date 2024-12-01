@@ -48,7 +48,7 @@ switch floor(Type/10)
                         Para.wL;
                         Para.R;
                         Para.w0];       % (5)
-                    
+         
     % ### Grid-following inverter
     case 1      % Type 10-19
         if Type~=19
@@ -80,7 +80,38 @@ switch floor(Type/10)
                         Para.fvdq;
                         Para.fidq;
                         Para.w0];
-                   
+    
+    % ### Detailed synchronous generator
+    case 3  % Type 30-39
+        Apparatus = SimplusGT.Class.SynchronousMachineFullOrder('ApparatusType',Type);
+        Apparatus.Para = [Para.x_d;
+                        Para.x_dd;    % X_dd represents Xd'
+                        Para.x_ddd;
+                        Para.x_q;
+                        Para.x_qd;    % X_qd represents Xq'
+                        Para.x_qdd;
+                        Para.x_l;     % or x_2, x_ls in some practical cases
+                        Para.R_a;
+
+                        Para.T_dd;    % T_dd represents Td'
+                        Para.T_ddd;
+                        Para.T_qd;
+                        Para.T_qdd;
+
+                        Para.H;       % Inertial constant
+
+                        Para.SaturationA;
+                        Para.SaturationB;
+                        Para.SaturationN;
+
+                        Para.D;           % Damp constant
+                        Para.SpeedPara;   % simplified governor parameters
+                        Para.K_A;         % exciter parameters
+
+                        Para.EnableSaturation; % Saturation setting
+                        Para.wb;  
+                        ];       % (21 parameters)
+      
     % ### Ac infinite bus
     case 9
         Apparatus = SimplusGT.Class.InfiniteBusAc;
@@ -142,8 +173,8 @@ end
 
 %% Calculate the linearized state space model
 Apparatus.ApparatusType = Type;                           % Apparatus type
-Apparatus.Ts = Ts;                                     % Samping period
-Apparatus.PowerFlow = PowerFlow;                       % Power flow data
+Apparatus.Ts = Ts;                                        % Samping period
+Apparatus.PowerFlow = PowerFlow;                          % Power flow data
 Apparatus.SetString(Apparatus);                           % Set strings automatically
 Apparatus.SetEquilibrium(Apparatus);                      % Calculate the equilibrium
 [x_e,u_e,y_e,xi] = Apparatus.GetEquilibrium(Apparatus);   % Get the equilibrium

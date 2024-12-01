@@ -14,11 +14,17 @@ UserDataName = 'UserData';      % Default 4-bus system
 % Example power systems in "Examples" folder:
 %
 % Ac power system examples:
+% UserDataName = 'SgDetailedInfiniteBus';       % Single detailed synchronous generator and infinite bus
 % UserDataName = 'SgInfiniteBus';               % Single synchronous generator and infinite bus
 % UserDataName = 'GflInverterInfiniteBus';   	% Single grid-following inverter and infinite bus
 % UserDataName = 'GfmInverterInfiniteBus';   	% Single grid-forming inverter and infinite bus
+% UserDataName = 'Kundar_TwoAreaSystem';
+% UserDataName = 'WSCC_9Bus';
+% UserDataName = 'WSCC_9BusFullOrder';
 % UserDataName = 'IEEE_14Bus';
+% UserDataName = 'IEEE_14BusFullOrder';
 % UserDataName = 'IEEE_30Bus';
+% UserDataName = 'IEEE_39BusFullOrder';
 % UserDataName = 'IEEE_57Bus';
 % UserDataName = 'AU14Gen_59Bus';
 % UserDataName = 'NETS_NYPS_68Bus';
