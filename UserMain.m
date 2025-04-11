@@ -11,7 +11,7 @@ clc;
 close all;
 
 % choose the avaliable case studies: 1-6.
-CaseStudy=1; 
+CaseStudy=7; 
 switch CaseStudy
     case 1; UserData = '2IBR_4_bus_case1.xlsx'; % IMR 4-bus: same well tuned
     case 2; UserData = '2IBR_4_bus_case2.xlsx'; % IMR 4-bus: based on 24, higher PLL bandwidth to create control interactions
@@ -19,12 +19,14 @@ switch CaseStudy
     case 4; UserData = 'IEEE68_good.xlsx'; % IMR 68-bus: good tuned
     case 5; UserData = 'IEEE68_bad.xlsx'; % IMR 68-bus: bad tuned
     case 6; UserData = 'IEEE68_verybad.xlsx'; % IMR 68-bus: very bad tuned.
+    case 7; UserData = '2IBR_4_bus_case1s'; % 4-bus case for Southern Power Grid.
+    case 8; UserData = '2IBR_4_bus_case2s';
 end
 tic
 SimplusGT.Toolbox.Main();
-if CaseStudy>=3 % heatmap is avaliable for 68-bus case only.
-    run CriticalIMR.m 
-end
+% if CaseStudy>=3 % heatmap is avaliable for 68-bus case only.
+%     run CriticalIMR.m 
+% end
 %toc
-ModalAnalysisAPP; % Open the newly designed Modal analysis APP. This is only required once and results can be refreshed inside the APP.
+%ModalAnalysisAPP; % Open the newly designed Modal analysis APP. This is only required once and results can be refreshed inside the APP.
 toc
