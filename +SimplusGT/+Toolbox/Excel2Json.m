@@ -7,6 +7,9 @@
 % # The data operation of apparatuses is improved.
 % # Partial address is added into file name.
 % # Remove the advance setting of "participation analysis" in excel.
+%
+% Modified by George Zhang:
+% Adjustment to ExcelFile path due to previous error. 
 
 function Excel2Json(FileName)
 
@@ -22,7 +25,7 @@ function Excel2Json(FileName)
     FilePath = fileparts(which(FileName));
     FolderName = erase(FilePath,RootPath);
     ExcelFile = [FolderName,'/',FileName];      % We use "/" rather than "\", to enable OS including Windows, Mac, etc.
-    if strcmp(ExcelFile(1),'/')
+    if strcmp(ExcelFile(1), '/') || strcmp(ExcelFile(1), '\')
         ExcelFile = ExcelFile(2:end);
     end
     
