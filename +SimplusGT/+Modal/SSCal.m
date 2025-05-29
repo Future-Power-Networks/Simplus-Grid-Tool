@@ -25,40 +25,18 @@ for modei=1:ModeSelNum
     lambda = Mode(ModeSel)*2*pi;
     pin=1;
     pout=1;
-    for k =1: N_Apparatus
-
+    for k =1:N_Apparatus
         ZmValAll{modei}{k} = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell{k}, lambda, ApparatusType{k});
-
-        if ApparatusType{k} <= 89  % Ac apparatus
-            % Using the matrix format of ResidueAll{modei}(k) should be
-            % better, please change it later.
-            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(1,2)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);
-            ResidueAll{modei}{k}(2,1)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(2,2)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);           
-            
-        elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatuses
-            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-
-        elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % Interlink apparatuses
-
-            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(1,2)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);
-            ResidueAll{modei}{k}(2,1)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(2,2)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
-
-            ResidueAll{modei}{k}(1,3)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
-            ResidueAll{modei}{k}(2,3)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
-            ResidueAll{modei}{k}(3,1)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(3,2)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
-            ResidueAll{modei}{k}(3,3)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2); 
-
+        if ApparatusType{k} <= 89  % AC apparatus
+            ResidueAll{modei}{k}=C(pout:pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin:pin+1);
+        elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % DC apparatus
+            ResidueAll{modei}{k}=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
+        elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % Interlink apparatus
+            ResidueAll{modei}{k}=C(pout:pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin:pin+2);
         else % Floating bus and passive load: not considered           
             ResidueAll{modei}{k} = [];
         end
         pin = pin + length(ApparatusInputStr{k}); 
         pout = pout + length(ApparatusOutputStr{k});
     end
-end
-
 end

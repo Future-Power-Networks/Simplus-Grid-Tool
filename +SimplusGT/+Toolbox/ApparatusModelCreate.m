@@ -333,7 +333,7 @@ Gm = Se;
 
 end
 
-%% Get the descritpor state space model
+%% Get the descriptor state space model
 % Change SS system to DSS system
 An = Gm.A; Bn = Gm.B; Cn = Gm.C; Dn = Gm.D; 
 En = eye(size(An));
