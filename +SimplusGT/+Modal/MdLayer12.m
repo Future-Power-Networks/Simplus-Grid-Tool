@@ -7,10 +7,9 @@ function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus, Ap
 
 for k = 1:N_Apparatus
     if (ApparatusType{k} <= 89) || (ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089) || (ApparatusType{k} >= 2000 && ApparatusType{k} <= 2089)  % only consider apparatus
-        % k
-        % Residue{k}
-        % ZmVal{k}
+        % Modal layer 1: ||Res*|| ||Z_k(lambda)|| 
         Layer1All(k) = norm(Residue{k},"fro") * norm(ZmVal{k},"fro");
+        % Modal layer 2: 〈-Res*, Z_k(lambda)〉
         % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
         Layer2All(k) = -1 * conj(sum(dot(Residue{k},ZmVal{k}')));
    end

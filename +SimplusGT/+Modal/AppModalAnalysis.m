@@ -22,7 +22,7 @@ SelIndex = 1;
 ApparatusSelL12 = 0;
 ApparatusIndex = 1;
 for k = 1:N_Apparatus
-    if ApparatusType{k} ~= 100 %not a floating bus)
+    if ApparatusType{k} ~= 100 && ApparatusType{k} ~= 1100 % not a floating bus
         ApparatusSelL12(SelIndex) = k;
         SelIndex = SelIndex +1;
         ApparatusIndex = ApparatusIndex +1;
@@ -53,27 +53,26 @@ for modei=1:ModeSelNum
     % Calculate the impedance margin ratio (IMR)
     SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; % MdMode is in the unite of Hz, so needs to be changed to rad.
     count=1;
-    for k=1:length(ApparatusType)
-        if ApparatusType{k} <= 89 % Ac apparatus
+    for k=1:N_Apparatus
+        if ApparatusType{k} <= 89 % AC apparatus
             IMR.Type(count) = ApparatusType{k};
-            % conj(sum(dot(A,B'))) = A(1,1)*B(1,1) + A(1,2)*B(2,1) + A(2,1)*B(1,2) + A(2,2)*B(2,2)
-            IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
+            IMR.IMRVal(count) = SigmaMag/norm(Residue{k},"fro")*norm(ZmVal{k},"fro"); 
             count = count+1;
         elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatus
             IMR.Type(count) = ApparatusType{k};
-            IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
+            IMR.IMRVal(count) = SigmaMag/norm(Residue{k},"fro")*norm(ZmVal{k},"fro"); 
             count = count+1;
         elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % Interlink apparatus
             IMR.Type(count) = ApparatusType{k};
-            IMR.IMRVal(count) = SigmaMag/abs( -1 * conj(sum( dot(Residue{k},ZmVal{k}' )) ) ) ;
+            IMR.IMRVal(count) = SigmaMag/norm(Residue{k},"fro")*norm(ZmVal{k},"fro"); 
             count = count+1;
         elseif  ApparatusType{k} == 90 || ApparatusType{k} == 1090   % infinite bus: let IMR=inf
             IMR.Type(count) = ApparatusType{k};
             IMR.IMRVal(count)=inf;
             count = count+1;
         else    % floating bus, do nothing
+        end
     end
-end
 
 AppMdResults.Layer1=MdLayer1;
 AppMdResults.Layer2=MdLayer2;

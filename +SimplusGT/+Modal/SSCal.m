@@ -2,7 +2,7 @@
 % apparatuses the user selected.
 %
 % Author(s): Yue Zhu
-% Modifed by: Yitong Li, Qipeng Zheng
+% Modifed by: Yitong Li, Qipeng Zheng, George Zhang
 
 function [Mode,ResidueAll,ZmValAll]=...
     SSCal(GminSS, N_Apparatus, ApparatusType, ModeSelect, GmDSS_Cell, ApparatusInputStr, ApparatusOutputStr)
