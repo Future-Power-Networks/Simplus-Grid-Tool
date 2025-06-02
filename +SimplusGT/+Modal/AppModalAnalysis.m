@@ -5,7 +5,7 @@
 
 function [AppMdResults,MdDataSave]=AppModalAnalysis(ModeSelect)
 
-N_Apparatus = evalin('base', 'NumApparatus');
+NumApparatus = evalin('base', 'NumApparatus');
 ApparatusType = evalin('base', 'ApparatusType');
 ApparatusBus = evalin('base', 'ApparatusBus');
 ApparatusInputStr = evalin('base', 'ApparatusInputStr');
@@ -16,12 +16,12 @@ GmDSS_Cell = evalin('base', 'GmDssCell');
 
 % calculation of residues and device impedance values, at the selected mode
 [MdMode,ResidueAll,ZmValAll]=...
-    SimplusGT.Modal.SSCal(GsysSs, N_Apparatus, ApparatusType, ModeSelect, GmDSS_Cell, ApparatusInputStr, ApparatusOutputStr);
+    SimplusGT.Modal.SSCal(GsysSs, NumApparatus, ApparatusType, ModeSelect, GmDSS_Cell, ApparatusInputStr, ApparatusOutputStr);
 
 SelIndex = 1;
 ApparatusSelL12 = 0;
 ApparatusIndex = 1;
-for k = 1:N_Apparatus
+for k = 1:NumApparatus
     if ApparatusType{k} ~= 100 && ApparatusType{k} ~= 1100 % not a floating bus
         ApparatusSelL12(SelIndex) = k;
         SelIndex = SelIndex +1;
@@ -36,7 +36,7 @@ for modei=1:ModeSelNum
     Residue = ResidueAll{modei};
     ZmVal = ZmValAll{modei};
     FreqSel = imag(MdMode(ModeSelAll(modei)));
-    [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus,...  % Key function is here
+    [Layer1, Layer2] = SimplusGT.Modal.MdLayer12(Residue,ZmVal,NumApparatus,ApparatusBus,...  % Key function is here
         ApparatusType,ApparatusSelL12);
     MdLayer1(modei).mode = [num2str(FreqSel),'~Hz'];
     MdLayer2(modei).mode = [num2str(FreqSel),'~Hz'];
@@ -53,7 +53,7 @@ for modei=1:ModeSelNum
     % Calculate the impedance margin ratio (IMR)
     SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; % MdMode is in the unite of Hz, so needs to be changed to rad.
     count=1;
-    for k=1:N_Apparatus
+    for k=1:NumApparatus
         if ApparatusType{k} <= 89 % AC apparatus
             IMR.Type(count) = ApparatusType{k};
             IMR.IMRVal(count) = SigmaMag/norm(Residue{k},"fro")*norm(ZmVal{k},"fro"); 
