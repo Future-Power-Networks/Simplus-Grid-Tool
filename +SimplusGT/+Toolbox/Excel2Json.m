@@ -7,27 +7,25 @@
 % # The data operation of apparatuses is improved.
 % # Partial address is added into file name.
 % # Remove the advance setting of "participation analysis" in excel.
+% Modified by George Zhang:
+% # Modification of ExcelFile path to use fullfile() for improved OS
+% compatability
 
 function Excel2Json(FileName)
 
     fprintf('Convert "excel" to "json". \n')
 
-    %
-    % Get file name
-    %
-    RootPath = mfilename('fullpath');
-    [RootPath,~,~]  = fileparts(RootPath);
-    [RootPath,~,~]  = fileparts(RootPath);
-    [RootPath,~,~]  = fileparts(RootPath);
+    % Obtain Root Path of Simplus-Grid-Tool folder
+    RootPath = fileparts(fileparts(fileparts(mfilename('fullpath'))));
+    % Obtain File Path of power system file
     FilePath = fileparts(which(FileName));
-    FolderName = erase(FilePath,RootPath);
-    ExcelFile = [FolderName,'/',FileName];      % We use "/" rather than "\", to enable OS including Windows, Mac, etc.
-    if strcmp(ExcelFile(1),'/')
-        ExcelFile = ExcelFile(2:end);
-    end
-    
-    
-    %
+    % Obtain Folder Path in Cell Format
+    FolderPath = erase(FilePath,RootPath);
+    FolderParts = split(FolderPath, filesep);
+    FolderParts = FolderParts(~cellfun('isempty', FolderParts));
+    % Create fullfile path on any platform
+    ExcelFile = fullfile(FolderParts{:}, FileName);
+   
     % Use a struct to hold the data
     %
     Data=struct;
