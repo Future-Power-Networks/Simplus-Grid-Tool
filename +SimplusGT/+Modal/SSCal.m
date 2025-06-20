@@ -2,7 +2,7 @@
 % apparatuses the user selected.
 %
 % Author(s): Yue Zhu
-% Modifed by: Yitong Li, Qipeng Zheng
+% Modifed by: Yitong Li, Qipeng Zheng, George Zhang
 
 function [Mode,ResidueAll,ZmValAll]=...
     SSCal(GminSS, N_Apparatus, ApparatusType, ModeSelect, GmDSS_Cell, ApparatusInputStr, ApparatusOutputStr)
@@ -26,33 +26,13 @@ for modei=1:ModeSelNum
     pin=1;
     pout=1;
     for k =1: N_Apparatus
-
         ZmValAll{modei}{k} = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell{k}, lambda, ApparatusType{k});
-
         if ApparatusType{k} <= 89  % Ac apparatus
-            % Using the matrix format of ResidueAll{modei}(k) should be
-            % better, please change it later.
-            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(1,2)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);
-            ResidueAll{modei}{k}(2,1)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(2,2)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);           
-            
+            ResidueAll{modei}{k}=C(pout:pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin:pin+1);
         elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatuses
-            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-
+            ResidueAll{modei}{k}=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
         elseif ApparatusType{k} >= 2000 && ApparatusType{k} <= 2009 % Interlink apparatuses
-
-            ResidueAll{modei}{k}(1,1)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(1,2)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1);
-            ResidueAll{modei}{k}(2,1)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(2,2)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
-
-            ResidueAll{modei}{k}(1,3)=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
-            ResidueAll{modei}{k}(2,3)=C(pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2);
-            ResidueAll{modei}{k}(3,1)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);
-            ResidueAll{modei}{k}(3,2)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+1); 
-            ResidueAll{modei}{k}(3,3)=C(pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin+2); 
-
+            ResidueAll{modei}{k}=C(pout:pout+2,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin:pin+2);
         else % Floating bus and passive load: not considered           
             ResidueAll{modei}{k} = [];
         end
