@@ -104,7 +104,7 @@ for m = 1:N_Bus
 end
 
 % Error check
-if (ColumnMax_Apparatus>12)
+if (ColumnMax_Apparatus>19)
     error(['Error: Apparatus data overflow.']); 
 end
 
@@ -159,6 +159,51 @@ Para0020.fidq   =600;   % current control bandwidth
 Para0020.w0     = W0;
 
 % ======================================
+% Battery Energy Storage System (Droop-Controlled)
+% ======================================
+Para0030.wLf      =0.05;
+Para0030.Rf       =0.05/5;
+Para0030.wCf      =0.02;
+Para0030.wLc      =0.01;
+Para0030.Rc       =0.01/5;
+Para0030.Xov      =0.01;
+Para0030.Dw       =0.05;
+Para0030.fdroop   =5;    % (Hz) droop control bandwidth
+Para0030.fvdq     =300;   % (Hz) vdc bandwidth
+Para0030.fidq     =600;   % current control bandwidth
+Para0030.w0       = W0;
+Para0030.L_dc     =0.000125;
+Para0030.C_dc     =0.224;
+Para0030.v_ocv    =0.625; % open circuit voltage of the battery
+Para0030.R_bat    =0.0625;
+Para0030.v_dc_ref =1;
+Para0030.fvdc     =50; % (Hz) vdc bandwidth
+Para0030.fibat    =500; % (Hz) ibat bandwidth
+
+% ======================================
+% Photovoltaic (VFM-FFL)
+% ======================================
+Para0040.wLf      =0.05;
+Para0040.Rf       =0.05/5;
+Para0040.wCf      =0.02;
+Para0040.wLc      =0.01;
+Para0040.Rc       =0.01/5;
+Para0040.Xov      =0.01;
+Para0040.N        =1;       % (Hz) matching ratio
+Para0040.R        =0.05;    % (Hz) virtual damping resistance
+Para0040.fvdq     =300;   % (Hz) vdq bandwidth
+Para0040.fidq     =600;  % (Hz) current control bandwidth
+Para0040.w0       =W0;
+Para0040.Sair     =1000;  % (𝑊/𝑚2) PV illumination intensity
+Para0040.Tair     =25;    % (°C) PV temperature
+Para0040.C_dc     =1;
+Para0040.v_pv_ref =0.8;   % pv output voltage(MPPT) 
+Para0040.v_dc_ref =1;   % dc voltage 
+Para0040.fvdc     =100; % (Hz) vdc bandwidth
+Para0040.fidc     =500; % (Hz) ibat bandwidth
+ 
+
+% ======================================
 % Ac infinite bus (short-circuit in small-signal)
 % ======================================
 Para0090 = [];
@@ -203,6 +248,10 @@ Para2000.fidq   = 600;
 Para2000.fvdc   = 5;
 Para2000.fpll   = 5;
 Para2000.w0     = W0;   
+Para2000.R         = 0.05;
+Para2000.K         = 1;
+Para2000.N         = 1;
+Para2000.v_dc_ref  = 1;
 
 %% Re-arrange apparatus data
 
@@ -224,7 +273,10 @@ for i = 1:N_App
       	case 2
             ParaCell{i} = Para0020;     % Grid-forming inverter
         case 3
-            % Yue's Full-Order Machine
+            ParaCell{i} = Para0030;     % Battery Energy Storage System
+        case 4
+            ParaCell{i} = Para0040;     % Photovoltaic
+            % PV
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
         case 10
@@ -297,6 +349,50 @@ for i = 1:length(row)
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
+    elseif floor(AppType/10) == 3                % Battery
+        switch SwitchFlag
+            case 1;  ParaCell{row(i)}.wLf      = UserValue;
+            case 2;  ParaCell{row(i)}.Rf       = UserValue;
+            case 3;  ParaCell{row(i)}.wCf      = UserValue;
+            case 4;  ParaCell{row(i)}.wLc  	   = UserValue;
+            case 5;  ParaCell{row(i)}.Rc  	   = UserValue;
+            case 6;  ParaCell{row(i)}.Xov 	   = UserValue;
+            case 7;  ParaCell{row(i)}.Dw       = UserValue;
+            case 8;  ParaCell{row(i)}.fdroop   = UserValue;
+            case 9;  ParaCell{row(i)}.fvdq     = UserValue;
+            case 10; ParaCell{row(i)}.fidq     = UserValue; 
+            case 11; ParaCell{row(i)}.L_dc     = UserValue;
+            case 12; ParaCell{row(i)}.C_dc     = UserValue;   
+            case 13; ParaCell{row(i)}.v_ocv    = UserValue;
+            case 14; ParaCell{row(i)}.R_bat    = UserValue;    
+            case 15; ParaCell{row(i)}.v_dc_ref = UserValue;    
+            case 16; ParaCell{row(i)}.fvdc     = UserValue; 
+            case 17; ParaCell{row(i)}.fibat    = UserValue;  
+            otherwise
+                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+        end
+    elseif floor(AppType/10) == 4                % PV
+        switch SwitchFlag
+            case 1;  ParaCell{row(i)}.wLf      = UserValue;
+            case 2;  ParaCell{row(i)}.Rf       = UserValue;
+            case 3;  ParaCell{row(i)}.wCf      = UserValue;
+            case 4;  ParaCell{row(i)}.wLc  	   = UserValue;
+            case 5;  ParaCell{row(i)}.Rc  	   = UserValue;
+            case 6;  ParaCell{row(i)}.Xov 	   = UserValue;
+            case 7;  ParaCell{row(i)}.N        = UserValue;
+            case 8;  ParaCell{row(i)}.R        = UserValue;
+            case 9;  ParaCell{row(i)}.fvdq     = UserValue;
+            case 10; ParaCell{row(i)}.fidq     = UserValue; 
+            case 11; ParaCell{row(i)}.Sair     = UserValue;
+            case 12; ParaCell{row(i)}.Tair     = UserValue;   
+            case 13; ParaCell{row(i)}.C_dc     = UserValue;
+            case 14; ParaCell{row(i)}.v_pv_ref = UserValue;    
+            case 15; ParaCell{row(i)}.v_dc_ref = UserValue;    
+            case 16; ParaCell{row(i)}.fvdc     = UserValue; 
+            case 17; ParaCell{row(i)}.fidc     = UserValue;  
+            otherwise
+                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+        end
     elseif floor(AppType/10) == 101 % Grid-feeding buck
         switch SwitchFlag
             case 1;  ParaCell{row(i)}.Vdc   = UserValue;
@@ -310,14 +406,18 @@ for i = 1:length(row)
         end
     elseif floor(AppType/10) == 200 % Interlink ac-dc converter
         switch SwitchFlag
-            case 1;  ParaCell{row(i)}.C_dc  = UserValue;
-            case 2;  ParaCell{row(i)}.wL_ac = UserValue;
-            case 3;  ParaCell{row(i)}.R_ac  = UserValue;
-            case 4;  ParaCell{row(i)}.wL_dc = UserValue;
-            case 5;  ParaCell{row(i)}.R_dc  = UserValue;
-            case 6;  ParaCell{row(i)}.fidq  = UserValue;
-            case 7;  ParaCell{row(i)}.fvdc  = UserValue;
-            case 8;  ParaCell{row(i)}.fpll  = UserValue;
+            case 1;  ParaCell{row(i)}.C_dc     = UserValue;
+            case 2;  ParaCell{row(i)}.wL_ac    = UserValue;
+            case 3;  ParaCell{row(i)}.R_ac     = UserValue;
+            case 4;  ParaCell{row(i)}.wL_dc    = UserValue;
+            case 5;  ParaCell{row(i)}.R_dc     = UserValue;
+            case 6;  ParaCell{row(i)}.fidq     = UserValue;
+            case 7;  ParaCell{row(i)}.fvdc     = UserValue;
+            case 8;  ParaCell{row(i)}.fpll     = UserValue;
+            case 9;  ParaCell{row(i)}.R        = UserValue; 
+            case 10; ParaCell{row(i)}.K        = UserValue;
+            case 11; ParaCell{row(i)}.N        = UserValue;
+            case 12; ParaCell{row(i)}.v_dc_ref = UserValue;
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
