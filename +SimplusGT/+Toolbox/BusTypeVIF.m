@@ -19,7 +19,7 @@ vbus = [];
 ibus = [];
 fbus = [];
 for i = 1:length(ApparatusType)
-    if ((ApparatusType{i} >= 0) && (ApparatusType{i} <= 9)) || (ApparatusType{i} == 90) || ((ApparatusType{i} >= 20) && (ApparatusType{i} <= 29))
+    if ((ApparatusType{i} >= 0) && (ApparatusType{i} <= 9)) || (ApparatusType{i} == 90) || ((ApparatusType{i} >= 20) && (ApparatusType{i} <= 49)) 
         vbus(l) = i;    
         l = l+1;
     elseif ((ApparatusType{i} >= 10) && (ApparatusType{i} <= 19)) 

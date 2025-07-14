@@ -44,7 +44,7 @@ Root path
 	-> Library (library for Simulink blocks)  
 		-> slblocks.m (load SimplusGT lib to Simulink broswer)  
 		-> SimplusGT.slx (library file)  
-		-> SimplusGT_2015a.xls (library file for matlab 2015a)  
+		-> SimplusGT_2020a.xls (library file for matlab 2020a)  
 	-> InstallSimplusGT.m  
 	-> UninstallSimplusGT.m  
 	-> UserMain.m  
@@ -74,7 +74,7 @@ Root path contains the main folders for toolbox and the files for users.
 
 "Debug" folder contains the backup files used by different developers for debugging the toolbox. These files are for debug only and should NOT be used/called when users run the toolbox.
 
-"Library" folder contains the library files for Simulink blocks used by the toolbox. "SimplusGT_2015a.xls" is the library file in Matlab version 2015a. Runing "InstallSimplusGT.m" will automatically convert this lib file to the version of users' Maltab.
+"Library" folder contains the library files for Simulink blocks used by the toolbox. "SimplusGT_2020a.xls" is the library file in Matlab version 2020a. Runing "InstallSimplusGT.m" will automatically convert this lib file to the version of users' Maltab.
 
 ## Root Name Space: "+SimplusGT" Folder
 

@@ -1,6 +1,6 @@
 % Model of an ac-dc converter for inter-linking ac and dc grids.
 
-% Author(s): Yitong Li
+% Author(s): Yitong Li Yaoyu Hu
 
 %% Notes
 %
@@ -42,8 +42,12 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             % v_dc is the dc link voltage, there is an inductor between v
             % and v_dc. This inductor makes the system admittance model
             % proper seen from the dc side.
+            % Control schemes：Apparatus 2000&2001 → GFL
+            %                  Apparatus 2002 → FFL-VFM
             if obj.ApparatusType==2000 || obj.ApparatusType==2001
                 State = {'i_d','i_q','i_d_i','i_q_i','w_pll_i','w','theta','v_dc','v_dc_i','i'};
+            elseif obj.ApparatusType==2002 
+                State = {'i_d','i_q','v_dc','i','theta'};    
             else
                 error('Error: Invalid ApparatusType.');
             end
@@ -67,7 +71,7 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             
             % Get parameters
             wL_ac = obj.Para(2);
-            W0 = obj.Para(9);
+            W0 = obj.Para(13);
             L_ac  = wL_ac/W0;
             R_ac  = obj.Para(3);
             R_dc  = obj.Para(5);
@@ -102,8 +106,14 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             obj.i_q_r = i_q_r;
 
             % Get equilibrium
-        	x_e = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta; v_dc; v_dc_i; i];
-        	u_e = [v_d; v_q; v; ang_r];
+            if obj.ApparatusType==2000 || obj.ApparatusType==2001
+            	x_e = [i_d; i_q; i_d_i; i_q_i; w_pll_i; w; theta; v_dc; v_dc_i; i];
+            	u_e = [v_d; v_q; v; ang_r];
+            elseif obj.ApparatusType==2002
+                x_e = [i_d; i_q; v_dc; i; theta];
+            	u_e = [v_d; v_q; v;ang_r];
+            end
+                   
         end
 
         function [Output] = StateSpaceEqu(obj,x,u,CallFlag)
@@ -113,16 +123,19 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             Vg_dc   = obj.PowerFlow(8);
             
            	% Get parameters
-            xC_dc = obj.Para(1);
-            xwL_ac= obj.Para(2);
-            xR_ac= obj.Para(3);
-            xwL_dc= obj.Para(4);
-            xR_dc= obj.Para(5);
-            xfidq= obj.Para(6);
-            xfvdc= obj.Para(7);
-            xfpll= obj.Para(8);
-            W0= obj.Para(9);
-            
+            xC_dc      = obj.Para(1);
+            xwL_ac     = obj.Para(2);
+            xR_ac      = obj.Para(3);
+            xwL_dc     = obj.Para(4);
+            xR_dc      = obj.Para(5);
+            xfidq      = obj.Para(6);
+            xfvdc      = obj.Para(7);
+            xfpll      = obj.Para(8);
+            R          = obj.Para(9);
+            K          = obj.Para(10);
+            N          = obj.Para(11);
+            v_dc_ref   = obj.Para(12);
+            W0         = obj.Para(13);
             V_dc = 1;
             w_vdc = xfvdc*2*pi; 	% (rad/s) bandwidth, vdc
             w_pll     = xfpll*2*pi;  	% (rad/s) bandwidth, pll
@@ -131,7 +144,7 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             
             L_ac    = xwL_ac/W0;
             R_ac    = xR_ac;
-        	L_dc    = xwL_dc/W0;
+            L_dc    = xwL_dc/W0;
             R_dc    = xR_dc;
             C_dc    = xC_dc;
             kp_v_dc = V_dc*xC_dc*w_vdc;
@@ -141,31 +154,40 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
             kp_pll = w_pll;
             ki_pll = kp_pll * w_pll/4;
             tau_pll = 1/w_tau_pll;
+
             
             % Get states
-          	i_d   	= x(1);
-         	i_q   	= x(2);
-          	i_d_i  	= x(3);
-            i_q_i 	= x(4);
-            w_pll_i = x(5);
-            w       = x(6);
-            theta   = x(7);
-            v_dc  	= x(8);
-            v_dc_i 	= x(9);
-            i       = x(10);
-
+            if obj.ApparatusType==2000 || obj.ApparatusType==2001
+                i_d   	= x(1);
+                i_q   	= x(2);
+                i_d_i  	= x(3);
+                i_q_i 	= x(4);
+                w_pll_i = x(5);
+                w       = x(6);
+                theta   = x(7);
+                v_dc  	= x(8);
+                v_dc_i 	= x(9);
+                i       = x(10);
+            elseif obj.ApparatusType==2002
+                i_d   = x(1);
+                i_q   = x(2);
+                v_dc  = x(3);
+                i     = x(4);
+                theta = x(5);
+            end
+   
             % Get input
-        	v_d    = u(1);
+            v_d    = u(1);
             v_q    = u(2);
             v      = u(3);
             ang_r  = u(4);
-            
+
             % State space equations
             % dx/dt = f(x,u)
             % y     = g(x,u)
-            if CallFlag == 1    
+
             % ### Call state equation: dx/dt = f(x,u)
-                
+            if obj.ApparatusType==2000 || obj.ApparatusType==2001
                 % Dc-link voltage control
                 v_dc_r = Vg_dc;
                 if obj.ApparatusType==2000
@@ -173,7 +195,7 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
                 elseif obj.ApparatusType==2001
                     dv_dc_i = (v_dc_r - v_dc)*ki_v_dc;
                 end
-                
+
                 % Ac current control
                 if obj.ApparatusType==2000
                     i_d_r = P_ac/Vg_ac;
@@ -183,38 +205,59 @@ classdef InterlinkAcDc < SimplusGT.Class.ModelAdvance
                 i_q_r = obj.i_q_r;                  % Constant iq
                 di_d_i = -(i_d_r - i_d)*ki_i_dq;
                 di_q_i = -(i_q_r - i_q)*ki_i_dq;
-                
-              	% Ac voltage (duty cycle*v_dc)
+
+                % Ac voltage (duty cycle*v_dc)
                 e_d = -(i_d_r - i_d)*kp_i_dq + i_d_i;
                 e_q = -(i_q_r - i_q)*kp_i_dq + i_q_i;
-                
+
                 % Ac-side L filter
                 di_d = (v_d - R_ac*i_d + w*L_ac*i_q - e_d)/L_ac;
                 di_q = (v_q - R_ac*i_q - w*L_ac*i_d - e_q)/L_ac;
-                
+
                 % PLL
-             	e_ang = v_q - ang_r;
+                e_ang = v_q - ang_r;
                 dw_pll_i = e_ang*ki_pll;
                 dw = (w_pll_i + e_ang*kp_pll - w)/tau_pll;
                 dtheta = w;
-                
-            	% Dc-side inductor
+
+                % Dc-side inductor
                 d_i = (v - v_dc - R_dc*i)/L_dc;
-                
+
                 % Dc-side capacitor
                 dv_dc = ((e_d*i_d + e_q*i_q)/v_dc + i)/C_dc;
-                
-                % Output state
-            	f_xu = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta; dv_dc; dv_dc_i; d_i];
-                Output = f_xu;
-                
+
+            elseif obj.ApparatusType==2002
+                % Voltage control (open loop)
+                e_d = 1;
+                e_q = 0;
+
+                % Matching control
+                p1 = (e_d*i_d + e_q*i_q)*(-1);
+                pr1 = v_dc*i;
+                dv_dc = (pr1 - p1)/v_dc/C_dc;
+                w = ((pr1 - p1)/v_dc*R + K*(v_dc - v_dc_ref))*N*W0 + W0;
+                dtheta = w;
+
+                % Rectifier-side inductor
+                di_d = (v_d - e_d + w*L_ac*i_q - R_ac*i_d)/L_ac;
+                di_q = (v_q - e_q - w*L_ac*i_d - R_ac*i_q)/L_ac;
+                % DC Line
+                d_i = (v - v_dc -i*R_dc)/L_dc;
+            end
+            if CallFlag == 1
+                if obj.ApparatusType==2000 || obj.ApparatusType==2001
+                    f_xu = [di_d; di_q; di_d_i; di_q_i; dw_pll_i; dw; dtheta; dv_dc; dv_dc_i; d_i];
+                    Output = f_xu;
+                elseif obj.ApparatusType==2002
+                    f_xu = [ di_d; di_q; dv_dc; d_i; dtheta];
+                    Output = f_xu;
+                end
             elseif CallFlag == 2
-          	% ### Call output equation: y = g(x,u)
+              	% ### Call output equation: y = g(x,u)
                 g_xu = [i_d; i_q; i; w; v_dc; theta];
                 Output = g_xu;
             end
         end
-
     end
 
 end     % End class definition

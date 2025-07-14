@@ -1,0 +1,506 @@
+
+{
+
+  "Basic": 
+{
+
+    "Fs": 500000,
+    "Fbase": 50,
+    "Sbase": 1,
+    "Vbase": 1
+  
+}
+,
+  "Advance": 
+{
+
+    "DiscretizationMethod": 2,
+    "LinearizationTimes": 1,
+    "DiscretizationDampingFlag": 1,
+    "DirectFeedthrough": 0,
+    "PowerFlowAlgorithm": 1,
+    "EnableCreateSimulinkModel": 1,
+    "EnablePlotPole": 1,
+    "EnablePlotAdmittance": 1,
+    "EnablePrintOutput": 1
+  
+}
+,
+  "Bus": 
+[
+
+    
+{
+
+      "BusNo": 1,
+      "BusType": 1,
+      "Voltage": 1,
+      "Theta": -0.7767,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 1,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 2,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 1.263,
+      "QGi": 0.1438,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 1,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 3,
+      "BusType": 1,
+      "Voltage": 2.003,
+      "Theta": 0,
+      "PGi": -1.263,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 2,
+      "AcDc": 2
+    
+}
+,
+    
+{
+
+      "BusNo": 4,
+      "BusType": 3,
+      "Voltage": 2.004,
+      "Theta": 0,
+      "PGi": 0.6437,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 2,
+      "AcDc": 2
+    
+}
+,
+    
+{
+
+      "BusNo": 7,
+      "BusType": 3,
+      "Voltage": 2.004,
+      "Theta": 0,
+      "PGi": 0.6486,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 2,
+      "AcDc": 2
+    
+}
+,
+    
+{
+
+      "BusNo": 5,
+      "BusType": 1,
+      "Voltage": 0.994,
+      "Theta": -0.4043,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 3,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 6,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0.7025,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 3,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 8,
+      "BusType": 1,
+      "Voltage": 0.994,
+      "Theta": -0.4043,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 4,
+      "AcDc": 1
+    
+}
+,
+    
+{
+
+      "BusNo": 9,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0.7025,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 4,
+      "AcDc": 1
+    
+}
+
+  
+]
+,
+  "NetworkLine": 
+[
+
+    
+{
+
+      "FromBus": 1,
+      "ToBus": 2,
+      "R": 0.1,
+      "wL": 0.5,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 3,
+      "ToBus": 4,
+      "R": 0.002,
+      "wL": 0.02,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 5,
+      "ToBus": 6,
+      "R": 0.11,
+      "wL": 0.55,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 7,
+      "ToBus": 3,
+      "R": 0.002,
+      "wL": 0.02,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 8,
+      "ToBus": 9,
+      "R": 0.11,
+      "wL": 0.55,
+      "wC": 0,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 6,
+      "ToBus": 6,
+      "R": "NaN",
+      "wL": "NaN",
+      "wC": 0.02,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 5,
+      "ToBus": 5,
+      "R": "NaN",
+      "wL": "NaN",
+      "wC": 0.02,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 2,
+      "ToBus": 2,
+      "R": "NaN",
+      "wL": "NaN",
+      "wC": 0.02,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 8,
+      "ToBus": 8,
+      "R": "NaN",
+      "wL": "NaN",
+      "wC": 0.02,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+,
+    
+{
+
+      "FromBus": 9,
+      "ToBus": 9,
+      "R": "NaN",
+      "wL": "NaN",
+      "wC": 0.02,
+      "G": 0,
+      "TurnsRatio": 1
+    
+}
+
+  
+]
+,
+  "NetworkLineIEEE": 
+[
+
+]
+,
+  "Apparatus": 
+[
+
+    
+{
+
+      "BusNo": 1,
+      "Type": 90,
+      "Para": 
+[
+
+]
+
+    
+}
+,
+    
+{
+
+      "BusNo": 
+[
+
+        2,
+        3
+      
+]
+,
+      "Type": 2002,
+      "Para": 
+{
+
+        "C_dc": 1,
+        "wL_ac": 0.05,
+        "R_ac": 0.01,
+        "wL_dc": 0.08,
+        "R_dc": 0.008,
+        "fidq": 0,
+        "fvdc": 0,
+        "fpll": 0,
+        "w0": 314.15926535897933,
+        "R": 0.05,
+        "K": 1,
+        "N": 1,
+        "v_dc_ref": 2
+      
+}
+
+    
+}
+,
+    
+{
+
+      "BusNo": 
+[
+
+        5,
+        4
+      
+]
+,
+      "Type": 2002,
+      "Para": 
+{
+
+        "C_dc": 1,
+        "wL_ac": 0.05,
+        "R_ac": 0.01,
+        "wL_dc": 0.08,
+        "R_dc": 0.008,
+        "fidq": 0,
+        "fvdc": 0,
+        "fpll": 0,
+        "w0": 314.15926535897933,
+        "R": 0.05,
+        "K": 1,
+        "N": 1,
+        "v_dc_ref": 2
+      
+}
+
+    
+}
+,
+    
+{
+
+      "BusNo": 6,
+      "Type": 12,
+      "Para": 
+{
+
+        "V_dc": 1,
+        "C_dc": 1,
+        "f_v_dc": 5,
+        "wLf": 0.05,
+        "R": 0.01,
+        "f_pll": 10,
+        "f_tau_pll": 300,
+        "f_i_dq": 600,
+        "w0": 314.15926535897933
+      
+}
+
+    
+}
+,
+    
+{
+
+      "BusNo": 
+[
+
+        8,
+        7
+      
+]
+,
+      "Type": 2002,
+      "Para": 
+{
+
+        "C_dc": 1,
+        "wL_ac": 0.05,
+        "R_ac": 0.01,
+        "wL_dc": 0.08,
+        "R_dc": 0.008,
+        "fidq": 0,
+        "fvdc": 0,
+        "fpll": 0,
+        "w0": 314.15926535897933,
+        "R": 0.05,
+        "K": 1,
+        "N": 1,
+        "v_dc_ref": 2
+      
+}
+
+    
+}
+,
+    
+{
+
+      "BusNo": 9,
+      "Type": 12,
+      "Para": 
+{
+
+        "V_dc": 1,
+        "C_dc": 1,
+        "f_v_dc": 5,
+        "wLf": 0.05,
+        "R": 0.01,
+        "f_pll": 10,
+        "f_tau_pll": 300,
+        "f_i_dq": 600,
+        "w0": 314.15926535897933
+      
+}
+
+    
+}
+
+  
+]
+
+
+}
