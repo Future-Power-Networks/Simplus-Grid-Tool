@@ -37,6 +37,14 @@ for i = 1:N_Apparatus
                 Name_Apparatus{i} = ['VSI-Droop' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
                 add_block([Name_LibFile '/Grid-Forming Voltage-Source Inverter (dq-Frame System Object)'],FullName_Apparatus{i});
+            case 003
+                Name_Apparatus{i} = ['BESS' num2str(Bus)];
+                FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                add_block([Name_LibFile '/Battery (dq-Frame System Object)'],FullName_Apparatus{i});
+            case 004
+                Name_Apparatus{i} = ['PV' num2str(Bus)];
+                FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                add_block([Name_LibFile '/Photovoltaic (dq-Frame System Object)'],FullName_Apparatus{i});
             case 009
             	Name_Apparatus{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
