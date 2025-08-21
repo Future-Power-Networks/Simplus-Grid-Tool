@@ -141,11 +141,11 @@ classdef SynchronousMachineFull_Cyp_SMAVRPSSGOV < SimplusGT.Class.ModelAdvance
             
             Ptg1 = 0;
             Ptg3 = T_m_in+2*Sbase_SM; % see the figure in power factory.           
-            % if Ptg3<=-Pmax_gov
-            %     Ptg3 = -Pmax_gov;
-            % elseif Ptg3>=0
-            %     Ptg3 = 0;
-            % end            
+            if Ptg3<=-Pmax_gov
+                Ptg3 = -Pmax_gov;
+            elseif Ptg3>=0
+                Ptg3 = 0;
+            end            
             Ptg2 = Ptg3;
             Pmref = Ptg2;
                         
@@ -305,11 +305,11 @@ classdef SynchronousMachineFull_Cyp_SMAVRPSSGOV < SimplusGT.Class.ModelAdvance
                 end
                 %dPtg1 = ( (Delta_w-T2gov*dw)/Rgov-Ptg1 ) / T1gov;
                 Px=Ptg1+Pmref;
-                % if Px<=-Pmax_gov
-                %     Px=-Pmax_gov;
-                % elseif Px>=0
-                %     Px=0;
-                % end
+                if Px<=-Pmax_gov
+                    Px=-Pmax_gov;
+                elseif Px>=0
+                    Px=0;
+                end
                 dPtg2 = (Px-Ptg2)/T3gov;
                 dPtg3 = (Ptg2-Ptg3)/T4gov;
                 %if T5gov~=0
