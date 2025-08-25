@@ -313,6 +313,17 @@ methods(Access = protected)
  	% "UpdateImpl" and "outputImpl", and hence is commented out, to avoid
  	% repeated update in algebraic loops
    
+    % function y = stepImpl(obj,u) is direct method. If the system has
+    % algebraic loops, this method is error. 
+    % matlab.system.mixin.Nondirect in classdef needs to be annotated so that it can run rightly.
+    % Trapezoidal in stepImpl is shown as followed.    
+    % function y = stepImpl(obj, u)
+    %    delta_x = obj.Wk * (obj.StateSpaceEqu(obj,obj.x,u,1)+obj.StateSpaceEqu(obj,obj.x,obj.ulast,1))/2;
+    %    obj.x = obj.x + delta_x;
+    %    y = obj.StateSpaceEqu(obj,obj.x,u,2);
+    %    obj.ulast = u; 
+    % end
+    
     %  ### Update discreate states
     function updateImpl(obj, u)
                
@@ -408,7 +419,7 @@ methods(Access = protected)
                     y = obj.StateSpaceEqu(obj,obj.x,u,2);
                 else
                     if obj.VirtualResistor
-                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);                         
+                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);   
                     else
                         y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + obj.Fk*(u-obj.uk);
                     end
@@ -428,7 +439,9 @@ methods(Access = protected)
                         y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) + obj.Fk*(u-obj.uk);
                     end
                 end
-            % ### Case 3 : Delay one beat Hybrid Euler-Trapezoidal    
+            % ### Case 3 : Delay one beat Hybrid Euler-Trapezoidal
+            % Because this method is not directfeedthrough and delays one beat that means we don't need to take virtual
+            % resistor, the third equation is right form. 
             case 3
                 if obj.DirectFeedthrough
                     y = obj.StateSpaceEqu(obj,obj.x,u,2);                
@@ -436,7 +449,7 @@ methods(Access = protected)
                     if obj.VirtualResistor
                         y = obj.StateSpaceEqu(obj,obj.x,u,2)- obj.Gk*u + obj.Fk*(u-obj.uk); 
                     else
-                        y = obj.StateSpaceEqu(obj,obj.x,u,2) + obj.Fk*(u-obj.uk);
+                        y = obj.StateSpaceEqu(obj,obj.x,u,2);
                     end                  
                 end
         end
