@@ -16,9 +16,8 @@
 %% Class
 
 classdef ModelAdvance < SimplusGT.Class.ModelBase ...
-                     	& matlab.system.mixin.Nondirect ...
-                       	& matlab.system.mixin.Propagates
-   
+                        & matlab.system.mixin.Nondirect ...
+                        & matlab.system.mixin.Propagates  
 %%
 % =================================================
 % Properties
@@ -70,7 +69,7 @@ properties(Nontunable)
     ElecPortIOs = [1,2];
     
 end
-
+ 
 % ### Discrete state
 % CAN be modefied by methods
 % MUST be numeric or logical variables or fi objects (not string)
@@ -86,7 +85,7 @@ end
 
 % ### Protected properties
 properties(Access = protected)
-        
+      
     % Void Jacobian
     % The corresponding Jacobian is to set as null (A,C).
     % Equivalently, the marked states are updated by Euler's method.
@@ -94,7 +93,7 @@ properties(Access = protected)
     % with Yitong's code
     % This property is only effective when LinearizationTimes == 1
     VoidJacobStates = [0]; %#ok<*NBRAK>
-    
+   
     % Void feedthrough
     % void the corresponding feedthrough matrix to break algebraic loop
     % the index is counted backward, i.e. k -> end-k, for compactablity 
@@ -118,7 +117,8 @@ properties(Access = protected)
     Fk;         % Feedthrough gain by taking out the virtual resistor
     
     % Store previous input. Used for eliminate algebraic loop.
-    uk;     
+    uk;
+    ulast;
     
     % Timer
     Timer = 0;    
@@ -186,11 +186,11 @@ methods(Static)
         obj.Wk = Wk;
         obj.Qk = Qk;
         obj.Gk = Gk;
-        obj.Fk = Fk;           
+        obj.Fk = Fk;      
     end
     
     function [Ak,Bk,Ck,Dk,Wk,Qk,Gk,Fk] = CalcDynamicSS(obj,xk,uk) 
-        
+
         [Ak,Bk,Ck,Dk] = obj.Linearization(obj,xk,uk);
         
         if obj.LinearizationTimes == 1
@@ -198,7 +198,7 @@ methods(Static)
                 Ak(:,end-obj.VoidJacobStates) = zeros(length(Ak),length(obj.VoidJacobStates));   
             end
 
-            if ~isempty(obj.VoidJacobStates) % null the corresponding row of B
+            if ~isempty(obj.VoidJacobStates) % null the corresponding row of B               
                 Bk(end-obj.VoidJacobStates,:) = zeros(length(obj.VoidJacobStates),length(Bk(1,:)));   
             end
 
@@ -215,9 +215,11 @@ methods(Static)
                 Fk = Dk;                
             case 2                
                 Fk = Qk;
+            case 3
+                Fk = Dk;
             otherwise
                 error('Invalid discretization method.');
-        end
+        end 
         
         Gk = zeros(size(Fk));
                 
@@ -262,17 +264,19 @@ end
 % Notes: The following methods are used for simulink model.
 methods(Access = protected)
 
-    % Perform one-time calculations, such as computing constants
-    function setupImpl(obj)
-        
+   % Perform one-time calculations, such as computing constants
+   function setupImpl(obj)
+       
         % Initialize x_e, u_e
         obj.SetEquilibrium(obj);
         
         % Initialize uk
         if obj.EquiInitial
             obj.uk = obj.u_e;
+            obj.ulast = obj.u_e;
         else
             obj.uk = 0*obj.u_e;
+            obj.ulast = 0*obj.u_e;
         end  
         
         % Initialize A, B, C, D
@@ -291,27 +295,38 @@ methods(Access = protected)
         
         % Initialize start flag
         obj.Start = 0;       
-    end
+   end
     
-    % Initialize / reset discrete-state properties
-    function resetImpl(obj)
+   % Initialize / reset discrete-state properties
+   function resetImpl(obj)
         % Notes: x should be a column vector
         if obj.EquiInitial
             obj.x = obj.x_e;
         else
             obj.x = obj.x0;
         end        
-    end
-
+   end
+ 
   	% Update states and calculate output in the same function
     % function y = stepImpl(obj,u); end
  	% Notes: This function is replaced by two following functions:
  	% "UpdateImpl" and "outputImpl", and hence is commented out, to avoid
  	% repeated update in algebraic loops
+   
+    % function y = stepImpl(obj,u) is direct method. If the system has
+    % algebraic loops, this method is error. 
+    % matlab.system.mixin.Nondirect in classdef needs to be annotated so that it can run rightly.
+    % Trapezoidal in stepImpl is shown as followed.    
+    % function y = stepImpl(obj, u)
+    %    delta_x = obj.Wk * (obj.StateSpaceEqu(obj,obj.x,u,1)+obj.StateSpaceEqu(obj,obj.x,obj.ulast,1))/2;
+    %    obj.x = obj.x + delta_x;
+    %    y = obj.StateSpaceEqu(obj,obj.x,u,2);
+    %    obj.ulast = u; 
+    % end
     
-    % ### Update discreate states
+    %  ### Update discreate states
     function updateImpl(obj, u)
-        
+               
         switch obj.DiscreMethod
             
             % ### Case 1: Forward Euler 
@@ -372,42 +387,51 @@ methods(Access = protected)
             % is combined with case 2  
             case 2               
                 if obj.LinearizationTimes == 2    
-                    obj.SetDynamicSS(obj,obj.x,obj.u);
+                    obj.SetDynamicSS(obj,obj.x,obj.u);                
                 end
-                delta_x = obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);               
-                obj.x = obj.x + delta_x;             
+                 delta_x = obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);               
+                 obj.x = obj.x + delta_x;
+                 
+            % ### Case 3 : Delay one beat Hybrid Euler-Trapezoidal                 
+            case 3
+                if obj.Timer == 0
+                     obj.x = obj.x;
+                 else
+                     delta_x = obj.Wk * (obj.StateSpaceEqu(obj,obj.x,u,1)+obj.StateSpaceEqu(obj,obj.x,obj.ulast,1))/2;
+                     obj.x = obj.x + delta_x;
+                end
         end
         
+        obj.ulast = u;        
         obj.Timer = obj.Timer + obj.Ts;
     end
-        
+     
     % ### Calculate output y
-	function y = outputImpl(obj,u)
+ 	function y = outputImpl(obj, u) 
         
         switch obj.DiscreMethod
-            
+        
             % ### Case 1: Forward Euler
             % Notes: Can we also seperate the virtual resistor for forward
             % Euler method?
-          	case 1
+          	case 1                                  
                 if obj.DirectFeedthrough
                     y = obj.StateSpaceEqu(obj,obj.x,u,2);
                 else
                     if obj.VirtualResistor
-                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);
+                        y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);   
                     else
                         y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + obj.Fk*(u-obj.uk);
                     end
-                end
+                 end
                 
             % ### Case 2 : Hybrid Euler-Trapezoidal (Yunjie's Method)
             % ### Case 2': General virtual dissipation (Yitong's Method)
             % case 2' turns out to be equivalent to case 2 and therefore 
             % is combined with case 2
-            case 2
-                
+            case 2                
                 if obj.DirectFeedthrough
-                    y = obj.StateSpaceEqu(obj,obj.x,u,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,u,1);
+                    y = obj.StateSpaceEqu(obj,obj.x,u,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,u,1);                 
                 else
                     if obj.VirtualResistor
                         y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) - obj.Gk*obj.uk + obj.Fk*(u-obj.uk);
@@ -415,12 +439,25 @@ methods(Access = protected)
                         y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) + obj.Fk*(u-obj.uk);
                     end
                 end
+            % ### Case 3 : Delay one beat Hybrid Euler-Trapezoidal
+            % Because this method is not directfeedthrough and delays one beat that means we don't need to take virtual
+            % resistor, the third equation is right form. 
+            case 3
+                if obj.DirectFeedthrough
+                    y = obj.StateSpaceEqu(obj,obj.x,u,2);                
+                else
+                    if obj.VirtualResistor
+                        y = obj.StateSpaceEqu(obj,obj.x,u,2)- obj.Gk*u + obj.Fk*(u-obj.uk); 
+                    else
+                        y = obj.StateSpaceEqu(obj,obj.x,u,2);
+                    end                  
+                end
         end
         
         obj.uk = u;                 % store the current u=u[k+1/2]
         obj.Start = 1;        
     end
-    
+      
   	% Set direct or nondirect feedthrough status of input
     function flag = isInputDirectFeedthroughImpl(obj,u)
         flag = obj.DirectFeedthrough;
