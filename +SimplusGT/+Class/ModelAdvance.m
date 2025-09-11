@@ -1,7 +1,7 @@
 % This class defines advanced properties and methods for state space models
 % used in script and simulink.
 
-% Author(s): Yitong Li, Yunjie Gu
+% Author(s): Yitong Li, Yunjie Gu, Fengwei Han
 
 %% Notes
 %
@@ -118,7 +118,8 @@ properties(Access = protected)
     Fk;         % Feedthrough gain by taking out the virtual resistor
     
     % Store previous input. Used for eliminate algebraic loop.
-    uk;     
+    uk; 
+    ulast;
     
     % Timer
     Timer = 0;    
@@ -215,6 +216,8 @@ methods(Static)
                 Fk = Dk;                
             case 2                
                 Fk = Qk;
+            case 3
+                Fk = Dk;
             otherwise
                 error('Invalid discretization method.');
         end
@@ -271,8 +274,10 @@ methods(Access = protected)
         % Initialize uk
         if obj.EquiInitial
             obj.uk = obj.u_e;
+            obj.ulast = obj.u_e;
         else
             obj.uk = 0*obj.u_e;
+            obj.ulast = 0*obj.u_e;            
         end  
         
         % Initialize A, B, C, D
@@ -308,6 +313,17 @@ methods(Access = protected)
  	% Notes: This function is replaced by two following functions:
  	% "UpdateImpl" and "outputImpl", and hence is commented out, to avoid
  	% repeated update in algebraic loops
+    
+    % function y = stepImpl(obj,u) is direct method. If the system has
+    % algebraic loops, this method is error. 
+    % matlab.system.mixin.Nondirect in classdef needs to be annotated so that it can run rightly.
+    % Trapezoidal in stepImpl is shown as followed.    
+    % function y = stepImpl(obj, u)
+    %    delta_x = obj.Wk * (obj.StateSpaceEqu(obj,obj.x,u,1)+obj.StateSpaceEqu(obj,obj.x,obj.ulast,1))/2;
+    %    obj.x = obj.x + delta_x;
+    %    y = obj.StateSpaceEqu(obj,obj.x,u,2);
+    %    obj.ulast = u; 
+    % end
     
     % ### Update discreate states
     function updateImpl(obj, u)
@@ -375,9 +391,19 @@ methods(Access = protected)
                     obj.SetDynamicSS(obj,obj.x,obj.u);
                 end
                 delta_x = obj.Wk * obj.StateSpaceEqu(obj,obj.x,u,1);               
-                obj.x = obj.x + delta_x;             
+                obj.x = obj.x + delta_x;                    
+        
+            % ### Case 3 : One-beat Delay Trapezoidal                 
+            case 3
+                if obj.Timer == 0
+                     obj.x = obj.x;
+                 else
+                     delta_x = obj.Wk * (obj.StateSpaceEqu(obj,obj.x,u,1)+obj.StateSpaceEqu(obj,obj.x,obj.ulast,1))/2;
+                     obj.x = obj.x + delta_x;
+                end
         end
         
+        obj.ulast = u;  
         obj.Timer = obj.Timer + obj.Ts;
     end
         
@@ -415,6 +441,19 @@ methods(Access = protected)
                         y = obj.StateSpaceEqu(obj,obj.x,obj.uk,2) + 1/2*obj.Ck*obj.Wk*obj.StateSpaceEqu(obj,obj.x,obj.uk,1) + obj.Fk*(u-obj.uk);
                     end
                 end
+            % ### Case 3 : One-beat Delay Trapezoidal
+            % Because this method is not directfeedthrough and one-beat delay that means we don't need to take virtual
+            % resistor, the third equation is right form. 
+            case 3
+                if obj.DirectFeedthrough
+                    y = obj.StateSpaceEqu(obj,obj.x,u,2);                
+                else
+                    if obj.VirtualResistor
+                        y = obj.StateSpaceEqu(obj,obj.x,u,2)- obj.Gk*u + obj.Fk*(u-obj.uk); 
+                    else
+                        y = obj.StateSpaceEqu(obj,obj.x,u,2);
+                    end                  
+                end                
         end
         
         obj.uk = u;                 % store the current u=u[k+1/2]
