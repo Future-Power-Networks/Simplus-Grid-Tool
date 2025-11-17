@@ -42,9 +42,15 @@ for i = 1:N_Apparatus
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
                 add_block([Name_LibFile '/Battery (dq-Frame System Object)'],FullName_Apparatus{i});
             case 004
-                Name_Apparatus{i} = ['PV' num2str(Bus)];
-                FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
-                add_block([Name_LibFile '/Photovoltaic (dq-Frame System Object)'],FullName_Apparatus{i});
+                if ApparatusType{i}==40
+                    Name_Apparatus{i} = ['PV_GFM' num2str(Bus)];
+                    FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                    add_block([Name_LibFile '/Photovoltaic-GFM (dq-Frame System Object)'],FullName_Apparatus{i});
+                elseif ApparatusType{i}==41
+                    Name_Apparatus{i} = ['PV_GFL' num2str(Bus)];
+                    FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                    add_block([Name_LibFile '/Photovoltaic-GFL (dq-Frame System Object)'],FullName_Apparatus{i});
+                end
             case 009
             	Name_Apparatus{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];

@@ -201,6 +201,27 @@ Para0040.v_pv_ref =0.8;   % pv output voltage(MPPT)
 Para0040.v_dc_ref =1;   % dc voltage 
 Para0040.fvdc     =100; % (Hz) vdc bandwidth
 Para0040.fidc     =500; % (Hz) ibat bandwidth
+
+% ======================================
+% Photovoltaic (PLL)
+% ======================================
+Para0041.wLf      =0.05;
+Para0041.Rf       =0.05/5;
+Para0041.wCf      =0.02;
+Para0041.wLc      =0.01;
+Para0041.Rc       =0.01/5;
+Para0041.Xov      =0.01;
+Para0041.fvdc     =250;       % (Hz) vdc bandwidth
+Para0041.fpll     =15;    % (Hz) pll bandwidth
+Para0041.fidq     =600;  % (Hz) current control bandwidth
+Para0041.C_dc     =1;
+Para0041.w0       =W0;
+Para0041.Sair     =1000;  % (𝑊/𝑚2) PV illumination intensity
+Para0041.Tair     =25;    % (°C) PV temperature
+Para0041.v_pv_ref =0.8;   % pv output voltage(MPPT) 
+Para0041.v_dc_ref =1;   % dc voltage 
+Para0041.fvpv     =100; % (Hz) vpv bandwidth
+Para0041.fidc     =500; % (Hz) ibat bandwidth
  
 
 % ======================================
@@ -275,8 +296,11 @@ for i = 1:N_App
         case 3
             ParaCell{i} = Para0030;     % Battery Energy Storage System
         case 4
-            ParaCell{i} = Para0040;     % Photovoltaic
-            % PV
+            if     AppType  ==40
+                ParaCell{i} = Para0040;     % Photovoltaic (VFM-FFL)
+            elseif AppType  ==41
+                ParaCell{i} = Para0041;     % Photovoltaic (PLL)
+            end
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
         case 10
@@ -372,26 +396,49 @@ for i = 1:length(row)
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
     elseif floor(AppType/10) == 4                % PV
-        switch SwitchFlag
-            case 1;  ParaCell{row(i)}.wLf      = UserValue;
-            case 2;  ParaCell{row(i)}.Rf       = UserValue;
-            case 3;  ParaCell{row(i)}.wCf      = UserValue;
-            case 4;  ParaCell{row(i)}.wLc  	   = UserValue;
-            case 5;  ParaCell{row(i)}.Rc  	   = UserValue;
-            case 6;  ParaCell{row(i)}.Xov 	   = UserValue;
-            case 7;  ParaCell{row(i)}.N        = UserValue;
-            case 8;  ParaCell{row(i)}.R        = UserValue;
-            case 9;  ParaCell{row(i)}.fvdq     = UserValue;
-            case 10; ParaCell{row(i)}.fidq     = UserValue; 
-            case 11; ParaCell{row(i)}.Sair     = UserValue;
-            case 12; ParaCell{row(i)}.Tair     = UserValue;   
-            case 13; ParaCell{row(i)}.C_dc     = UserValue;
-            case 14; ParaCell{row(i)}.v_pv_ref = UserValue;    
-            case 15; ParaCell{row(i)}.v_dc_ref = UserValue;    
-            case 16; ParaCell{row(i)}.fvdc     = UserValue; 
-            case 17; ParaCell{row(i)}.fidc     = UserValue;  
-            otherwise
-                error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+        if AppType ==40
+            switch SwitchFlag
+                case 1;  ParaCell{row(i)}.wLf      = UserValue;
+                case 2;  ParaCell{row(i)}.Rf       = UserValue;
+                case 3;  ParaCell{row(i)}.wCf      = UserValue;
+                case 4;  ParaCell{row(i)}.wLc  	   = UserValue;
+                case 5;  ParaCell{row(i)}.Rc  	   = UserValue;
+                case 6;  ParaCell{row(i)}.Xov 	   = UserValue;
+                case 7;  ParaCell{row(i)}.N        = UserValue;
+                case 8;  ParaCell{row(i)}.R        = UserValue;
+                case 9;  ParaCell{row(i)}.fvdq     = UserValue;
+                case 10; ParaCell{row(i)}.fidq     = UserValue; 
+                case 11; ParaCell{row(i)}.Sair     = UserValue;
+                case 12; ParaCell{row(i)}.Tair     = UserValue;   
+                case 13; ParaCell{row(i)}.C_dc     = UserValue;
+                case 14; ParaCell{row(i)}.v_pv_ref = UserValue;    
+                case 15; ParaCell{row(i)}.v_dc_ref = UserValue;    
+                case 16; ParaCell{row(i)}.fvdc     = UserValue; 
+                case 17; ParaCell{row(i)}.fidc     = UserValue;  
+                otherwise
+                    error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+            end
+        elseif AppType ==41
+            switch SwitchFlag
+                case 1;  ParaCell{row(i)}.wLf      = UserValue;
+                case 2;  ParaCell{row(i)}.Rf       = UserValue;
+                case 3;  ParaCell{row(i)}.wCf      = UserValue;
+                case 4;  ParaCell{row(i)}.wLc  	   = UserValue;
+                case 5;  ParaCell{row(i)}.Rc  	   = UserValue;
+                case 6;  ParaCell{row(i)}.Xov 	   = UserValue;
+                case 7;  ParaCell{row(i)}.fvdc     = UserValue;
+                case 8;  ParaCell{row(i)}.fpll     = UserValue;
+                case 9;  ParaCell{row(i)}.fidq     = UserValue;
+                case 10; ParaCell{row(i)}.C_dc     = UserValue; 
+                case 11; ParaCell{row(i)}.Sair     = UserValue;
+                case 12; ParaCell{row(i)}.Tair     = UserValue;   
+                case 13; ParaCell{row(i)}.v_pv_ref = UserValue;    
+                case 14; ParaCell{row(i)}.v_dc_ref = UserValue;    
+                case 15; ParaCell{row(i)}.fvpv     = UserValue; 
+                case 16; ParaCell{row(i)}.fidc     = UserValue;    
+                otherwise
+                    error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+            end
         end
     elseif floor(AppType/10) == 101 % Grid-feeding buck
         switch SwitchFlag
