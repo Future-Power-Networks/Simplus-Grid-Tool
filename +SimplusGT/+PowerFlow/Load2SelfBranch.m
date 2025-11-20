@@ -19,7 +19,7 @@ UpdateListBus = ListBus;
 
 % Set PL and QL to zero
 UpdateListBus(:,7) = zeros(size(ListBus(:,7)));
-UpdateListBus(:,7) = zeros(size(ListBus(:,7)));
+UpdateListBus(:,8) = zeros(size(ListBus(:,8)));
 
 %% Update "PowerFlow"
 UpdatePowerFlow = PowerFlow;
