@@ -1,4 +1,4 @@
- % This class defines the model of a photovoltaic system.
+ % This class defines the model of a photovoltaic system with GFM(Matching control) control.
 
 % Author(s): Wenjie Ning
 %
@@ -14,7 +14,7 @@
 
 %% Class
 
-classdef Photovoltaic < SimplusGT.Class.ModelAdvance
+classdef PhotovoltaicGFM < SimplusGT.Class.ModelAdvance
     
     % For temporary use
     properties(Access = protected)
@@ -26,7 +26,7 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
     
     methods
         % constructor
-        function obj = Photovoltaic(varargin)
+        function obj = PhotovoltaicGFM(varargin)
             % Support name-value pair arguments when constructing object
             setProperties(obj,nargin,varargin{:});
         end

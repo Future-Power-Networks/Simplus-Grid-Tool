@@ -101,9 +101,10 @@ switch floor(Type/10)
                         Para.v_dc_ref
                         Para.fvdc;
                         Para.fibat];
+    % ### Photovoltaic inverter
     case 4 % Type 40-49
         if Type ==40
-            Apparatus = SimplusGT.Class.Photovoltaic('ApparatusType',Type);
+            Apparatus = SimplusGT.Class.PhotovoltaicGFM('ApparatusType',Type);
             Apparatus.Para = [ Para.wLf;
                             Para.Rf;
                             Para.wCf;
