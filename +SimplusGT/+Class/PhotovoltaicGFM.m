@@ -1,4 +1,4 @@
- % This class defines the model of a photovoltaic system.
+ % This class defines the model of a photovoltaic system with GFM(Matching control) control.
 
 % Author(s): Wenjie Ning
 %
@@ -14,7 +14,7 @@
 
 %% Class
 
-classdef Photovoltaic < SimplusGT.Class.ModelAdvance
+classdef PhotovoltaicGFM < SimplusGT.Class.ModelAdvance
     
     % For temporary use
     properties(Access = protected)
@@ -26,7 +26,7 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
     
     methods
         % constructor
-        function obj = Photovoltaic(varargin)
+        function obj = PhotovoltaicGFM(varargin)
             % Support name-value pair arguments when constructing object
             setProperties(obj,nargin,varargin{:});
         end
@@ -57,28 +57,8 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
             Xov      = obj.Para(6);
             Rov      = 0;
             W0       = obj.Para(11);
-            S_air    = obj.Para(12);
-            T_air    = obj.Para(13);
             v_pv_ref = obj.Para(15);
             v_dc_ref = obj.Para(16);
-
-            % Solar para
-            T_ref = 25;
-            S_ref = 1000;
-            I_sc  = 14.880;
-            I_m   = 13.88;
-            U_m   = 576;
-            U_oc  = 708;
-            a     = 0.0025;
-            b     = 0.00288;
-            Rs    = 0.5;
-            k     = 0.03;
-            C2    = (U_m/U_oc - 1)/(log(1 - I_m/I_sc));
-            C1    = (1 - I_m/I_sc)*exp(-U_m/(C2*U_oc));
-            T     = T_air + k*S_air;
-            dT    = T - T_ref;
-            dI    = a * S_air/S_ref * dT + I_sc*(1 - S_ref/S_air);
-            dU    = -b * dT - Rs * dI;
 
             % Calculate parameters
             Lf_ac    = xwLf/W0;
@@ -113,7 +93,8 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
             % dc
             v_o   = v_dc_ref;
             v_pv  = v_pv_ref;
-            i_pv  = (( I_sc * (1 - C1 * (exp((v_pv*800 + dU)/C2/U_oc) - 1))) + dI)/40;
+            i_pv     = -P/v_pv;
+
             i_l   = i_pv;
             v_i   = i_l; 
             ed_dc = v_pv - i_l*Rf_dc;
@@ -144,7 +125,7 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
             % Get input
             vgd   = u(1);
             vgq   = u(2);
-
+            P     = u(3);
             % Get state
             v_i    = x(1);
             i_i    = x(2);
@@ -183,7 +164,7 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
             v_dc_ref = obj.Para(16);
             xfvdc    = obj.Para(17);
             xfidc    = obj.Para(18);
-
+ 
             % Solar para
             T_ref = 25;
             S_ref = 1000;
@@ -202,6 +183,8 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
             dI    = a * S_air/S_ref * dT + I_sc*(1 - S_ref/S_air);
             dU    = -b * dT - Rs * dI;
 
+            i_pv_ref = -P/v_pv_ref;
+            A_mpp    = i_pv_ref/(( I_sc * (1 - C1 * (exp((v_pv_ref*800 + dU)/C2/U_oc) - 1))) + dI);
             % Update paramters
             Lf_ac = xwLf/W0;
             Cf_ac = xwCf/W0;
@@ -233,7 +216,7 @@ classdef Photovoltaic < SimplusGT.Class.ModelAdvance
             % y     = g(x,u)
             if CallFlag == 1    
             % ### Call state equation: dx/dt = f(x,u)
-                i_pv       = (( I_sc * (1 - C1 * (exp((v_pv*800 + dU)/C2/U_oc) - 1))) + dI)/40;
+                i_pv       = (( I_sc * (1 - C1 * (exp((v_pv*800 + dU)/C2/U_oc) - 1))) + dI)*A_mpp;
                 error_v_pv = v_pv_ref - v_pv;
                 i_r        = kp_v_dc*error_v_pv + v_i;
                 dv_i       = ki_v_dc *error_v_pv;
