@@ -51,6 +51,16 @@ for i = 1:N_Apparatus
                     FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
                     add_block([Name_LibFile '/Photovoltaic-GFL (dq-Frame System Object)'],FullName_Apparatus{i});
                 end
+            case 005
+                if ApparatusType{i} == 50
+                    Name_Apparatus{i} = ['Wind-GFM' num2str(Bus)];
+                    FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                    add_block([Name_LibFile '/Grid-Forming Wind Turbine Generator System (dq-Frame System Object)'],FullName_Apparatus{i});
+                elseif ApparatusType{i} == 51
+                    Name_Apparatus{i} = ['Wind-GFL' num2str(Bus)];
+                    FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                    add_block([Name_LibFile '/Grid-Following Wind Turbine Generator System (dq-Frame System Object)'],FullName_Apparatus{i});
+                end
             case 009
             	Name_Apparatus{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
