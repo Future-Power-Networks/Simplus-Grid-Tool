@@ -222,7 +222,45 @@ Para0041.v_pv_ref =0.8;   % pv output voltage(MPPT)
 Para0041.v_dc_ref =1;   % dc voltage 
 Para0041.fvpv     =100; % (Hz) vpv bandwidth
 Para0041.fidc     =500; % (Hz) ibat bandwidth
- 
+
+% ======================================
+% Wind turbine generator system (Droop-controlled)
+% ======================================
+Para0050.wLf       = 0.05;
+Para0050.Rf        = 0.01;
+Para0050.wCf       = 0.02;
+Para0050.wLc       = 0.01;
+Para0050.Rc        = 0.002;
+Para0050.Xov       = 0;
+Para0050.Dw        = 0.05;
+Para0050.f_droop   = 5;     % (Hz) bandwidth, droop
+Para0050.f_v_dq    = 300;   % (Hz) bandwidth, vdq
+Para0050.f_i_dq    = 600;   % (Hz) bandwidth, idq
+Para0050.w0        = W0;
+Para0050.v_dc_r    = 2.5;   % dc voltage reference
+Para0050.C_dc      = 0.01;  % dc capacitor
+Para0050.v_wpu     = 1;     % wind speed
+Para0050.n_r       = 20;    % (rpm) wind turbine speed reference
+Para0050.f_v_dc    = 20;    % (Hz) bandwidth, vdc
+Para0050.f_i_sdq   = 500;   % (Hz) bandwidth, PMSG stator current
+Para0050.f_w_m     = 2;     % (Hz) bandwidth, wind turbine speed 
+
+% ======================================
+% Wind turbine generator system (PLL-controlled)
+% ======================================
+Para0051.v_dc_r    = 2.5;
+Para0051.C_dc      = 0.01;
+Para0051.wLf       = 0.05;
+Para0051.Rf        = 0;
+Para0051.f_v_dc    = 10;    % (Hz) bandwidth, vdc
+Para0051.f_pll     = 10;    % (Hz) bandwidth, PLL
+Para0051.f_tau_pll = 300;   % (Hz) bandwidth, PLL low pass filter
+Para0051.f_i_dq    = 250;   % (Hz) bandwidth, idq
+Para0051.w0        = W0;
+Para0051.v_wpu     = 0.85;  % wind speed
+Para0051.n_r       = 20;    % (rpm) wind turbine speed reference
+Para0051.f_i_sdq   = 500;   % (Hz) bandwidth, PMSG stator current
+Para0051.f_w_m     = 5;     % (Hz) bandwidth, wind turbine speed 
 
 % ======================================
 % Ac infinite bus (short-circuit in small-signal)
@@ -300,6 +338,12 @@ for i = 1:N_App
                 ParaCell{i} = Para0040;     % Photovoltaic (VFM-FFL)
             elseif AppType  ==41
                 ParaCell{i} = Para0041;     % Photovoltaic (PLL)
+            end
+        case 5
+            if AppType == 50
+                ParaCell{i} = Para0050; % Wind turbine (Droop)
+            elseif AppType == 51
+                ParaCell{i} = Para0051; % Wind turbine (PLL)
             end
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
@@ -436,6 +480,47 @@ for i = 1:length(row)
                 case 14; ParaCell{row(i)}.v_dc_ref = UserValue;    
                 case 15; ParaCell{row(i)}.fvpv     = UserValue; 
                 case 16; ParaCell{row(i)}.fidc     = UserValue;    
+                otherwise
+                    error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+            end
+        end
+    elseif floor(AppType/10) == 5                % Wind turbine
+        if AppType == 50
+            switch SwitchFlag
+                case 1;  ParaCell{row(i)}.wLf     = UserValue;
+                case 2;  ParaCell{row(i)}.Rf      = UserValue;
+                case 3;  ParaCell{row(i)}.wCf     = UserValue;
+                case 4;  ParaCell{row(i)}.wLc  	  = UserValue;
+                case 5;  ParaCell{row(i)}.Rc      = UserValue;
+                case 6;  ParaCell{row(i)}.Xov     = UserValue;
+                case 7;  ParaCell{row(i)}.Dw      = UserValue;
+                case 8;  ParaCell{row(i)}.f_droop = UserValue;
+                case 9;  ParaCell{row(i)}.f_v_dq  = UserValue;
+                case 10; ParaCell{row(i)}.f_i_dq  = UserValue;
+                case 11; ParaCell{row(i)}.v_dc_r  = UserValue;
+                case 12; ParaCell{row(i)}.C_dc    = UserValue;
+                case 13; ParaCell{row(i)}.v_wpu   = UserValue;
+                case 14; ParaCell{row(i)}.n_r     = UserValue;
+                case 15; ParaCell{row(i)}.f_v_dc  = UserValue;
+                case 16; ParaCell{row(i)}.f_i_sdq = UserValue;
+                case 17; ParaCell{row(i)}.f_w_m   = UserValue;
+                otherwise
+                    error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
+            end
+        elseif AppType == 51
+            switch SwitchFlag
+                case 1;  ParaCell{row(i)}.v_dc_r    = UserValue;
+                case 2;  ParaCell{row(i)}.C_dc      = UserValue;
+                case 3;  ParaCell{row(i)}.wLf       = UserValue;
+                case 4;  ParaCell{row(i)}.Rf  	    = UserValue;
+                case 5;  ParaCell{row(i)}.f_v_dc    = UserValue;
+                case 6;  ParaCell{row(i)}.f_pll     = UserValue;
+                case 7;  ParaCell{row(i)}.f_tau_pll = UserValue;
+                case 8;  ParaCell{row(i)}.f_i_dq    = UserValue;
+                case 9;  ParaCell{row(i)}.v_wpu     = UserValue;
+                case 10; ParaCell{row(i)}.n_r       = UserValue;
+                case 11; ParaCell{row(i)}.f_i_sdq   = UserValue;
+                case 12; ParaCell{row(i)}.f_w_m     = UserValue;
                 otherwise
                     error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
             end
