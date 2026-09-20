@@ -16,6 +16,7 @@ Para = evalin('base', 'Para');
 ApparatusPowerFlow = evalin('base', 'ApparatusPowerFlow');
 Ts = evalin('base', 'Ts');
 ListBus = evalin('base', 'ListBus');
+Advance = evalin('base', 'Advance');
 
 GmObj=evalin('base', 'ObjGm');
 YbusObj=evalin('base', 'ObjYbusDss');
@@ -76,7 +77,7 @@ for modei=1:ModeSelNum
         MdLayer3(modei).mode = [num2str(FreqSel),'~Hz'];
         Mode_Hz = MdMode(ModeSelAll(modei));
         MdLayer3(modei).result = SimplusGT.Modal.MdLayer3(Residue,ZmVal,Mode_Hz,ApparatusType,...
-                ApparatusSelL3All,Para,ApparatusPowerFlow,Ts,ApparatusBus,ListBus);
+                ApparatusSelL3All,Para,ApparatusPowerFlow,Ts,ApparatusBus,ListBus,Advance);
     else % Layer3 not Enabled.
         MdLayer3 = 0;
     end

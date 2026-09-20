@@ -10,13 +10,14 @@ ListBus=evalin('base', 'ListBus');
 ApparatusPowerFlow= evalin('base', 'ApparatusPowerFlow');
 ApparatusType=evalin('base', 'ApparatusType');
 ApparatusBus=evalin('base', 'ApparatusBus');
+Advance = evalin('base', 'Advance');
 
 %if length(ApparatusSelL3All)==0
 %    error('you need to choose an Apparatus in Sheet-2 colum L in Modalconfig excel file')
     
 for AppCount = 1:length(ApparatusSelL3All)
     AppSel = ApparatusSelL3All(AppCount);
-    1i;
+
     YmValOrig.dd=evalfr(GmDSS_Cell{AppSel}(1,1),Mode_rad);
     YmValOrig.dq=evalfr(GmDSS_Cell{AppSel}(1,2),Mode_rad);
     YmValOrig.qd=evalfr(GmDSS_Cell{AppSel}(2,1),Mode_rad);
@@ -34,8 +35,8 @@ for AppCount = 1:length(ApparatusSelL3All)
    
         [~,GmDSS_Cell_New,~,~,~,~,~,~,~] ...    % get the new parameter
         = SimplusGT.Toolbox.ApparatusModelCreate(ApparatusBus{AppSel},ApparatusType{AppSel},...
-                            ApparatusPowerFlow{AppSel},ParaNew,Ts,ListBus);                        
-        1i;
+                            ApparatusPowerFlow{AppSel},ParaNew,Ts,ListBus,Advance);
+
         YmValNew.dd=evalfr(GmDSS_Cell_New(1,1),Mode_rad);
         YmValNew.dq=evalfr(GmDSS_Cell_New(1,2),Mode_rad);
         YmValNew.qd=evalfr(GmDSS_Cell_New(2,1),Mode_rad);
