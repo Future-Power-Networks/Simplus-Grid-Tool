@@ -3,17 +3,31 @@ function [GmObj, StateStr, InputStr, OutputStr] = ImpedanceDataModel(ApparatusBu
 % The impedance matrix is inverted at each frequency, then all four
 % admittance channels are identified together so that they share one pole set.
 %
-% Type 4000 columns:
+% Types 4000 and 4001 represent black-box GFL and GFM devices, respectively.
+% Para.ImpedanceDataType selects the input data domain independently.
+%
+% ImpedanceDataType 1 (dq) columns:
 %   Frequency, Zdd_mag, Zdd_phase, Zdq_mag, Zdq_phase,
 %   Zqd_mag, Zqd_phase, Zqq_mag, Zqq_phase
-% Type 4001 uses the same layout for Zpp, Zpn, Znp, and Znn and is
+% ImpedanceDataType 2 uses the same layout for Zpp, Zpn, Znp, and Znn and is
 % converted from the sequence domain to the dq domain before identification.
 %
-% Required parameter:
+% Required parameters:
 %   Para.ImpedanceDataFile - Path to the impedance-data workbook.
+%   Para.ImpedanceDataType - 1: dq domain; 2: sequence domain.
 % Optional parameters:
 %   Para.FitInitialOrder   - Initial order for directed search.
 %   Para.FitOrderRange     - Candidate orders when no initial order is given.
+
+    if ~isfield(Para,'ImpedanceDataType') || isempty(Para.ImpedanceDataType)
+        error('SimplusGT:MissingImpedanceDataType', ...
+            ['Para.ImpedanceDataType is required (1: dq, 2: sequence). ' ...
+             'Types 4000 and 4001 now identify GFL and GFM devices, ' ...
+             'not the impedance-data domain. Update the configuration.']);
+    end
+    validateattributes(Para.ImpedanceDataType,{'numeric'}, ...
+        {'real','scalar','finite','integer','>=',1,'<=',2}, ...
+        mfilename,'Para.ImpedanceDataType');
 
     %% Load impedance data
     if ~isfield(Para, 'ImpedanceData') || isempty(Para.ImpedanceData)
@@ -42,11 +56,11 @@ function [GmObj, StateStr, InputStr, OutputStr] = ImpedanceDataModel(ApparatusBu
         end
     end
 
-    % Convert Type 4001 sequence-domain data to the dq domain.
-    if Type == 4001
-        fprintf('  Type 4001 sequence impedance: converting pn to dq...\n');
+    % Convert sequence-domain data for either device type to the dq domain.
+    if Para.ImpedanceDataType == 2
+        fprintf('  Sequence impedance: converting pn to dq...\n');
 
-        % The column positions match Type 4000, but their meanings differ.
+        % The column positions match dq data, but their meanings differ.
         f_vec       = Para.ImpedanceData.Frequency_Hz;
         Zpp_mag     = Para.ImpedanceData.Zdd_mag;
         Zpp_phase   = Para.ImpedanceData.Zdd_phase_deg;
@@ -127,7 +141,7 @@ function [GmObj, StateStr, InputStr, OutputStr] = ImpedanceDataModel(ApparatusBu
     max_safe_order = floor(N_f / 2);
 
     SEARCH_STEP       = 2;
-    PLATEAU_THRESHOLD = 95;
+    PLATEAU_THRESHOLD = 99.5;
 
     % Use a directed search when an initial order is available.
     if isfield(Para, 'FitInitialOrder') && ~isempty(Para.FitInitialOrder) ...

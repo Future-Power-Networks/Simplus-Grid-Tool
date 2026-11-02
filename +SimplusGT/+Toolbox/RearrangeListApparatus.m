@@ -66,7 +66,8 @@ parameterHeader = 0;
 for k1 = 1:length(ListAppCharParams)
     value = ListAppCharParams{k1};
     if ischar(value) && (strcmpi(strtrim(value),'parameters') || ...
-            strcmpi(strtrim(value),'Apparatus parameters'))
+            strcmpi(strtrim(value),'Apparatus parameters') || ...
+            strcmpi(strtrim(value),'ImpedanceDataFile'))
         parameterHeader = k1;
         break;
     end
@@ -443,6 +444,7 @@ for i = 1:N_App
         else
             paraStruct.ImpedanceDataFile = '';
         end
+        paraStruct.ImpedanceDataType = [];
         paraStruct.FitInitialOrder = [];
         paraStruct.FitOrderRange = [];
         paraStruct.Fbase = W0/(2*pi);
@@ -525,6 +527,8 @@ for i = 1:length(row)
     if ismember(AppType,[4000,4001])
         switch SwitchFlag
             case 2
+                ParaCell{row(i)}.ImpedanceDataType = UserValue;
+            case 3
                 ParaCell{row(i)}.FitInitialOrder = UserValue;
             otherwise
                 error(['Error: impedance-data parameter overflow, bus ' ...
@@ -1022,6 +1026,22 @@ for i = 1:length(row)
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
+    end
+end
+
+% Require an explicit data domain because 4000/4001 identify GFL/GFM devices.
+for i = 1:N_App
+    if ismember(AppTypeCell{i},[4000,4001])
+        if isempty(ParaCell{i}.ImpedanceDataType)
+            error('SimplusGT:MissingImpedanceDataType', ...
+                ['Specify ImpedanceDataType in column D for bus %d ' ...
+                 '(1: dq, 2: sequence). Column E is FitInitialOrder. ' ...
+                 'Types 4000 and 4001 now identify GFL and GFM devices.'], ...
+                AppBusCell{i});
+        end
+        validateattributes(ParaCell{i}.ImpedanceDataType,{'numeric'}, ...
+            {'real','scalar','finite','integer','>=',1,'<=',2}, ...
+            mfilename,'ImpedanceDataType');
     end
 end
 

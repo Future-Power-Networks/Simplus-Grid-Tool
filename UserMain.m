@@ -10,7 +10,6 @@ clear all; clc; close all;
 
 %% User data
 UserDataName = 'UserData';      % Default 4-bus system
-
 % Example power systems in "Examples" folder:
 %
 % Ac power system examples:
@@ -44,7 +43,9 @@ UserDataName = 'UserData';      % Default 4-bus system
 % UserDataName = 'HVDC_Infbus_4Bus';        % HVDC system connected to inf buses
 % UserDataName = 'HVDC_SG_4Bus';            % HVDC system connected to equivalent SG buses
 % UserDataName = 'MTDC_Infbus_4Bus';        % MTDC system connected to inf buses
-
+%
+% Power system examples with impedance-data models:
+% UserDataName = 'GfmInfiniteBus_ImpedanceData';  % Single grid-forming inverter modeled from impedance data and connected to an infinite bus
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));
 

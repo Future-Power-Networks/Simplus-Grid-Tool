@@ -1,0 +1,137 @@
+
+{
+
+  "Basic":
+{
+
+    "Fs": 50000,
+    "Fbase": 50,
+    "Sbase": 1,
+    "Vbase": 1
+
+}
+,
+  "Advance":
+{
+
+    "DiscretizationMethod": 2,
+    "LinearizationTimes": 1,
+    "DiscretizationDampingFlag": 1,
+    "DirectFeedthrough": 0,
+    "PowerFlowAlgorithm": 1,
+    "EnableCreateSimulinkModel": 0,
+    "EnablePlotPole": 1,
+    "EnablePlotAdmittance": 1,
+    "EnablePrintOutput": 1
+
+}
+,
+  "Bus":
+[
+
+
+{
+
+      "BusNo": 1,
+      "BusType": 1,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -1,
+      "Qmax": 1,
+      "AreaNo": 1,
+      "AcDc": 1
+
+}
+,
+
+{
+
+      "BusNo": 2,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0,
+      "QGi": 0.0001,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -1,
+      "Qmax": 1,
+      "AreaNo": 1,
+      "AcDc": 1
+
+}
+
+
+]
+,
+  "NetworkLine":
+{
+
+    "FromBus": 1,
+    "ToBus": 2,
+    "R": 0.02,
+    "wL": 0.1,
+    "wC": 0,
+    "G": 0,
+    "TurnsRatio": 1
+
+}
+,
+  "NetworkLineIEEE":
+[
+
+]
+,
+  "Apparatus":
+[
+
+
+{
+
+      "BusNo": 1,
+      "Type": 90,
+      "Para":
+[
+
+]
+
+
+}
+,
+
+{
+
+      "BusNo": 2,
+      "Type": 4001,
+      "Para":
+{
+
+        "ImpedanceDataFile": "ImpedanceData/GFM_SeqImpedance_Bus2.xlsx",
+        "ImpedanceDataType": 2,
+        "FitInitialOrder": 6,
+        "FitOrderRange":
+[
+
+]
+,
+        "Fbase": 50,
+        "ImpedanceData":
+[
+
+]
+
+
+}
+
+
+}
+
+
+]
+
+
+}
