@@ -1,0 +1,141 @@
+
+{
+
+  "Basic":
+{
+
+    "Fs": 12500,
+    "Fbase": 50,
+    "Sbase": 1,
+    "Vbase": 1
+
+}
+,
+  "Advance":
+{
+
+    "DiscretizationMethod": 2,
+    "LinearizationTimes": 1,
+    "DiscretizationDampingFlag": 1,
+    "DirectFeedthrough": 0,
+    "PowerFlowAlgorithm": 1,
+    "EnableCreateSimulinkModel": 1,
+    "EnablePlotPole": 1,
+    "EnablePlotAdmittance": 1,
+    "EnablePrintOutput": 1
+
+}
+,
+  "Bus":
+[
+
+
+{
+
+      "BusNo": 1,
+      "BusType": 1,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 0,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 1,
+      "AcDc": 1
+
+}
+,
+
+{
+
+      "BusNo": 2,
+      "BusType": 3,
+      "Voltage": 1,
+      "Theta": 0,
+      "PGi": 1,
+      "QGi": 0,
+      "PLi": 0,
+      "QLi": 0,
+      "Qmin": -999,
+      "Qmax": 999,
+      "AreaNo": 1,
+      "AcDc": 1
+
+}
+
+
+]
+,
+  "NetworkLine":
+{
+
+    "FromBus": 1,
+    "ToBus": 2,
+    "R": 0.010011908437348388,
+    "wL": 0.099941825078286944,
+    "wC": 0,
+    "G": 0,
+    "TurnsRatio": 1
+
+}
+,
+  "NetworkLineIEEE":
+[
+
+]
+,
+  "Apparatus":
+[
+
+
+{
+
+      "BusNo": 1,
+      "Type": 90,
+      "Para":
+[
+
+]
+
+
+}
+,
+
+{
+
+      "BusNo": 2,
+      "Type": 80,
+      "Para":
+{
+
+        "wLf": 0.01732,
+        "Rf": 0.002205,
+        "wCf": 0.02494,
+        "Rd": 0.04411,
+        "wLc": 0.001663,
+        "Rc": 0,
+        "m": 0.0267,
+        "f_power": 25,
+        "kp": 3.3535E-5,
+        "kpq": 0.1491,
+        "kiq": 9.5051,
+        "f_amp": 15,
+        "kpi": 0.06616,
+        "kii": 1.588,
+        "miu": 0.8,
+        "Rv": 0.004411,
+        "Xv": 0.277,
+        "w0": 314.15926535897933
+
+}
+
+
+}
+
+
+]
+
+
+}

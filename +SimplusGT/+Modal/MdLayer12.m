@@ -6,7 +6,9 @@
 function [Layer1, Layer2] = MdLayer12(Residue,ZmVal,N_Apparatus,ApparatusBus, ApparatusType,ApparatusSel)
 
 for k = 1:N_Apparatus
-    if (ApparatusType{k} <= 89) || (ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089) || (ApparatusType{k} >= 2000 && ApparatusType{k} <= 2089)  % only consider apparatus
+    if SimplusGT.IsAcApparatusType(ApparatusType{k}) || ...
+            (ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089) || ...
+            (ApparatusType{k} >= 2000 && ApparatusType{k} <= 2089) % only consider apparatus
         % k
         % Residue{k}
         % ZmVal{k}

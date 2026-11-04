@@ -15,16 +15,14 @@ function Excel2Json(FileName)
 
     fprintf('Convert "excel" to "json". \n')
 
-    % Obtain Root Path of Simplus-Grid-Tool folder
-    RootPath = fileparts(fileparts(fileparts(mfilename('fullpath'))));
-    % Obtain File Path of power system file
-    FilePath = fileparts(which(FileName));
-    % Obtain Folder Path in Cell Format
-    FolderPath = erase(FilePath,RootPath);
-    FolderParts = split(FolderPath, filesep);
-    FolderParts = FolderParts(~cellfun('isempty', FolderParts));
-    % Create fullfile path on any platform
-    ExcelFile = fullfile(FolderParts{:}, FileName);
+    % Accept either a file on the MATLAB path or an explicit path.
+    ExcelFile = which(FileName);
+    if isempty(ExcelFile) && exist(FileName,'file') == 2
+        ExcelFile = FileName;
+    end
+    if isempty(ExcelFile)
+        error('Excel input file not found: %s',FileName);
+    end
    
     % Use a struct to hold the data
     %
@@ -76,7 +74,28 @@ function Excel2Json(FileName)
     [ApparatusBus,ApparatusType,Para,NumApparatus] = SimplusGT.Toolbox.RearrangeListApparatus(ExcelFile,Wbase,ExcelBus);
     Data.Apparatus = [];
     for i = 1:NumApparatus
-        Data.Apparatus = [Data.Apparatus toApparatus(ApparatusBus{i},ApparatusType{i},Para{i})];
+        if ismember(ApparatusType{i},[4000,4001])
+            % Preserve the impedance-data metadata instead of flattening it
+            % into the numeric parameter vector used by white-box models.
+            paraStruct = Para{i};
+            impedanceFile = paraStruct.ImpedanceDataFile;
+            if ~isempty(impedanceFile) && isempty(fileparts(impedanceFile))
+                [excelPath,~,~] = fileparts(ExcelFile);
+                candidateFile = fullfile(excelPath,impedanceFile);
+                if exist(candidateFile,'file') == 2
+                    paraStruct.ImpedanceDataFile = candidateFile;
+                end
+            end
+            if ~isfield(paraStruct,'ImpedanceData')
+                paraStruct.ImpedanceData = [];
+            end
+            apparatus = struct('BusNo',ApparatusBus{i}, ...
+                'Type',ApparatusType{i},'Para',paraStruct);
+            Data.Apparatus = [Data.Apparatus apparatus];
+        else
+            Data.Apparatus = [Data.Apparatus ...
+                toApparatus(ApparatusBus{i},ApparatusType{i},Para{i})];
+        end
     end
    
     % disp(Data);

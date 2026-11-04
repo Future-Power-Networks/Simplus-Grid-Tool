@@ -29,6 +29,7 @@ function [GmObj,GmDSS,ApparatusPara,ApparatusEqui,DiscreDampingResistor,OtherInp
 
 %% Create an object
 SwInOutFlag = 0;   % Default: do not need to switch input and output
+IsImpedanceData = ismember(Type,[4000,4001]);
 switch floor(Type/10)
     
     % Notes:
@@ -246,6 +247,46 @@ switch floor(Type/10)
                         Para.T3gov;
                         Para.Dtgov;
                         ];
+    % ### Positive/negative-sequence controlled inverters
+    case 7
+        if Type == 70
+            Apparatus = SimplusGT.Class.GridFollowingVSIPN('ApparatusType',Type);
+            Apparatus.Para = [Para.wLf; Para.Rf; Para.wCf; Para.Rd; ...
+                Para.wLc; Para.Rc; Para.f_pll; Para.kp; Para.ki; ...
+                Para.kp_pll; Para.ki_pll; Para.kpi_p; Para.kii_p; ...
+                Para.kpi_n; Para.kii_n; Para.w0];
+        else
+            error(['Error: unsupported apparatus type ' num2str(Type) '.']);
+        end
+
+    % ### Positive/negative-sequence grid-forming inverter
+    case 8
+        if Type == 80
+            Apparatus = SimplusGT.Class.GridFormingVSIPN('ApparatusType',Type);
+            Apparatus.Para = [Para.wLf; Para.Rf; Para.wCf; Para.Rd; ...
+                Para.wLc; Para.Rc; Para.m; Para.f_power; Para.kp; ...
+                Para.kpq; Para.kiq; Para.f_amp; Para.kpi; Para.kii; ...
+                Para.miu; Para.Rv; Para.Xv; Para.w0];
+        else
+            error(['Error: unsupported apparatus type ' num2str(Type) '.']);
+        end
+
+    % ### Frequency-response impedance data
+    case 400
+        if ~IsImpedanceData
+            error(['Error: unsupported apparatus type ' num2str(Type) '.']);
+        end
+        [ModelSS,StateStr,InputStr,OutputStr] = ...
+            SimplusGT.Class.ImpedanceDataModel( ...
+                ApparatusBus,Type,PowerFlow,Para,Ts,ListBus);
+        ModelSS = ss(ModelSS);
+        Apparatus = struct('ApparatusType',Type,'Ts',Ts, ...
+            'PowerFlow',PowerFlow,'Para',Para,'ElecPortIOs',[1,2]);
+        x_e = zeros(size(ModelSS.A,1),1);
+        u_e = zeros(size(ModelSS.B,2),1);
+        y_e = zeros(size(ModelSS.C,1),1);
+        xi = PowerFlow(4);
+
     % ### Ac infinite bus
     case 9
         Apparatus = SimplusGT.Class.InfiniteBusAc;
@@ -310,21 +351,24 @@ switch floor(Type/10)
 end
 
 %% Calculate the linearized state space model
-Apparatus.ApparatusType = Type;                           % Apparatus type
-Apparatus.Ts = Ts;                                     % Samping period
-Apparatus.PowerFlow = PowerFlow;                       % Power flow data
-Apparatus.DiscreMethod = Advance.DiscretizationMethod;    % Discrete method
-Apparatus.SetString(Apparatus);                           % Set strings automatically
-Apparatus.SetEquilibrium(Apparatus);                      % Calculate the equilibrium
-[x_e,u_e,y_e,xi] = Apparatus.GetEquilibrium(Apparatus);   % Get the equilibrium
-Apparatus.SetSSLinearized(Apparatus,x_e,u_e);             % Linearize the model
+if ~IsImpedanceData
+    Apparatus.ApparatusType = Type;                        % Apparatus type
+    Apparatus.Ts = Ts;                                     % Sampling period
+    Apparatus.PowerFlow = PowerFlow;                       % Power flow data
+    Apparatus.DiscreMethod = Advance.DiscretizationMethod; % Discrete method
+    Apparatus.SetString(Apparatus);                        % Set strings automatically
+    Apparatus.SetEquilibrium(Apparatus);                   % Calculate equilibrium
+    [x_e,u_e,y_e,xi] = Apparatus.GetEquilibrium(Apparatus);
+    Apparatus.SetSSLinearized(Apparatus,x_e,u_e);          % Linearize model
 
-[~,ModelSS] = Apparatus.GetSS(Apparatus);                % Get the ss model
-[StateStr,InputStr,OutputStr] ...
-    = Apparatus.GetString(Apparatus);                    % Get the string
+    [~,ModelSS] = Apparatus.GetSS(Apparatus);
+    [StateStr,InputStr,OutputStr] = Apparatus.GetString(Apparatus);
+end
 
 % Set ElecPortIOs and OtherInputs
-if Type<1000
+% Imported impedance models (4000/4001) are ac two-axis apparatuses even
+% though their type numbers are outside the legacy ac range.
+if Type<1000 || IsImpedanceData
     Apparatus.ElecPortIOs = [1,2];
     OtherInputs = u_e(3:end,:);     % dq frame ac apparatus
 elseif 1000<=Type && Type<2000
@@ -334,7 +378,8 @@ elseif 2000<=Type && Type<3000
     Apparatus.ElecPortIOs = [1,2,3];
     OtherInputs = u_e(4:end,:);     % ac-dc apparatus
 else
-    error(['Error']);
+    error(['Error: unsupported electrical port layout for apparatus type ' ...
+        num2str(Type) '.']);
 end
 
 % Add bus number index to all IO ports
@@ -371,7 +416,8 @@ ApparatusPara = Apparatus.Para;
 ApparatusEqui = {x_e,u_e,y_e,xi};
 
 % Output the discretization damping resistance for simulation use
-if Type<90 || (1000<=Type && Type<1090) || (2000<=Type && Type<2090)
+if ~IsImpedanceData && (Type<90 || (1000<=Type && Type<1090) || ...
+        (2000<=Type && Type<2090))
     % CalcRv_old();
     
     Apparatus.SetDynamicSS(Apparatus,x_e,u_e);
@@ -429,6 +475,7 @@ I0 = [-i_q ; i_d];
 % the original output vector. New system also has a new state "epsilon",
 % which is added to the head of the original state vector. This means that
 % the w has to be one of the outputs of the original model.
+ind_w = [];
 for i = 1:length(OutputStr)
     w_port = SimplusGT.AddNum2Str({'w'},ApparatusBus);
     w_port = w_port{1};
@@ -438,25 +485,32 @@ for i = 1:length(OutputStr)
     end
 end
 if isempty(ind_w)
-    error(['Error: w has to be in the output of the original apparatus model.']);
+    if IsImpedanceData
+        % Measured impedance models are already expressed in a steady dq
+        % frame and have no internal frequency output to embed.
+        Se = Gm;
+    else
+        error('Error: w has to be in the output of the original apparatus model.');
+    end
+else
+    [~,~,ly1_w] = SimplusGT.SsGetDim(Gm);
+    Aw = 0;
+    Bw = zeros(1,ly1_w);   Bw(ind_w) = 1;
+    Cw = [1;zeros(ly1_w,1)];
+    Dw = [zeros(1,ly1_w);eye(ly1_w)];
+    Se = ss(Aw,Bw,Cw,Dw);
+    Se = series(Gm,Se);
+    StrEpsilon = SimplusGT.AddNum2Str({'epsilon'},ApparatusBus);
+    StateStr = [StrEpsilon,StateStr];
+
+    % Embed the frame dynamics
+    Sfb = ss([],[],[],V0);
+    Se = feedback(Se,Sfb,[1,2],[1]);        % v = v' - V0 * w/s
+
+    [~,~,ly2_w] = SimplusGT.SsGetDim(Se);
+    Sff = ss([],[],[],[[I0;zeros((ly2_w-3),1)],eye(ly2_w-1)]);
+    Se = series(Se,Sff);                    % i' = i + I0 * w/s
 end
-[~,~,ly1_w] = SimplusGT.SsGetDim(Gm);
-Aw = 0;
-Bw = zeros(1,ly1_w);   Bw(ind_w) = 1;
-Cw = [1;zeros(ly1_w,1)];
-Dw = [zeros(1,ly1_w);eye(ly1_w)];
-Se = ss(Aw,Bw,Cw,Dw);
-Se = series(Gm,Se);
-StrEpsilon = SimplusGT.AddNum2Str({'epsilon'},ApparatusBus);
-StateStr = [StrEpsilon,StateStr];
-
-% Embed the frame dynamics
-Sfb = ss([],[],[],V0);
-Se = feedback(Se,Sfb,[1,2],[1]);            % v = v' - V0 * w/s
-
-[~,~,ly2_w] = SimplusGT.SsGetDim(Se);
-Sff = ss([],[],[],[[I0;zeros((ly2_w-3),1)],eye(ly2_w-1)]);
-Se = series(Se,Sff);                        % i' = i + I0 * w/s
 
 %% Impedance transformation: local steady frame d'q' -> global steady frame D'Q'
 % Effect of frame alignment on arbitrary signal udq:

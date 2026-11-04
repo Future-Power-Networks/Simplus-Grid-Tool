@@ -30,6 +30,9 @@ UserDataName = 'UserData';      % Default 4-bus system
 % UserDataName = 'BESS_Plant_10Bus';            % A 10-unit battery energy storage plant
 % UserDataName = 'PV_Plant_10Bus';              % A 10-unit photovoltaic plant
 % UserDataName = 'PV_BESS_Hybrid_Plant_10Bus';  % A 10-unit photovoltaic and energy storage hybrid plant
+% UserDataName = 'InfBus_GflPN';            % Single grid-following inverter with positive- and negative-sequence control and infinite bus
+% UserDataName = 'InfBus_GfmPN';            % Single grid-forming inverter with positive- and negative-sequence control and infinite bus
+% UserDataName = 'GflPN&GfmPN_4Bus';        % A 4-bus system with grid-following and grid-forming positive- and negative-sequence inverters
 %
 % Dc power system examples:
 % UserDataName = 'GfdBuckInfiniteBus';         % Single grid-feeding buck converter and infinite bus
@@ -41,6 +44,9 @@ UserDataName = 'UserData';      % Default 4-bus system
 % UserDataName = 'HVDC_Infbus_4Bus';        % HVDC system connected to inf buses
 % UserDataName = 'HVDC_SG_4Bus';            % HVDC system connected to equivalent SG buses
 % UserDataName = 'MTDC_Infbus_4Bus';        % MTDC system connected to inf buses
+%
+% Power system examples with impedance-data models:
+% UserDataName = 'GfmInfiniteBus_ImpedanceData';  % Single grid-forming inverter modeled from impedance data and connected to an infinite bus
 
 %% Change the current folder of matlab
 cd(fileparts(mfilename('fullpath')));

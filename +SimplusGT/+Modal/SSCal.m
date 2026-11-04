@@ -27,7 +27,7 @@ for modei=1:ModeSelNum
     pout=1;
     for k =1: N_Apparatus
         ZmValAll{modei}{k} = SimplusGT.Modal.ApparatusImpedanceCal(GmDSS_Cell{k}, lambda, ApparatusType{k});
-        if ApparatusType{k} <= 89  % Ac apparatus
+        if SimplusGT.IsAcApparatusType(ApparatusType{k}) % Ac apparatus
             ResidueAll{modei}{k}=C(pout:pout+1,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin:pin+1);
         elseif ApparatusType{k} >= 1000 && ApparatusType{k} <= 1089 % Dc apparatuses
             ResidueAll{modei}{k}=C(pout,:) * Phi(:,ModeSel) * Psi(ModeSel,:) * B(:,pin);

@@ -54,7 +54,7 @@ for modei=1:ModeSelNum
     SigmaMag = abs(real(MdMode(ModeSelAll(modei))))*2*pi; % MdMode is in the unite of Hz, so needs to be changed to rad.
     count=1;
     for k=1:length(ApparatusType)
-        if ApparatusType{k} <= 89 % Ac apparatus
+        if SimplusGT.IsAcApparatusType(ApparatusType{k}) % Ac apparatus
             IMR.Type(count) = ApparatusType{k};
             IMR.IMRVal(count) = SigmaMag/(norm(Residue{k},"fro")*norm(ZmVal{k},"fro"));
             count = count+1;

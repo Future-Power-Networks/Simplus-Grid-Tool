@@ -36,7 +36,7 @@ P.FreqUnits='Hz';
 %P.PhaseWrappingBranch=-90;
 for k = 1:N_Apparatus
     %[~,AppIndex] = SimplusGT.CellFind(ApparatusBus,k);
-    if ApparatusType{k} <= 89 %apparatuses
+    if SimplusGT.IsAcApparatusType(ApparatusType{k}) % apparatuses
         if (ismember(k,ApparatusSel)) %if selected
             bode(GminSS(pout+poutBias, pin+pinBias),P)
             CountLegend = CountLegend + 1;
