@@ -8,9 +8,7 @@ Simplus Grid Tool (SimplusGT in short) is an open-source tool for dynamic analys
 
 Matlab 2020a or later, with Simulink, Simscape/PowerSystem.
 
-System Identification Toolbox is additionally required when using
-impedance-data black-box devices (Types 4000 and 4001), because their MIMO
-state-space models are identified with `ssest`.
+Additional requirements of Matlab: System Identification Toolbox.
 
 ## Quick Start
 
