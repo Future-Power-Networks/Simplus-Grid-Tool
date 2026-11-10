@@ -8,7 +8,7 @@
 
 function ZmVal = ApparatusImpedanceCal(GmDSS_Cell, Lambda, ApparatusType)
    
-    if ApparatusType <= 89  % Ac apparatus
+    if SimplusGT.IsAcApparatusType(ApparatusType) % Ac apparatus
         GmTf = evalfr(GmDSS_Cell(1:2,1:2),Lambda);
         ZmVal = inv(GmTf);
     elseif ApparatusType >= 1000 && ApparatusType <= 1089 % Dc apparatus

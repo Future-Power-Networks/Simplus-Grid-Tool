@@ -37,7 +37,7 @@ SelIndex = 1;
 ApparatusSel12 = 0;
 ApparatusIndex = 1;
 for k = 1:N_Apparatus
-    if ApparatusType{k} <= 89 %apparatuses)
+    if SimplusGT.IsAcApparatusType(ApparatusType{k}) % apparatuses
         if Config(ApparatusIndex,1) == 1 %the apparatus is selected
             ApparatusSel12(SelIndex) = k;
             SelIndex = SelIndex +1;
@@ -66,7 +66,7 @@ SelIndex = 1;
 ApparatusSel3 = 0;
 ApparatusIndex = 1;
 for k = 1:N_Apparatus
-    if ApparatusType{k} <= 89 %apparatuses)
+    if SimplusGT.IsAcApparatusType(ApparatusType{k}) % apparatuses
         if Config(ApparatusIndex,11) == 1 %the apparatus is selected
             ApparatusSel3(SelIndex) = k;
             SelIndex = SelIndex +1;

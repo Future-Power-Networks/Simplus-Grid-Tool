@@ -93,6 +93,29 @@ for i = 1:N_Apparatus
                     FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
                     add_block([Name_LibFile '/SynchronousMachineFull_SMAVRPSSGOV (dq-Frame System Object)'],FullName_Apparatus{i});
                 end
+            case 007
+                if ApparatusType{i} == 70
+                    Name_Apparatus{i} = ['VSI-PLL-PN' num2str(Bus)];
+                    FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                    add_block([Name_LibFile ...
+                        '/GFL-PN(dq-Frame System Object)'],FullName_Apparatus{i});
+                else
+                    error(['Error: unsupported ApparatusType ' ...
+                        num2str(ApparatusType{i}) ' in the 70-79 range.']);
+                end
+            case 008
+                if ApparatusType{i} == 80
+                    Name_Apparatus{i} = ['VSI-Droop-PN' num2str(Bus)];
+                    FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];
+                    add_block([Name_LibFile ...
+                        '/GFM-PN(dq-Frame System Object)'],FullName_Apparatus{i});
+                else
+                    error(['Error: unsupported ApparatusType ' ...
+                        num2str(ApparatusType{i}) ' in the 80-89 range.']);
+                end
+            case 400
+                error(['Automatic Simulink generation is not available for ' ...
+                    'impedance-data model Type ' num2str(ApparatusType{i}) '.']);
             case 009
             	Name_Apparatus{i} = ['Inf-Bus' num2str(Bus)];
                 FullName_Apparatus{i} = [Name_Model '/' Name_Apparatus{i}];

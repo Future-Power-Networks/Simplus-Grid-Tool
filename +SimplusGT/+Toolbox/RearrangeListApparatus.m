@@ -59,6 +59,27 @@ end
 ListAppBus = ListApp(:,1);
 ListAppType = ListApp(:,2);
 
+% Keep the first apparatus-parameter text column so impedance-data models
+% can reference an external measurement workbook.
+ListAppCharParams = ListAppChar(:,3);
+parameterHeader = 0;
+for k1 = 1:length(ListAppCharParams)
+    value = ListAppCharParams{k1};
+    if ischar(value) && (strcmpi(strtrim(value),'parameters') || ...
+            strcmpi(strtrim(value),'Apparatus parameters') || ...
+            strcmpi(strtrim(value),'ImpedanceDataFile'))
+        parameterHeader = k1;
+        break;
+    end
+end
+if parameterHeader > 0
+    ListAppCharParams = ListAppCharParams(parameterHeader+1:end);
+    if NewExcel == 1
+        ListAppCharParams = ListAppCharParams(1:2:end,:);
+    end
+else
+    ListAppCharParams = cell(N_App,1);
+end
 % Get the apparatus bus in cell form
 for n = 1:N_App
     if ~isnan(ListAppBus(n))  % If not NaN, then the bus is a scalar rather han an array in char type
@@ -314,8 +335,49 @@ Para0060.T3gov=0.3;
 Para0060.Dtgov=0.25;
 
 % ======================================
-% Ac infinite bus (short-circuit in small-signal)
+% Grid-forming VSI with positive/negative-sequence control (Type 80)
 % ======================================
+Para0080.wLf = 0.05;
+Para0080.Rf = 0.05/5;
+Para0080.wCf = 0.02;
+Para0080.Rd = 0.1;
+Para0080.wLc = 0.01;
+Para0080.Rc = 0.01/5;
+Para0080.m = 4e-5;
+Para0080.f_power = 25;
+Para0080.kp = 0.05;
+Para0080.kpq = 4e-4;
+Para0080.kiq = 2.55e-2;
+Para0080.f_amp = 15;
+Para0080.kpi = 0.15;
+Para0080.kii = 3.6;
+Para0080.miu = 0.8;
+Para0080.Rv = 0.01;
+Para0080.Xv = 0.628;
+Para0080.w0 = W0;
+
+% ======================================
+% Grid-following VSI with positive/negative-sequence control (Type 70)
+% ======================================
+Para0070.wLf = 0.05;
+Para0070.Rf = 0.05/5;
+Para0070.wCf = 0.02;
+Para0070.Rd = 0.1;
+Para0070.wLc = 0.01;
+Para0070.Rc = 0.01/5;
+Para0070.f_pll = 25;
+Para0070.kp = 0.05;
+Para0070.ki = 5;
+Para0070.kp_pll = 0.5;
+Para0070.ki_pll = 10;
+Para0070.kpi_p = 0.15;
+Para0070.kii_p = 3.6;
+Para0070.kpi_n = 0.15;
+Para0070.kii_n = 3.6;
+Para0070.w0 = W0;
+
+% ======================================
+% Ac infinite bus (short-circuit in small-signal)% ======================================
 Para0090 = [];
 
 % ======================================
@@ -374,8 +436,23 @@ column = column+2;
 for i = 1:N_App
     AppBus   = AppBusCell{i};
     AppType  = AppTypeCell{i};
-    switch floor(AppType/10)
-        % ### AC apparatuses
+    if ismember(AppType,[4000,4001])
+        paraStruct = struct();
+        if i <= length(ListAppCharParams) && ...
+                (ischar(ListAppCharParams{i}) || isstring(ListAppCharParams{i}))
+            paraStruct.ImpedanceDataFile = char(ListAppCharParams{i});
+        else
+            paraStruct.ImpedanceDataFile = '';
+        end
+        paraStruct.ImpedanceDataType = [];
+        paraStruct.FitInitialOrder = [];
+        paraStruct.FitOrderRange = [];
+        paraStruct.Fbase = W0/(2*pi);
+        ParaCell{i} = paraStruct;
+        continue;
+    end
+
+    switch floor(AppType/10)        % ### AC apparatuses
         case 0     
             ParaCell{i} = Para0000;     % Synchronous machine
         case 1
@@ -398,6 +475,18 @@ for i = 1:N_App
             end
         case 6
             ParaCell{i} = Para0060; % Synchronous Machine
+        case 7
+            if AppType == 70
+                ParaCell{i} = Para0070; % Grid-following VSI, PN control
+            else
+                error(['Error: unsupported apparatus type ' num2str(AppType) '.']);
+            end
+        case 8
+            if AppType == 80
+                ParaCell{i} = Para0080; % Grid-forming VSI, PN control
+            else
+                error(['Error: unsupported apparatus type ' num2str(AppType) '.']);
+            end
         case 9
             ParaCell{i} = Para0090;     % Ac inifnite bus
         case 10
@@ -433,8 +522,22 @@ for i = 1:length(row)
   	AppBus   = AppBusCell{row(i)};
 	AppType	= AppTypeCell{row(i)};
  	UserValue 	= ListApp(row(i),column(i));     % Customized value
-    SwitchFlag = column(i)-2;                   	% Find the updated parameter
-  	if floor(AppType/10) == 0                    % Synchronous machine
+    SwitchFlag = column(i)-2;                    % Find the updated parameter
+
+    if ismember(AppType,[4000,4001])
+        switch SwitchFlag
+            case 2
+                ParaCell{row(i)}.ImpedanceDataType = UserValue;
+            case 3
+                ParaCell{row(i)}.FitInitialOrder = UserValue;
+            otherwise
+                error(['Error: impedance-data parameter overflow, bus ' ...
+                    num2str(AppBus) ' type ' num2str(AppType) '.']);
+        end
+        continue;
+    end
+
+    if floor(AppType/10) == 0                    % Synchronous machine
         switch SwitchFlag 
          	case 1; ParaCell{row(i)}.J  = UserValue;
             case 2; ParaCell{row(i)}.D  = UserValue;
@@ -848,6 +951,52 @@ for i = 1:length(row)
                 case 46; ParaCell{row(i)}.Dtgov=UserValue;
             end
         end
+    elseif ismember(AppType,[70,80])
+        if AppType == 80
+            switch SwitchFlag
+                case 1;  ParaCell{row(i)}.wLf = UserValue;
+                case 2;  ParaCell{row(i)}.Rf = UserValue;
+                case 3;  ParaCell{row(i)}.wCf = UserValue;
+                case 4;  ParaCell{row(i)}.Rd = UserValue;
+                case 5;  ParaCell{row(i)}.wLc = UserValue;
+                case 6;  ParaCell{row(i)}.Rc = UserValue;
+                case 7;  ParaCell{row(i)}.m = UserValue;
+                case 8;  ParaCell{row(i)}.f_power = UserValue;
+                case 9;  ParaCell{row(i)}.kp = UserValue;
+                case 10; ParaCell{row(i)}.kpq = UserValue;
+                case 11; ParaCell{row(i)}.kiq = UserValue;
+                case 12; ParaCell{row(i)}.f_amp = UserValue;
+                case 13; ParaCell{row(i)}.kpi = UserValue;
+                case 14; ParaCell{row(i)}.kii = UserValue;
+                case 15; ParaCell{row(i)}.miu = UserValue;
+                case 16; ParaCell{row(i)}.Rv = UserValue;
+                case 17; ParaCell{row(i)}.Xv = UserValue;
+                otherwise
+                    error(['Error: parameter overflow, bus ' num2str(AppBus) ...
+                        ' type ' num2str(AppType) '.']);
+            end
+        elseif AppType == 70
+            switch SwitchFlag
+                case 1;  ParaCell{row(i)}.wLf = UserValue;
+                case 2;  ParaCell{row(i)}.Rf = UserValue;
+                case 3;  ParaCell{row(i)}.wCf = UserValue;
+                case 4;  ParaCell{row(i)}.Rd = UserValue;
+                case 5;  ParaCell{row(i)}.wLc = UserValue;
+                case 6;  ParaCell{row(i)}.Rc = UserValue;
+                case 7;  ParaCell{row(i)}.f_pll = UserValue;
+                case 8;  ParaCell{row(i)}.kp = UserValue;
+                case 9;  ParaCell{row(i)}.ki = UserValue;
+                case 10; ParaCell{row(i)}.kp_pll = UserValue;
+                case 11; ParaCell{row(i)}.ki_pll = UserValue;
+                case 12; ParaCell{row(i)}.kpi_p = UserValue;
+                case 13; ParaCell{row(i)}.kii_p = UserValue;
+                case 14; ParaCell{row(i)}.kpi_n = UserValue;
+                case 15; ParaCell{row(i)}.kii_n = UserValue;
+                otherwise
+                    error(['Error: parameter overflow, bus ' num2str(AppBus) ...
+                        ' type ' num2str(AppType) '.']);
+            end
+        end
 
     elseif floor(AppType/10) == 101 % Grid-feeding buck
         switch SwitchFlag
@@ -877,6 +1026,22 @@ for i = 1:length(row)
             otherwise
                 error(['Error: parameter overflow, bus ' num2str(AppBus) 'type ' num2str(AppType) '.']);
         end
+    end
+end
+
+% Require an explicit data domain because 4000/4001 identify GFL/GFM devices.
+for i = 1:N_App
+    if ismember(AppTypeCell{i},[4000,4001])
+        if isempty(ParaCell{i}.ImpedanceDataType)
+            error('SimplusGT:MissingImpedanceDataType', ...
+                ['Specify ImpedanceDataType in column D for bus %d ' ...
+                 '(1: dq, 2: sequence). Column E is FitInitialOrder. ' ...
+                 'Types 4000 and 4001 now identify GFL and GFM devices.'], ...
+                AppBusCell{i});
+        end
+        validateattributes(ParaCell{i}.ImpedanceDataType,{'numeric'}, ...
+            {'real','scalar','finite','integer','>=',1,'<=',2}, ...
+            mfilename,'ImpedanceDataType');
     end
 end
 

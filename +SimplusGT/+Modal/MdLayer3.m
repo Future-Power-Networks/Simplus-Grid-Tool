@@ -17,6 +17,28 @@ function Layer3Result = MdLayer3( ...
     ApparatusSelL3All, Para, ApparatusPowerFlow, Ts, ...
     ApparatusBus, ListBus, Advance)
 
+% Imported impedance models are black-box frequency-response models. They
+% have no scalar physical parameter set that can be perturbed by Layer 3.
+% Keep them visible/selectable in the configuration, but skip them safely
+% when tuning is requested.
+BlackBoxSelection = false(size(ApparatusSelL3All));
+for SelectionIndex = 1:numel(ApparatusSelL3All)
+    ApparatusIndex = ApparatusSelL3All(SelectionIndex);
+    if ismember(ApparatusType{ApparatusIndex},[4000,4001])
+        BlackBoxSelection(SelectionIndex) = true;
+        warning('SimplusGT:Modal:BlackBoxLayer3Unsupported', ...
+            ['Apparatus %d (Type %d) is a black-box impedance model; ' ...
+             'direct parameter sensitivity analysis is unavailable.'], ...
+            ApparatusIndex,ApparatusType{ApparatusIndex});
+    end
+end
+ApparatusSelL3All(BlackBoxSelection) = [];
+
+if isempty(ApparatusSelL3All)
+    Layer3Result = struct('Apparatus',{},'Result',{});
+    return;
+end
+
 ApparatusSelNum=length(ApparatusSelL3All);
 Mode_rad = Mode_Hz*2*pi;
 for ApparatusCount = 1:ApparatusSelNum

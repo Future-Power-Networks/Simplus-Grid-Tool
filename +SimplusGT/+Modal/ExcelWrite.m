@@ -23,7 +23,7 @@ StateSheet(1,3) = {'Select'};
 index = 2;
 StateCount = 0;
 for k = 1:N_Apparatus
-    if ApparatusType{k} <= 89 %apparatuses)    
+    if SimplusGT.IsAcApparatusType(ApparatusType{k}) % apparatuses
         ApparatusName=strcat('Apparatus',num2str(ApparatusBus{k}));
         StateName = ApparatusStateStr{k};
         StateNum = length(ApparatusStateStr{k});
@@ -122,7 +122,7 @@ ImpedanceSheet(2,1) = {'Component'};
 ImpedanceSheet(2,2) = {'Select'};
 index=3;
 for k = 1:N_Apparatus
-        if ApparatusType{k} <= 89 %apparatuses)
+        if SimplusGT.IsAcApparatusType(ApparatusType{k}) % apparatuses
             ApparatusName=strcat('Apparatus',num2str(ApparatusBus{k}));
             ImpedanceSheet(index,1) = {ApparatusName};
             ImpedanceSheet(index,2) = {1};
@@ -203,7 +203,7 @@ ImpedanceSheet(2,12)={'Select'};
 index=3;
 IndexSel=1;
 for k = 1:N_Apparatus
-        if ApparatusType{k} <= 89 %apparatuses)
+        if SimplusGT.IsAcApparatusType(ApparatusType{k}) % apparatuses
             ApparatusName=strcat('Apparatus',num2str(ApparatusBus{k}));
             ImpedanceSheet(index,11)= {ApparatusName};
             if AutoSel == 1 && IndexSel==1
